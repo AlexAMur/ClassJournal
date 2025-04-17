@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kapt)
+
 }
 
 android {
@@ -38,7 +41,9 @@ android {
         compose = true
     }
 }
-
+kapt {
+    correctErrorTypes = true
+}
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -51,6 +56,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt)
+    kapt(libs.kapt)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
