@@ -1,8 +1,12 @@
 package com.catshome.classjornal.Screens
 
 enum class ItemScreen {
-    mainScreen,
-    groupeScreen,
-    rateScreen,
-    reportScreen
+    MainScreen,
+    GroupScreen,
+    RateScreen,
+    ReportScreen,
+    NewChildScreen,
+    NewVisitScreen,
+    NewRateScreen,
+    NewGroupScreen
 }

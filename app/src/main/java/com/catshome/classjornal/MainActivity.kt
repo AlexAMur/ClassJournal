@@ -45,10 +45,10 @@ class MainActivity : ComponentActivity() {
             val navControler = rememberNavController()
             var selectedItem by rememberSaveable {  mutableIntStateOf(0) }
             val bottomItems = listOf(
-                ItemBottomBar("Главный", Icons.Sharp.Face,Icons.Outlined.Face, MainScreen()),
-                ItemBottomBar("Группы", Icons.Sharp.AccountBox, Icons.Outlined.AccountBox, GroupScreen()),
-                ItemBottomBar("Тарифы", Icons.Sharp.ShoppingCart, Icons.Outlined.ShoppingCart, RateScreen()),
-                ItemBottomBar("Отчеты", Icons.AutoMirrored.Sharp.List, Icons.AutoMirrored.Outlined.List, ReportScreen())
+                ItemBottomBar("Главный", ItemScreen.MainScreen.name,  Icons.Sharp.Face,Icons.Outlined.Face, MainScreen(navControler)),
+                ItemBottomBar("Группы", ItemScreen.GroupScreen.name, Icons.Sharp.AccountBox, Icons.Outlined.AccountBox, GroupScreen()),
+                ItemBottomBar("Тарифы", ItemScreen.RateScreen.name, Icons.Sharp.ShoppingCart, Icons.Outlined.ShoppingCart, RateScreen()),
+                ItemBottomBar("Отчеты", ItemScreen.ReportScreen.name,  Icons.AutoMirrored.Sharp.List, Icons.AutoMirrored.Outlined.List, ReportScreen())
             )
             ClassJournalTheme {
                 Scaffold(
@@ -60,6 +60,7 @@ class MainActivity : ComponentActivity() {
                                     selected = selectedItem==index,
                                     onClick = {
                                         selectedItem=index
+                                            navControler.navigate(screen.route)
                                               },
                                     icon = {
                                         if(selectedItem==index)
@@ -72,14 +73,17 @@ class MainActivity : ComponentActivity() {
                         }
 
                     }) { innerPadding ->
-                         Text("", Modifier.padding(innerPadding))
-                        NavHost(navControler, startDestination = ItemScreen.mainScreen){
-                            composable(route = ItemScreen.mainScreen.toString()){ MainScreen() }
-                            composable(route = ItemScreen.groupeScreen.toString()){ GroupScreen()}
-                            composable(route = ItemScreen.rateScreen.toString()){ RateScreen() }
-                            composable(route = ItemScreen.reportScreen.toString()){ ReportScreen() }
+                        Text("", Modifier.padding(innerPadding))
+                        NavHost(navControler, startDestination = ItemScreen.MainScreen.name){
+                            composable(route = ItemScreen.MainScreen.name){ MainScreen(navControler) }
+                            composable(route = ItemScreen.GroupScreen.name){ GroupScreen()}
+                            composable(route = ItemScreen.RateScreen.name){ RateScreen() }
+                            composable(route = ItemScreen.ReportScreen.name){ ReportScreen() }
+                            composable(route = ItemScreen.NewGroupScreen.name){ NewGroupScreen() }
+                            composable(route = ItemScreen.NewRateScreen.name){ NewRateScreen() }
+                            composable(route = ItemScreen.NewChildScreen.name){ NewChildScreen() }
+                            composable(route = ItemScreen.NewVisitScreen.name){ NewVisitScreen() }
                         }
-
 
 
                 }
@@ -89,18 +93,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ClassJournalTheme {
-        Greeting("Android")
-    }
-}
