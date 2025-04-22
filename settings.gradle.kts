@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "ClassJournal"
 include(":app")
- 
+include(":domain")
+include(":data")

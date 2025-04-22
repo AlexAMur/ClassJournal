@@ -34,9 +34,9 @@ import androidx.navigation.compose.rememberNavController
 import com.catshome.classjornal.Screens.ItemBottomBar
 import com.catshome.classjornal.Screens.ItemScreen
 import com.catshome.classjornal.ui.theme.ClassJournalTheme
-import dagger.hilt.android.HiltAndroidApp
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

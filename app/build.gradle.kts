@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
 
 }
 
@@ -57,8 +58,11 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.hilt)
-    kapt(libs.kapt)
-
+    ksp(libs.kapt)
+    ksp(libs.ksp)
+    implementation(libs.room)
+    implementation(project(":domain"))
+    implementation(project(":data"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
