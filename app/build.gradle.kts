@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.kapt)
+
     alias(libs.plugins.ksp)
 
 }
@@ -42,9 +42,6 @@ android {
         compose = true
     }
 }
-kapt {
-    correctErrorTypes = true
-}
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -58,8 +55,9 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.hilt)
-    ksp(libs.kapt)
     ksp(libs.ksp)
+    ksp(libs.hilt.compiler)
+
     implementation(libs.room)
     implementation(project(":domain"))
     implementation(project(":data"))
