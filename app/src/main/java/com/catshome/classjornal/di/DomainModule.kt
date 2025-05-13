@@ -1,7 +1,10 @@
 package com.catshome.classjornal.di
 
 import dagger.Module
-
-@Module
-class DomainModule {
-}
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+//
+//@Module
+//@InstallIn(SingletonComponent::class)
+//class DomainModule {
+//}
