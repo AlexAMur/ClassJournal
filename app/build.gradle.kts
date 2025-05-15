@@ -60,7 +60,7 @@ dependencies {
 
     ksp(libs.room)
     implementation(project(":domain"))
-    //implementation(project(":data"))
+    implementation(project(":data"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

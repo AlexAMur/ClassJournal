@@ -4,14 +4,14 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.catshome.ClassJournal.Models.Group
+import com.catshome.ClassJournal.Group.GroupStorege.Models.Group
 
 @Dao
 interface GroupsDAO {
     @Insert
-    fun insertAll(vararg group: Group)
+    fun insert(group: Group):Boolean
     @Delete
-    fun delete(vararg group: Group)
+    fun delete(group: Group)
 
     @Query("Select * from groups")
     fun getAllFull(): List<Group>

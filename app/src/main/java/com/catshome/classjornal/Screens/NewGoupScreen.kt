@@ -7,10 +7,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.catshome.classjornal.Screens.viewmadels.GroupViewModel
+import com.catshome.classjornal.Screens.viewModels.GroupViewModel
 
 @Composable
-fun NewGroupScreen(viewModel: GroupViewModel){
+fun NewGroupScreen  (viewModel: GroupViewModel){
 Card{
   Column {
    OutlinedTextField(
