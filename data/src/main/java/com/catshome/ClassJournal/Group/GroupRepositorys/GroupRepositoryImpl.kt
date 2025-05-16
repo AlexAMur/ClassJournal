@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class GetGroupRepositoryImpl @Inject constructor(val roomGroupStorage: RoomGroupStorage): GroupRepository {
     override suspend fun saveGroup(group: Group): Boolean {
-        TODO("Not yet implemented")
+        return roomGroupStorage.insertGroup(group)
     }
 
     override suspend fun deleteGroup(group: Group): Boolean {

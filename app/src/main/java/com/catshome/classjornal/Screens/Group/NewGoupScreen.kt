@@ -17,6 +17,7 @@ Card{
        value = viewModel.groupName,
        onValueChange = {viewModel.upDateGroup(it)}
    )
+      if(viewModel.is.length < 1)
    Button(onClick = {viewModel.onClickSave()}) {
     Text("OК")
    }
