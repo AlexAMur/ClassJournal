@@ -9,5 +9,5 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class ClassJournal: Application(){
-    @Inject val dataBase =Room.databaseBuilder(applicationContext, ClassJournalDataBase::class.java, "classJournal").build()
+     val dataBase =Room.databaseBuilder(applicationContext, ClassJournalDataBase::class.java, "classJournal").build()
 }

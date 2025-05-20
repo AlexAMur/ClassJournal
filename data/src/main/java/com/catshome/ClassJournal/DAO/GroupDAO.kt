@@ -5,18 +5,18 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.catshome.ClassJournal.Group.Models.Group
+import com.catshome.ClassJournal.Group.Models.GroupEntity
 
 @Dao
 interface GroupsDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(group: Group):Boolean
+    fun insert(group: GroupEntity)
     @Delete
-    fun delete(group: Group)
+    fun delete(group: GroupEntity)
 
-    @Query("Select * from groups")
-    fun getFull(): List<Group>
-    @Query("SELECT * FROM groups where isDelete = :isDelete")
-    fun getGroup(isDelete: Boolean): List<Group>
+    @Query("Select * from mygroups")
+    fun getFull(): List<GroupEntity>
+    @Query("SELECT * FROM mygroups where isDelete = :isDelete")
+    fun getGroup(isDelete: Boolean): List<GroupEntity>
 
 }

@@ -1,3 +1,5 @@
+import com.google.devtools.ksp.KspExperimental
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -30,6 +32,10 @@ android {
             )
         }
     }
+    ksp{
+        @OptIn(KspExperimental::class)
+        useKsp2 = false
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -53,12 +59,12 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.hilt)
 
+    implementation(libs.hilt)
     implementation(libs.room.runtime)
     ksp(libs.hilt.compiler)
-
     ksp(libs.room)
+
     implementation(project(":domain"))
     implementation(project(":data"))
     testImplementation(libs.junit)

@@ -7,19 +7,24 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.catshome.classjornal.Screens.Group.GroupEvent
 import com.catshome.classjornal.Screens.viewModels.GroupViewModel
 
 @Composable
-fun NewGroupScreen  (viewModel: GroupViewModel){
+fun NewGroupScreen  (viewModel: GroupViewModel = viewModel{ GroupViewModel()}){
+    val viewState by viewModel.viewState().collectAsState()
 Card{
   Column {
    OutlinedTextField(
-       value = viewModel.groupName,
-       onValueChange = {viewModel.upDateGroup(it)}
+       value = viewState.nameGroup,
+       onValueChange = {viewModel.obtainEvent(GroupEvent.ChangeName(it))}
    )
-      if(viewModel.is.length < 1)
-   Button(onClick = {viewModel.onClickSave()}) {
-    Text("OК")
+
+   Button(onClick = {viewModel.obtainEvent(GroupEvent.NextClicked)}) {
+        Text("OК")
    }
   }
 }

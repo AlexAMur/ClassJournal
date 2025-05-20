@@ -15,6 +15,8 @@ fun Group.mapToEntity():GroupEntity {
 class RoomGroupStorage@Inject constructor(val groupsDAO: GroupsDAO, val group: Group) {
 
 fun insertGroup(group: Group):Boolean{
-       return groupsDAO.insert(group = group.mapToEntity())
+
+    groupsDAO.insert(group = group.mapToEntity())
+    return true
     }
 }
