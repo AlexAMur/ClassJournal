@@ -40,13 +40,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val appDatabase = getDatabaseBuilder(applicationContext).build()
         enableEdgeToEdge()
         setContent {
             val navControler = rememberNavController()
             var selectedItem by rememberSaveable {  mutableIntStateOf(0) }
             val bottomItems = listOf(
                 ItemBottomBar("Главный", ItemScreen.MainScreen.name,  Icons.Sharp.Face,Icons.Outlined.Face, MainScreen(navControler)),
-                ItemBottomBar("Группы", ItemScreen.GroupScreen.name, Icons.Sharp.AccountBox, Icons.Outlined.AccountBox, GroupScreen()),
+                ItemBottomBar("Группы", ItemScreen.GroupScreen.name, Icons.Sharp.AccountBox, Icons.Outlined.AccountBox, GroupScreen(navControler)),
                 ItemBottomBar("Тарифы", ItemScreen.RateScreen.name, Icons.Sharp.ShoppingCart, Icons.Outlined.ShoppingCart, RateScreen()),
                 ItemBottomBar("Отчеты", ItemScreen.ReportScreen.name,  Icons.AutoMirrored.Sharp.List, Icons.AutoMirrored.Outlined.List, ReportScreen())
             )
@@ -76,7 +77,7 @@ class MainActivity : ComponentActivity() {
                         Text("", Modifier.padding(innerPadding))
                         NavHost(navControler, startDestination = ItemScreen.MainScreen.name){
                             composable(route = ItemScreen.MainScreen.name){ MainScreen(navControler) }
-                            composable(route = ItemScreen.GroupScreen.name){ GroupScreen()}
+                            composable(route = ItemScreen.GroupScreen.name){ GroupScreen(navControler)}
                             composable(route = ItemScreen.RateScreen.name){ RateScreen() }
                             composable(route = ItemScreen.ReportScreen.name){ ReportScreen() }
                             composable(route = ItemScreen.NewGroupScreen.name){ NewGroupScreen() }

@@ -6,6 +6,6 @@ import com.catshome.ClassJournal.DAO.GroupsDAO
 import com.catshome.ClassJournal.Group.Models.GroupEntity
 
 @Database(entities = [GroupEntity::class], version = 1)
-abstract class ClassJournalDataBase: RoomDatabase() {
+abstract class AppDataBase: RoomDatabase() {
     abstract fun groupsDAO():GroupsDAO
 }
