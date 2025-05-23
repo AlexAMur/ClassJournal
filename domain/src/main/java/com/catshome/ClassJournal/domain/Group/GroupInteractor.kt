@@ -1,8 +1,9 @@
 package com.catshome.ClassJournal.domain.Group
 
 import com.catshome.ClassJournal.domain.Group.Models.Group
+import javax.inject.Inject
 
-class GroupInteractor(groupRepository: GroupRepository) {
+class GroupInteractor @Inject constructor(groupRepository: GroupRepository) {
     fun saveGroupUseCase(group: Group){
         //g
     }

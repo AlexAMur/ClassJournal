@@ -16,7 +16,7 @@ abstract class BaseViewModel<State: Any, Action, Event> ( installSate :State):Vi
     private val _viewStates = MutableStateFlow(installSate)
     private val _viewActions = MutableSharedFlow<Action?>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     public fun viewState(): StateFlow <State> =_viewStates.asStateFlow()
-    fun viewAction(): SharedFlow <Action?> =_viewActions.asSharedFlow()
+    fun viewActions(): SharedFlow <Action?> =_viewActions.asSharedFlow()
     protected var viewState: State
         get() = _viewStates.value
         set(value) {

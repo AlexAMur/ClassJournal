@@ -1,22 +1,16 @@
 package com.catshome.classjornal.Screens.viewModels
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-
-import androidx.lifecycle.ViewModel
 import com.catshome.ClassJournal.domain.Group.GroupInteractor
-import com.catshome.ClassJournal.domain.Group.Models.Group
-import com.catshome.classjornal.Screens.Group.GroupAction
+import com.catshome.classjornal.Screens.Group.ComposeAction
 import com.catshome.classjornal.Screens.Group.GroupEvent
 import com.catshome.classjornal.Screens.Group.GroupState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 
-//@HiltViewModel
-class GroupViewModel : BaseViewModel<GroupState, GroupAction,GroupEvent>  (installSate = GroupState()) {
-
+@HiltViewModel
+class GroupViewModel @Inject constructor() : BaseViewModel<GroupState, ComposeAction,GroupEvent>  (installSate = GroupState(), ) {
+       @Inject lateinit var  repository : GroupInteractor
     override fun obtainEvent(viewEvent: GroupEvent) {
         when(viewEvent){
             is GroupEvent.ChangeName->{
@@ -27,7 +21,8 @@ class GroupViewModel : BaseViewModel<GroupState, GroupAction,GroupEvent>  (insta
             }
 
             GroupEvent.ActionInvoked ->viewAction = null
-            GroupEvent.NextClicked -> viewAction = GroupAction.NextClicked
+            GroupEvent.SaveClicked ->viewAction =ComposeAction.CloseScreen
+            GroupEvent.NextClicked -> viewAction = ComposeAction.NextClicked
         }
 
             }
