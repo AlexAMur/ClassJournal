@@ -13,6 +13,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.catshome.ClassJournal.domain.Group.GroupRepository
 import com.catshome.ClassJournal.localNavHost
 import com.catshome.classjornal.Screens.Group.ComposeAction
 import com.catshome.classjornal.Screens.Group.GroupEvent
@@ -32,7 +33,7 @@ fun NewGroupScreen(viewModel: GroupViewModel = viewModel { GroupViewModel() }) {
                 onValueChange = { viewModel.obtainEvent(GroupEvent.ChangeName(it)) }
             )
 
-            Button(onClick = { viewModel.obtainEvent(GroupEvent.NextClicked) }) {
+            Button(onClick = { viewModel.obtainEvent(GroupEvent.SaveClicked) }) {
                 Text("OК")
             }
         }

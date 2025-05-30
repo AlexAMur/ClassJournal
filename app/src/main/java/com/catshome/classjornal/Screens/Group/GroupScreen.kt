@@ -32,7 +32,7 @@ fun GroupScreen(navController: NavController) {
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        Column(Modifier.background(Color(R.color.purple_500))) {
+        Column() {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(
                     items = child,

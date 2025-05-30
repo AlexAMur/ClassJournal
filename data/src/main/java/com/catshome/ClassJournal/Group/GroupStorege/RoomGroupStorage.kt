@@ -12,11 +12,22 @@ fun Group.mapToEntity():GroupEntity {
     )
 }
 
-class RoomGroupStorage@Inject constructor(val groupsDAO: GroupsDAO, val group: Group) {
+class RoomGroupStorage @Inject constructor (val groupsDAO: GroupsDAO, val group: Group) : GroupStorage{
 
-fun insertGroup(group: Group):Boolean{
+    override fun insert(group: Group): Boolean {
+        groupsDAO.insert(group = group.mapToEntity())
+        return true
+    }
 
-    groupsDAO.insert(group = group.mapToEntity())
-    return true
+    override fun delete(group: Group): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun update(group: Group): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun read(): List<Group> {
+        TODO("Not yet implemented")
     }
 }

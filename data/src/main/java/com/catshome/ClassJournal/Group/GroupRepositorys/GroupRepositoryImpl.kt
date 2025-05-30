@@ -1,14 +1,15 @@
 package com.catshome.ClassJournal.Group.GroupRepositorys
 
 
+import com.catshome.ClassJournal.Group.GroupStorege.GroupStorage
 import com.catshome.ClassJournal.Group.GroupStorege.RoomGroupStorage
 import com.catshome.ClassJournal.domain.Group.GroupRepository
 import com.catshome.ClassJournal.domain.Group.Models.Group
 import javax.inject.Inject
 
-class GetGroupRepositoryImpl @Inject constructor(val roomGroupStorage: RoomGroupStorage): GroupRepository {
+class GroupRepositoryImpl (val roomGroupStorage: GroupStorage): GroupRepository {
     override suspend fun saveGroup(group: Group): Boolean {
-        return roomGroupStorage.insertGroup(group)
+        return roomGroupStorage.insert(group)
     }
 
     override suspend fun deleteGroup(group: Group): Boolean {
@@ -17,7 +18,7 @@ class GetGroupRepositoryImpl @Inject constructor(val roomGroupStorage: RoomGroup
 
     override suspend fun updateGroup(group: Group): Boolean {
 
-        return roomGroupStorage.insertGroup(group)
+        return roomGroupStorage.update(group)
     }
 
     override suspend fun getGroupById(uid: Int): Group {

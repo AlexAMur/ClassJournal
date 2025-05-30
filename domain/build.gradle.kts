@@ -1,11 +1,13 @@
 plugins {
-    id("java-library")
-    alias(libs.plugins.jetbrains.kotlin.jvm)
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+      alias(libs.plugins.android.library)
+      alias(libs.plugins.kotlin.android)
+      alias(libs.plugins.ksp)
+      alias(libs.plugins.hilt)
+}
 
-
+android {
+    namespace = "com.catshome.classjornal"
+    compileSdk = 35
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -17,8 +19,6 @@ kotlin {
     }
     dependencies{
         implementation(libs.hilt)
-        //implementation(libs.room.runtime)
         ksp(libs.hilt.compiler)
-        //ksp(libs.room)
     }
 }

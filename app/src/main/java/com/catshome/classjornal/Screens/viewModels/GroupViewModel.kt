@@ -1,6 +1,8 @@
 package com.catshome.classjornal.Screens.viewModels
 
 import com.catshome.ClassJournal.domain.Group.GroupInteractor
+import com.catshome.ClassJournal.domain.Group.GroupRepository
+import com.catshome.ClassJournal.domain.Group.Models.Group
 import com.catshome.classjornal.Screens.Group.ComposeAction
 import com.catshome.classjornal.Screens.Group.GroupEvent
 import com.catshome.classjornal.Screens.Group.GroupState
@@ -9,8 +11,8 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class GroupViewModel @Inject constructor() : BaseViewModel<GroupState, ComposeAction,GroupEvent>  (installSate = GroupState(), ) {
-       @Inject lateinit var  repository : GroupInteractor
+class GroupViewModel @Inject constructor()  : BaseViewModel<GroupState, ComposeAction,GroupEvent>  (installSate = GroupState(), ) {
+      @Inject lateinit var repository : GroupInteractor
     override fun obtainEvent(viewEvent: GroupEvent) {
         when(viewEvent){
             is GroupEvent.ChangeName->{
@@ -21,7 +23,10 @@ class GroupViewModel @Inject constructor() : BaseViewModel<GroupState, ComposeAc
             }
 
             GroupEvent.ActionInvoked ->viewAction = null
-            GroupEvent.SaveClicked ->viewAction =ComposeAction.CloseScreen
+            GroupEvent.SaveClicked ->{
+                repository.saveGroupUseCase(Group(uid = -1, viewState.nameGroup, viewState.isDelete))
+                ComposeAction.CloseScreen
+            }
             GroupEvent.NextClicked -> viewAction = ComposeAction.NextClicked
         }
 
