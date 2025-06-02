@@ -7,7 +7,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.padding
+import androidx.activity.viewModels
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.automirrored.sharp.List
@@ -26,22 +26,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.catshome.ClassJournal.classJournalApp
 import com.catshome.classjornal.Screens.ItemBottomBar
 import com.catshome.classjornal.Screens.ItemScreen
+import com.catshome.classjornal.Screens.viewModels.GroupViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-       val appDatabase = getDatabaseBuilder(applicationContext).build()
-
-        enableEdgeToEdge()
+       super.onCreate(savedInstanceState)
+//        val appDatabase = getDatabaseBuilder(applicationContext).build()
+//        val dao =appDatabase.groupsDAO()
+//        lifecycleScope.launch {
+//            dao.insert(GroupEntity(2, name = "test1", isDelete = false))
+//        }
+            enableEdgeToEdge()
         setContent {
+
             val navController = rememberNavController()
             var selectedItem by rememberSaveable {  mutableIntStateOf(0) }
             val bottomItems = listOf(

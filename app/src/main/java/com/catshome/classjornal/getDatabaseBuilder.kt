@@ -9,6 +9,6 @@ import com.catshome.ClassJournal.AppDataBase
 fun getDatabaseBuilder(context: Context):RoomDatabase.Builder<AppDataBase>{
     val applicationContext =context
     val databasePath = applicationContext.getDatabasePath("classJournal.db")
-    return Room.databaseBuilder(applicationContext, AppDataBase::class.java,databasePath.absolutePath )
-        .fallbackToDestructiveMigration(dropAllTables = true)
+    return Room.databaseBuilder(applicationContext, AppDataBase::class.java,"classJournal" )
+
 }

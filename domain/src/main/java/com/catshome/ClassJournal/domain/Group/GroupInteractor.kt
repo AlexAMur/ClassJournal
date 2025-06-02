@@ -4,8 +4,9 @@ import android.util.Log
 import com.catshome.ClassJournal.domain.Group.Models.Group
 import javax.inject.Inject
 
-class GroupInteractor @Inject constructor (groupRepository: GroupRepository) {
+class GroupInteractor @Inject constructor (private val groupRepository: GroupRepository) {
     fun saveGroupUseCase(group: Group){
+        groupRepository.saveGroup(group)
         Log.e("CLJR", "Save group!!!!!!")
         //g
     }

@@ -10,13 +10,13 @@ import com.catshome.ClassJournal.Group.Models.GroupEntity
 @Dao
 interface GroupsDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(group: GroupEntity)
+   suspend fun insert(group: GroupEntity)
     @Delete
-    fun delete(group: GroupEntity)
+   suspend fun delete(group: GroupEntity)
 
-    @Query("Select * from mygroups")
-    fun getFull(): List<GroupEntity>
-    @Query("SELECT * FROM mygroups where isDelete = :isDelete")
-    fun getGroup(isDelete: Boolean): List<GroupEntity>
+    @Query("Select * from groups")
+    suspend fun getFull(): List<GroupEntity>
+    @Query("SELECT * FROM groups where isDelete = :isDelete")
+    suspend fun getGroup(isDelete: Boolean): List<GroupEntity>
 
 }

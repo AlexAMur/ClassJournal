@@ -17,16 +17,19 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 class DataModule {
-//    @Provides
-//    fun provideGroupRepository(room: RoomGroupStorage): GroupRepository {
-//        return GroupRepositoryImpl(room)
-//    }
+    @Provides
+    fun provideGroupRepository(room: RoomGroupStorage): GroupRepository {
+        return GroupRepositoryImpl(room)
+    }
     @Provides
     fun provideGroupsDAO(room: AppDataBase): GroupsDAO {
         return room.groupsDAO()
     }
     @Provides
-    fun provideGroupStorage(dao: GroupsDAO): GroupStorage {
-       return RoomGroupStorage(dao, Group())
+    fun provideGroup() = Group()
+    @Provides
+    fun provideGroupStorage(dao: GroupsDAO,group: Group): GroupStorage {
+       //
+         return RoomGroupStorage(dao, group )
     }
 }

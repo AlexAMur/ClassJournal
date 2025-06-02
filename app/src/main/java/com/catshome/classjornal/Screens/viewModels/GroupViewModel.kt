@@ -1,7 +1,6 @@
 package com.catshome.classjornal.Screens.viewModels
 
 import com.catshome.ClassJournal.domain.Group.GroupInteractor
-import com.catshome.ClassJournal.domain.Group.GroupRepository
 import com.catshome.ClassJournal.domain.Group.Models.Group
 import com.catshome.classjornal.Screens.Group.ComposeAction
 import com.catshome.classjornal.Screens.Group.GroupEvent
@@ -11,8 +10,13 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class GroupViewModel @Inject constructor()  : BaseViewModel<GroupState, ComposeAction,GroupEvent>  (installSate = GroupState(), ) {
-      @Inject lateinit var repository : GroupInteractor
+class GroupViewModel @Inject constructor(private val  groupInteractor: GroupInteractor )  : BaseViewModel<GroupState, ComposeAction,GroupEvent>  (installSate = GroupState() ) {
+    //,  @ApplicationContext context: Context
+ //   val appDatabase = getDatabaseBuilder(context).build()
+//    val dao =appDatabase.groupsDAO()
+    //ifecycleScope.launch {
+       // dao.insert(GroupEntity(2, name = "test1", isDelete = false))
+    //}
     override fun obtainEvent(viewEvent: GroupEvent) {
         when(viewEvent){
             is GroupEvent.ChangeName->{
@@ -24,9 +28,13 @@ class GroupViewModel @Inject constructor()  : BaseViewModel<GroupState, ComposeA
 
             GroupEvent.ActionInvoked ->viewAction = null
             GroupEvent.SaveClicked ->{
-                repository.saveGroupUseCase(Group(uid = -1, viewState.nameGroup, viewState.isDelete))
+
+                   groupInteractor.saveGroupUseCase(Group(viewState.nameGroup, viewState.isDelete))
+
+
                 ComposeAction.CloseScreen
-            }
+
+           }
             GroupEvent.NextClicked -> viewAction = ComposeAction.NextClicked
         }
 

@@ -16,7 +16,10 @@ import dagger.hilt.components.SingletonComponent
 class AppModule {
     @Provides
     fun provideAppDataBase(@ApplicationContext context: Context):AppDataBase{
-        return getDatabaseBuilder(context = context).build()
+        return getDatabaseBuilder(context = context).fallbackToDestructiveMigration(dropAllTables = true)
+            .fallbackToDestructiveMigration(dropAllTables = true)
+            .build()
+
     }
 //    @Provides
 //    fun provideGroupInteractor(repository: GroupRepository): GroupInteractor {
