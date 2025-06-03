@@ -10,33 +10,33 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class GroupViewModel @Inject constructor(private val  groupInteractor: GroupInteractor )  : BaseViewModel<GroupState, ComposeAction,GroupEvent>  (installSate = GroupState() ) {
-    //,  @ApplicationContext context: Context
- //   val appDatabase = getDatabaseBuilder(context).build()
-//    val dao =appDatabase.groupsDAO()
-    //ifecycleScope.launch {
-       // dao.insert(GroupEntity(2, name = "test1", isDelete = false))
-    //}
+class GroupViewModel @Inject constructor(private val groupInteractor: GroupInteractor) :
+    BaseViewModel<GroupState, ComposeAction, GroupEvent>(installSate = GroupState()) {
     override fun obtainEvent(viewEvent: GroupEvent) {
-        when(viewEvent){
-            is GroupEvent.ChangeName->{
-                viewState =viewState.copy(nameGroup =viewEvent.nameGroup)
-             }
-            is GroupEvent.DeleteGroup->{
+        when (viewEvent) {
+            is GroupEvent.ChangeName -> {
+                viewState = viewState.copy(nameGroup = viewEvent.nameGroup)
+            }
+
+            is GroupEvent.DeleteGroup -> {
                 viewState = viewState.copy(isDelete = viewState.isDelete)
             }
 
-            GroupEvent.ActionInvoked ->viewAction = null
-            GroupEvent.SaveClicked ->{
+            GroupEvent.ActionInvoked -> viewAction = null
+            GroupEvent.SaveClicked -> {
+                groupInteractor.saveGroupUseCase(
+                    Group(
+                        viewState.uid,
+                        viewState.nameGroup,
+                        viewState.isDelete
+                    )
+                )
+                viewAction = ComposeAction.CloseScreen
 
-                   groupInteractor.saveGroupUseCase(Group(viewState.nameGroup, viewState.isDelete))
+            }
 
-
-                ComposeAction.CloseScreen
-
-           }
             GroupEvent.NextClicked -> viewAction = ComposeAction.NextClicked
         }
 
-            }
+    }
 }

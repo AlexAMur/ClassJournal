@@ -1,6 +1,7 @@
 package com.catshome.classjornal
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.catshome.ClassJournal.com.catshome.classjornal.ClassJournalTheme
 import com.catshome.ClassJournal.com.catshome.classjornal.Screens.bottomBar
 import com.catshome.classjornal.Screens.ItemBottomBar
 import com.catshome.classjornal.Screens.ItemScreen
@@ -32,8 +34,9 @@ val child = listOf("Sahsa", "Masha", "Varaiy", "Zina")
 fun MainScreen(navController: NavController){//item: List<ItemBottomBar>, select: Int , ) {
     Scaffold(Modifier
         .fillMaxWidth()
-        .fillMaxHeight()) {
-       // bottomBar(item, select, navController)
+        .fillMaxHeight()
+        .background(color= ClassJournalTheme.colors.primaryBackground)
+        ) {
         Column {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(

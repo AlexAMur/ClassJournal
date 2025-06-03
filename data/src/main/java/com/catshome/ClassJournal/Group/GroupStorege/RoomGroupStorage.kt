@@ -1,5 +1,6 @@
 package com.catshome.ClassJournal.Group.GroupStorege
 
+import android.annotation.SuppressLint
 import com.catshome.ClassJournal.DAO.GroupsDAO
 import com.catshome.ClassJournal.Group.Models.GroupEntity
 import com.catshome.ClassJournal.domain.Group.Models.Group
@@ -40,11 +41,13 @@ class RoomGroupStorage @Inject constructor ( val groupsDAO: GroupsDAO,val group:
         return true
     }
 
+
     override fun read(): List<Group> {
-        cs.launch {
-       val g =  groupsDAO.getGroup(false).forEach { it.mapToGroup() }
+        var list: List<GroupEntity> = emptyList()
+               cs.launch {
+         list =  groupsDAO.getGroup(false)
         }
 
-        return emptyList()
+        return  list.map{it.mapToGroup()}
     }
 }
