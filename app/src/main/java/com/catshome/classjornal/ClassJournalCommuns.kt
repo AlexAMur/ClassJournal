@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
+import com.catshome.classjornal.ui.theme.baseLightPalette
 
 data class ClassJournalColors(
     val primaryText: Color,
@@ -65,7 +66,8 @@ enum class ClassJournalCorners {
 }
 
 internal val LocalClassJournalColors = staticCompositionLocalOf<ClassJournalColors> {
-    error("No colors provided")
+    baseLightPalette
+  //  error("No colors provided")
 }
 
 internal val LocalClassJournalTypography = staticCompositionLocalOf<ClassJournalTypography> {

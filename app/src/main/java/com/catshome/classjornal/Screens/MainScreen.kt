@@ -16,48 +16,75 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.catshome.ClassJournal.com.catshome.classjornal.ClassJournalTheme
-import com.catshome.ClassJournal.com.catshome.classjornal.Screens.bottomBar
-import com.catshome.classjornal.Screens.ItemBottomBar
+import com.catshome.ClassJournal.com.catshome.classjornal.LocalSettingsEventBus
+import com.catshome.ClassJournal.com.catshome.classjornal.SettingsBundle
+import com.catshome.ClassJournal.com.catshome.classjornal.SettingsEventBus
 import com.catshome.classjornal.Screens.ItemScreen
+import com.catshome.classjornal.ui.theme.MainTheme
 
-val child = listOf("Sahsa", "Masha", "Varaiy", "Zina")
+val child = listOf("Sahsa", "Masha") //,"Varaiy", "Zina")
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceAsColor")
 @Composable
-fun MainScreen(navController: NavController){//item: List<ItemBottomBar>, select: Int , ) {
-    Scaffold(Modifier
-        .fillMaxWidth()
-        .fillMaxHeight()
-        .background(color= ClassJournalTheme.colors.primaryBackground)
-        ) {
-        Column {
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(
-                    items = child,
-                    itemContent = {
-                        Text(it, modifier = Modifier
-                            .padding(24.dp)
-                            .clickable {
-                                navController.navigate(ItemScreen.NewChildScreen.name)
+fun MainScreen(
+    navController: NavController,
+    //          currentSettings: SettingsBundle
+) {
+    val settingsEventBus = LocalSettingsEventBus.current
+//    val colorSettings = remember { baseLightPalette }
+   // val currentSettings by settingsEventBus.currentSettings.collectAsState()
+//    MainTheme(
+//        style = currentSettings.style,
+//        darkTheme = currentSettings.isDarkMode,
+//        corners = currentSettings.cornerStyle,
+//        textSize = currentSettings.textSize,
+//        paddingSize = currentSettings.paddingSize
+//    ) {
+//        CompositionLocalProvider(
+//            LocalSettingsEventBus provides settingsEventBus
+//        ) {
+            Scaffold(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .background(color = ClassJournalTheme.colors.primaryBackground)
+            ) {
+                Column {
+                    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                        items(
+                            items = child,
+                            itemContent = {
+                                Text(
+                                    it, modifier = Modifier
+                                        .padding(24.dp)
+                                        .clickable {
+                                            navController.navigate(ItemScreen.NewChildScreen.name)
+                                        })
                             })
-                    })
-            }
-            FloatingActionButton(
-                modifier = Modifier
-                    .padding(end = 16.dp)
-                    .align(alignment = Alignment.End),
-                onClick = { navController.navigate(ItemScreen.NewChildScreen.name) }) {
-                Icon(Icons.Sharp.Add, "")
-            }
+                    }
+                    FloatingActionButton(
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .align(alignment = Alignment.End),
+                        onClick = { navController.navigate(ItemScreen.NewChildScreen.name) }) {
+                        Icon(
+                            Icons.Sharp.Add,
+                            null
+                        )//, modifier = Modifier , ClassJournalTheme.colors.primaryBackground)
+                    }
 
 
+                }
+            }
         }
-    }
-}
+//    }
+//}

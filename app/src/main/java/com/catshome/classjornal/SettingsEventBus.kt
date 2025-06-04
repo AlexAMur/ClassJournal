@@ -10,7 +10,7 @@ class SettingsEventBus {
         SettingsBundle(
             isDarkMode = true,
             cornerStyle = ClassJournalCorners.Rounded,
-            style = ClassJournalStyle.Orange,
+            style = ClassJournalStyle.Blue,
             textSize = ClassJournalSize.Medium,
             paddingSize = ClassJournalSize.Medium
         )
