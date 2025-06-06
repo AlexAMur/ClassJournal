@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.catshome.ClassJournal.Group.Models.GroupEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GroupsDAO {
@@ -15,8 +16,8 @@ interface GroupsDAO {
    suspend fun delete(group: GroupEntity)
 
     @Query("Select * from groups")
-    suspend fun getFull(): List<GroupEntity>
+    fun getFull(): Flow<List<GroupEntity>>
     @Query("SELECT * FROM groups where isDelete = :isDelete")
-    suspend fun getGroup(isDelete: Boolean): List<GroupEntity>
+    fun getGroup(isDelete: Boolean): Flow<List<GroupEntity>>
 
 }

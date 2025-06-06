@@ -1,11 +1,14 @@
 package com.catshome.ClassJournal.com.catshome.classjornal
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
+import com.catshome.classjornal.ui.theme.MainTheme
+import com.catshome.classjornal.ui.theme.baseDarkPalette
 import com.catshome.classjornal.ui.theme.baseLightPalette
 
 data class ClassJournalColors(
@@ -66,8 +69,8 @@ enum class ClassJournalCorners {
 }
 
 internal val LocalClassJournalColors = staticCompositionLocalOf<ClassJournalColors> {
-    baseLightPalette
-  //  error("No colors provided")
+        baseDarkPalette
+//  error("No colors provided")
 }
 
 internal val LocalClassJournalTypography = staticCompositionLocalOf<ClassJournalTypography> {

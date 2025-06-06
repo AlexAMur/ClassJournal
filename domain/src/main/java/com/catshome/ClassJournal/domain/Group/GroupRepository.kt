@@ -9,5 +9,5 @@ interface GroupRepository {
 
  fun getGroupById(uid:Int):Group
  fun getGroupByName(name:String):Group
- fun getGroups(isDelete:Boolean):List<Group>
+ suspend fun getGroups(isDelete:Boolean):List<Group>
 }

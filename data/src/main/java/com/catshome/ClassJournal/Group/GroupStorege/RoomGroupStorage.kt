@@ -7,34 +7,40 @@ import com.catshome.ClassJournal.domain.Group.Models.Group
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-fun Group.mapToEntity():GroupEntity {
+
+fun Group.mapToEntity(): GroupEntity {
     return GroupEntity(
-         uId =  this.uId,
+        uId = this.uId,
         name = this.name,
         isDelete = this.isDelete
     )
 }
-fun GroupEntity.mapToGroup():Group{
+
+fun GroupEntity.mapToGroup(): Group {
     return Group(
-        uId =  this.uId,
+        uId = this.uId,
         name = this.name,
         isDelete = this.isDelete
     )
 }
 
-class RoomGroupStorage @Inject constructor ( val groupsDAO: GroupsDAO,val group: Group) : GroupStorage{
-    val cs =CoroutineScope(Dispatchers.IO)
-    override fun insert(group: Group)  {
+class RoomGroupStorage @Inject constructor(val groupsDAO: GroupsDAO, val group: Group) :
+    GroupStorage {
+    val cs = CoroutineScope(Dispatchers.IO)
+    override fun insert(group: Group) {
 
-            cs.launch{
+        cs.launch {
             groupsDAO.insert(group = group.mapToEntity())
         }
     }
 
     override fun delete(group: Group): Boolean {
-       return true
+        return true
     }
 
     override fun update(group: Group): Boolean {
@@ -42,12 +48,9 @@ class RoomGroupStorage @Inject constructor ( val groupsDAO: GroupsDAO,val group:
     }
 
 
-    override fun read(): List<Group> {
-        var list: List<GroupEntity> = emptyList()
-               cs.launch {
-         list =  groupsDAO.getGroup(false)
-        }
-
-        return  list.map{it.mapToGroup()}
+    override suspend fun read(): List<Group> {
+        val list = groupsDAO.getGroup(false)
+            .collect { entity -> entity.forEach { it.mapToGroup() } } as List<Group>
+        return list
     }
 }

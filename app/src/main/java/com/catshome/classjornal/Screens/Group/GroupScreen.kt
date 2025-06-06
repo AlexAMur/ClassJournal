@@ -21,12 +21,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.catshome.ClassJournal.Group.GroupRepositorys.GroupRepositoryImpl
+import com.catshome.ClassJournal.domain.Group.GroupRepository
 import com.catshome.classjornal.Screens.ItemScreen
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
+
 //import com.catshome.ClassJournal.domain.Group.getGroupUseCase
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceAsColor")
 @Composable
-fun GroupScreen(navController: NavController) {
+fun GroupScreen(navController: NavController, groupRepository : GroupRepositoryImpl ) {
+      runBlocking {
+       val listGroup= groupRepository.getGroups(false)
+      }
     Scaffold(
         Modifier
             .fillMaxWidth()

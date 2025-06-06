@@ -33,7 +33,7 @@ import com.catshome.classjornal.ui.theme.MainTheme
 
 val child = listOf("Sahsa", "Masha") //,"Varaiy", "Zina")
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceAsColor")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceAsColor", "SuspiciousIndentation")
 @Composable
 fun MainScreen(
     navController: NavController,

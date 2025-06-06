@@ -32,7 +32,7 @@ class GroupRepositoryImpl @Inject constructor(val roomGroupStorage: GroupStorage
         return Group()
     }
 
-    override  fun getGroups(isDelete: Boolean): List<Group> {
+    override suspend  fun getGroups(isDelete: Boolean): List<Group> {
         return roomGroupStorage.read()
     }
 }
