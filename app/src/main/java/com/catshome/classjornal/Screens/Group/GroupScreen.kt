@@ -31,10 +31,8 @@ import javax.inject.Inject
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceAsColor")
 @Composable
-fun GroupScreen(navController: NavController, groupRepository : GroupRepositoryImpl ) {
-      runBlocking {
-       val listGroup= groupRepository.getGroups(false)
-      }
+fun GroupScreen(navController: NavController ) {
+      TODO("Create view model with repository")
     Scaffold(
         Modifier
             .fillMaxWidth()
