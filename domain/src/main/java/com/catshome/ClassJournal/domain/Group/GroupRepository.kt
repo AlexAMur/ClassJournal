@@ -1,6 +1,7 @@
 package com.catshome.ClassJournal.domain.Group
 
 import com.catshome.ClassJournal.domain.Group.Models.Group
+import kotlinx.coroutines.flow.Flow
 
 interface GroupRepository {
   fun saveGroup(group: Group):Boolean
@@ -9,5 +10,5 @@ interface GroupRepository {
 
  fun getGroupById(uid:Int):Group
  fun getGroupByName(name:String):Group
- suspend fun getGroups(isDelete:Boolean):List<Group>
+ fun getGroups(isDelete:Boolean):Flow<List<Group>>
 }

@@ -5,6 +5,7 @@ import com.catshome.ClassJournal.Group.GroupStorege.GroupStorage
 import com.catshome.ClassJournal.Group.GroupStorege.RoomGroupStorage
 import com.catshome.ClassJournal.domain.Group.GroupRepository
 import com.catshome.ClassJournal.domain.Group.Models.Group
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GroupRepositoryImpl @Inject constructor(val roomGroupStorage: GroupStorage):GroupRepository {
@@ -25,14 +26,17 @@ class GroupRepositoryImpl @Inject constructor(val roomGroupStorage: GroupStorage
     }
 
     override  fun getGroupById(uid: Int): Group {
-        return Group()
+        /*if (uid == -1)
+            return Group()  //New Group
+        else*/
+          return  roomGroupStorage.getById(uid)
     }
 
     override  fun getGroupByName(name: String): Group {
         return Group()
     }
 
-    override suspend  fun getGroups(isDelete: Boolean): List<Group> {
-        return roomGroupStorage.read()
+    override fun getGroups(isDelete: Boolean): Flow<List<Group>> {
+       return roomGroupStorage.read()
     }
 }

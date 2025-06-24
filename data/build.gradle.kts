@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-   implementation(project(":domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -51,7 +51,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     ksp(libs.room)
 
-
+    implementation(project(":domain"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

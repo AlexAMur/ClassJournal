@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.catshome.classjornal"
+    namespace = "com.catshome.ClassJournal"
     compileSdk = 35
 }
 java {

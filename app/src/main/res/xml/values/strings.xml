@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
+    <string name="empty_group_items">Addgroup</string>
     <string name="app_name">ClassJournal</string>
-    <string name="no_group_item">Add group</string>
 </resources>

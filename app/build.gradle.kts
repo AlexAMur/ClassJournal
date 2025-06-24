@@ -10,11 +10,10 @@ plugins {
 }
 
 android {
-    namespace = "com.catshome.classjornal"
+    namespace = "com.catshome.ClassJournal"
     compileSdk = 35
-
     defaultConfig {
-        applicationId = "com.catshome.classjornal"
+        applicationId = "com.catshome.ClassJournal"
         minSdk = 29
         targetSdk = 35
         versionCode = 1
@@ -59,7 +58,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation(libs.androidx.navigation.compose)
-
+    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation(libs.hilt)
     implementation(libs.room.runtime)
     ksp(libs.hilt.compiler)
