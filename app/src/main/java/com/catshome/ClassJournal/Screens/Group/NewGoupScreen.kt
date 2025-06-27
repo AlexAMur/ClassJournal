@@ -1,6 +1,7 @@
 package com.catshome.ClassJournal
 
 
+import android.os.Handler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.catshome.ClassJournal.Screens.Group.ComposeAction
 import com.catshome.ClassJournal.Screens.Group.NewGroupEvent
@@ -21,8 +23,10 @@ import com.catshome.ClassJournal.Screens.viewModels.NewGroupViewModel
 
 
 @Composable
-fun NewGroupScreen (viewModel: NewGroupViewModel = viewModel()) {
-
+fun NewGroupScreen (idGroup: Long,
+    viewModel: NewGroupViewModel = viewModel()
+     ) {
+     viewModel.obtainEvent(NewGroupEvent.OpenGroup(idGroup))
 
     val outerNavigation= localNavHost.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -56,7 +60,8 @@ fun NewGroupScreen (viewModel: NewGroupViewModel = viewModel()) {
             outerNavigation.popBackStack()
             viewModel.clearAction()
         }
-
+        ComposeAction.New -> {}
         null -> {}
+
     }
 }

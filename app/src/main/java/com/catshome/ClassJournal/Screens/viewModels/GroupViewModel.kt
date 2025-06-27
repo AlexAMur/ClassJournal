@@ -1,8 +1,11 @@
 package com.catshome.ClassJournal.Screens.viewModels
 
+import android.provider.ContactsContract.Profile
 import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.catshome.ClassJournal.domain.Group.GroupInteractor
 import com.catshome.ClassJournal.Screens.Group.ComposeAction
 import com.catshome.ClassJournal.Screens.Group.GroupAction
@@ -20,24 +23,24 @@ import javax.inject.Inject
 @HiltViewModel
 class GroupViewModel @Inject constructor(val groupInteractor: GroupInteractor) :
     BaseViewModel<GroupState, GroupAction, GroupEvent>(installState = GroupState()) {
-    init {
-        //TODO написать обработчик для кнопки add
-        viewModelScope.launch(Dispatchers.Default) {
-            val listGroup = groupInteractor.getGroupUseCase(false).collect { group ->
-                viewState = viewState.copy(group)
 
-            }
-        }
+    init {
+            reloadScreen()
     }
 
 
     override fun obtainEvent(viewEvent: GroupEvent) {
         when (viewEvent) {
+            is GroupEvent.ReloadScreen -> {
+                 reloadScreen()
+            }
+
             is GroupEvent.NewClicked -> {
-                // viewAction= GroupAction.
+                viewAction = GroupAction.OpenGroup(0)
             }
 
             is GroupEvent.DeleteClicked -> {
+                GroupAction.DeleteGroup(viewEvent.uid)
                 // viewState = viewState.copy(isDelete = viewState.isDelete)
             }
 
@@ -51,12 +54,20 @@ class GroupViewModel @Inject constructor(val groupInteractor: GroupInteractor) :
 //                    )
 //                )
                 //TODO select ID_Group to
-                viewAction = GroupAction.OpenGroup(New)
+                viewAction = GroupAction.OpenGroup(0)
 
             }
 
             // NewGroupEvent.NextClicked -> viewAction = ComposeAction.NextClicked
         }
 
+    }
+
+    private fun reloadScreen() {
+        viewModelScope.launch(Dispatchers.Default) {
+            groupInteractor.getGroupUseCase(false).collect { group ->
+                viewState = viewState.copy(viewState.indexButton, group)
+            }
+        }
     }
 }

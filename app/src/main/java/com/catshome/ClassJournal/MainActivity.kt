@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.automirrored.sharp.List
@@ -29,9 +28,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.catshome.ClassJournal.Screens.ItemBottomBar
 import com.catshome.ClassJournal.Screens.ItemScreen
@@ -46,6 +45,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
              val navController = rememberNavController()
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
             var selectedItem by rememberSaveable { mutableIntStateOf(0) }
             val settingsEventBus = remember { SettingsEventBus() }
             val currentSettings by settingsEventBus.currentSettings.collectAsState()
@@ -60,9 +61,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 CompositionLocalProvider(
                     localNavHost provides navController,
-                    LocalSettingsEventBus provides settingsEventBus,
-
-                    //  LocalClassJournalColors provides colorSettings
+                    LocalSettingsEventBus provides settingsEventBus
                 ) {
 
 
@@ -104,21 +103,22 @@ class MainActivity : ComponentActivity() {
                                         NavigationBarItem(
 
                                             label = { Text(screen.label, style = ClassJournalTheme.typography.body) },
-                                            selected = selectedItem == index,
+                                            selected =currentDestination?.hierarchy?.any{it.route== screen.route} ==true ,
                                             onClick = {
-                                                selectedItem = index
+                                               // selectedItem = index
                                                 navController.navigate(screen.route)
                                             },
                                             icon = {
-                                                if (selectedItem == index) Icon(
-                                                    screen.icon, "",
-                                                    tint = ClassJournalTheme.colors.primaryBackground
+                                                Icon(
+                                                    if (currentDestination?.hierarchy?.any{it.route== screen.route} == true)
+                                                            screen.icon else screen.iconUnselect , "",
+                                                    tint = if (currentDestination?.hierarchy?.any{it.route== screen.route} == true)
+                                                         ClassJournalTheme.colors.primaryBackground
+
+                                                    else
+                                                       ClassJournalTheme.colors.secondaryBackground
                                                 )
-                                                else Icon(
-                                                    screen.iconUnselect,
-                                                    "",
-                                                    tint = ClassJournalTheme.colors.secondaryBackground
-                                                )
+
                                             }
                                         )
                                     }

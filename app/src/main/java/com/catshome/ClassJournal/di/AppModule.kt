@@ -17,18 +17,10 @@ import javax.inject.Inject
 @InstallIn(SingletonComponent::class)
 class AppModule {
     @Provides
-    fun provideAppDataBase(@ApplicationContext context: Context):AppDataBase{
+    fun provideAppDataBase(@ApplicationContext context: Context): AppDataBase {
         return getDatabaseBuilder(context = context).fallbackToDestructiveMigration(dropAllTables = true)
             .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 
     }
-//    @Provides
-//    fun provideGroupInteractor(repository: GroupRepository): GroupInteractor {
-//        return GroupInteractor(repository)
-//    }
-//    @Provides
-//    fun provideGroupViewModel(groupInteractor: GroupInteractor): GroupViewModel{
-//    return GroupViewModel("fds")
-//        }
 }

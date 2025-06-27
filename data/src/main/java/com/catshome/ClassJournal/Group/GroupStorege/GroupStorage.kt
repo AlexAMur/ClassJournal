@@ -7,6 +7,6 @@ interface GroupStorage {
     fun insert(group: Group)
     fun delete(group: Group):Boolean
     fun update(group: Group):Boolean
-    fun getById(uid: Int): Group
+    fun getById(uid: Long): Group
     fun read(): Flow<List<Group>>
 }

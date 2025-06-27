@@ -1,5 +1,6 @@
 package com.catshome.ClassJournal.Group.GroupStorege
 
+import android.util.Log
 import com.catshome.ClassJournal.DAO.GroupsDAO
 import com.catshome.ClassJournal.Group.Models.GroupEntity
 import com.catshome.ClassJournal.domain.Group.Models.Group
@@ -16,7 +17,7 @@ fun Group.mapToEntity(): GroupEntity {
         name = this.name,
         isDelete = this.isDelete,
 
-    )
+        )
 }
 
 fun GroupEntity.mapToGroup(): Group {
@@ -31,34 +32,43 @@ class RoomGroupStorage @Inject constructor(val groupsDAO: GroupsDAO, val group: 
     GroupStorage {
     val cs = CoroutineScope(Dispatchers.IO)
     override fun insert(group: Group) {
-
         cs.launch {
             groupsDAO.insert(group = group.mapToEntity())
         }
     }
 
+
     override fun delete(group: Group): Boolean {
-        return true
+        try {
+            cs.launch {
+                groupsDAO.delete(group.mapToEntity())
+            }
+            return true
+        } catch (e: Exception) {
+            Log.e("ClassJournal", e.message.toString())
+            return false
+        }
     }
 
     override fun update(group: Group): Boolean {
         return true
     }
 
-    override fun getById(uid: Int): Group {
-        return groupsDAO.getGroupById(uid).mapToGroup()
+    override fun getById(uid: Long): Group {
+        val ge = groupsDAO.getGroupById(uid) ?: GroupEntity(uid = 0)
+        return ge.mapToGroup()
     }
 
 
-    override  fun read(): Flow<List<Group>> {
+    override fun read(): Flow<List<Group>> {
 //        var listGroup: MutableList<Group> = mutableListOf()
 //        cs.launch {
 //         listGroup.add(groupsDAO.getGroup(false)
 //            .collect { entity -> entity.forEach { it.mapToGroup() } } as Group)
 //        }
 //        return listGroup
-     return groupsDAO.getGroup(false).map {
-         list-> list.map { it.mapToGroup()}
-     }
+        return groupsDAO.getGroup(false).map { list ->
+            list.map { it.mapToGroup() }
+        }
     }
 }

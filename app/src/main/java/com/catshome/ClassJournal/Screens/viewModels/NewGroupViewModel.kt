@@ -1,21 +1,34 @@
 package com.catshome.ClassJournal.Screens.viewModels
 
-import com.catshome.ClassJournal.domain.Group.GroupInteractor
-import com.catshome.ClassJournal.domain.Group.Models.Group
+import androidx.lifecycle.viewModelScope
 import com.catshome.ClassJournal.Screens.Group.ComposeAction
 import com.catshome.ClassJournal.Screens.Group.NewGroupEvent
 import com.catshome.ClassJournal.Screens.Group.NewGroupState
+import com.catshome.ClassJournal.domain.Group.GroupInteractor
+import com.catshome.ClassJournal.domain.Group.Models.Group
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
-internal val New =-1L
+
 
 @HiltViewModel
 class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupInteractor) :
     BaseViewModel<NewGroupState, ComposeAction, NewGroupEvent>(installState = NewGroupState()) {
+
+
     override fun obtainEvent(viewEvent: NewGroupEvent) {
         when (viewEvent) {
+            is NewGroupEvent.OpenGroup -> {
+                if (viewEvent.id != 0L) {
+                    viewModelScope.launch(Dispatchers.Default) {
+                        viewState = viewState.copy(groupInteractor.getGroupByID(viewEvent.id))
+                    }
+                } else viewState=viewState.copy(Group())
+            }
+
             is NewGroupEvent.ChangeName -> {
-                viewState = viewState.copy(nameGroup = viewEvent.nameGroup)
+                viewState =viewState.copy(nameGroup =  viewEvent.nameGroup)
             }
 
             is NewGroupEvent.DeleteGroup -> {

@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias (libs.plugins.serialzation)
 
 }
 
@@ -61,6 +62,7 @@ dependencies {
     implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation(libs.hilt)
     implementation(libs.room.runtime)
+
     ksp(libs.hilt.compiler)
     ksp(libs.room)
 

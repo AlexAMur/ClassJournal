@@ -16,7 +16,8 @@ appcompat = "1.7.0"
 material = "1.12.0"
 room_version = "2.7.1"
 ksp_ver= "2.1.21-2.0.1"
-
+serial_ver = "2.0.21"
+ver_serial_json="1.8.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,12 +42,15 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 room-runtime = {group = "androidx.room", name ="room-runtime",version.ref="room_version"}
 room = {module ="androidx.room:room-compiler" , name= "room", version.ref="room_version"}
+serial = {module ="org.jetbrains.kotlinx:kotlinx-serialization-json" , name= "serial-json", version.ref="ver_serial_json"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version = "2.1.21" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt_ver" }
+serialzation = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serial_ver" }
+
 
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp_ver" }

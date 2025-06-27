@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GroupInteractor @Inject constructor (private val groupRepository: GroupRepository) {
-    fun  getGroupByID(uid: Int): Group{
+    fun  getGroupByID(uid: Long): Group{
         return groupRepository.getGroupById(uid)
     }
     fun saveGroupUseCase(group: Group){

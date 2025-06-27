@@ -1,4 +1,4 @@
-package com.catshome.ClassJournal.
+package com.catshome.ClassJournal
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
