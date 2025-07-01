@@ -6,9 +6,12 @@ import com.catshome.ClassJournal.Group.Models.GroupEntity
 import com.catshome.ClassJournal.domain.Group.Models.Group
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 fun Group.mapToEntity(): GroupEntity {
@@ -51,23 +54,43 @@ class RoomGroupStorage @Inject constructor(val groupsDAO: GroupsDAO, val group: 
     }
 
     override fun update(group: Group): Boolean {
-        return true
+        try {
+            cs.launch {
+                groupsDAO.update(group.mapToEntity())
+            }
+            return true
+        } catch (e: Exception) {
+            Log.e("ClassJournal", e.message.toString())
+            return false
+        }
     }
 
-    override fun getById(uid: Long): Group {
-        val ge = groupsDAO.getGroupById(uid) ?: GroupEntity(uid = 0)
-        return ge.mapToGroup()
+    override  fun getGroupById(uid: Long): Group {
+        var group = Group()
+        try {
+            val data = cs.async {
+                     return@async (groupsDAO.getGroupById(uid) ?: GroupEntity(uid = 0)).mapToGroup()
+            }
+            runBlocking {
+                 group =data.await()
+            }
+            return group
+        } catch (e: Exception) {
+            Log.e("ClassJournal", e.message.toString())
+            return Group()
+        }
+            //TODO Все править
+        return group
+
+    }
+    override fun readAll(): Flow<List<Group>> {
+        return groupsDAO.getFull().map { list ->
+            list.map { it.mapToGroup() }
+        }
     }
 
-
-    override fun read(): Flow<List<Group>> {
-//        var listGroup: MutableList<Group> = mutableListOf()
-//        cs.launch {
-//         listGroup.add(groupsDAO.getGroup(false)
-//            .collect { entity -> entity.forEach { it.mapToGroup() } } as Group)
-//        }
-//        return listGroup
-        return groupsDAO.getGroup(false).map { list ->
+    override fun read(isDelete: Boolean): Flow<List<Group>> {
+        return groupsDAO.getGroup(isDelete).map { list ->
             list.map { it.mapToGroup() }
         }
     }

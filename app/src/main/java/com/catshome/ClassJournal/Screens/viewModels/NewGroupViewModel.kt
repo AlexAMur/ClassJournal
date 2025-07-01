@@ -20,15 +20,11 @@ class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupIn
     override fun obtainEvent(viewEvent: NewGroupEvent) {
         when (viewEvent) {
             is NewGroupEvent.OpenGroup -> {
-                if (viewEvent.id != 0L) {
-                    viewModelScope.launch(Dispatchers.Default) {
-                        viewState = viewState.copy(groupInteractor.getGroupByID(viewEvent.id))
-                    }
-                } else viewState=viewState.copy(Group())
+                viewState = viewState.copy(groupInteractor.getGroupByID(viewEvent.id))
             }
 
             is NewGroupEvent.ChangeName -> {
-                viewState =viewState.copy(nameGroup =  viewEvent.nameGroup)
+                viewState = viewState.copy(nameGroup = viewEvent.nameGroup)
             }
 
             is NewGroupEvent.DeleteGroup -> {
@@ -36,6 +32,7 @@ class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupIn
             }
 
             NewGroupEvent.ActionInvoked -> viewAction = null
+
             NewGroupEvent.SaveClicked -> {
                 groupInteractor.saveGroupUseCase(
                     Group(
@@ -45,11 +42,9 @@ class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupIn
                     )
                 )
                 viewAction = ComposeAction.CloseScreen
-
             }
 
             NewGroupEvent.NextClicked -> viewAction = null
         }
-
     }
 }

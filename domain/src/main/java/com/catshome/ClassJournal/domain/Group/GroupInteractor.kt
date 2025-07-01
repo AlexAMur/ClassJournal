@@ -8,23 +8,30 @@ import javax.inject.Inject
 
 class GroupInteractor @Inject constructor (private val groupRepository: GroupRepository) {
     fun  getGroupByID(uid: Long): Group{
+        if (uid==0L)
+            return Group()
         return groupRepository.getGroupById(uid)
     }
     fun saveGroupUseCase(group: Group){
         groupRepository.saveGroup(group)
-
-        Log.e("CLJR", "Save group!!!!!!")
-        //g
     }
     fun getGroupUseCase(isDelete: Boolean): Flow<List<Group>>{
         return groupRepository.getGroups(isDelete)
     }
     fun getGroupAllUseCase(): Flow<List<Group>>{
-        return groupRepository.getGroups(false)
-
+        return groupRepository.getAllGroups()
+    }
+    //снять пометку на удаление
+    fun  unDeleteUseCase(group: Group){
+        groupRepository.updateGroup(group.copy(isDelete = false))
+    }
+    //Пометить на удаление
+    fun deleteGroupUseCase(group: Group){
+        groupRepository.updateGroup(group.copy(isDelete = true))
 
     }
-    fun deleteGroupUseCase(group: Group){
+    fun removeUseCase(group: Group){
+        groupRepository.deleteGroup(group)
 
     }
 }

@@ -18,7 +18,8 @@ room_version = "2.7.1"
 ksp_ver= "2.1.21-2.0.1"
 serial_ver = "2.0.21"
 ver_serial_json="1.8.1"
-
+compose_material_ver="1.5.0-beta03"
+hiltnavigation_ver ="1.2.0"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -43,6 +44,9 @@ material = { group = "com.google.android.material", name = "material", version.r
 room-runtime = {group = "androidx.room", name ="room-runtime",version.ref="room_version"}
 room = {module ="androidx.room:room-compiler" , name= "room", version.ref="room_version"}
 serial = {module ="org.jetbrains.kotlinx:kotlinx-serialization-json" , name= "serial-json", version.ref="ver_serial_json"}
+compose-material = {module ="androidx.wear.compose:compose-material", name = "compose-material", version.ref="compose_material_ver"}
+hilt-navigation-compose= {module ="androidx.hilt:hilt-navigation-compose", name = "hilt-navigation-compose", version.ref="hiltnavigation_ver"}
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

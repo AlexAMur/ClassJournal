@@ -9,27 +9,20 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GroupRepositoryImpl @Inject constructor(val roomGroupStorage: GroupStorage):GroupRepository {
-    override  fun saveGroup(group: Group): Boolean {
-
+    override  fun saveGroup(group: Group) {
         roomGroupStorage.insert(group)
-
-        return true
     }
 
-    override  fun deleteGroup(group: Group): Boolean {
-        return true
+    override  fun deleteGroup(group: Group){
+       roomGroupStorage.delete(group)
     }
 
     override  fun updateGroup(group: Group): Boolean {
-
-        return true//roomGroupStorage.update(group)
+        return roomGroupStorage.update(group)
     }
 
     override  fun getGroupById(uid: Long): Group {
-        /*if (uid == -1)
-            return Group()  //New Group
-        else*/
-          return  roomGroupStorage.getById(uid)
+            return  roomGroupStorage.getGroupById(uid)
     }
 
     override  fun getGroupByName(name: String): Group {
@@ -37,6 +30,9 @@ class GroupRepositoryImpl @Inject constructor(val roomGroupStorage: GroupStorage
     }
 
     override fun getGroups(isDelete: Boolean): Flow<List<Group>> {
-       return roomGroupStorage.read()
+       return roomGroupStorage.read(isDelete)
+    }
+    override fun getAllGroups(): Flow<List<Group>> {
+       return roomGroupStorage.readAll()
     }
 }

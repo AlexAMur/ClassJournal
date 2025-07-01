@@ -4,11 +4,11 @@ import com.catshome.ClassJournal.domain.Group.Models.Group
 import kotlinx.coroutines.flow.Flow
 
 interface GroupRepository {
-  fun saveGroup(group: Group):Boolean
- fun updateGroup(group: Group):Boolean
- fun deleteGroup(group: Group):Boolean
-
- fun getGroupById(uid: Long):Group
- fun getGroupByName(name:String):Group
- fun getGroups(isDelete:Boolean):Flow<List<Group>>
+    fun saveGroup(group: Group)
+    fun updateGroup(group: Group): Boolean
+    fun deleteGroup(group: Group)
+    fun getGroupById(uid: Long): Group
+    fun getGroupByName(name: String): Group
+    fun getGroups(isDelete: Boolean): Flow<List<Group>>
+    fun getAllGroups(): Flow<List<Group>>
 }
