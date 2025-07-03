@@ -11,10 +11,10 @@ plugins {
 }
 
 android {
-    namespace = "com.catshome.ClassJournal"
+    namespace = "com.catshome.classJournal"
     compileSdk = 35
     defaultConfig {
-        applicationId = "com.catshome.ClassJournal"
+        applicationId = "com.catshome.classJournal"
         minSdk = 29
         targetSdk = 35
         versionCode = 1
