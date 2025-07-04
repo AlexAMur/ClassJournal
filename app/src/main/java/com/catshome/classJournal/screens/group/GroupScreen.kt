@@ -14,15 +14,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,24 +32,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.wear.compose.foundation.edgeSwipeToDismiss
-import androidx.wear.compose.foundation.rememberSwipeToDismissBoxState
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import androidx.wear.compose.material.RevealValue
-import androidx.wear.compose.material.SwipeToRevealChip
-import androidx.wear.compose.material.SwipeToRevealDefaults
-import androidx.wear.compose.material.SwipeToRevealPrimaryAction
-import androidx.wear.compose.material.SwipeToRevealUndoAction
-import androidx.wear.compose.material.rememberRevealState
 import com.catshome.ClassJournal.R
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
-import com.catshome.classJournal.screens.viewModels.GroupViewModel
 import com.catshome.classJournal.navigate.DetailsGroup
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.catshome.classJournal.screens.viewModels.GroupViewModel
 
 
 @OptIn(ExperimentalWearMaterialApi::class)
@@ -65,7 +52,8 @@ fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewMo
         viewModel.obtainEvent(GroupEvent.ReloadScreen)
     }
     Surface(
-        Modifier.background(ClassJournalTheme.colors.primaryBackground)
+        Modifier
+            .background(ClassJournalTheme.colors.primaryBackground)
             .fillMaxWidth(),
         color = ClassJournalTheme.colors.primaryBackground
     ) {
@@ -86,9 +74,7 @@ fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewMo
                     }
                 }
             }
-        )
-        {
-
+        ){
             if (viewState.listGroup.isEmpty())
                 groupScreenNoItems(bottomPadding = bottomPadding)
             else {
@@ -100,12 +86,27 @@ fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewMo
                 ) {
                     itemsIndexed(viewState.listGroup) { index, item ->
 
-                        Chip(
+                        ChipGroup(
                             viewModel = viewModel,
-                            index = index,
-                            name = item.name,
-                            navController = navController
-                        )
+                            index = index
+                        ) {
+
+                            Box {
+                                Text(
+                                    item.name,
+                                    modifier = Modifier
+                                        .padding(24.dp)
+                                        .fillMaxWidth()
+                                        .height(56.dp)
+                                        .clickable {
+                                            navController.navigate(DetailsGroup(viewState.listGroup[index].uid))
+                                        },
+                                    color = ClassJournalTheme.colors.primaryText,
+                                    style = ClassJournalTheme.typography.body
+                                )
+                            }
+
+                        }
                     }
                 }
 
@@ -117,57 +118,18 @@ fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewMo
                 viewModel.clearAction()
                 navController.navigate(DetailsGroup(0))
             }
-
-            ComposeAction.CloseScreen -> {
-//            keyboardController?.hide()
-//            outerNavigation.popBackStack()
-//            androidx.lifecycle.viewmodel.compose.viewModel.clearAction()
-            }
-
             is GroupAction.DeleteGroup -> {
-
             }
 
             is GroupAction.OpenGroup -> {
                 viewModel.clearAction()
                 navController.navigate(DetailsGroup(0))
             }
-
-            is GroupAction.RequestDelete -> {
-//                val openDialog = remember{mutableStateOf(true) }
-//                if (openDialog.value) {
-//                    DeleteDialog(
-//                        onConfirmation = {
-//                            viewModel.obtainEvent(GroupEvent.DeleteClicked(viewState.uidDelete))
-//
-//                        }
-//                    ) {
-//                        viewModel.obtainEvent(GroupEvent.CancelDelete)
-//                        openDialog.value =false
-//                    }
-//                }
-            }
-
-            null -> {}
+            is GroupAction.RequestDelete -> {}
+            null->{}
         }
     }
 }
-
-//
-//@Composable
-//fun itemWithOutButton(name: String, onClicks: () -> Unit) {
-//    Text(
-//        name,
-//        modifier = Modifier
-//            .padding(24.dp)
-//            .fillMaxWidth()
-//            .height(56.dp)
-//            .clickable(onClick = onClicks),
-//        color = ClassJournalTheme.colors.primaryText,
-//        style = ClassJournalTheme.typography.heading
-//
-//    )
-//}
 
 @Composable
 fun groupScreenNoItems(bottomPadding: Dp) {
@@ -193,229 +155,3 @@ fun groupScreenNoItems(bottomPadding: Dp) {
         }
     }
 }
-
-@OptIn(ExperimentalWearMaterialApi::class)
-@Composable
-fun Chip(viewModel: GroupViewModel, index: Int, name: String, navController: NavController) {
-    val viewState by viewModel.viewState().collectAsState()
-    val revealState = rememberRevealState()
-    val swipeToDismissBoxState = rememberSwipeToDismissBoxState()
-    SwipeToRevealChip(
-        revealState = revealState,
-        modifier = Modifier.edgeSwipeToDismiss(swipeToDismissBoxState = swipeToDismissBoxState),
-        primaryAction = {
-            SwipeToRevealPrimaryAction(
-                revealState = revealState,
-                icon = {
-                    Icon(
-                        SwipeToRevealDefaults.Delete,
-                        contentDescription = "Delete"
-                    )
-                },
-                label = {
-                    Text(
-                        "Delete",
-                        color = ClassJournalTheme.colors.primaryText
-                    )
-                },
-                onClick = {
-
-//                    viewModel.obtainEvent(
-//                        GroupEvent.DeleteClicked(
-//                            viewState.listGroup[index].uid
-//                        )
-//                    )
-                    CoroutineScope(Dispatchers.IO).launch {
-                        revealState.snapTo(RevealValue.RightRevealed)
-                            delay(4000L)
-                            viewModel.obtainEvent(GroupEvent.DeleteClicked(viewState.listGroup[index].uid))
-                         revealState.snapTo(RevealValue.Covered)
-                    }
-                    //viewModel.obtainEvent(GroupEvent.ReloadScreen)
-                })
-
-        },
-        undoPrimaryAction = {
-            SwipeToRevealUndoAction(
-                modifier = Modifier.background(ClassJournalTheme.colors.controlColor),
-                revealState = revealState,
-                label = { Text("Undo") },
-                onClick = {
-                    viewModel.obtainEvent(
-                        GroupEvent.UndoDeleteClicked(
-                            viewState.listGroup[index].uid
-                        )
-                    )
-                    CoroutineScope(Dispatchers.Main).launch {
-                        revealState.snapTo(RevealValue.Covered)
-                    }
-                    viewModel.obtainEvent(GroupEvent.ReloadScreen)
-                }
-            )
-        },
-        onFullSwipe = {}
-    ) {
-        Box {
-            Text(
-                name,
-                modifier = Modifier
-                    .padding(24.dp)
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .clickable {
-                        navController.navigate(DetailsGroup(viewState.listGroup[index].uid))
-                    },
-                color = ClassJournalTheme.colors.primaryText,
-                style = ClassJournalTheme.typography.heading
-            )
-        }
-    }
-}
-
-//@Composable
-//fun itemWithButton(name: String, Click: () -> Unit, onDeleteClick: () -> Unit) {
-//    Row(
-//        Modifier
-//            .fillMaxWidth()
-//            .background(ClassJournalTheme.colors.primaryBackground),
-//        horizontalArrangement = Arrangement.End
-//    ) {
-//        Text(
-//            name,
-//            modifier = Modifier
-//                .padding(start = 24.dp)
-//                .weight(1f, fill = true)
-//                .height(80.dp)
-//                .clickable(onClick = Click),
-//            color = ClassJournalTheme.colors.primaryText,
-//            style = ClassJournalTheme.typography.heading
-//
-//        )
-//        Button(onClick = onDeleteClick, Modifier.padding(start = 16.dp, end = 16.dp)) {
-//            Icon(Icons.Outlined.Delete, "")
-//        }
-//    }
-//
-//}
-
-
-//
-//val swipeableState = rememberSwipeableState(initialValue = 0)
-//val size = with(LocalDensity.current) { 100.dp.toPx() }
-//val anchors = mapOf(
-//    0f to 0,
-//    -size to 1
-//)   // 0 - исходное положение, -size - раскрытое положение
-//
-//val context = LocalContext.current
-//
-//Box(
-//modifier = Modifier
-//.fillMaxWidth()
-//.height(80.dp)
-//.swipeable(
-//state = swipeableState,
-//anchors = anchors,
-//thresholds = { _, _ -> FractionalThreshold(0.9f) },
-//orientation = Orientation.Horizontal
-//)
-//) {
-//    // Показать область позади элемента
-//    Box(
-//        modifier = Modifier
-//            .fillMaxHeight()
-//            .width(200.dp)
-//            .align(Alignment.CenterEnd)
-//            .background(ClassJournalTheme.colors.secondaryBackground)
-//    ) {
-//        Row(Modifier.fillMaxSize().background(ClassJournalTheme.colors.tintColor)) {
-//            Icon(
-//                imageVector = Icons.Default.Edit,
-//                contentDescription = null,
-//                modifier = Modifier
-//                    .size(56.dp)
-//                    .clickable(onClick = {
-//                    }),
-//                tint = ClassJournalTheme.colors.controlColor
-//            )
-//            Spacer(modifier = Modifier.width(24.dp))
-//            Icon(
-//                imageVector = Icons.Outlined.Delete,
-//                contentDescription = null,
-//                modifier = Modifier
-//                    .size
-//                        (56.dp)
-//                    .clickable(onClick = {
-//                        viewModel.obtainEvent(
-//                            GroupEvent.DeleteClicked(viewState.listGroup[index].uid)
-//                        )
-//                        Toast
-//                            .makeText(
-//                                context,
-//                                "User removed",
-//                                Toast.LENGTH_SHORT
-//                            )
-//                            .show()
-//                        CoroutineScope(Dispatchers.Main).launch {
-//                            swipeableState.snapTo(0)
-//                        }
-//
-//                    }),
-//                tint = ClassJournalTheme.colors.errorColor
-//            )
-//
-//        }
-//    }
-//
-//    // Основной контент, который перемещается при смахивании
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .offset(x = swipeableState.offset.value.dp)
-//            .background(ClassJournalTheme.colors.primaryBackground)
-//    ) {
-//        Text(
-//            item.name,
-//            modifier = Modifier
-//                .padding(24.dp)
-//                .fillMaxWidth()
-//                .height(56.dp)
-//                .clickable {
-//                    navController.navigate(DetailsGroup(viewState.listGroup[index].uid))
-//                },
-//            color = ClassJournalTheme.colors.primaryText,
-//            style = ClassJournalTheme.typography.heading
-//        )
-//    }
-
-
-//
-//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-//@Preview
-//@Composable
-//fun previewGroupScreen() {
-//    val group = listOf("fdsaf", "fdsa", "gfhtr")
-//    Surface(
-//        Modifier
-//            .background(ClassJournalTheme.colors.primaryBackground)
-//            .fillMaxWidth(),
-//        color = ClassJournalTheme.colors.primaryBackground
-//    ) {
-//        LazyColumn(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(ClassJournalTheme.colors.primaryBackground)
-//        ) {
-//            itemsIndexed(group) { index, item ->
-//
-//                Text(item, modifier = Modifier.fillMaxWidth())
-//                //itemWithOutButton(name, {})
-//            }
-//        }
-//
-//    }
-//
-//}
-//
-//
-

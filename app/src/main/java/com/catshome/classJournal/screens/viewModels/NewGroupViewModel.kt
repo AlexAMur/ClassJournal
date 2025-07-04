@@ -1,10 +1,10 @@
 package com.catshome.classJournal.screens.viewModels
 
+import com.catshome.classJournal.domain.Group.GroupInteractor
+import com.catshome.classJournal.domain.Group.Models.Group
 import com.catshome.classJournal.screens.group.ComposeAction
 import com.catshome.classJournal.screens.group.NewGroupEvent
 import com.catshome.classJournal.screens.group.NewGroupState
-import com.catshome.classJournal.domain.Group.GroupInteractor
-import com.catshome.classJournal.domain.Group.Models.Group
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -18,5 +18,6 @@ data class NewGroupState (
 
 data class GroupState(
     var uidDelete: Long  = -1,
+    var isDelete: Boolean =false,
     val listGroup: List<Group> =emptyList()
 )
