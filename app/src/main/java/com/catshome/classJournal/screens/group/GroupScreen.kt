@@ -33,14 +33,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import com.catshome.ClassJournal.R
+import com.catshome.classJournal.R
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.screens.viewModels.GroupViewModel
 
 
-@OptIn(ExperimentalWearMaterialApi::class)
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceAsColor")
 @Composable
 fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewModel()) {
@@ -113,14 +113,8 @@ fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewMo
             }
         }
         when (viewAction) {
-            ComposeAction.Success -> {}
-            ComposeAction.New -> {
-                viewModel.clearAction()
-                navController.navigate(DetailsGroup(0))
+           is GroupAction.DeleteGroup -> {
             }
-            is GroupAction.DeleteGroup -> {
-            }
-
             is GroupAction.OpenGroup -> {
                 viewModel.clearAction()
                 navController.navigate(DetailsGroup(0))

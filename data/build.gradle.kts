@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.catshome.ClassJournal"
+    namespace = "com.catshome.classJournal"
     compileSdk = 35
 
     defaultConfig {

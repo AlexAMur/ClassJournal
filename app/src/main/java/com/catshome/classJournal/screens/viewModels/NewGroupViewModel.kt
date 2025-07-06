@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.viewModels
 
+import com.catshome.classJournal.communs.ErrorClassJournal
 import com.catshome.classJournal.domain.Group.GroupInteractor
 import com.catshome.classJournal.domain.Group.Models.Group
 import com.catshome.classJournal.screens.group.ComposeAction
@@ -13,14 +14,23 @@ import javax.inject.Inject
 class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupInteractor) :
     BaseViewModel<NewGroupState, ComposeAction, NewGroupEvent>(installState = NewGroupState()) {
 
-
     override fun obtainEvent(viewEvent: NewGroupEvent) {
         when (viewEvent) {
+            is NewGroupEvent.ErrorGroup -> {
+                when (viewEvent.error) {
+                    ErrorClassJournal.EmptyName -> {
+                        viewState.isError = true
+                    }
+                }
+            }
+
             is NewGroupEvent.OpenGroup -> {
                 viewState = viewState.copy(groupInteractor.getGroupByID(viewEvent.id))
             }
 
             is NewGroupEvent.ChangeName -> {
+                if (viewState.isError && !viewState.nameGroup.isEmpty())
+                    viewState.isError = false
                 viewState = viewState.copy(nameGroup = viewEvent.nameGroup)
             }
 
@@ -31,14 +41,19 @@ class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupIn
             NewGroupEvent.ActionInvoked -> viewAction = null
 
             NewGroupEvent.SaveClicked -> {
-                groupInteractor.saveGroupUseCase(
-                    Group(
-                        viewState.uid,
-                        viewState.nameGroup,
-                        viewState.isDelete
+                if (viewState.nameGroup.trim().isEmpty()) {
+                    obtainEvent(NewGroupEvent.ErrorGroup(ErrorClassJournal.EmptyName))
+
+                } else {
+                    groupInteractor.saveGroupUseCase(
+                        Group(
+                            viewState.uid,
+                            viewState.nameGroup.trim(),
+                            viewState.isDelete
+                        )
                     )
-                )
-                viewAction = ComposeAction.CloseScreen
+                    viewAction = ComposeAction.CloseScreen
+                }
             }
 
             NewGroupEvent.NextClicked -> viewAction = null

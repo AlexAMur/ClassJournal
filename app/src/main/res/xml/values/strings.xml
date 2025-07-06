@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="empty_group_items">Addgroup</string>
+    <string name="empty_group_items">Add group</string>
     <string name="app_name">ClassJournal</string>
+    <string name="error_name_group">Name group cannot by empty! </string>
+    <string name="name_group_label">Enter name group. </string>
 </resources>

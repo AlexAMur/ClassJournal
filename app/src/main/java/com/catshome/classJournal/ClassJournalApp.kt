@@ -15,6 +15,7 @@ import androidx.navigation.toRoute
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.group.GroupScreen
+import com.catshome.classJournal.screens.group.NewGroupScreen
 import com.catshome.classJournal.screens.viewModels.GroupViewModel
 import com.catshome.classJournal.screens.viewModels.NewGroupViewModel
 
