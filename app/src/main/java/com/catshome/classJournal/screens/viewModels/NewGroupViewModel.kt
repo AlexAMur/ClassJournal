@@ -1,6 +1,6 @@
 package com.catshome.classJournal.screens.viewModels
 
-import com.catshome.classJournal.communs.ErrorClassJournal
+import android.util.Log
 import com.catshome.classJournal.domain.Group.GroupInteractor
 import com.catshome.classJournal.domain.Group.Models.Group
 import com.catshome.classJournal.screens.group.ComposeAction
@@ -13,18 +13,15 @@ import javax.inject.Inject
 @HiltViewModel
 class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupInteractor) :
     BaseViewModel<NewGroupState, ComposeAction, NewGroupEvent>(installState = NewGroupState()) {
+        init {
+            Log.e("CLJR", "Viewmodel "+this)
+
+        }
 
     override fun obtainEvent(viewEvent: NewGroupEvent) {
         when (viewEvent) {
-            is NewGroupEvent.ErrorGroup -> {
-                when (viewEvent.error) {
-                    ErrorClassJournal.EmptyName -> {
-                        viewState.isError = true
-                    }
-                }
-            }
+           is NewGroupEvent.OpenGroup -> {
 
-            is NewGroupEvent.OpenGroup -> {
                 viewState = viewState.copy(groupInteractor.getGroupByID(viewEvent.id))
             }
 
@@ -41,10 +38,6 @@ class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupIn
             NewGroupEvent.ActionInvoked -> viewAction = null
 
             NewGroupEvent.SaveClicked -> {
-                if (viewState.nameGroup.trim().isEmpty()) {
-                    obtainEvent(NewGroupEvent.ErrorGroup(ErrorClassJournal.EmptyName))
-
-                } else {
                     groupInteractor.saveGroupUseCase(
                         Group(
                             viewState.uid,
@@ -53,9 +46,7 @@ class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupIn
                         )
                     )
                     viewAction = ComposeAction.CloseScreen
-                }
             }
-
             NewGroupEvent.NextClicked -> viewAction = null
         }
     }

@@ -1,22 +1,30 @@
 package com.catshome.classJournal.screens.viewModels
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import com.catshome.classJournal.domain.Group.GroupInteractor
 import com.catshome.classJournal.screens.group.GroupAction
+import com.catshome.classJournal.screens.group.GroupAction.OpenGroup
 import com.catshome.classJournal.screens.group.GroupEvent
+import com.catshome.classJournal.screens.group.GroupItem
 import com.catshome.classJournal.screens.group.GroupState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+fun mapToListItem(){
+
+}
+@OptIn(ExperimentalWearMaterialApi::class)
 @HiltViewModel
 class GroupViewModel @Inject constructor(val groupInteractor: GroupInteractor) :
     BaseViewModel<GroupState, GroupAction, GroupEvent>(installState = GroupState()) {
 
-    init {
-        reloadScreen()
-    }
+//    init {
+//        reloadScreen()
+//    }
 
     override fun obtainEvent(viewEvent: GroupEvent) {
         when (viewEvent) {
@@ -37,7 +45,7 @@ class GroupViewModel @Inject constructor(val groupInteractor: GroupInteractor) :
             }
 
             is GroupEvent.NewClicked -> {
-                viewAction = GroupAction.OpenGroup(0)
+                viewAction = OpenGroup(0)
             }
 
             is GroupEvent.DeleteClicked -> {
@@ -54,16 +62,26 @@ class GroupViewModel @Inject constructor(val groupInteractor: GroupInteractor) :
                 viewState.isDelete = false
                 viewState.uidDelete = -1
             }
+
+            is GroupEvent.SwipeUpdate -> {
+                Log.e("CLJR", "ViewModel event SwipeUpdate")
+                viewState.listItems[viewEvent.index].revealState =viewEvent.revealState
+            }
         }
     }
 
     private fun reloadScreen() {
         viewModelScope.launch(Dispatchers.Default) {
-            groupInteractor.getGroupUseCase(false).collect { group ->
+
+            groupInteractor.getGroupUseCase(false).collect { listGroup ->
                 viewState =
                     viewState.copy(viewState.uidDelete,
                         isDelete = viewState.isDelete,
-                        group
+                        listItems = listGroup.map { group -> GroupItem(
+                            revealState = viewState.listItems.firstOrNull{it.group.uid == group.uid}?.revealState,
+                            group = group
+                        ) }
+
                     )
             }
         }

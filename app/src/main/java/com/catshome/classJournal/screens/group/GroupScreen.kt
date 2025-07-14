@@ -2,6 +2,7 @@ package com.catshome.classJournal.screens.group
 
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,12 +11,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Add
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -32,15 +34,19 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.wear.compose.foundation.rememberSwipeToDismissBoxState
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import com.catshome.classJournal.R
+import androidx.wear.compose.material.RevealState
+import androidx.wear.compose.material.RevealValue
+import androidx.wear.compose.material.rememberRevealState
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
+import com.catshome.classJournal.R
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.screens.viewModels.GroupViewModel
 
 
-
+@OptIn(ExperimentalWearMaterialApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceAsColor")
 @Composable
 fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewModel()) {
@@ -48,6 +54,14 @@ fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewMo
     val viewAction by viewModel.viewActions().collectAsState(null)
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
+   // var revealState = rememberRevealState()
+    //if (viewState.listItems[index].revealState != null)
+    //   revealState= viewState.listItems[index].revealState
+
+    val swipeToDismissBoxState = rememberSwipeToDismissBoxState { it ->
+        Log.e("CLJR", "DISSMIS STATE")
+        true
+    }
     LaunchedEffect(Unit) {
         viewModel.obtainEvent(GroupEvent.ReloadScreen)
     }
@@ -74,53 +88,73 @@ fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewMo
                     }
                 }
             }
-        ){
-            if (viewState.listGroup.isEmpty())
+        ) {
+            if (viewState.listItems.isEmpty())
                 groupScreenNoItems(bottomPadding = bottomPadding)
             else {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 24.dp)
+                Column(
+                    Modifier
                         .background(ClassJournalTheme.colors.primaryBackground)
                 ) {
-                    itemsIndexed(viewState.listGroup) { index, item ->
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 24.dp)
+                            .background(ClassJournalTheme.colors.primaryBackground)
+                    ) {
+                        itemsIndexed(viewState.listItems) { index, item ->
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                                colors = CardDefaults.cardColors(ClassJournalTheme.colors.tintColor),
+                                shape = ClassJournalTheme.shapes.cornersStyle
 
-                        ChipGroup(
-                            viewModel = viewModel,
-                            index = index
-                        ) {
+                            ) {
 
-                            Box {
-                                Text(
-                                    item.name,
-                                    modifier = Modifier
-                                        .padding(24.dp)
-                                        .fillMaxWidth()
-                                        .height(56.dp)
-                                        .clickable {
-                                            navController.navigate(DetailsGroup(viewState.listGroup[index].uid))
-                                        },
-                                    color = ClassJournalTheme.colors.primaryText,
-                                    style = ClassJournalTheme.typography.body
-                                )
+                                ChipGroup(
+                                    viewModel = viewModel,
+                                    index = index,
+                                    //revealState = revealState,
+                                    //swipeToDismissBoxState = swipeToDismissBoxState
+                                    //if(viewState.listItems[index].uid == viewState.swipeUid) (viewState.revealState) as RevealState
+                                                    //        else rememberRevealState()
+                                ) {
+
+                                    Box {
+                                        Log.e("CLJR", "Text event SwipeUpdate")
+                                        Text(
+                                            item.group.name,
+                                            modifier = Modifier
+                                                .padding(16.dp)
+                                                .fillMaxWidth()
+                                                .clickable {
+                                                    navController.navigate(DetailsGroup(viewState.listItems[index].group.uid))
+                                                },
+                                            color = ClassJournalTheme.colors.primaryText,
+                                            style = ClassJournalTheme.typography.heading
+                                        )
+                                    }
+
+                                }
                             }
-
                         }
                     }
+
+                }
+            }
+            when (viewAction) {
+                is GroupAction.DeleteGroup -> {
                 }
 
+                is GroupAction.OpenGroup -> {
+                    viewModel.clearAction()
+                    navController.navigate(DetailsGroup(0))
+                }
+
+                is GroupAction.RequestDelete -> {}
+                null -> {}
             }
-        }
-        when (viewAction) {
-           is GroupAction.DeleteGroup -> {
-            }
-            is GroupAction.OpenGroup -> {
-                viewModel.clearAction()
-                navController.navigate(DetailsGroup(0))
-            }
-            is GroupAction.RequestDelete -> {}
-            null->{}
         }
     }
 }
