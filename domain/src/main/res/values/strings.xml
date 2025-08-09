@@ -7,4 +7,11 @@
     <string name="bottom_cancel">Cancel</string>
     <string name="error_name_group">Name group cannot by empty! </string>
     <string name="name_group_label">Enter name group. </string>
+    <string name="new_child_dialog_headline">New child</string>
+    <string name="save_button">Save</string>
+    <string name="name_child">Enter name child.</string>
+    <string name="surname_child">Enter surname child.</string>
+    <string name="phone_child">Enter phone.</string>
+    <string name="birthday_child">Enter birthday child.</string>
+    <string name="note_label">Note.</string>
 </resources>

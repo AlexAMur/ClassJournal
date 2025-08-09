@@ -1,12 +1,9 @@
 package com.catshome.classJournal.screens.group
 
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.SwipeToDismissBoxState
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.focus.FocusState
+import androidx.compose.foundation.gestures.Orientation
+import androidx.wear.compose.foundation.SwipeToDismissBoxState
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.RevealState
-import androidx.wear.compose.material.RevealValue
 import com.catshome.classJournal.domain.Group.Models.Group
 
 
@@ -25,18 +22,21 @@ data class NewGroupState (
 }
 data class GroupItem @OptIn(ExperimentalWearMaterialApi::class) constructor(
     var revealState: RevealState? = null,
+    var swipeToDismissBoxState: SwipeToDismissBoxState? = null,
     val group: Group
 )
 
-data class GroupState @OptIn(ExperimentalWearMaterialApi::class) constructor(
+data class GroupState( //@OptIn(ExperimentalWearMaterialApi::class) constructor(
     var uidDelete: Long  = -1,
     var isDelete: Boolean =false,
     var swipeUid: Long = - 1,
+    var orientation: Orientation = Orientation.Vertical,
+    var orientationNew: Boolean = false,
    // var revealState: RevealState? = null,
     val listItems: List<GroupItem> =emptyList()
 )
 
 @OptIn(ExperimentalWearMaterialApi::class)
 fun GroupState.mapGroup(group: List<Group>): List<GroupItem>{
-    return  group.map { list-> GroupItem(null,list) }
+    return  group.map { list-> GroupItem(null,null, list) }
 }

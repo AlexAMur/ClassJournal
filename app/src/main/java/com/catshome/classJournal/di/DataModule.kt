@@ -5,6 +5,9 @@ import com.catshome.classJournal.DAO.GroupsDAO
 import com.catshome.classJournal.Group.GroupRepositorys.GroupRepositoryImpl
 import com.catshome.classJournal.Group.GroupStorege.GroupStorage
 import com.catshome.classJournal.Group.GroupStorege.RoomGroupStorage
+import com.catshome.classJournal.child.ChildRepositoryImpl
+import com.catshome.classJournal.child.RoomChildStorage
+import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Group.GroupRepository
 import com.catshome.classJournal.domain.Group.Models.Group
 import dagger.Module
@@ -15,6 +18,10 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 class DataModule {
+    @Provides
+    fun provideChildRepository(room: RoomChildStorage): ChildRepository {
+        return ChildRepositoryImpl(room)
+    }
     @Provides
     fun provideGroupRepository(room: RoomGroupStorage): GroupRepository {
         return GroupRepositoryImpl(room)

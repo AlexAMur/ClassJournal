@@ -12,8 +12,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
+import com.catshome.classJournal.domain.Child.Child
+import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.screens.ItemScreen
+import com.catshome.classJournal.screens.child.NewChildScreen
+import com.catshome.classJournal.screens.child.NewChildViewModel
 import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.screens.group.NewGroupScreen
 import com.catshome.classJournal.screens.viewModels.GroupViewModel
@@ -64,10 +68,14 @@ fun classJournalApp(
         composable(route = ItemScreen.NewGroupScreen.name) {
             val viewModel = hiltViewModel<NewGroupViewModel>()
             NewGroupScreen(viewModel = viewModel, idGroup =  0)
-
         }
         composable(route = ItemScreen.NewRateScreen.name) { NewRateScreen() }
-        composable(route = ItemScreen.NewChildScreen.name) { NewChildScreen() }
+        composable(route = ItemScreen.NewChildScreen.name) {backStackEntry->
+            val ChildviewModel = hiltViewModel<NewChildViewModel>()
+            val idChild = backStackEntry.toRoute<DetailsChild>()?: DetailsChild()
+
+            NewChildScreen(idChild,ChildviewModel)
+        }
         composable(route = ItemScreen.NewVisitScreen.name) { NewVisitScreen() }
     }
 }

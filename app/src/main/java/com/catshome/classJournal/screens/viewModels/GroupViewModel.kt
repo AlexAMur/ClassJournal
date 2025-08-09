@@ -1,8 +1,8 @@
 package com.catshome.classJournal.screens.viewModels
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import androidx.wear.compose.material.RevealValue
 import com.catshome.classJournal.domain.Group.GroupInteractor
 import com.catshome.classJournal.screens.group.GroupAction
 import com.catshome.classJournal.screens.group.GroupAction.OpenGroup
@@ -10,16 +10,16 @@ import com.catshome.classJournal.screens.group.GroupEvent
 import com.catshome.classJournal.screens.group.GroupItem
 import com.catshome.classJournal.screens.group.GroupState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-fun mapToListItem(){
 
-}
 @OptIn(ExperimentalWearMaterialApi::class)
 @HiltViewModel
-class GroupViewModel @Inject constructor(val groupInteractor: GroupInteractor) :
+class GroupViewModel @Inject constructor(private val groupInteractor: GroupInteractor) :
     BaseViewModel<GroupState, GroupAction, GroupEvent>(installState = GroupState()) {
 
 //    init {
@@ -49,38 +49,53 @@ class GroupViewModel @Inject constructor(val groupInteractor: GroupInteractor) :
             }
 
             is GroupEvent.DeleteClicked -> {
-                groupInteractor.deleteGroupUseCase(groupInteractor.getGroupByID(viewEvent.uid))
-                viewState = viewState.copy()
-                obtainEvent(GroupEvent.ReloadScreen)
+                viewState.isDelete = true
+                CoroutineScope(Dispatchers.Main).launch {
+                    viewState.listItems[viewEvent.index].revealState?.snapTo(RevealValue.RightRevealed)
+                }
+                CoroutineScope(Dispatchers.Default).launch {
+//
+                    delay(4000L)
+                    if (viewState.isDelete) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            viewState.listItems[viewEvent.index].revealState?.snapTo(RevealValue.Covered)
+                        }
+                        groupInteractor.deleteGroupUseCase(groupInteractor.getGroupByID(viewEvent.uid))
+
+                    }
+                }
             }
 
-//            is GroupEvent.UpdateGroupClicked -> {
-//                groupInteractor.saveGroupUseCase(viewEvent.group)
-//            }
 
             is GroupEvent.UndoDeleteClicked -> {
                 viewState.isDelete = false
                 viewState.uidDelete = -1
+                CoroutineScope(Dispatchers.Main).launch {
+                    viewState.listItems[viewEvent.index].revealState?.snapTo(RevealValue.Covered)
+                    viewAction = GroupAction.RequestDelete(viewEvent.index)
+                }
+
             }
 
-            is GroupEvent.SwipeUpdate -> {
-                Log.e("CLJR", "ViewModel event SwipeUpdate")
-                viewState.listItems[viewEvent.index].revealState =viewEvent.revealState
-            }
         }
     }
-
     private fun reloadScreen() {
         viewModelScope.launch(Dispatchers.Default) {
 
             groupInteractor.getGroupUseCase(false).collect { listGroup ->
                 viewState =
-                    viewState.copy(viewState.uidDelete,
-                        isDelete = viewState.isDelete,
-                        listItems = listGroup.map { group -> GroupItem(
-                            revealState = viewState.listItems.firstOrNull{it.group.uid == group.uid}?.revealState,
-                            group = group
-                        ) }
+                    viewState.copy(
+                        -1,
+                        isDelete = false,
+                        listItems = listGroup.map { group ->
+                            GroupItem(
+                                //revealState = null,
+                                group = group
+//                                listGroup.map { group -> GroupItem(
+//                            revealState = viewState.listItems.firstOrNull{it.group.uid == group.uid}?.revealState,
+//                            group = group
+                            )
+                        }
 
                     )
             }

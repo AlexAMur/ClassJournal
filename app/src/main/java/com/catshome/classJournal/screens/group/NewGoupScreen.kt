@@ -2,7 +2,6 @@ package com.catshome.classJournal.screens.group
 
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,13 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -42,11 +38,13 @@ fun NewGroupScreen(
     idGroup: Long,
     viewModel: NewGroupViewModel = viewModel()
 ) {
+    if(idGroup>0)
+        viewModel.obtainEvent(NewGroupEvent.OpenGroup(idGroup))
     val outerNavigation = localNavHost.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
-    var isErrorDisplay by remember { mutableStateOf(false) }
+    var isErrorDisplay by rememberSaveable { mutableStateOf(false) }
 
     Surface(
         Modifier

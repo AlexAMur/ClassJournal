@@ -1,145 +1,138 @@
 package com.catshome.classJournal.screens.group
 
-import android.util.Log
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
-import androidx.wear.compose.foundation.rememberSwipeToDismissBoxState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.wear.compose.foundation.edgeSwipeToDismiss
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import androidx.wear.compose.material.RevealState
-import androidx.wear.compose.material.RevealValue
-import androidx.wear.compose.material.SwipeToRevealChip
-import androidx.wear.compose.material.SwipeToRevealDefaults
-import androidx.wear.compose.material.SwipeToRevealPrimaryAction
-import androidx.wear.compose.material.SwipeToRevealUndoAction
-import androidx.wear.compose.material.rememberRevealState
-import com.catshome.classJournal.ClassJournalTheme
-import com.catshome.classJournal.screens.viewModels.GroupViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import androidx.compose.ui.graphics.Color
 
 
-@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
-fun ChipGroup(
-    viewModel: GroupViewModel,
-    index: Int,
-    //revealState: RevealState,
-   // swipeToDismissBoxState: SwipeToDismissBoxState,
-    content: @Composable (() -> Unit)
-) {
+fun SwipeToDismissListItems(
+    onEndToStart: () -> Unit = {},
 
-
-    //TODO Тестирование удаления  и востановления функций
-    val viewState by viewModel.viewState().collectAsState()
-    // var revealState: RevealState
-    //if (viewState.listItems[index].group.uid == viewState.swipeUid && viewState.revealState != null)
-    if (viewState.listItems[index].revealState==null)
-      viewState.listItems[index].revealState= rememberRevealState()
-//    else
-//        revealState = viewState.revealState?:rememberRevealState()
-    //if (viewState.listItems[index].revealState != null)
-    //   revealState= viewState.listItems[index].revealState
-
-    val swipeToDismissBoxState = rememberSwipeToDismissBoxState()
-//    { it ->
-//                Log.e("CLJR", "DISSMIS STATE")
-//        viewState.revealState = revealState
-//        true
-//    }
-
-
-    SwipeToRevealChip(
-        revealState = viewState.listItems[index].revealState!!,
-        modifier = Modifier.edgeSwipeToDismiss(swipeToDismissBoxState = swipeToDismissBoxState),
-        primaryAction = {
-            viewModel.obtainEvent(
-                GroupEvent.SwipeUpdate(
-                    viewState.listItems[index].group.uid, index = index,
-                     revealState= viewState.listItems[index].revealState!!
+    content: @Composable (RowScope.()->Unit)) {
+    val dismissState = rememberSwipeToDismissBoxState()
+    var isVisible by remember { mutableStateOf(true) }
+    if (isVisible) {
+        SwipeToDismissBox(
+            state = dismissState,
+            backgroundContent = {
+                val color by
+                animateColorAsState(
+                    when (dismissState.targetValue) {
+                        SwipeToDismissBoxValue.Settled -> Color.LightGray
+                        SwipeToDismissBoxValue.StartToEnd -> Color.Green
+                        SwipeToDismissBoxValue.EndToStart -> Color.Red
+                    }
                 )
+                Box(Modifier
+                    .fillMaxSize()
+                    .background(color))
+            },
+            content =content
             )
-            SwipeToRevealPrimaryAction(
-                revealState = viewState.listItems[index].revealState!!,
-
-                icon = {
-                    Icon(
-                        SwipeToRevealDefaults.Delete,
-                        contentDescription = "Delete"
-                    )
-                },
-                label = {
-                    Text(
-                        "Delete",
-                        color = ClassJournalTheme.colors.primaryText
-                    )
-                },
-                onClick = {
-                    viewState.isDelete = true
-                    CoroutineScope(Dispatchers.IO).launch {
-                        viewState.listItems[index].revealState?.snapTo(RevealValue.RightRevealed)
-//                        viewModel.obtainEvent(
-//                            GroupEvent.SwipeUpdate(
-//                                viewState.listItems[index].group.uid,
-//                                revealState
-//                            )
-//                        )
-                        delay(4000L)
-                        if (viewState.isDelete) {
-                            viewModel.obtainEvent(GroupEvent.DeleteClicked(viewState.listItems[index].group.uid))
-                            viewState.listItems[index].revealState?.snapTo(RevealValue.Covered)
-                            //viewModel.obtainEvent(GroupEvent.SwipeUpdate(-1, revealState))
-                        }
-                    }
-                }
-            )
-        },
-        undoPrimaryAction = {
-            Log.e("ClJR", "UNDO")
-            SwipeToRevealUndoAction(
-                modifier = Modifier.background(ClassJournalTheme.colors.controlColor),
-                revealState =  viewState.listItems[index].revealState!!,
-                label = { Text("Undo") },
-                onClick = {
-                    viewModel.obtainEvent(
-                        GroupEvent.UndoDeleteClicked(
-                            viewState.listItems[index].group.uid
-                        )
-                    )
-                    CoroutineScope(Dispatchers.Main).launch {
-                        viewState.listItems[index].revealState?.snapTo(RevealValue.Covered)
-                        //viewModel.obtainEvent(GroupEvent.SwipeUpdate(-1, revealState))
-                    }
-                }
-            )
-        },
-        onFullSwipe = {
-            viewState.isDelete = true
-            CoroutineScope(Dispatchers.IO).launch {
-                viewState.listItems[index].revealState?.snapTo(RevealValue.RightRevealed)
-//                viewModel.obtainEvent(
-//                    GroupEvent.SwipeUpdate(
-//                        viewState.listItems[index].group.uid,
-//                        revealState
-//                    )
-//                )
-                delay(4000L)
-                if (viewState.isDelete) {
-                    viewModel.obtainEvent(GroupEvent.DeleteClicked(viewState.listItems[index].group.uid))
-                    viewState.listItems[index].revealState?.snapTo(RevealValue.Covered)
-                    //viewModel.obtainEvent(GroupEvent.SwipeUpdate(-1, revealState))
-                }
-            }
-        },
-        content = content
-    )
+    }
 }
 
 
+//@OptIn(ExperimentalWearMaterialApi::class, ExperimentalWearFoundationApi::class)
+//@Composable
+//fun ChipGroup(
+//    viewModel: GroupViewModel,
+//    index: Int,
+//    content: @Composable (() -> Unit)
+//) {
+//    //TODO Тестирование удаления  и востановления функций
+//    val viewState by viewModel.viewState().collectAsState()
+//    if (viewState.listItems[index].revealState == null) {
+//        viewState.listItems[index].revealState = rememberRevealState()
+//    }
+//    if (viewState.listItems[index].swipeToDismissBoxState == null)
+//        viewState.listItems[index].swipeToDismissBoxState = rememberSwipeToDismissBoxState{
+//            Log.e ("CLJR", "SwperBOX")
+//            true
+//        }
+//    SwipeToRevealChip(
+//        revealState = viewState.listItems[index].revealState!!,
+//        modifier = Modifier.edgeSwipeToDismiss(swipeToDismissBoxState = viewState.listItems[index].swipeToDismissBoxState!!),
+//        primaryAction = {
+//            SwipeToRevealPrimaryAction(
+//                revealState = viewState.listItems[index].revealState!!,
+//                icon = {
+//                    Icon(
+//                        SwipeToRevealDefaults.Delete,
+//                        contentDescription = "Delete"
+//                    )
+//                },
+//                label = {
+//                    Text(
+//                        "Delete",
+//                        color = ClassJournalTheme.colors.primaryText
+//                    )
+//                },
+//                onClick = {
+//                    viewModel.obtainEvent(
+//                        GroupEvent.DeleteClicked(
+//                            viewState.listItems[index].group.uid,
+//                            index
+//                        )
+//                    )
+//                }
+//            )
+//        },
+//        undoPrimaryAction = {
+//            SwipeToRevealUndoAction(
+//                revealState = viewState.listItems[index].revealState!!,
+//                label = {
+//                    Text(
+//                        "Undo",
+//                        color = ClassJournalTheme.colors.primaryText
+//                    )
+//                },
+//                onClick = {
+//                    viewModel.obtainEvent(
+//                        GroupEvent.UndoDeleteClicked(
+//                            viewState.listItems[index].group.uid,
+//                            index
+//                        )
+//                    )
+//                    Log.e("CLJR", "UNDO SWIPE")
+////                    viewState.listItems[index].revealState = state
+//                    CoroutineScope(Dispatchers.Main).launch {
+////                        viewState.listItems[index].revealState?.snapTo(RevealValue.RightRevealing)
+//                        viewState.listItems[index].revealState?.snapTo(RevealValue.LeftRevealing)
+//                    }
+//                }
+//            )
+//        },
+//        onFullSwipe = {
+//            CoroutineScope(Dispatchers.Default).launch {
+//                delay(1000L)
+//            }
+//            if (viewState.isDelete)
+//                viewModel.obtainEvent(
+//                    GroupEvent.DeleteClicked(
+//                        viewState.listItems[index].group.uid,
+//                        index
+//                    )
+//                )
+//
+//            CoroutineScope(Dispatchers.Main).launch {
+//                viewState.listItems[index].revealState?.snapTo(RevealValue.RightRevealed)
+//            }
+//        },
+//        content = content
+//    )
+//}

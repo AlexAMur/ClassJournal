@@ -3,6 +3,8 @@
 <resources>
     <string name="app_name">ClassJournal</string>
     <string name="no_group_item">Add group</string>
-    <string name="error_name_group">Name group cannot by empty! </string>
-    <string name="name_group_label">Enter name group. </string>
+    <string name="error_name_group">Name group cannot by empty!</string>
+    <string name="name_group_label">Enter name group.</string>
+
+
 </resources>
