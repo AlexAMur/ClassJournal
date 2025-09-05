@@ -31,4 +31,6 @@ class ChildInteractor @Inject constructor (private val childRepository: ChildRep
     fun removeUseCase(child: Child){
         childRepository.deleteChild(child)
 
-    }}
+    }
+
+}

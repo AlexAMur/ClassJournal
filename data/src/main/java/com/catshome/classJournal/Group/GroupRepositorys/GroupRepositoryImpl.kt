@@ -20,7 +20,7 @@ class GroupRepositoryImpl @Inject constructor(val roomGroupStorage: GroupStorage
         return roomGroupStorage.update(group)
     }
 
-    override  fun getGroupById(uid: Long): Group {
+    override  fun getGroupById(uid: String): Group {
             return  roomGroupStorage.getGroupById(uid)
     }
 

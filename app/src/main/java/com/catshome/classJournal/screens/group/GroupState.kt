@@ -5,10 +5,11 @@ import androidx.wear.compose.foundation.SwipeToDismissBoxState
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.RevealState
 import com.catshome.classJournal.domain.Group.Models.Group
+import java.util.UUID
 
 
 data class NewGroupState (
-    var uid : Long =0,
+    var uid : String = UUID.randomUUID().toString(),
     var isDelete: Boolean =false,
     var nameGroup:String  = "",
     var isError: Boolean =false

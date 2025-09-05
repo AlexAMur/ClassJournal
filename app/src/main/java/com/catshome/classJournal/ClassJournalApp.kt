@@ -67,7 +67,7 @@ fun classJournalApp(
         }
         composable(route = ItemScreen.NewGroupScreen.name) {
             val viewModel = hiltViewModel<NewGroupViewModel>()
-            NewGroupScreen(viewModel = viewModel, idGroup =  0)
+            NewGroupScreen(viewModel = viewModel)
         }
         composable(route = ItemScreen.NewRateScreen.name) { NewRateScreen() }
         composable(route = ItemScreen.NewChildScreen.name) {backStackEntry->

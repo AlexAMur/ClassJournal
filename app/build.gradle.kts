@@ -1,4 +1,5 @@
 import com.google.devtools.ksp.KspExperimental
+import org.gradle.kotlin.dsl.androidTest
 
 plugins {
     alias(libs.plugins.android.application)
@@ -12,7 +13,7 @@ plugins {
 
 android {
     namespace = "com.catshome.classJournal"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "com.catshome.classJournal"
         minSdk = 29

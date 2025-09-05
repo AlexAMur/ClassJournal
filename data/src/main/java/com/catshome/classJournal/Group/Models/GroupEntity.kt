@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "groups")
 data class GroupEntity(
-    @PrimaryKey (autoGenerate = true) var uid: Long,
+    @PrimaryKey  var uid: String,
     @ColumnInfo(name = "group_name") var name: String = "",
     var isDelete: Boolean = false,
 

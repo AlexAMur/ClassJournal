@@ -1,11 +1,17 @@
 package com.catshome.classJournal
 
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.automirrored.sharp.List
@@ -41,6 +47,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -95,9 +102,12 @@ class MainActivity : ComponentActivity() {
             )
 
 
-                    Surface(Modifier.background(ClassJournalTheme.colors.primaryBackground)) {
+                    Surface(Modifier.background(ClassJournalTheme.colors.primaryBackground)
+                        .fillMaxSize()
+                        ) {
                         Scaffold(
-                            Modifier.background(ClassJournalTheme.colors.primaryBackground),
+                            Modifier.background(ClassJournalTheme.colors.primaryBackground)
+                                ,
                             bottomBar = {
                                 NavigationBar(containerColor = ClassJournalTheme.colors.tintColor) {
                                     bottomItems.forEachIndexed { index, screen ->

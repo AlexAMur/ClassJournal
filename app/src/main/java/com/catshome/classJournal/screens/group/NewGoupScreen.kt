@@ -35,10 +35,10 @@ import com.catshome.classJournal.screens.viewModels.NewGroupViewModel
 
 @Composable
 fun NewGroupScreen(
-    idGroup: Long,
+    idGroup: String ="",
     viewModel: NewGroupViewModel = viewModel()
 ) {
-    if(idGroup>0)
+    if(idGroup != "")
         viewModel.obtainEvent(NewGroupEvent.OpenGroup(idGroup))
     val outerNavigation = localNavHost.current
     val keyboardController = LocalSoftwareKeyboardController.current

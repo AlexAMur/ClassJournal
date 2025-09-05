@@ -64,11 +64,11 @@ class RoomGroupStorage @Inject constructor(val groupsDAO: GroupsDAO, val group: 
         }
     }
 
-    override  fun getGroupById(uid: Long): Group {
+    override  fun getGroupById(uid: String): Group {
         var group = Group()
         try {
             val data = cs.async {
-                     return@async (groupsDAO.getGroupById(uid) ?: GroupEntity(uid = 0)).mapToGroup()
+                     return@async (groupsDAO.getGroupById(uid) ?: GroupEntity(uid = "")).mapToGroup()
             }
             runBlocking {
                  group =data.await()

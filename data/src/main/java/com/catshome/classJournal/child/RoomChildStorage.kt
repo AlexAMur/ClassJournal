@@ -1,27 +1,32 @@
 package com.catshome.classJournal.child
 
-import com.catshome.classJournal.DAO.GroupsDAO
-import com.catshome.classJournal.Group.GroupStorege.GroupStorage
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Group.Models.Group
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class RoomChildStorage @Inject constructor(val groupsDAO: GroupsDAO, val group: Group) :
+class RoomChildStorage @Inject constructor(val chidDAO: ChildDAO, val group: Group) :
         ChildStorage {
     override fun insert(child: Child) {
-        TODO("Not yet implemented")
+        CoroutineScope(Dispatchers.IO).launch {
+            chidDAO.insert(child.mapToChildEntity())
+        }
     }
 
-    override fun delete(child: Child): Boolean {
-        TODO("Not yet implemented")
+    override fun delete(child: Child) {
+        CoroutineScope(Dispatchers.IO).launch {
+            chidDAO.insert(child.mapToChildEntity())
+        }
     }
 
-    override fun update(child: Child): Boolean {
-        TODO("Not yet implemented")
-    }
+//    override fun update(child: Child): Boolean {
+//        TODO("Not yet implemented")
+//    }
 
-    override fun getChildById(uid: Long): Child {
+    override fun getChildById(uid: String): Child {
         TODO("Not yet implemented")
     }
 
@@ -30,7 +35,7 @@ class RoomChildStorage @Inject constructor(val groupsDAO: GroupsDAO, val group: 
     }
 
     override fun read(isDelete: Boolean): Flow<List<Child>> {
-        TODO("Not yet implemented")
+      return chidDAO.getFull().collect { it.forEach { childEntity-> childEntity.mapToChild() } }
     }
 
     override fun readAll(): Flow<List<Child>> {

@@ -155,7 +155,7 @@ fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewMo
                 is GroupAction.DeleteGroup -> {}
                 is GroupAction.OpenGroup -> {
                     viewModel.clearAction()
-                    navController.navigate(DetailsGroup(0))
+                    navController.navigate(DetailsGroup(""))
                 }
 
                 is GroupAction.RequestDelete -> {

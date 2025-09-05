@@ -5,21 +5,18 @@ import com.catshome.classJournal.domain.Child.ChildRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ChildRepositoryImpl @Inject constructor(val roomGroupStorage: ChildStorage):ChildRepository {
+class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage):ChildRepository {
     override fun saveChild(child: Child) {
-        TODO("Not yet implemented")
+       childStorage.insert(child)
     }
 
-    override fun updateChild(child: Child): Boolean {
-        TODO("Not yet implemented")
-    }
 
     override fun deleteChild(child: Child) {
-        TODO("Not yet implemented")
+        childStorage.delete(child)
     }
 
-    override fun getChildById(uid: Long): Child {
-        TODO("Not yet implemented")
+    override fun getChildById(uid: String): Child {
+        childStorage.getChildById(uid)
     }
 
     override fun getChildByName(name: String): Child {

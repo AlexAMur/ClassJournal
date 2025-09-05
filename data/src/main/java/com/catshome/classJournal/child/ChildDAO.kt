@@ -24,7 +24,7 @@ interface ChildDAO {
     fun getFull(): Flow<List<ChildEntity>>
 
     @Query("Select * from 'child' where uid= :uid")
-    fun getChildById(uid: Long): ChildEntity?
+    fun getChildById(uid: String): ChildEntity?
 
     @Query("Select * from 'child' where child_surname LIKE :surname")
     fun getChildByName(surname: String): ChildEntity?

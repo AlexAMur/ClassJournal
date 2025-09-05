@@ -24,7 +24,7 @@ interface GroupsDAO {
     fun getFull(): Flow<List<GroupEntity>>
 
     @Query("Select * from 'groups' where uid= :uid")
-    fun getGroupById(uid: Long): GroupEntity?
+    fun getGroupById(uid: String): GroupEntity?
 
     @Query("SELECT * FROM 'groups' where isDelete = :isDelete")
     fun getGroup(isDelete: Boolean): Flow<List<GroupEntity>>
