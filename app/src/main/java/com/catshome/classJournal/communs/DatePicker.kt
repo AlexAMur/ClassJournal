@@ -42,7 +42,7 @@ fun DatePickerFieldToModal(modifier: Modifier = Modifier, state: NewChildState, 
 
 
     TextField(
-        value = state.birthday, label = label,
+        value = state.child.birthday, label = label,
         supportingText = label,
         modifier = modifier,
         onValueChange = {},
@@ -64,7 +64,7 @@ fun DatePickerFieldToModal(modifier: Modifier = Modifier, state: NewChildState, 
         DatePickerModal(
             onDateSelected = {
 
-                state.birthday= it?.let {
+                state.child.birthday= it?.let {
                     convertMillisToDate(it)
                 }?:""
             },

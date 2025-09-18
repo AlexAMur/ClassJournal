@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="no_group_item">Add group</string>
+    <string name="no_pay_item">Add pay</string>
+    <string name="no_visit_item">Add i</string>
+    <string name="paymant_date">Payment date</string>
+
     <string name="delete_Title">Caution</string>
     <string name="delete_message">Do you want delete object?</string>
     <string name="bottom_delete">Delete</string>

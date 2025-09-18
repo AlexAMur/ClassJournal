@@ -27,9 +27,9 @@ interface ChildDAO {
     fun getChildById(uid: String): ChildEntity?
 
     @Query("Select * from 'child' where child_surname LIKE :surname")
-    fun getChildByName(surname: String): ChildEntity?
+    fun getChildByName(surname: String): Flow<List<ChildEntity>>
 
     @Query("SELECT * FROM 'child' where isDelete = :isDelete")
-    fun getChild(isDelete: Boolean): Flow<List<ChildEntity>>
+    fun getChilds(isDelete: Boolean): Flow<List<ChildEntity>>
 
 }

@@ -21,7 +21,7 @@ interface ChildGroupDAO {
         @Delete
         suspend fun delete(group: ChildGroupEntity)
 
-        @Query("Select * from 'groups' where isDelete = false")
+        @Query("Select * from 'groups' where isDelete = 0")
           fun getGroups(): Flow<List<GroupEntity>>
 
         @Query("Select * from 'child_group' where childId= :child_uid")

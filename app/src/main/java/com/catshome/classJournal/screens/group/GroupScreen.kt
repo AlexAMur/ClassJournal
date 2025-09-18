@@ -7,7 +7,6 @@ import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -40,12 +38,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.sqlite.db.SupportSQLiteOpenHelper
-import androidx.wear.compose.foundation.rememberSwipeToDismissBoxState
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import androidx.wear.compose.material.RevealState
-import androidx.wear.compose.material.RevealValue
-import androidx.wear.compose.material.rememberRevealState
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.R
@@ -62,13 +55,6 @@ fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewMo
     val viewAction by viewModel.viewActions().collectAsState(null)
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
-    val orientation = LocalConfiguration.current.orientation
-    if (orientation == ORIENTATION_LANDSCAPE) {
-        Log.e("CLJR", "ORIENTATION_LANDSCAPE")
-    } else {
-        if (orientation == Configuration.ORIENTATION_PORTRAIT)
-            Log.e("CLJR", "ORIENTATION_PORTRATI")
-    }
 
     LaunchedEffect(Unit) {
         //TODO Called twice
@@ -123,8 +109,6 @@ fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewMo
                                 SwipeToDismissListItems(
                                     onEndToStart = {viewModel.
                                     obtainEvent(GroupEvent.DeleteClicked(item.group.uid, index))}
-                                   // viewModel = viewModel,
-                                    //index = index,
                                 ) {
 
 

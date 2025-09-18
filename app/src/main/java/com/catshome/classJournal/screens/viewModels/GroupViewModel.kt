@@ -79,9 +79,9 @@ class GroupViewModel @Inject constructor(private val groupInteractor: GroupInter
 
         }
     }
+
     private fun reloadScreen() {
         viewModelScope.launch(Dispatchers.Default) {
-
             groupInteractor.getGroupUseCase(false).collect { listGroup ->
                 viewState =
                     viewState.copy(
@@ -89,14 +89,9 @@ class GroupViewModel @Inject constructor(private val groupInteractor: GroupInter
                         isDelete = false,
                         listItems = listGroup.map { group ->
                             GroupItem(
-                                //revealState = null,
                                 group = group
-//                                listGroup.map { group -> GroupItem(
-//                            revealState = viewState.listItems.firstOrNull{it.group.uid == group.uid}?.revealState,
-//                            group = group
                             )
                         }
-
                     )
             }
         }

@@ -10,13 +10,17 @@ class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage):Ch
        childStorage.insert(child)
     }
 
+    override fun updateChild(child: Child) {
+        childStorage.update(child)
+    }
+
 
     override fun deleteChild(child: Child) {
         childStorage.delete(child)
     }
 
     override fun getChildById(uid: String): Child {
-        childStorage.getChildById(uid)
+       return childStorage.getChildById(uid)
     }
 
     override fun getChildByName(name: String): Child {

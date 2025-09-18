@@ -16,9 +16,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.automirrored.sharp.List
 import androidx.compose.material.icons.outlined.AccountBox
+import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.sharp.AccountBox
+import androidx.compose.material.icons.sharp.DateRange
 import androidx.compose.material.icons.sharp.Face
 import androidx.compose.material.icons.sharp.ShoppingCart
 import androidx.compose.material3.Icon
@@ -75,24 +77,27 @@ class MainActivity : ComponentActivity() {
 
             val bottomItems = listOf(
                 ItemBottomBar(
-                    "Главный",
-                    ItemScreen.MainScreen.name,
-                    Icons.Sharp.Face,
-                    Icons.Outlined.Face,
+                    "Оплата",
+                    ItemScreen.PayListScreen.name,
+                    Icons.Sharp.ShoppingCart,
+                    Icons.Outlined.ShoppingCart,
                     MainScreen(navController)//,currentSettings)
-                ), ItemBottomBar(
-                    "Группы",
+                ),
+                ItemBottomBar(
+                    "Посещение",
                     ItemScreen.GroupScreen.name,
-                    Icons.Sharp.AccountBox,
-                    Icons.Outlined.AccountBox,
+                    Icons.Sharp.DateRange,
+                    Icons.Outlined.DateRange,
                     GroupScreen(navController)
-                ), ItemBottomBar(
+                ),
+                ItemBottomBar(
                     "Тарифы",
                     ItemScreen.RateScreen.name,
                     Icons.Sharp.ShoppingCart,
                     Icons.Outlined.ShoppingCart,
                     RateScreen()
-                ), ItemBottomBar(
+                ),
+                ItemBottomBar(
                     "Отчеты",
                     ItemScreen.ReportScreen.name,
                     Icons.AutoMirrored.Sharp.List,

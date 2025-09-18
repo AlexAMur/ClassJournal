@@ -5,11 +5,17 @@ import com.catshome.classJournal.DAO.GroupsDAO
 import com.catshome.classJournal.Group.GroupRepositorys.GroupRepositoryImpl
 import com.catshome.classJournal.Group.GroupStorege.GroupStorage
 import com.catshome.classJournal.Group.GroupStorege.RoomGroupStorage
+import com.catshome.classJournal.PayList.PayDAO
+import com.catshome.classJournal.PayList.PayListRepositoryImpl
+import com.catshome.classJournal.PayList.RoomPayStorage
+import com.catshome.classJournal.child.ChildDAO
+import com.catshome.classJournal.child.ChildGroupDAO
 import com.catshome.classJournal.child.ChildRepositoryImpl
 import com.catshome.classJournal.child.RoomChildStorage
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Group.GroupRepository
 import com.catshome.classJournal.domain.Group.Models.Group
+import com.catshome.classJournal.domain.PayList.PayListRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,6 +25,10 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 class DataModule {
     @Provides
+    fun providePayListRepository(room: RoomPayStorage): PayListRepository{
+        return PayListRepositoryImpl(room)
+    }
+    @Provides
     fun provideChildRepository(room: RoomChildStorage): ChildRepository {
         return ChildRepositoryImpl(room)
     }
@@ -26,6 +36,20 @@ class DataModule {
     fun provideGroupRepository(room: RoomGroupStorage): GroupRepository {
         return GroupRepositoryImpl(room)
     }
+    @Provides
+    fun provideChildDAO(room: AppDataBase): ChildDAO{
+        return room.childDAO()
+    }
+    @Provides
+    fun providePayDAO(room: AppDataBase): PayDAO{
+        return room.payDAO()
+    }
+
+    @Provides
+    fun provideChildGroupDAO(room: AppDataBase): ChildGroupDAO{
+        return room.childGroupDAO()
+    }
+
     @Provides
     fun provideGroupsDAO(room: AppDataBase): GroupsDAO {
         return room.groupsDAO()

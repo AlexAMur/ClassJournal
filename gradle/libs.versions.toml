@@ -5,23 +5,24 @@ coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-lifecycleRuntimeKtx = "2.9.2"
+lifecycleRuntimeKtx = "2.9.3"
 activityCompose = "1.10.1"
-composeBom = "2025.08.00"
+composeBom = "2025.08.01"
 androidx-material =	"1.9.0"
 navigationCompose = "2.9.3"
 hilt_ver = "2.56.1"
 jetbrainsKotlinJvm = "2.0.21"
 appcompat = "1.7.1"
-material = "1.12.0"
+material = "1.13.0"
 room_version = "2.7.2"
 ksp_ver= "2.1.21-2.0.1"
 serial_ver = "2.0.21"
 ver_serial_json="1.8.1"
-compose_material_ver="1.5.0-rc02"
+compose_material_ver="1.5.0"
 hiltnavigation_ver ="1.2.0"
 roomplagin_version = "2.7.2"
 kotlinandroid_ver = "2.1.21"
+kotlinx_datetime_ver = "0.5.0"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -48,6 +49,7 @@ room = {module ="androidx.room:room-compiler" , name= "room", version.ref="room_
 serial = {module ="org.jetbrains.kotlinx:kotlinx-serialization-json" , name= "serial-json", version.ref="ver_serial_json"}
 compose-material = {module ="androidx.wear.compose:compose-material", name = "compose-material", version.ref="compose_material_ver"}
 hilt-navigation-compose= {module ="androidx.hilt:hilt-navigation-compose", name = "hilt-navigation-compose", version.ref="hiltnavigation_ver"}
+kotlinx-datetime={module = "org.jetbrains.kotlinx:kotlinx-datetime",name = "kotlinx-datetime", version.ref= "kotlinx_datetime_ver"}
 
 
 [plugins]

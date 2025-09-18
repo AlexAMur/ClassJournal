@@ -5,11 +5,11 @@ import java.util.UUID
 
 data class Child(
     var uid : String = UUID.randomUUID().toString(),
-    var name: String?=null,
-    var surname: String? = null,
-    var birthday: String? = null,
-    var phone: String? = null,
-    var note: String? = null,
+    var name: String = "",
+    var surname: String ="",
+    var birthday: String = "",
+    var phone: String = "",
+    var note: String = "",
     var isDelete: Boolean = false
 
 )

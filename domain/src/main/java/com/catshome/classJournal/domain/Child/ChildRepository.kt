@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChildRepository {
     fun saveChild(child: Child)
- //   fun updateChild(child: Child): Boolean
+    fun updateChild(child: Child)
     fun deleteChild(child: Child)
     fun getChildById(uid: String): Child
     fun getChildByName(name: String): Child
