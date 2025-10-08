@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias (libs.plugins.serialzation)
     id("androidx.room")
 }
 
@@ -34,7 +35,7 @@ android {
     }
     ksp{
         @OptIn(KspExperimental::class)
-        useKsp2 = false
+        useKsp2 = true
     }
     kotlinOptions {
         jvmTarget = "21"

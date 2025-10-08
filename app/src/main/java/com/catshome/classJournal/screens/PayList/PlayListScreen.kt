@@ -1,11 +1,9 @@
 package com.catshome.classJournal.screens.PayList
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,9 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Add
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -38,7 +36,6 @@ import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.R
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.screens.group.GroupAction
-import com.catshome.classJournal.screens.group.SwipeToDismissListItems
 
 //@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -154,7 +151,7 @@ fun PlayListScreen(
 
                 is GroupAction.RequestDelete -> {
                     mupdate = !mupdate
-                    Log.e("CLJR", "Update")
+
                     // viewState.listItems[(viewAction as GroupAction.RequestDelete).index].revealState = rememberRevealState()
                 }
 

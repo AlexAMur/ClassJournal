@@ -19,6 +19,7 @@ import com.catshome.classJournal.screens.PayList.PayListViewModel
 import com.catshome.classJournal.screens.PayList.PlayListScreen
 import com.catshome.classJournal.screens.Visit.VisitListViewModel
 import com.catshome.classJournal.screens.Visit.visitListScreen
+import com.catshome.classJournal.screens.child.ChildListViewModel
 import com.catshome.classJournal.screens.child.NewChildScreen
 import com.catshome.classJournal.screens.child.NewChildViewModel
 import com.catshome.classJournal.screens.group.GroupScreen
@@ -52,7 +53,8 @@ fun classJournalApp(
 
         }
         composable(route = ItemScreen.MainScreen.name) {
-            MainScreen(navController)
+            val viewModel = hiltViewModel<ChildListViewModel>()
+            ChildListScreen(navController, viewModel)
         }
         composable(route = ItemScreen.GroupScreen.name) {
             val viewModel = hiltViewModel<GroupViewModel>()
@@ -70,11 +72,15 @@ fun classJournalApp(
             NewGroupScreen(viewModel = viewModel)
         }
         composable(route = ItemScreen.NewRateScreen.name) { NewRateScreen() }
-        composable(route = ItemScreen.NewChildScreen.name) { backStackEntry ->
+        composable<DetailsChild> { backStackEntry ->
             val ChildviewModel = hiltViewModel<NewChildViewModel>()
-            val idChild = backStackEntry.toRoute<DetailsChild>() ?: DetailsChild()
+            val idChild = backStackEntry.toRoute<DetailsChild>()
 
             NewChildScreen(idChild, ChildviewModel)
+        }
+        composable(route = ItemScreen.NewChildScreen.name) {
+            val viewModel = hiltViewModel<NewChildViewModel>()
+            NewChildScreen(viewModel = viewModel)
         }
         composable(route = ItemScreen.NewVisitScreen.name) { NewVisitScreen() }
     }

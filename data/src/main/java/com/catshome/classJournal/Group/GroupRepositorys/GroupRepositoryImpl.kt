@@ -31,6 +31,11 @@ class GroupRepositoryImpl @Inject constructor(val roomGroupStorage: GroupStorage
     override fun getGroups(isDelete: Boolean): Flow<List<Group>> {
        return roomGroupStorage.read(isDelete)
     }
+
+    override fun getEmptyGroup() {
+        TODO("Not yet implemented")
+    }
+
     override fun getAllGroups(): Flow<List<Group>> {
        return roomGroupStorage.readAll()
     }

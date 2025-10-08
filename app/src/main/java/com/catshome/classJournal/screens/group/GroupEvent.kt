@@ -1,9 +1,5 @@
 package com.catshome.classJournal.screens.group
 
-import androidx.room.Index
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import androidx.wear.compose.material.RevealState
-
 
 sealed class GroupEvent {
         data object NewClicked : GroupEvent()

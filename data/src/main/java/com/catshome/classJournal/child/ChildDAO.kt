@@ -1,20 +1,35 @@
 package com.catshome.classJournal.child
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.catshome.classJournal.domain.Child.Child
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 @Dao
 interface ChildDAO {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Transaction
+    suspend fun insertChild(child: ChildEntity, group: List<ChildGroupEntity>){
+        insert(child)
+        group.forEach {
+
+            insert(it)
+        }
+
+    }
+    @Insert
+    suspend fun insert(childGroupEntity: ChildGroupEntity)
+
+    @Insert
     suspend fun insert(group: ChildEntity)
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     suspend fun update(group: ChildEntity)
 
     @Delete
@@ -23,7 +38,7 @@ interface ChildDAO {
     @Query("Select * from 'child'")
     fun getFull(): Flow<List<ChildEntity>>
 
-    @Query("Select * from 'child' where uid= :uid")
+    @Query("Select * from 'child' where uid = :uid ")
     fun getChildById(uid: String): ChildEntity?
 
     @Query("Select * from 'child' where child_surname LIKE :surname")

@@ -4,7 +4,8 @@ import com.catshome.classJournal.domain.Group.Models.Group
 import kotlinx.coroutines.flow.Flow
 
 interface ChildGroupRepository {
-    fun getGroups(): Flow<List<Group>>
-    fun deleteGroup(childGroup: ChildGroup)
+    fun getChildGroups(uid: String): Flow<List<ChildGroup>>
+    fun getEmptyProups():List<Group>
+   // fun deleteChildGroup(childGroup: ChildGroup)
     fun insertChildGroup(childGroup: ChildGroup)
 }

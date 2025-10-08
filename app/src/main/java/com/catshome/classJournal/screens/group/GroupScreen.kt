@@ -2,8 +2,6 @@ package com.catshome.classJournal.screens.group
 
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration
-import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,13 +30,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.R
@@ -46,7 +42,7 @@ import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.screens.viewModels.GroupViewModel
 
 
-@OptIn(ExperimentalWearMaterialApi::class)
+//@OptIn(ExperimentalWearMaterialApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceAsColor")
 @Composable
 fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewModel()) {
@@ -144,7 +140,7 @@ fun GroupScreen(navController: NavController, viewModel: GroupViewModel = viewMo
 
                 is GroupAction.RequestDelete -> {
                     mupdate = !mupdate
-                    Log.e("CLJR", "Update")
+
                     // viewState.listItems[(viewAction as GroupAction.RequestDelete).index].revealState = rememberRevealState()
                 }
 

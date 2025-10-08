@@ -1,8 +1,10 @@
 package com.catshome.classJournal.screens.child
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -16,30 +18,27 @@ import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -48,36 +47,46 @@ import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.R
 import com.catshome.classJournal.communs.DatePickerFieldToModal
+import com.catshome.classJournal.communs.TextField
+import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
+import com.catshome.classJournal.domain.communs.toDateStrungRU
 import com.catshome.classJournal.localNavHost
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.screens.group.ComposeAction
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun NewChildScreen(
-    idChild: DetailsChild, viewModel: NewChildViewModel = viewModel()
-
+    idChild: DetailsChild = DetailsChild(""), viewModel: NewChildViewModel = viewModel()
 ) {
-
     val viewState by viewModel.viewState().collectAsState()
     viewState.outerNavigation = localNavHost.current
     val viewAction by viewModel.viewActions().collectAsState(null)
     val keyboardController = LocalSoftwareKeyboardController.current
 
-
-
-    ScreenContent(viewState, viewModel,
+    LaunchedEffect(Unit) {
+        if (idChild.childID != "")
+            viewModel.obtainEvent(NewChildEvent.OpenChild(idChild.childID))
+        else
+//            viewState.child.birthday = Date().time.toDateStrungRU()
+            viewState.child.birthday =   LocalDate.now().minusYears(5)
+                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_RU))
+    }
+    ScreenContent(
+        viewState,
+        viewModel,
         onCancelClick = {
-            Log.e("CLJR", "Cancel Click!!!!!!!!!!!!")
             viewModel.obtainEvent(NewChildEvent.CloseClicked)
-                        },
+        },
         onSaveClick = {
-        Log.e("CLJR", "Save Click!!!!!!!!!!!!")
-        viewModel.obtainEvent(NewChildEvent.SaveClicked)
-    })
+            viewModel.obtainEvent(NewChildEvent.SaveClicked)
+        })
 
-
-    when(viewAction){
+    when (viewAction) {
         ComposeAction.Success -> {
             keyboardController?.hide()
             viewState.outerNavigation?.popBackStack()
@@ -93,30 +102,38 @@ fun NewChildScreen(
         NewChildAction.CloseClicked -> {
             viewState.outerNavigation?.popBackStack()
         }
-        is NewChildAction.SaveChild -> { }
+
+        is NewChildAction.SaveChild -> {}
         NewChildAction.SaveClicked -> {
             viewModel.obtainEvent(NewChildEvent.CloseClicked)
         }
+
+        is NewChildAction.ReloadScreen -> {
+//            ScreenContent(viewState,viewAction, viewModel,
+//                onCancelClick = {
+//                    viewModel.obtainEvent(NewChildEvent.CloseClicked)
+//                },
+//                onSaveClick = {
+//                    viewModel.obtainEvent(NewChildEvent.SaveClicked)
+//                })
+        }
+
         null -> {}
     }
 }
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ScreenContent(
-   viewState: NewChildState,
+    viewState: NewChildState,
     viewModel: NewChildViewModel,
-   onSaveClick: ()->Unit,
-   onCancelClick: ()->Unit
+    onSaveClick: () -> Unit,
+    onCancelClick: () -> Unit
 ) {
-
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
-
-
-    val groups by viewModel.groups.collectAsState(null)
-
-
-    val snackbarHostState = remember { SnackbarHostState() }
+    //val viewState by viewModel.viewState().collectAsState()
+    var groups = viewState.listScreenChildGroup
 //  Установка фокуса после переворота
     LaunchedEffect(true) {
         if (viewState.indexFocus > -1)
@@ -201,9 +218,18 @@ fun ScreenContent(
                 )
 
                 DatePickerFieldToModal(
-                    modifier = modifier, viewState,
+                    modifier = modifier,
+                    if (viewState.child.birthday.isNullOrEmpty())
+                        LocalDate.now().minusYears(5)
+                            .format(DateTimeFormatter.ofPattern(DATE_FORMAT_RU))
+                    else{
+
+                        viewState.child.birthday},
+
                     stringResource(R.string.birthday_child)
-                )
+                ) {
+                   viewModel.birthdayChange(it?.toDateStrungRU().toString())
+                }
 
                 TextField(
                     value = viewState.child.phone,
@@ -234,10 +260,7 @@ fun ScreenContent(
                     singleLine = false,
                     minLines = 4
                 )
-
-
-                val group = listOf("group1", "group2", "group3", "group4", "group5")
-
+// рисуем список групп с отметками
                 LazyColumn(
                     Modifier
                         .height(250.dp)
@@ -247,31 +270,58 @@ fun ScreenContent(
                             color = ClassJournalTheme.colors.primaryText,
                             shape = ClassJournalTheme.shapes.cornersStyle
                         )
-
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    state = rememberLazyListState()
                 )
                 {
-                    groups?.let {
-                        itemsIndexed(groups!!) { index, item ->
+                    itemsIndexed(groups!!) { index, item ->
+
+                        Card(
+                            shape = ClassJournalTheme.shapes.cornersStyle,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                            colors = CardDefaults.cardColors(ClassJournalTheme.colors.controlColor),
+                        ) {
                             Row(
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                                    .clickable {
+                                        viewModel.obtainEvent(NewChildEvent.SelectGroup(item.group?.uid.toString()))
+                                    },
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
+                                val modifier = Modifier.padding(
+                                    start = 16.dp,
+                                    top = 8.dp,
+                                    bottom = 8.dp,
+                                    end = 16.dp
+                                )
                                 Text(
-                                    item.name,
+                                    item.group?.name ?: "null",
+                                    modifier = modifier,
                                     style = ClassJournalTheme.typography.body,
                                     color = ClassJournalTheme.colors.primaryText
                                 )
-                                Icon(
-                                    Icons.Default.Check,
-                                    contentDescription = "",
-                                    tint = ClassJournalTheme.colors.primaryText
-                                )
+
+                                if (item.isChecked) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.box_ckeck),
+                                        modifier = modifier,
+                                        contentDescription = "",
+                                        tint = ClassJournalTheme.colors.primaryText
+                                    )
+                                } else {
+
+                                    Icon(
+                                        painter = painterResource(R.drawable.box_out),
+                                        modifier = modifier,
+                                        contentDescription = "",
+                                        tint = ClassJournalTheme.colors.primaryText
+                                    )
+                                }
 
                             }
-
                         }
                     }
 
@@ -279,50 +329,5 @@ fun ScreenContent(
             }
         }
     }
-
 }
 
-@Composable
-fun TextField(
-    value: String,
-    label: String,
-    supportingText: String,
-    modifier: Modifier,
-    onValueChange: (String) -> Unit,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    //maxLines: Int =1,
-    minLines: Int = 1,
-    singleLine: Boolean = true,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    errorState: Boolean = false,
-    readOnly: Boolean = false
-
-) {
-    OutlinedTextField(
-        modifier = modifier,
-        value = value,
-        isError = errorState,
-        readOnly = readOnly,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = ClassJournalTheme.colors.primaryText,
-            unfocusedTextColor = ClassJournalTheme.colors.primaryText,
-            focusedBorderColor = ClassJournalTheme.colors.tintColor,
-            focusedSupportingTextColor = ClassJournalTheme.colors.tintColor,
-            unfocusedSupportingTextColor = ClassJournalTheme.colors.primaryText,
-            focusedLabelColor = ClassJournalTheme.colors.tintColor,
-            unfocusedLabelColor = ClassJournalTheme.colors.primaryText,
-            errorLabelColor = ClassJournalTheme.colors.errorColor,
-            errorBorderColor = ClassJournalTheme.colors.errorColor,
-            errorSupportingTextColor = ClassJournalTheme.colors.errorColor
-
-        ),
-        label = { Text(label) },
-        supportingText = { Text(text = supportingText) },
-        keyboardOptions = keyboardOptions,
-        onValueChange = onValueChange,
-        singleLine = singleLine,
-        minLines = minLines,
-        trailingIcon = trailingIcon
-    )
-
-}

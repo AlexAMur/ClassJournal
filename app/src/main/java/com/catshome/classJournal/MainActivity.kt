@@ -1,25 +1,18 @@
 package com.catshome.classJournal
 
 
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.automirrored.sharp.List
-import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.ShoppingCart
-import androidx.compose.material.icons.sharp.AccountBox
 import androidx.compose.material.icons.sharp.DateRange
 import androidx.compose.material.icons.sharp.Face
 import androidx.compose.material.icons.sharp.ShoppingCart
@@ -37,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -77,28 +71,28 @@ class MainActivity : ComponentActivity() {
 
             val bottomItems = listOf(
                 ItemBottomBar(
-                    "Оплата",
+                    stringResource(R.string.item_bottom_pay),
                     ItemScreen.PayListScreen.name,
                     Icons.Sharp.ShoppingCart,
                     Icons.Outlined.ShoppingCart,
-                    MainScreen(navController)//,currentSettings)
+                    ChildListScreen(navController)//,currentSettings)
                 ),
                 ItemBottomBar(
-                    "Посещение",
+                    stringResource(R.string.item_bottom_visit),
                     ItemScreen.GroupScreen.name,
                     Icons.Sharp.DateRange,
                     Icons.Outlined.DateRange,
                     GroupScreen(navController)
                 ),
                 ItemBottomBar(
-                    "Тарифы",
-                    ItemScreen.RateScreen.name,
-                    Icons.Sharp.ShoppingCart,
-                    Icons.Outlined.ShoppingCart,
+                    stringResource(R.string.item_bottom_client),
+                    ItemScreen.MainScreen.name,
+                    Icons.Sharp.Face,
+                    Icons.Outlined.Face,
                     RateScreen()
                 ),
                 ItemBottomBar(
-                    "Отчеты",
+                    stringResource(R.string.item_bottom_report),
                     ItemScreen.ReportScreen.name,
                     Icons.AutoMirrored.Sharp.List,
                     Icons.AutoMirrored.Outlined.List,

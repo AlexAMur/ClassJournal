@@ -9,6 +9,7 @@ interface GroupRepository {
     fun deleteGroup(group: Group)
     fun getGroupById(uid: String): Group
     fun getGroupByName(name: String): Group
-    fun getGroups(isDelete: Boolean): Flow<List<Group>>
+    fun getGroups(isDelete: Boolean =false): Flow<List<Group>>
+    fun getEmptyGroup()
     fun getAllGroups(): Flow<List<Group>>
 }

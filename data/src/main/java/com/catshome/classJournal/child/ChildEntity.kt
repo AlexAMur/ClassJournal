@@ -5,8 +5,14 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.catshome.classJournal.domain.Child.Child
+import com.catshome.classJournal.domain.communs.toDateStrungRU
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
+import kotlin.time.Instant
 
 @Entity(tableName = "child")
 data class ChildEntity(
@@ -19,18 +25,27 @@ data class ChildEntity(
     var isDelete: Boolean = false
 )
 fun ChildEntity.mapToChild(): Child{
-   return Child()
+
+   return Child(
+       uid = this.uid,
+       name = this.name,
+       surname = this.surname,
+       birthday = this.birthday.toDateStrungRU(),
+       phone = this.phone,
+       note = this.note,
+       isDelete = this.isDelete
+   )
 }
 fun Child.mapToChildEntity(): ChildEntity{
-    val formatter =    SimpleDateFormat("dd.mm.yyyy", Locale.getDefault())
-    
+    val formatter =    SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+    val t =formatter.parse(this.birthday)?.time?:0
     return ChildEntity(
         uid = this.uid,
         name = this.name.toString(),
         surname = this.surname.toString(),
         phone = this.phone.toString(),
         note = this.note.toString(),
-        birthday = formatter.parse(this.birthday)?.time?:0,
+        birthday = formatter.parse(this.birthday).time,
         isDelete = this.isDelete,
     )
 }

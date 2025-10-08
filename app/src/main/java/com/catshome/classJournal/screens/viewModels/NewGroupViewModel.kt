@@ -20,15 +20,18 @@ class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupIn
                 viewState = viewState.copy(groupInteractor.getGroupByID(viewEvent.id))
             }
             is NewGroupEvent.ChangeName -> {
-                if (viewState.isError && !viewState.nameGroup.isEmpty())
-                    viewState.isError = false
+                if (viewState.isError && !viewEvent.nameGroup.isEmpty())
+                   viewState =  viewState.copy(isError = false)
                 viewState = viewState.copy(nameGroup = viewEvent.nameGroup)
             }
             is NewGroupEvent.DeleteGroup -> {
                 viewState = viewState.copy(isDelete = viewState.isDelete)
             }
-            NewGroupEvent.ActionInvoked -> viewAction = null
+            NewGroupEvent.ActionInvoked -> viewAction = ComposeAction.CloseScreen
             NewGroupEvent.SaveClicked -> {
+                if (viewState.nameGroup.trim()=="" || viewState.nameGroup.isEmpty())
+                    viewState =  viewState.copy(isError = true)
+                else{
                     groupInteractor.saveGroupUseCase(
                         Group(
                             viewState.uid,
@@ -37,6 +40,7 @@ class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupIn
                         )
                     )
                     viewAction = ComposeAction.CloseScreen
+                }
             }
             NewGroupEvent.NextClicked -> viewAction = null
         }

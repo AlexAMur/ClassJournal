@@ -10,8 +10,10 @@ import com.catshome.classJournal.PayList.PayListRepositoryImpl
 import com.catshome.classJournal.PayList.RoomPayStorage
 import com.catshome.classJournal.child.ChildDAO
 import com.catshome.classJournal.child.ChildGroupDAO
+import com.catshome.classJournal.child.ChildGroupsRepositoryImpl
 import com.catshome.classJournal.child.ChildRepositoryImpl
 import com.catshome.classJournal.child.RoomChildStorage
+import com.catshome.classJournal.domain.Child.ChildGroupRepository
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Group.GroupRepository
 import com.catshome.classJournal.domain.Group.Models.Group
@@ -35,12 +37,17 @@ class DataModule {
     @Provides
     fun provideGroupRepository(room: RoomGroupStorage): GroupRepository {
         return GroupRepositoryImpl(room)
+   }
+    @Provides
+    fun provideChildGroupRepository(childGroupDAO: ChildGroupDAO): ChildGroupRepository {
+        return ChildGroupsRepositoryImpl(childGroupDAO)
     }
     @Provides
     fun provideChildDAO(room: AppDataBase): ChildDAO{
         return room.childDAO()
     }
-    @Provides
+
+        @Provides
     fun providePayDAO(room: AppDataBase): PayDAO{
         return room.payDAO()
     }
