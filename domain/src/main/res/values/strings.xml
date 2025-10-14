@@ -7,7 +7,7 @@
 
     <string name="no_group_item">Add group</string>
     <string name="no_pay_item">Add pay</string>
-    <string name="no_child_item">Add Child</string>
+    <string name="no_child_item">Add child or group</string>
     <string name="no_visit_item">Add visit</string>
     <string name="paymant_date">Payment date</string>
 
@@ -16,6 +16,8 @@
     <string name="bottom_delete">Delete</string>
     <string name="bottom_cancel">Cancel</string>
     <string name="error_name_group">Name group cannot by empty! </string>
+    <string name="error_unique_name_group">Имя группы должно быть уникальным! </string>
+    //<string name="error_uncou_name_group">Имя группы должно быть уникальным! </string>
     <string name="name_group_label">Enter name group. </string>
     <string name="new_child_dialog_headline">New child</string>
     <string name="new_child_menu_item">New child</string>

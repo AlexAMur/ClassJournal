@@ -111,7 +111,7 @@ fun ChildListScreen(
                         viewState.item.forEach { group ->
                             stickyHeader {
                                 ItemGroup(group.key) {
-                                    //iewModel.obtainEvent(ChildListEvent.ItemGroupClicked(index = 1))
+                                    viewModel.obtainEvent(ChildListEvent. ItemGroupClicked(group.value.))
                                     //TODO определить индекс группа
                                 }
                             }

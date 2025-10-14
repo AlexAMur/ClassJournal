@@ -1,6 +1,7 @@
 package com.catshome.classJournal
 
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -41,11 +42,14 @@ import com.catshome.classJournal.theme.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 
+
+internal var context: Context? = null
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+         context= application.applicationContext
         enableEdgeToEdge()
         setContent {
              val navController = rememberNavController()
@@ -66,6 +70,7 @@ class MainActivity : ComponentActivity() {
                 CompositionLocalProvider(
                     localNavHost provides navController,
                     LocalSettingsEventBus provides settingsEventBus
+
                 ) {
 
 

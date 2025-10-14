@@ -44,7 +44,6 @@ class ChildListViewModel @Inject constructor(
             val l = childInteract.getListChildsWithGroups().map {
                 ChildItem(child = it)
             }
-
             val g = mutableListOf<ChildItem>()
             l.forEach {
                 g.add(it)

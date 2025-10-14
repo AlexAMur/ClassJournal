@@ -1,8 +1,11 @@
 package com.catshome.classJournal.Group.GroupStorege
 
+
+import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import com.catshome.classJournal.DAO.GroupsDAO
 import com.catshome.classJournal.Group.Models.GroupEntity
+import com.catshome.classJournal.SQLError
 import com.catshome.classJournal.domain.Group.Models.Group
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +15,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
-
+internal val TAG = "CLJR"
 fun Group.mapToEntity(): GroupEntity {
     return GroupEntity(
         uid = this.uid,
@@ -33,12 +36,10 @@ fun GroupEntity.mapToGroup(): Group {
 class RoomGroupStorage @Inject constructor(val groupsDAO: GroupsDAO, val group: Group) :
     GroupStorage {
     val cs = CoroutineScope(Dispatchers.IO)
-    override fun insert(group: Group) {
-        cs.launch {
-            groupsDAO.insert(group = group.mapToEntity())
-        }
-    }
 
+    override suspend fun insert(group: Group){
+        groupsDAO.insert(group = group.mapToEntity())
+    }
 
     override fun delete(group: Group): Boolean {
         try {
@@ -47,7 +48,7 @@ class RoomGroupStorage @Inject constructor(val groupsDAO: GroupsDAO, val group: 
             }
             return true
         } catch (e: Exception) {
-            Log.e("ClassJournal", e.message.toString())
+            Log.e(TAG, e.message.toString())
             return false
         }
     }
@@ -59,29 +60,30 @@ class RoomGroupStorage @Inject constructor(val groupsDAO: GroupsDAO, val group: 
             }
             return true
         } catch (e: Exception) {
-            Log.e("ClassJournal", e.message.toString())
+            Log.e(TAG, e.message.toString())
             return false
         }
     }
 
-    override  fun getGroupById(uid: String): Group {
+    override fun getGroupById(uid: String): Group {
         var group = Group()
         try {
             val data = cs.async {
-                     return@async (groupsDAO.getGroupById(uid) ?: GroupEntity(uid = "")).mapToGroup()
+                return@async (groupsDAO.getGroupById(uid) ?: GroupEntity(uid = "")).mapToGroup()
             }
             runBlocking {
-                 group =data.await()
+                group = data.await()
             }
             return group
         } catch (e: Exception) {
             Log.e("ClassJournal", e.message.toString())
             return Group()
         }
-            //TODO Все править
+        //TODO Все править
         return group
 
     }
+
     override fun readAll(): Flow<List<Group>> {
         return groupsDAO.getFull().map { list ->
             list.map { it.mapToGroup() }

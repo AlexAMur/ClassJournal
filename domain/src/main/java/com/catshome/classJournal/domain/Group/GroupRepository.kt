@@ -4,7 +4,7 @@ import com.catshome.classJournal.domain.Group.Models.Group
 import kotlinx.coroutines.flow.Flow
 
 interface GroupRepository {
-    fun saveGroup(group: Group)
+     suspend fun saveGroup(group: Group)
     fun updateGroup(group: Group): Boolean
     fun deleteGroup(group: Group)
     fun getGroupById(uid: String): Group

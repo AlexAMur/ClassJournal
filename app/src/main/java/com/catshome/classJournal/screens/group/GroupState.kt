@@ -1,6 +1,8 @@
 package com.catshome.classJournal.screens.group
 
+import android.os.Message
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.ui.focus.FocusRequester
 import androidx.wear.compose.foundation.SwipeToDismissBoxState
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.RevealState
@@ -11,9 +13,11 @@ import java.util.UUID
 data class NewGroupState (
     var uid : String = UUID.randomUUID().toString(),
     var isDelete: Boolean =false,
+    var isFocus: Boolean =false,
     var nameGroup:String  = "",
-    var isError: Boolean =false
-
+    var isError: Boolean =false,
+    var focusRequester: FocusRequester= FocusRequester(),
+    val errorMessage: String  = ""
 ){
     fun copy(group: Group): NewGroupState{
         return NewGroupState( uid =group.uid,

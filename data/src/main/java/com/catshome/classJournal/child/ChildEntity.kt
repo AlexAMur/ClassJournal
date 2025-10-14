@@ -3,18 +3,14 @@ package com.catshome.classJournal.child
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.communs.toDateStrungRU
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
-import kotlin.time.Instant
 
-@Entity(tableName = "child")
+@Entity(tableName = "child", indices = [Index(value = ["child_name", "child_surname", "child_birthday"], unique = true)])
 data class ChildEntity(
     @PrimaryKey var uid: String,
     @ColumnInfo(name = "child_name") var name: String,

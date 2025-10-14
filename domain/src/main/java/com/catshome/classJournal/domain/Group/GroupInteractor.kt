@@ -10,7 +10,7 @@ class GroupInteractor @Inject constructor (private val groupRepository: GroupRep
             return Group()
         return groupRepository.getGroupById(uid)
     }
-    fun saveGroupUseCase(group: Group){
+    suspend fun saveGroupUseCase(group: Group){
         groupRepository.saveGroup(group)
     }
     fun getGroupUseCase(isDelete: Boolean): Flow<List<Group>>{

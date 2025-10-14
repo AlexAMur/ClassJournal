@@ -33,8 +33,9 @@ fun TextField(
         errorLabelColor = ClassJournalTheme.colors.errorColor,
         errorBorderColor = ClassJournalTheme.colors.errorColor,
         errorSupportingTextColor = ClassJournalTheme.colors.errorColor,
+        errorTextColor = ClassJournalTheme.colors.errorColor,
         cursorColor = ClassJournalTheme.colors.tintColor,
-        errorCursorColor = ClassJournalTheme.colors.errorColor,
+    errorCursorColor = ClassJournalTheme.colors.errorColor,
     )
 
 ) {

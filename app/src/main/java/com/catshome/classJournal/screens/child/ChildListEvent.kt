@@ -11,7 +11,6 @@ sealed class ChildListEvent {
     data class DeleteGroupClicked(val uid: String,val index: Int) : ChildListEvent()
     data class UndoDeleteChildClicked(val uid: String, val index: Int) : ChildListEvent()
     data class UndoDeleteGroupClicked(val uid: String, val index: Int) : ChildListEvent()
-
-//    data class  ItemGroupClicked(val index: Int): ChildListEvent()
+    data class  ItemGroupClicked(val uidGroup: String): ChildListEvent()
 //    data class  ItemChildClicked(val uid: String,val index: Int): ChildListEvent()
 }

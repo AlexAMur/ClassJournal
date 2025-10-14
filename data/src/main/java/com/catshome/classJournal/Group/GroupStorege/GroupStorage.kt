@@ -4,7 +4,7 @@ import com.catshome.classJournal.domain.Group.Models.Group
 import kotlinx.coroutines.flow.Flow
 
 interface GroupStorage {
-    fun insert(group: Group)
+    suspend fun insert(group: Group)
     fun delete(group: Group):Boolean
     fun update(group: Group):Boolean
     fun getGroupById(uid: String): Group

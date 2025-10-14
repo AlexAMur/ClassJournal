@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -17,8 +18,8 @@ interface ChildDAO {
     @Transaction
     suspend fun insertChild(child: ChildEntity, group: List<ChildGroupEntity>){
         insert(child)
+        deleteChildGroupByChildID(child.uid)
         group.forEach {
-
             insert(it)
         }
 
@@ -34,6 +35,9 @@ interface ChildDAO {
 
     @Delete
     suspend fun delete(group: ChildEntity)
+
+    @Query("DELETE  from 'child_group' where childId = :childUid")
+    fun deleteChildGroupByChildID(childUid: String)
 
     @Query("Select * from 'child'")
     fun getFull(): Flow<List<ChildEntity>>

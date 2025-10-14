@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GroupsDAO {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
    suspend fun insert(group: GroupEntity)
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     suspend fun update(group: GroupEntity)
 
 

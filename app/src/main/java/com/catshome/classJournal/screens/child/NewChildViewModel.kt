@@ -23,7 +23,8 @@ class NewChildViewModel @Inject constructor(
 
     val TEXT_FILD_COUNT = 4
     val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
-    init{
+
+    init {
         getScreenGroups()
     }
 
@@ -53,14 +54,18 @@ class NewChildViewModel @Inject constructor(
             is NewChildEvent.OpenChild -> {
                 val child = childInteract.getChildByID(viewEvent.uid)
                 viewModelScope.launch {
-                    childGroups.getChildGroups(child.uid)?.collect { getScreenGroups(child,it) }
+                    childGroups.getChildGroups(child.uid).collect { getScreenGroups(it) }
                 }
-               viewState = viewState.copy(child)
+                viewState = viewState.copy(child)
             }
 
             is NewChildEvent.SaveChild -> {
-                if (viewState.child.uid.isEmpty()){
-                    viewState= viewState.copy(child = viewState.child.copy(uid= UUID.randomUUID().toString()))
+                if (viewState.child.uid.isEmpty()) {
+                    viewState = viewState.copy(
+                        child = viewState.child.copy(
+                            uid = UUID.randomUUID().toString()
+                        )
+                    )
                 }
                 childInteract.saveChildUseCase(
                     viewState.child,
@@ -96,15 +101,17 @@ class NewChildViewModel @Inject constructor(
             }
         }
     }
-
-    private fun getScreenGroups(child: Child = Child(),childGroup: List<ChildGroup> = emptyList()) {
+// создает списко групп с отметками по для state Класс ItemScreenGroup
+    private fun getScreenGroups(
+       childGroup: List<ChildGroup> = emptyList()
+    ) {
         viewModelScope.launch {
             childInteract.getGroup().collect { list ->
                 viewState =
                     viewState.copy(listScreenChildGroup = list.map { group ->
                         ItemScreenChildGroup(
-                            group, if (childGroup.find { it.uid == group.uid } == null) false else
-                                true
+                            group,
+                            childGroup.find { it.groupId == group.uid } != null // если группа найдена == true
                         )
                     })
             }
