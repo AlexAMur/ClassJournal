@@ -1,5 +1,6 @@
 package com.catshome.classJournal.domain.Child
 
+import android.content.Context
 import com.catshome.classJournal.domain.Group.Models.Group
 import kotlinx.coroutines.flow.Flow
 
@@ -13,5 +14,4 @@ interface ChildRepository {
     fun getChilds(isDelete: Boolean): Flow<List<Child>>
     fun getAllChilds(): Flow<List<Child>>
     fun getChildWithGroups(): List<ChildWithGroups>
-    //fun getChildGroups(UID: String ): Flow<List<ChildGroup>>
 }

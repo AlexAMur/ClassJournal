@@ -1,9 +1,9 @@
 package com.catshome.classJournal.screens.child
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import com.catshome.classJournal.child.ChildGroupsRepositoryImpl
+import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.ChildInteractor
 import com.catshome.classJournal.domain.Child.ChildWithGroups
 import com.catshome.classJournal.domain.Group.Models.Group
@@ -11,7 +11,6 @@ import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.collections.toSortedMap
 
 @OptIn(ExperimentalWearMaterialApi::class)
 @HiltViewModel
@@ -27,8 +26,6 @@ class ChildListViewModel @Inject constructor(
         when (viewEvent) {
             is ChildListEvent.DeleteChildClicked -> TODO()
             is ChildListEvent.DeleteGroupClicked -> TODO()
-//            is ChildListEvent.ItemChildClicked -> {}
-//            is ChildListEvent.ItemGroupClicked -> TODO()
             ChildListEvent.NewChildClicked -> viewAction = ChildListAction.NewChildClicked
             ChildListEvent.NewGroupClicked -> viewAction = ChildListAction.NewGroupClicked
             is ChildListEvent.UndoDeleteChildClicked -> TODO()
@@ -41,54 +38,58 @@ class ChildListViewModel @Inject constructor(
 
     fun loadScreen() {
         viewModelScope.launch {
-            val l = childInteract.getListChildsWithGroups().map {
+            val listChildGroups = childInteract.getListChildsWithGroups(context = context).map {
                 ChildItem(child = it)
             }
-            val g = mutableListOf<ChildItem>()
-            l.forEach {
-                g.add(it)
+            val childItem = mutableListOf<ChildItem>()
+            listChildGroups.forEach {
+                childItem.add(it)
             }
-            childInteract.getGroup().collect { gr ->
-                gr.forEach {
-                    g.add(
-                        ChildItem(
-                            child = ChildWithGroups(
-                                childUid = "",
-                                childName = "",
-                                childSurname = "",
-                                groupUid = it.uid,
-                                groupName = it.name
-                            )
-                        )
-                    )
+            childInteract.getGroup().collect { listgroup ->
+                val listtmp = listgroup.map {
+                    var add = false
+                    listChildGroups.forEach { item ->
+                        if (it.uid == item.child.groupUid)
+                            add = true
+                    }
+                     if (!add){
+                            childItem.add(ChildItem(
+                                child = ChildWithGroups(
+                                    childUid = "",
+                                    childName = "",
+                                    childSurname = "",
+                                    groupUid = it.uid,
+                                    groupName = it.name
+                                )
+                            ))
+                        }
+                    }
+
                     viewState = viewState.copy(
                         uidDelete = "",
                         isDelete = false,
                         swipeUid = "",
-                        item = g.groupBy { it.child.groupName }.toSortedMap()
+                        item = childItem.groupBy {
+                              it.child.groupName
+
+                        }//.toSortedMap()
                     )
                 }
-            }
-
-            viewState = viewState.copy(
-                uidDelete = "",
-                isDelete = false,
-                swipeUid = "",
-                item = g.groupBy { it.child.groupName }.toSortedMap()
-            )
-
-//            listGroup->
-//                listGroup.forEach { group ->
-//                    Log.e("CLJR", "group map $group")
-//                    l.forEach {childItem->
-//                        Log.e("CLJR", "ChildItem $childItem")
-//                        if(group.uid == childItem.child.groupUid)
-//                            Log.e("CLJR", "add group $group")
-//                    }
-//                }
-//            }
 
 
+//
+//            viewState = viewState.copy(
+//                uidDelete = "",
+//                isDelete = false,
+//                swipeUid = "",
+//                item = childItem.groupBy {
+//                    Group(
+//                        it.child.groupUid,
+//                        it.child.groupName,
+//                        false
+//                    )
+//                }//.toSortedMap()
+//            )
         }
     }
 }

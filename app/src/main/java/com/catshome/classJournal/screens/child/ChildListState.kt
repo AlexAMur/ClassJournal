@@ -3,7 +3,6 @@ package com.catshome.classJournal.screens.child
 import androidx.wear.compose.foundation.SwipeToDismissBoxState
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.RevealState
-import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildWithGroups
 import com.catshome.classJournal.domain.Group.Models.Group
 
@@ -11,7 +10,7 @@ data class  ChildListState(
     var uidDelete: String = "",
     var isDelete: Boolean =false,
     var swipeUid: String = "",
-    val item: Map<String,List<ChildItem>> = emptyMap()
+    val item: Map<String ,List<ChildItem>> = emptyMap()
 )
 
 data class ChildItem @OptIn(ExperimentalWearMaterialApi::class) constructor(

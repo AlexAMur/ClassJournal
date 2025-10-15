@@ -1,23 +1,22 @@
 package com.catshome.classJournal.child
 
-import android.util.Log
-import com.catshome.classJournal.AppDataBase
+
+import android.content.Context
+import com.catshome.classJournal.R
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildWithGroups
-import com.catshome.classJournal.domain.Group.Models.Group
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
-import kotlin.String
 
-class RoomChildStorage @Inject constructor(val childDAO: ChildDAO, val childGroup: ChildGroupDAO) :
+class RoomChildStorage @Inject constructor(@ApplicationContext val  context: Context  , val childDAO: ChildDAO, val childGroup: ChildGroupDAO) :
     ChildStorage {
 
 //    override fun insert(child: Child) {
@@ -100,7 +99,7 @@ class RoomChildStorage @Inject constructor(val childDAO: ChildDAO, val childGrou
                     childName = it.childName,
                     childSurname = it.childSurname,
                     groupUid = it.childUid,
-                    groupName = it.groupName?:"Без группы"
+                    groupName = it.groupName?:context.getString(R.string.no_group)
                 )
             }
         }

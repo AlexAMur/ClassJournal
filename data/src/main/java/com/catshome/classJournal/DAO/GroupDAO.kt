@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.Flow
 interface GroupsDAO {
     @Insert
    suspend fun insert(group: GroupEntity)
+
     @Update
     suspend fun update(group: GroupEntity)
-
 
     @Delete
    suspend fun delete(group: GroupEntity)

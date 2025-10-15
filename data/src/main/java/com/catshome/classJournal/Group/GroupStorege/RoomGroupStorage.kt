@@ -1,11 +1,8 @@
 package com.catshome.classJournal.Group.GroupStorege
 
-
-import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import com.catshome.classJournal.DAO.GroupsDAO
 import com.catshome.classJournal.Group.Models.GroupEntity
-import com.catshome.classJournal.SQLError
 import com.catshome.classJournal.domain.Group.Models.Group
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,13 +12,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+
 internal val TAG = "CLJR"
 fun Group.mapToEntity(): GroupEntity {
     return GroupEntity(
         uid = this.uid,
         name = this.name,
         isDelete = this.isDelete,
-
         )
 }
 
@@ -36,9 +33,14 @@ fun GroupEntity.mapToGroup(): Group {
 class RoomGroupStorage @Inject constructor(val groupsDAO: GroupsDAO, val group: Group) :
     GroupStorage {
     val cs = CoroutineScope(Dispatchers.IO)
-
     override suspend fun insert(group: Group){
-        groupsDAO.insert(group = group.mapToEntity())
+        cs.launch {
+        if (groupsDAO.getGroupById(group.uid)==null)
+                groupsDAO.insert(group = group.mapToEntity())
+        else
+             groupsDAO.update(group.mapToEntity())
+        }
+
     }
 
     override fun delete(group: Group): Boolean {
@@ -74,14 +76,15 @@ class RoomGroupStorage @Inject constructor(val groupsDAO: GroupsDAO, val group: 
             runBlocking {
                 group = data.await()
             }
-            return group
+
         } catch (e: Exception) {
-            Log.e("ClassJournal", e.message.toString())
-            return Group()
+            Log.e(TAG, e.message.toString())
+
         }
         //TODO Все править
-        return group
-
+        finally {
+            return group
+        }
     }
 
     override fun readAll(): Flow<List<Group>> {

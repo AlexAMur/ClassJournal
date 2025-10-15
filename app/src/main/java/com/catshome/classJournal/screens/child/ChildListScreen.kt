@@ -4,6 +4,7 @@ package com.catshome.classJournal
 //import androidx.compose.material.Icon
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -29,6 +30,7 @@ import com.catshome.classJournal.communs.ItemFAB
 import com.catshome.classJournal.communs.fabMenu
 import androidx.compose.runtime.getValue
 import com.catshome.classJournal.navigate.DetailsChild
+import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.child.ChildListViewModel
 import com.catshome.classJournal.screens.ScreenNoItem
@@ -108,15 +110,24 @@ fun ChildListScreen(
                             .padding(top = 16.dp, bottom = bottomPadding),
                         state = rememberLazyListState()
                     ) {
-                        viewState.item.forEach { group ->
-                            stickyHeader {
-                                ItemGroup(group.key) {
-                                    viewModel.obtainEvent(ChildListEvent. ItemGroupClicked(group.value.))
-                                    //TODO определить индекс группа
+                        viewState.item.forEach{ key,group ->
+                            stickyHeader() {headerindex->
+                                ItemGroup(key) {
+                                    if (key !=  stringResource(R.string.no_group)) {
+                                        val l = viewState.item.get(key)
+                                            ?.filter { it.child.childUid == "" }
+                                        val i = (l?.get(0)?.child?.groupUid)
+                                        i?.let {
+                                            navController.navigate(DetailsGroup(it))
+                                        }
+
+                                        //viewModel.obtainEvent(ChildListEvent. ItemGroupClicked(group.key.uid))
+                                        //TODO определить индекс группа
+                                    }
                                 }
                             }
 
-                                itemsIndexed(group.value) {  index, item ->
+                                itemsIndexed(group) {  index, item ->
                                     if (item.child.childUid.isNotEmpty()) {
                                         itemChild(item.child.childName, item.child.childSurname, {
                                             navController.navigate(DetailsChild(item.child.childUid))

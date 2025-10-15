@@ -1,6 +1,7 @@
 package com.catshome.classJournal.domain.Child
 
 
+import android.content.Context
 import android.util.Log
 import com.catshome.classJournal.domain.Group.GroupRepository
 import com.catshome.classJournal.domain.Group.Models.Group
@@ -15,9 +16,6 @@ class ChildInteractor @Inject constructor (private val childRepository: ChildRep
     fun getListChildsWithGroups():  List<ChildWithGroups>{
         return childRepository.getChildWithGroups()
     }
-//    fun getEmptyGroups()List<Group>{
-//        return groupRepository.
-//    }
     fun getChilds(isDelete: Boolean =false): Flow<List<Child>>{
         return childRepository.getChilds(isDelete)
     }

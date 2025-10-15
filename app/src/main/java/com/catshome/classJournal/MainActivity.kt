@@ -43,7 +43,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 
-internal var context: Context? = null
+var context: Context? = null
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
