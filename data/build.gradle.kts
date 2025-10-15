@@ -10,7 +10,7 @@ plugins {
 }
 
 android {
-    namespace = "com.catshome.classJournal"
+    namespace = "com.catshome.classJournal.domain"
     compileSdk = 35
 
     defaultConfig {
@@ -47,6 +47,7 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

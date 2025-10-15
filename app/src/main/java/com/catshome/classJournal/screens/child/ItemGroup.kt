@@ -14,12 +14,12 @@ import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 
 @Composable
-fun ItemGroup(nameGroup: String, onClick: @Composable ()-> Unit) {
+fun ItemGroup(nameGroup: String, onClick: ()-> Unit) {
     Card(
         Modifier
             .padding(bottom = 8.dp, top = 8.dp)
             .fillMaxWidth()
-            .clickable{onClick},
+            .clickable{onClick()},
         shape = ClassJournalTheme.shapes.cornersStyle,
         colors = CardDefaults.cardColors(ClassJournalTheme.colors.controlColor)
     ) {

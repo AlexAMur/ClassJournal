@@ -38,7 +38,7 @@ class ChildListViewModel @Inject constructor(
 
     fun loadScreen() {
         viewModelScope.launch {
-            val listChildGroups = childInteract.getListChildsWithGroups(context = context).map {
+            val listChildGroups = childInteract.getListChildsWithGroups().map {
                 ChildItem(child = it)
             }
             val childItem = mutableListOf<ChildItem>()

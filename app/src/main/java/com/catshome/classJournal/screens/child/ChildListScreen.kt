@@ -4,7 +4,6 @@ package com.catshome.classJournal
 //import androidx.compose.material.Icon
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
@@ -20,6 +18,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,14 +27,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.communs.ItemFAB
 import com.catshome.classJournal.communs.fabMenu
-import androidx.compose.runtime.getValue
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.screens.ItemScreen
-import com.catshome.classJournal.screens.child.ChildListViewModel
 import com.catshome.classJournal.screens.ScreenNoItem
 import com.catshome.classJournal.screens.child.ChildListAction
 import com.catshome.classJournal.screens.child.ChildListEvent
+import com.catshome.classJournal.screens.child.ChildListViewModel
 import com.catshome.classJournal.screens.child.ItemGroup
 import com.catshome.classJournal.screens.child.itemChild
 
@@ -111,18 +109,16 @@ fun ChildListScreen(
                         state = rememberLazyListState()
                     ) {
                         viewState.item.forEach{ key,group ->
-                            stickyHeader() {headerindex->
-                                ItemGroup(key) {
-                                    if (key !=  stringResource(R.string.no_group)) {
+                            stickyHeader{
+                                ItemGroup(key) { //onClick для
+                            //Проверить если кликнули на без разделе "без группы"
+                                    if (!key.contains(context.getString(R.string.no_group))) {
                                         val l = viewState.item.get(key)
                                             ?.filter { it.child.childUid == "" }
                                         val i = (l?.get(0)?.child?.groupUid)
                                         i?.let {
                                             navController.navigate(DetailsGroup(it))
                                         }
-
-                                        //viewModel.obtainEvent(ChildListEvent. ItemGroupClicked(group.key.uid))
-                                        //TODO определить индекс группа
                                     }
                                 }
                             }
@@ -133,22 +129,8 @@ fun ChildListScreen(
                                             navController.navigate(DetailsChild(item.child.childUid))
                                         })
                                     }
-                                    //Text(it, color = ClassJournalTheme.colors.primaryText)
                                 }
-
-
                         }
-//                    itemsIndexed(child)(
-//                        items = child.keys.,
-//                        itemContent = {
-//                            Text(
-//                                it, modifier = Modifier
-//                                    .padding(24.dp)
-//                                    .clickable {
-//
-//                                      //  navController.navigate(ItemScreen.NewChildScreen.name)
-//                                    })
-//                        })
                     }
                 }//end else NoItem
             }

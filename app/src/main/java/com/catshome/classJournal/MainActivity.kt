@@ -41,9 +41,7 @@ import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.theme.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-
-
-var context: Context? = null
+lateinit var context: Context
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
