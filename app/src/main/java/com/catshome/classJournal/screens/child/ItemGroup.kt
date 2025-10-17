@@ -1,6 +1,7 @@
 package com.catshome.classJournal.screens.child
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,7 +18,8 @@ import com.catshome.classJournal.ClassJournalTheme
 fun ItemGroup(nameGroup: String, onClick: ()-> Unit) {
     Card(
         Modifier
-            .padding(bottom = 8.dp, top = 8.dp)
+            .background(ClassJournalTheme.colors.primaryBackground)
+
             .fillMaxWidth()
             .clickable{onClick()},
         shape = ClassJournalTheme.shapes.cornersStyle,

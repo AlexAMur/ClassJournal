@@ -1,31 +1,28 @@
 package com.catshome.classJournal.screens.child
 
-import androidx.wear.compose.foundation.SwipeToDismissBoxState
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import androidx.wear.compose.material.RevealState
 import com.catshome.classJournal.domain.Child.ChildWithGroups
-import com.catshome.classJournal.domain.Group.Models.Group
+import kotlin.collections.map
 
 data class  ChildListState(
     var uidDelete: String = "",
     var isDelete: Boolean =false,
     var swipeUid: String = "",
-    val item: Map<String ,List<ChildItem>> = emptyMap()
+    var item: MutableMap<String ,List<ChildItem>> = mutableMapOf()
 )
 
-data class ChildItem @OptIn(ExperimentalWearMaterialApi::class) constructor(
-    val index: Int = -1,
-    var revealState: RevealState? = null,
-    var swipeToDismissBoxState: SwipeToDismissBoxState? = null,
+data class ChildItem (
+    val isOptionsRevealed: Boolean = false,
     val child: ChildWithGroups
 )
+fun ChangeOptionsRevealed(item: Map<String, List<ChildItem>>,
+                          childItem: ChildItem, isOptionsRevealed: Boolean,
+                          key: String):List<ChildItem>{
 
-@OptIn(ExperimentalWearMaterialApi::class)
-fun ChildItem.copy(childWithGroups: ChildWithGroups){
-    ChildItem(
-        index= this.index,
-        revealState = this.revealState,
-        swipeToDismissBoxState= this.swipeToDismissBoxState,
-        child = childWithGroups
-    )
+    return item.get(key)?.map {
+        if (it == childItem)
+            childItem.copy(isOptionsRevealed =  isOptionsRevealed)
+        else
+            it
+    }?:emptyList()
+
 }

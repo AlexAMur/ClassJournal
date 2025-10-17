@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.child
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -20,7 +21,8 @@ fun itemChild(name: String, surname: String, onClick: () -> Unit) {
     Card(
         Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, bottom = 8.dp, end = 16.dp)
+            .background(ClassJournalTheme.colors.primaryBackground)
+
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(ClassJournalTheme.colors.secondaryBackground),
         shape = ClassJournalTheme.shapes.cornersStyle
