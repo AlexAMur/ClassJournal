@@ -58,9 +58,7 @@ fun NewGroupScreen(
         if (viewState.isFocus)
             viewState.focusRequester.requestFocus()
     }
-  //  var isErrorDisplay by rememberSaveable { mutableStateOf(false) }
-
-    Surface(
+     Surface(
         Modifier
             .background(ClassJournalTheme.colors.primaryBackground)
             .fillMaxSize(),

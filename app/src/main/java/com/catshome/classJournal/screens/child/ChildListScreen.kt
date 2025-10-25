@@ -1,10 +1,7 @@
 package com.catshome.classJournal
 
-
-
-//import androidx.compose.material.Icon
-
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,12 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,12 +24,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.communs.ItemFAB
+import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.fabMenu
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.child.ChildListAction
 import com.catshome.classJournal.screens.child.ChildListEvent
 import com.catshome.classJournal.screens.child.ChildListScreenContent
 import com.catshome.classJournal.screens.child.ChildListViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceAsColor", "SuspiciousIndentation")
@@ -43,6 +45,11 @@ fun ChildListScreen(
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
     val snackbarHostState = remember { SnackbarHostState() }
+//    LaunchedEffect(Unit){
+//        viewModel.obtainEvent(ChildListEvent.ReloadScreen)
+//        Log.e("CLJR", "Child list screen.")
+//    }
+
     Surface(
         Modifier
             .fillMaxWidth()
@@ -54,8 +61,21 @@ fun ChildListScreen(
                 .fillMaxSize()
                 .background(color = ClassJournalTheme.colors.primaryBackground),
             snackbarHost = {
-
+                //SnackbarHost(snackbarHostState)
                 SnackbarHost(snackbarHostState)
+
+               LaunchedEffect(viewState.snackBarShow){
+                    if (viewState.snackBarShow) {
+                         SnackBarAction(
+                            message = viewState.snackMessage,
+                            actionLabel = viewState.snackActionLabel,
+                            snackbarHostState,
+                            onDismissed = viewState.onDismissed!!,
+                            onActionPerformed = viewState.onActionPerformed!!
+
+                        )
+                    }
+                }
             },
             bottomBar = {
                 //Создание меню для нового ребенка и новой группы
@@ -86,13 +106,11 @@ fun ChildListScreen(
                 fabMenu(listFAB = listFAB)
             }
         ) {
-
             ChildListScreenContent(
                 navController = navController,
                 viewModel = viewModel,
                 viewState = viewState,
-                snackbarHostState
-
+                snackbarState = snackbarHostState
             )
         }
         when (viewAction) {

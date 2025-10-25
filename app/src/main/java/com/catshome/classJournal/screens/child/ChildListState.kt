@@ -1,12 +1,15 @@
 package com.catshome.classJournal.screens.child
 
+import androidx.compose.material3.SnackbarHostState
 import com.catshome.classJournal.domain.Child.ChildWithGroups
-import kotlin.collections.map
 
 data class  ChildListState(
     var uidDelete: String = "",
-    var isDelete: Boolean =false,
-    var swipeUid: String = "",
+    var snackBarShow: Boolean = false,
+    var snackMessage: String ="",
+    var snackActionLabel: String ="",
+    var onDismissed: (()->Unit)? = null,
+    var onActionPerformed: (()->Unit)? = null,
     var item: MutableMap<String ,List<ChildItem>> = mutableMapOf()
 )
 
@@ -14,15 +17,3 @@ data class ChildItem (
     val isOptionsRevealed: Boolean = false,
     val child: ChildWithGroups
 )
-fun ChangeOptionsRevealed(item: Map<String, List<ChildItem>>,
-                          childItem: ChildItem, isOptionsRevealed: Boolean,
-                          key: String):List<ChildItem>{
-
-    return item.get(key)?.map {
-        if (it == childItem)
-            childItem.copy(isOptionsRevealed =  isOptionsRevealed)
-        else
-            it
-    }?:emptyList()
-
-}

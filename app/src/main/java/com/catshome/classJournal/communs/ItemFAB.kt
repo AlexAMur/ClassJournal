@@ -17,6 +17,6 @@ data class ItemFAB(
     val label: String ="",
     val containerColor: Color,
     val contentColor: Color,
-    val icon: Painter?,//Icons.Default.Add,
+    val icon: Painter?,
     val onClick: () -> Unit
 )

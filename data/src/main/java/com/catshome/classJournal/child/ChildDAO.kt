@@ -18,12 +18,24 @@ interface ChildDAO {
     @Transaction
     suspend fun insertChild(child: ChildEntity, group: List<ChildGroupEntity>){
         insert(child)
-        deleteChildGroupByChildID(child.uid)
-        group.forEach {
-            insert(it)
+        if(group.isNotEmpty()) {
+            deleteChildGroupByChildID(child.uid)
+            group.forEach {
+                insert(it)
+            }
         }
-
     }
+    @Transaction
+    suspend fun updateChild(child: ChildEntity, group: List<ChildGroupEntity>){
+        update(child)
+        if(group.isNotEmpty()) {
+            deleteChildGroupByChildID(child.uid)
+            group.forEach {
+                insert(it)
+            }
+        }
+    }
+
     @Insert
     suspend fun insert(childGroupEntity: ChildGroupEntity)
 

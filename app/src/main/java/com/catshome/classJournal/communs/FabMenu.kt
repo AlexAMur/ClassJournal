@@ -41,7 +41,7 @@ fun fabMenu(
         LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding.calculateBottomPadding()
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
         Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.End) {
-            listFAB.forEach { itemFAB->
+            listFAB.forEach { itemFAB ->
                 if (showMenu) {
                     FloatingActionButton(
                         modifier = itemFAB.modifier.padding(end = 16.dp),
@@ -53,12 +53,12 @@ fun fabMenu(
                         }) {
                         Row {
                             Icon(
-                                painter = (itemFAB.icon?:Icons.Default.Info) as Painter,
+                                painter = (itemFAB.icon ?: Icons.Default.Info) as Painter,
                                 null,
-                                modifier = Modifier.padding(start = 16.dp , end = 16.dp),
+                                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                                 tint = ClassJournalTheme.colors.primaryBackground
                             )
-                           // Text(itemFAB.label, modifier = Modifier.padding(start = 16.dp))
+                            // Text(itemFAB.label, modifier = Modifier.padding(start = 16.dp))
                         }
                     }
                 }
@@ -67,11 +67,12 @@ fun fabMenu(
             FloatingActionButton(
                 modifier = Modifier
                     .padding(bottom = bottomPadding + 16.dp, end = 16.dp)
-                    .onFocusChanged{if(!it.isFocused) showMenu =false},
+                   // .onFocusChanged { if (!it.isFocused) showMenu = false }
+                        ,
                 containerColor = if (showMenu) ClassJournalTheme.colors.controlColor else ClassJournalTheme.colors.tintColor,
                 contentColor = if (showMenu) ClassJournalTheme.colors.primaryText else
                     ClassJournalTheme.colors.secondaryBackground,
-                shape = if(showMenu) CircleShape else FloatingActionButtonDefaults.shape,
+                shape = if (showMenu) CircleShape else FloatingActionButtonDefaults.shape,
 
                 onClick = {
                     showMenu = !showMenu

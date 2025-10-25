@@ -9,6 +9,5 @@ import androidx.room.PrimaryKey
 data class GroupEntity(
     @PrimaryKey  var uid: String,
     @ColumnInfo(name = "group_name") var name: String = "",
-    var isDelete: Boolean = false,
-
+    var isDelete: Boolean = false
     )

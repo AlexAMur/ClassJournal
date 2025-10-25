@@ -16,7 +16,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-class RoomChildStorage @Inject constructor(@ApplicationContext val  context: Context  , val childDAO: ChildDAO, val childGroup: ChildGroupDAO) :
+class RoomChildStorage @Inject constructor(
+    @ApplicationContext val context: Context,
+    val childDAO: ChildDAO,
+    val childGroup: ChildGroupDAO
+) :
     ChildStorage {
 
 //    override fun insert(child: Child) {
@@ -30,9 +34,8 @@ class RoomChildStorage @Inject constructor(@ApplicationContext val  context: Con
         childGroup: List<ChildGroup>
     ) {
         CoroutineScope(Dispatchers.IO).launch {
-
             childDAO.insertChild(child.mapToChildEntity(), childGroup.map {
-                           it.mapToChildGroupEntity()
+                it.mapToChildGroupEntity()
             })
         }
     }
@@ -47,16 +50,18 @@ class RoomChildStorage @Inject constructor(@ApplicationContext val  context: Con
         child: Child,
         childGroup: List<ChildGroup>
     ) {
-        TODO("Not yet implemented")
+        CoroutineScope(Dispatchers.IO).launch {
+            if (childGroup.isEmpty())
+                childDAO.update(child.mapToChildEntity())
+            else
+            {
+                childDAO.updateChild(child.mapToChildEntity(),
+                    group = childGroup.map { it.mapToChildGroupEntity()}
+                )
+            }
+
+        }
     }
-
-//    override fun update(child: Child) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            childDAO.update(child.mapToChildEntity())
-//        }
-//    }
-
-
     override fun getChildById(uid: String): Child {
         val defferedChild = CoroutineScope(Dispatchers.IO).async {
             return@async (childDAO.getChildById(uid))
@@ -99,7 +104,7 @@ class RoomChildStorage @Inject constructor(@ApplicationContext val  context: Con
                     childName = it.childName,
                     childSurname = it.childSurname,
                     groupUid = it.childUid,
-                    groupName = it.groupName?:context.getString(R.string.no_group)
+                    groupName = it.groupName ?: context.getString(R.string.no_group)
                 )
             }
         }

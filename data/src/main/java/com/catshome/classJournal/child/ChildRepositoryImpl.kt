@@ -2,6 +2,8 @@ package com.catshome.classJournal.child
 
 import android.R
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildRepository
@@ -9,13 +11,26 @@ import com.catshome.classJournal.domain.Child.ChildWithGroups
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage):ChildRepository {
+class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage) : ChildRepository {
+     val TAG= "CLJR"
     override fun saveChild(child: Child, childGroup: List<ChildGroup>) {
-       childStorage.insert(child,childGroup)
+        try {
+            childStorage.insert(child, childGroup)
+        } catch (e: SQLiteConstraintException) {
+            Log.e(TAG, "Error SQL Constraint Exception ${e.message}")
+        }
     }
 
     override fun updateChild(child: Child, childGroup: List<ChildGroup>) {
-        childStorage.update(child, childGroup)
+        try {
+            childStorage.update(child, childGroup)
+        } catch (e: SQLiteConstraintException) {
+            Log.e(TAG, "Error SQL Constraint Exception ${e.message}")
+        }
+    }
+
+    override fun setDelete(child: Child) {
+        updateChild(child, emptyList())
     }
 
 
@@ -31,7 +46,7 @@ class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage):Ch
     }
 
     override fun getChildById(uid: String): Child {
-      return childStorage.getChildById(uid)
+        return childStorage.getChildById(uid)
 
     }
 
@@ -40,11 +55,11 @@ class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage):Ch
     }
 
     override fun getChilds(isDelete: Boolean): Flow<List<Child>> {
-      return childStorage.read(isDelete)
+        return childStorage.read(isDelete)
     }
 
     override fun getAllChilds(): Flow<List<Child>> {
-       return childStorage.readAll()
+        return childStorage.readAll()
     }
 
     override fun getChildWithGroups(): List<ChildWithGroups> {

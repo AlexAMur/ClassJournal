@@ -1,7 +1,6 @@
 package com.catshome.classJournal.screens.viewModels
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Group.GroupInteractor
@@ -11,6 +10,8 @@ import com.catshome.classJournal.screens.group.NewGroupEvent
 import com.catshome.classJournal.screens.group.NewGroupState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,22 +20,26 @@ import javax.inject.Inject
 class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupInteractor) :
     BaseViewModel<NewGroupState, ComposeAction, NewGroupEvent>(installState = NewGroupState()) {
     @SuppressLint("SuspiciousIndentation")
+    val cs = CoroutineScope(Dispatchers.IO)
     private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-        if(throwable.message?.contains("SQLITE_CONSTRAINT_UNIQUE") == true){
-        viewState = viewState.copy(
-            isError = true, errorMessage =context?.getString(R.string.error_unique_name_group)?:"Ошибка!!!")
+        if (throwable.message?.contains("SQLITE_CONSTRAINT_UNIQUE") == true) {
+            viewState = viewState.copy(
+                isError = true,
+                errorMessage = context?.getString(R.string.error_unique_name_group) ?: "Ошибка!!!"
+            )
             return@CoroutineExceptionHandler
         }
-        if(throwable.message?.contains("SQLITE_CONSTRAINT_PRIMARYKEY") == true){
+        if (throwable.message?.contains("SQLITE_CONSTRAINT_PRIMARYKEY") == true) {
             viewState = viewState.copy(
                 isError = true,
-                errorMessage = " ${context?.getString(R.string.error_primarykey_group)}")
-                return@CoroutineExceptionHandler
-                 }
-         else{
+                errorMessage = " ${context?.getString(R.string.error_primarykey_group)}"
+            )
+            return@CoroutineExceptionHandler
+        } else {
             viewState = viewState.copy(
                 isError = true,
-                errorMessage = "${context?.getString(R.string.error_save_group)} ${throwable.message} ")
+                errorMessage = "${context?.getString(R.string.error_save_group)} ${throwable.message} "
+            )
 
         }
     }
@@ -44,21 +49,26 @@ class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupIn
             is NewGroupEvent.OpenGroup -> {
                 viewState = viewState.copy(groupInteractor.getGroupByID(viewEvent.id))
             }
+
             is NewGroupEvent.ChangeName -> {
                 if (viewState.isError)
                     viewState = viewState.copy(isError = false)
                 viewState = viewState.copy(nameGroup = viewEvent.nameGroup)
             }
+
             is NewGroupEvent.DeleteGroup -> {
                 viewState = viewState.copy(isDelete = viewState.isDelete)
             }
+
             NewGroupEvent.ActionInvoked -> viewAction = ComposeAction.CloseScreen
             NewGroupEvent.SaveClicked -> {
                 if (viewState.nameGroup.trim() == "" || viewState.nameGroup.isEmpty())
-                    viewState = viewState.copy(isError = true,
-                        errorMessage = context?.getString(R.string.error_name_group)?:"пусто")
+                    viewState = viewState.copy(
+                        isError = true,
+                        errorMessage = context?.getString(R.string.error_name_group) ?: "пусто"
+                    )
                 else {
-                    viewModelScope.launch(exceptionHandler) {
+                    cs.launch(exceptionHandler) {
                         groupInteractor.saveGroupUseCase(
                             Group(
                                 viewState.uid,

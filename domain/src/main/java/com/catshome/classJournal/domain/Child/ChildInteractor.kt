@@ -25,8 +25,6 @@ class ChildInteractor @Inject constructor (private val childRepository: ChildRep
         return childRepository.getChildById(uid)
     }
     fun saveChildUseCase(child: Child, childGroup: List<ChildGroup>){
-
-
         if (child.uid.isEmpty())
             child.uid = UUID.randomUUID().toString()
 
@@ -34,24 +32,23 @@ class ChildInteractor @Inject constructor (private val childRepository: ChildRep
             return
         if(child.surname.trim().isEmpty())
             return
-
-
         //Если все проверки пройдены сохраняем данные
         childRepository.saveChild(child, childGroup )
     }
     fun getChild(uid: String): Child{
         return childRepository.getChildById(uid)
     }
+
     fun getGroupByChildUID(uid: String):Flow<List<ChildGroup>>?{
         return  childGroupRepository.getChildGroups(uid)
     }
     //снять пометку на удаление
-    fun  unDeleteUseCase(child: Child, childGroup: List<ChildGroup>){
-        childRepository.updateChild(child.copy(isDelete = false), childGroup = childGroup)
+    fun  unDeleteChildUseCase(child: Child){
+        childRepository.setDelete(child.copy(isDelete = false))
     }
     //Пометить на удаление
-    fun deleteGroupUseCase(child: Child, childGroup: List<ChildGroup>){
-        childRepository.updateChild(child.copy(isDelete = true), childGroup)
+    fun deleteChildUseCase(uidChild: String){
+        childRepository.setDelete(childRepository.getChildById(uidChild).copy(isDelete = true))
 
     }
     fun removeUseCase(child: Child){

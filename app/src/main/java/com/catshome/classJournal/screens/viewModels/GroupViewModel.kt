@@ -60,7 +60,7 @@ class GroupViewModel @Inject constructor(private val groupInteractor: GroupInter
                         CoroutineScope(Dispatchers.Main).launch {
                             viewState.listItems[viewEvent.index].revealState?.snapTo(RevealValue.Covered)
                         }
-                        groupInteractor.deleteGroupUseCase(groupInteractor.getGroupByID(viewEvent.uid))
+                        groupInteractor.deleteUseCase(groupInteractor.getGroupByID(viewEvent.uid))
 
                     }
                 }
