@@ -11,7 +11,7 @@ suspend fun SnackBarAction(message: String, actionLabel: String, snackbarState: 
             message = message,
             actionLabel = actionLabel,
              withDismissAction = true,
-            duration = SnackbarDuration.Indefinite
+            duration = SnackbarDuration.Short
         )){
              SnackbarResult.Dismissed -> {onDismissed()}
              SnackbarResult.ActionPerformed -> {onActionPerformed()}

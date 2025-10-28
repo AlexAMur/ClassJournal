@@ -15,7 +15,10 @@
     <string name="delete_message">Do you want delete object?</string>
     <string name="bottom_delete">Delete</string>
     <string name="bottom_cancel">Cancel</string>
+    <string name="bottom_yes">Да</string>
 
+
+    <string name="message_cancel">Отменить удаление</string>
     <string name="no_group">Без группы</string>
 
     <string name="error_name_group">Name group cannot by empty! </string>

@@ -1,7 +1,5 @@
 package com.catshome.classJournal.child
 
-import android.R
-import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import com.catshome.classJournal.domain.Child.Child
@@ -12,10 +10,13 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage) : ChildRepository {
-     val TAG= "CLJR"
+    val TAG = "CLJR"
     override fun saveChild(child: Child, childGroup: List<ChildGroup>) {
         try {
-            childStorage.insert(child, childGroup)
+            if (childStorage.getChildById(child.uid) == null)
+                childStorage.insert(child, childGroup)
+            else
+                childStorage.update(child = child, childGroup)
         } catch (e: SQLiteConstraintException) {
             Log.e(TAG, "Error SQL Constraint Exception ${e.message}")
         }
@@ -29,8 +30,9 @@ class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage) : 
         }
     }
 
-    override fun setDelete(child: Child) {
-        updateChild(child, emptyList())
+    override fun setDelete(child: Child?) {
+        if (child != null)
+            updateChild(child, emptyList())
     }
 
 
@@ -45,7 +47,7 @@ class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage) : 
         TODO("Not yet implemented")
     }
 
-    override fun getChildById(uid: String): Child {
+    override fun getChildById(uid: String): Child? {
         return childStorage.getChildById(uid)
 
     }

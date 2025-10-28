@@ -45,10 +45,10 @@ fun ChildListScreen(
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
     val snackbarHostState = remember { SnackbarHostState() }
-//    LaunchedEffect(Unit){
-//        viewModel.obtainEvent(ChildListEvent.ReloadScreen)
+    LaunchedEffect(Unit){
+        viewModel.obtainEvent(ChildListEvent.ReloadScreen)
 //        Log.e("CLJR", "Child list screen.")
-//    }
+    }
 
     Surface(
         Modifier

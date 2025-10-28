@@ -116,48 +116,24 @@ fun ChildListScreenContent(
                                                                 uidChild = ""
                                                             )
                                                         )
-                                                        viewModel.obtainEvent(ChildListEvent.showSnackBar(message = group.first().child.groupName,
-                                                            actionLabel = context.getString(R.string.bottom_cancel),
-                                                            onDismissed = {
-                                                                viewModel.obtainEvent(
-                                                                    ChildListEvent.deleteGroup(
-                                                                        viewState.uidDelete
+                                                        viewModel.obtainEvent(
+                                                            ChildListEvent.showSnackBar(
+                                                                message = "${context.getString(R.string.message_cancel)} ${group.first().child.groupName} ?",
+                                                                actionLabel = context.getString(R.string.bottom_cancel),
+                                                                onDismissed = {
+                                                                    viewModel.obtainEvent(
+                                                                        ChildListEvent.deleteGroup(
+                                                                            viewState.uidDelete
+                                                                        )
                                                                     )
-                                                                )
-                                                                viewState.snackBarShow =false
-                                                            },
-                                                                    onActionPerformed = {
-                                                                        //Сброс удаления
-                                                                        Log.e("CLJR", "Cancel delete")
-                                                                    viewModel.obtainEvent(ChildListEvent.undoDelete)
-                                                                        viewState.snackBarShow =false
-                                                                    }
-
-                                                        ))
-
-//                                                        when (
-//                                                            SnackBarAction(
-//                                                            message = group.first().child.groupName,
-//                                                            actionLabel = context.getString(R.string.bottom_cancel),
-//                                                            snackbarState = snackbarState,
-//                                                                onDismissed ={
-//                                                                //подтверждение удаления
-//                                                                viewModel.obtainEvent(
-//                                                                    ChildListEvent.deleteGroup(
-//                                                                        viewState.uidDelete
-//                                                                    )
-//                                                                )
-//                                                            },
-//                                                                onActionPerformed = {
-//                                                                    //Сброс удаления
-//                                                                    viewModel.obtainEvent(ChildListEvent.undoDelete)
-//                                                                }
-//                                                        )
-                                                //            SnackbarResult.Dismissed ->
-
-                                                            //SnackbarResult.ActionPerformed -> {
-
-
+                                                                },
+                                                                onActionPerformed = {
+                                                                    //Сброс удаления
+                                                                    viewModel.obtainEvent(
+                                                                        ChildListEvent.undoDelete
+                                                                    )
+                                                                }
+                                                            ))
 
                                                     }
                                                 },
@@ -229,43 +205,40 @@ fun ChildListScreenContent(
                                             )
                                         },
                                         actions = {
-//                                            ActionIcon(
-//                                                onClick = {
-//                                                    //Удаление ребенка из списка
-//                                                    viewModel.obtainEvent(
-//                                                        ChildListEvent.deleteClicked(
-//                                                            uidChild = item.child.childUid,
-//                                                            uidGroup = "",
-//                                                            key = key
-//                                                        )
-//                                                    )
+                                            ActionIcon(
+                                                onClick = {
+                                                    //Удаление ребенка из списка
+                                                    viewModel.obtainEvent(
+                                                        ChildListEvent.deleteClicked(
+                                                            uidChild = item.child.childUid,
+                                                            uidGroup = "",
+                                                            key = key
+                                                        )
+                                                    )
 //                                                    scope.launch {
-//                                                        when (SnackBarAction(
-//                                                            message = item.child.childName,
-//                                                            actionLabel = context.getString(R.string.bottom_cancel),
-//                                                            snackbarState = snackbarState
-//                                                        )) {
-//                                                            SnackbarResult.Dismissed -> {
-//                                                                //Удаляем ребенка
-//                                                                viewModel.obtainEvent(
-//                                                                    ChildListEvent.deleteChild(
-//                                                                        uid = item.child.childUid,
-//                                                                        key = key
-//                                                                    )
-//                                                                )
-//                                                            }
-//                                                            SnackbarResult.ActionPerformed -> {
-//                                                                //Пользователь отменил удаление ребенка
-//                                                                viewModel.obtainEvent(ChildListEvent.undoDelete)
-//                                                            }
-//                                                        }
-//                                                    }
-//                                                },
-//                                                icon = Icons.Default.Delete,
-//                                                modifier = Modifier
-//                                                    .fillMaxHeight()
-//                                                    .background(ClassJournalTheme.colors.primaryBackground)
-//                                            )
+                                                    viewModel.obtainEvent(
+                                                        ChildListEvent.showSnackBar(
+                                                            message = "${context.getString(R.string.message_cancel)} ${item.child.childName} ?",
+                                                            actionLabel = context.getString(R.string.bottom_cancel),
+                                                            onDismissed = {
+                                                                viewModel.obtainEvent(
+                                                                    ChildListEvent.deleteChild(
+                                                                        uid = item.child.childUid,
+                                                                        key = key
+                                                                    )
+                                                                )
+                                                            },
+                                                            onActionPerformed = {
+                                                                viewModel.obtainEvent(ChildListEvent.undoDelete)
+                                                            }
+
+                                                        ))
+                                                },
+                                                icon = Icons.Default.Delete,
+                                                modifier = Modifier
+                                                    .fillMaxHeight()
+                                                    .background(ClassJournalTheme.colors.primaryBackground)
+                                            )
                                         },
                                     ) {
                                         //Отрисовка контента  ребенка

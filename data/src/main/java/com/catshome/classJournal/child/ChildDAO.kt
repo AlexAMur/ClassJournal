@@ -1,17 +1,12 @@
 package com.catshome.classJournal.child
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.catshome.classJournal.domain.Child.Child
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
 @Dao
 interface ChildDAO {
@@ -25,6 +20,7 @@ interface ChildDAO {
             }
         }
     }
+
     @Transaction
     suspend fun updateChild(child: ChildEntity, group: List<ChildGroupEntity>){
         update(child)
@@ -35,21 +31,43 @@ interface ChildDAO {
             }
         }
     }
+    suspend fun deleteChild(child: ChildEntity){
+        if (checkChildGroupByChildID(child.uid)== 0)
+            delete(child)
+        else
+            updateChild(child.copy(isDelete = true), emptyList())
+    }
 
     @Insert
     suspend fun insert(childGroupEntity: ChildGroupEntity)
 
     @Insert
-    suspend fun insert(group: ChildEntity)
+    suspend fun insert(child: ChildEntity)
 
-    @Update
-    suspend fun update(group: ChildEntity)
+    @Update(entity = ChildEntity::class)
+     suspend fun update(child: ChildEntity)
+
+//    @Query("UPDATE child set child_name = :name, child_surname = :surname, " +
+//            "child_birthday = :birthday ,  child_phone = :phone," +
+//            " child_note =:note, isDelete = :isDelete where uid = :uid ")
+//    suspend fun updateChild(
+//        uid: String,
+//        name: String,
+//        surname: String,
+//        birthday: Long,
+//        phone: String,
+//        note: String,
+//        isDelete: Boolean
+//    )
 
     @Delete
-    suspend fun delete(group: ChildEntity)
+    suspend fun delete(child: ChildEntity)
 
     @Query("DELETE  from 'child_group' where childId = :childUid")
     fun deleteChildGroupByChildID(childUid: String)
+
+    @Query("Select count()  from 'child_group' where childId = :childUid")
+    fun checkChildGroupByChildID(childUid: String):Int
 
     @Query("Select * from 'child'")
     fun getFull(): Flow<List<ChildEntity>>
@@ -62,5 +80,4 @@ interface ChildDAO {
 
     @Query("SELECT * FROM 'child' where isDelete = :isDelete")
     fun getChilds(isDelete: Boolean): Flow<List<ChildEntity>>
-
 }

@@ -139,7 +139,11 @@ fun ScreenContent(
         if (viewState.indexFocus > -1)
             viewModel.listTextField[viewState.indexFocus].requestFocus()
     }
+    LaunchedEffect(viewState.isError) {
+        if(viewState.isError){
 
+        }
+    }
     Card(
         modifier = Modifier.fillMaxSize(),
         colors = CardDefaults.cardColors(
@@ -195,6 +199,7 @@ fun ScreenContent(
                     value = viewState.child.name,
                     label = stringResource(R.string.name_child),
                     supportingText = stringResource(R.string.name_child),
+                    errorState = viewState.isNameError,
                     modifier = modifier
                         .focusRequester(viewModel.listTextField[0])
                         .onFocusChanged {
@@ -207,6 +212,7 @@ fun ScreenContent(
                     value = viewState.child.surname,
                     label = stringResource(R.string.surname_child),
                     supportingText = stringResource(R.string.surname_child),
+                    errorState = viewState.isSurnameError,
                     modifier = modifier
                         .focusRequester(viewModel.listTextField[1])
                         .onFocusChanged {

@@ -20,8 +20,8 @@ data class ChildEntity(
     @ColumnInfo(name = "child_birthday") var birthday: Long,
     var isDelete: Boolean = false
 )
-fun ChildEntity.mapToChild(): Child{
 
+fun ChildEntity.mapToChild(): Child{
    return Child(
        uid = this.uid,
        name = this.name,
@@ -32,6 +32,7 @@ fun ChildEntity.mapToChild(): Child{
        isDelete = this.isDelete
    )
 }
+
 fun Child.mapToChildEntity(): ChildEntity{
     val formatter =    SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
     val t =formatter.parse(this.birthday)?.time?:0

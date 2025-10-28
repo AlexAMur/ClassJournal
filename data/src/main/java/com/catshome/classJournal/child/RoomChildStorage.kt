@@ -62,14 +62,14 @@ class RoomChildStorage @Inject constructor(
 
         }
     }
-    override fun getChildById(uid: String): Child {
+    override fun getChildById(uid: String): Child? {
         val defferedChild = CoroutineScope(Dispatchers.IO).async {
             return@async (childDAO.getChildById(uid))
         }
         val data = runBlocking {
             return@runBlocking defferedChild.await()
         }
-        return data?.mapToChild() ?: Child()
+        return data?.mapToChild()
     }
 
     override fun getChildByName(child: Child): Flow<List<Child>> {

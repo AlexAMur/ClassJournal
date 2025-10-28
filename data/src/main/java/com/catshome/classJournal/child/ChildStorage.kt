@@ -10,7 +10,7 @@ interface ChildStorage {
         fun insert(child: Child, childGroup: List<ChildGroup>)
         fun delete(child: Child)
         fun update(child: Child, childGroup: List<ChildGroup>)
-        fun getChildById(uid: String):Child
+        fun getChildById(uid: String):Child?
         fun getChildByName(child: Child): Flow<List<Child>>
         fun read(isDelete: Boolean): Flow<List<Child>>
         fun readAll(): Flow<List<Child>>

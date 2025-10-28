@@ -1,8 +1,6 @@
 package com.catshome.classJournal.domain.Child
 
 
-import android.content.Context
-import android.util.Log
 import com.catshome.classJournal.domain.Group.GroupRepository
 import com.catshome.classJournal.domain.Group.Models.Group
 import kotlinx.coroutines.flow.Flow
@@ -22,24 +20,25 @@ class ChildInteractor @Inject constructor (private val childRepository: ChildRep
     fun  getChildByID(uid: String): Child{
         if (uid=="")
             return Child()
-        return childRepository.getChildById(uid)
+        return childRepository.getChildById(uid)?: Child()
     }
-    fun saveChildUseCase(child: Child, childGroup: List<ChildGroup>){
+
+    fun saveChildUseCase(child: Child, childGroup: List<ChildGroup>): Boolean {
         if (child.uid.isEmpty())
             child.uid = UUID.randomUUID().toString()
 
-        if(child.name.trim().isEmpty())
-            return
-        if(child.surname.trim().isEmpty())
-            return
+        if(child.name.trim().isEmpty() || child.surname.trim().isEmpty() || child.birthday.trim().isEmpty())
+            return false
         //Если все проверки пройдены сохраняем данные
         childRepository.saveChild(child, childGroup )
-    }
-    fun getChild(uid: String): Child{
-        return childRepository.getChildById(uid)
-    }
+        return true
 
-    fun getGroupByChildUID(uid: String):Flow<List<ChildGroup>>?{
+    }
+//    fun getChild(uid: String): Child{
+//        return childRepository.getChildById(uid)
+//    }
+
+    fun getGroupByChildID(uid: String):Flow<List<ChildGroup>>?{
         return  childGroupRepository.getChildGroups(uid)
     }
     //снять пометку на удаление
@@ -48,7 +47,8 @@ class ChildInteractor @Inject constructor (private val childRepository: ChildRep
     }
     //Пометить на удаление
     fun deleteChildUseCase(uidChild: String){
-        childRepository.setDelete(childRepository.getChildById(uidChild).copy(isDelete = true))
+      //  childRepository.deleteChild(childRepository.getChildById(uidChild))
+        childRepository.setDelete(childRepository.getChildById(uidChild)?.copy(isDelete = true))
 
     }
     fun removeUseCase(child: Child){
