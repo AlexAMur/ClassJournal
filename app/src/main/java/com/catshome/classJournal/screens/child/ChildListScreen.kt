@@ -45,90 +45,91 @@ fun ChildListScreen(
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
     val snackbarHostState = remember { SnackbarHostState() }
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.obtainEvent(ChildListEvent.ReloadScreen)
 //        Log.e("CLJR", "Child list screen.")
     }
 
-    Surface(
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(color = ClassJournalTheme.colors.primaryBackground)
-    ) {
-        Scaffold(
+        Surface(
             Modifier
-                .fillMaxSize()
-                .background(color = ClassJournalTheme.colors.primaryBackground),
-            snackbarHost = {
-                //SnackbarHost(snackbarHostState)
-                SnackbarHost(snackbarHostState)
-
-               LaunchedEffect(viewState.snackBarShow){
-                    if (viewState.snackBarShow) {
-                         SnackBarAction(
-                            message = viewState.snackMessage,
-                            actionLabel = viewState.snackActionLabel,
-                            snackbarHostState,
-                            onDismissed = viewState.onDismissed!!,
-                            onActionPerformed = viewState.onActionPerformed!!
-
-                        )
-                    }
-                }
-            },
-            bottomBar = {
-                //Создание меню для нового ребенка и новой группы
-                val listFAB = listOf(
-                    ItemFAB(
-                        label = stringResource(R.string.new_child_menu_item),
-                        modifier = Modifier.padding(start = 16.dp, bottom = 16.dp),
-                        containerColor = ClassJournalTheme.colors.tintColor,
-                        contentColor = ClassJournalTheme.colors.primaryText,
-                        //onClick ADD CHILD
-                        onClick = {
-                            viewModel.obtainEvent(ChildListEvent.NewChildClicked)
-                        },
-                        icon = painterResource(R.drawable.icon_face_24)//Icons.Default.Face
-                    ),
-                    ItemFAB(
-                        label = stringResource(R.string.new_group_menu_item),
-                        modifier = Modifier.padding(start = 16.dp, bottom = 16.dp),
-                        containerColor = ClassJournalTheme.colors.tintColor,
-                        contentColor = ClassJournalTheme.colors.primaryText,
-//onClick ADD GROUP
-                        onClick = {
-                            viewModel.obtainEvent(ChildListEvent.NewGroupClicked)
-                        },
-                        icon = painterResource(R.drawable.fil_group_24)
-                    )
-                )
-                fabMenu(listFAB = listFAB)
-            }
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(color = ClassJournalTheme.colors.primaryBackground)
         ) {
-            ChildListScreenContent(
-                navController = navController,
-                viewModel = viewModel,
-                viewState = viewState,
-                snackbarState = snackbarHostState
-            )
-        }
-        when (viewAction) {
-            ChildListAction.CloseScreen -> {
-                viewModel.clearAction()
+            Scaffold(
+                Modifier
+                    .fillMaxSize()
+                    .background(color = ClassJournalTheme.colors.primaryBackground),
+                snackbarHost = {
+                    //SnackbarHost(snackbarHostState)
+                    SnackbarHost(snackbarHostState)
+
+                    LaunchedEffect(viewState.snackBarShow) {
+                        if (viewState.snackBarShow) {
+                            SnackBarAction(
+                                message = viewState.snackMessage,
+                                actionLabel = viewState.snackActionLabel,
+                                snackbarHostState,
+                                onDismissed = viewState.onDismissed!!,
+                                onActionPerformed = viewState.onActionPerformed!!
+
+                            )
+                        }
+                    }
+                },
+                bottomBar = {
+                    //Создание меню для нового ребенка и новой группы
+                    val listFAB = listOf(
+                        ItemFAB(
+                            label = stringResource(R.string.new_child_menu_item),
+                            modifier = Modifier.padding(start = 16.dp, bottom = 16.dp),
+                            containerColor = ClassJournalTheme.colors.tintColor,
+                            contentColor = ClassJournalTheme.colors.primaryText,
+                            //onClick ADD CHILD
+                            onClick = {
+                                viewModel.obtainEvent(ChildListEvent.NewChildClicked)
+                            },
+                            icon = painterResource(R.drawable.icon_face_24)//Icons.Default.Face
+                        ),
+                        ItemFAB(
+                            label = stringResource(R.string.new_group_menu_item),
+                            modifier = Modifier.padding(start = 16.dp, bottom = 16.dp),
+                            containerColor = ClassJournalTheme.colors.tintColor,
+                            contentColor = ClassJournalTheme.colors.primaryText,
+//onClick ADD GROUP
+                            onClick = {
+                                viewModel.obtainEvent(ChildListEvent.NewGroupClicked)
+                            },
+                            icon = painterResource(R.drawable.fil_group_24)
+                        )
+                    )
+                    fabMenu(listFAB = listFAB)
+                }
+            ) {
+                ChildListScreenContent(
+                    navController = navController,
+                    viewModel = viewModel,
+                    viewState = viewState,
+                    snackbarState = snackbarHostState
+                )
+            }
+            when (viewAction) {
+                ChildListAction.CloseScreen -> {
+                    viewModel.clearAction()
+                }
+
+                ChildListAction.NewChildClicked -> {
+                    viewModel.clearAction()
+                    navController.navigate(ItemScreen.NewChildScreen.name)
+                }
+
+                ChildListAction.NewGroupClicked -> {
+                    viewModel.clearAction()
+                    navController.navigate(ItemScreen.NewGroupScreen.name)
+                }
+
+                null -> {}
             }
 
-            ChildListAction.NewChildClicked -> {
-                viewModel.clearAction()
-                navController.navigate(ItemScreen.NewChildScreen.name)
-            }
-
-            ChildListAction.NewGroupClicked -> {
-                viewModel.clearAction()
-                navController.navigate(ItemScreen.NewGroupScreen.name)
-            }
-
-            null -> {}
-        }
     }
 }

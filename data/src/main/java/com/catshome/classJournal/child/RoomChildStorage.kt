@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -29,28 +28,28 @@ class RoomChildStorage @Inject constructor(
 //        }
 //    }
 
-    override fun insert(
+    override suspend fun insert(
         child: Child,
         childGroup: List<ChildGroup>
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
+        //CoroutineScope(Dispatchers.IO).launch {
             childDAO.insertChild(child.mapToChildEntity(), childGroup.map {
                 it.mapToChildGroupEntity()
             })
-        }
+        //}
     }
 
-    override fun delete(child: Child) {
-        CoroutineScope(Dispatchers.IO).launch {
+    override suspend fun delete(child: Child) {
+        //CoroutineScope(Dispatchers.IO).launch {
             childDAO.delete(child.mapToChildEntity())
-        }
+    //    }
     }
 
-    override fun update(
+    override suspend fun update(
         child: Child,
         childGroup: List<ChildGroup>
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
+        //CoroutineScope(Dispatchers.IO).launch {
             if (childGroup.isEmpty())
                 childDAO.update(child.mapToChildEntity())
             else
@@ -60,7 +59,7 @@ class RoomChildStorage @Inject constructor(
                 )
             }
 
-        }
+        //}
     }
     override fun getChildById(uid: String): Child? {
         val defferedChild = CoroutineScope(Dispatchers.IO).async {
@@ -112,5 +111,12 @@ class RoomChildStorage @Inject constructor(
             return@runBlocking defferedChild.await()
         }
         return data
+    }
+
+    override fun childExists(child: ChildEntity): ChildEntity? {
+        return childDAO.findDeleteChild(name = child.name,
+            surname = child.surname,
+            birthday = child.birthday,
+            isDelete = true)
     }
 }

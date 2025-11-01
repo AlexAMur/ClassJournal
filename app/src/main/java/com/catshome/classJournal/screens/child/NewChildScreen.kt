@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,12 +28,16 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
@@ -47,7 +52,9 @@ import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.R
 import com.catshome.classJournal.communs.DatePickerFieldToModal
+import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.TextField
+import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.toDateStrungRU
 import com.catshome.classJournal.localNavHost
@@ -58,7 +65,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 
 
-@SuppressLint("SuspiciousIndentation")
+@SuppressLint("SuspiciousIndentation", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NewChildScreen(
     idChild: DetailsChild = DetailsChild(""), viewModel: NewChildViewModel = viewModel()
@@ -67,48 +74,74 @@ fun NewChildScreen(
     viewState.outerNavigation = localNavHost.current
     val viewAction by viewModel.viewActions().collectAsState(null)
     val keyboardController = LocalSoftwareKeyboardController.current
+    val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
+        .value.innerPadding.calculateBottomPadding()
 
+    val sbHostState = remember { SnackbarHostState() }
     LaunchedEffect(Unit) {
         if (idChild.childID != "")
             viewModel.obtainEvent(NewChildEvent.OpenChild(idChild.childID))
-        else
-//            viewState.child.birthday = Date().time.toDateStrungRU()
-            viewState.child.birthday =   LocalDate.now().minusYears(5)
+        else {
+            viewState.child.birthday = LocalDate.now().minusYears(5)
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_RU))
+            viewModel.obtainEvent(NewChildEvent.newChild)
+        }
     }
-    ScreenContent(
-        viewState,
-        viewModel,
-        onCancelClick = {
-            viewModel.obtainEvent(NewChildEvent.CloseClicked)
-        },
-        onSaveClick = {
-            viewModel.obtainEvent(NewChildEvent.SaveClicked)
-        })
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                modifier = Modifier.padding(bottom = bottomPadding),
+                hostState = sbHostState
+            )
+            LaunchedEffect(viewState.isSnackbarShow) {
+                if (viewState.isSnackbarShow) {
+                    keyboardController?.hide()
+                    SnackBarAction(
+                        message = viewState.errorMessage,
+                        actionLabel = context.getString(R.string.bottom_yes),
+                        sbHostState,
+                        onDismissed = viewState.onDismissed ?: {},
+                        onActionPerformed = viewState.onAction ?: {}
 
-    when (viewAction) {
-        ComposeAction.Success -> {
-            keyboardController?.hide()
-            viewState.outerNavigation?.popBackStack()
-            viewModel.clearAction()
+                    )
+                }
+            }
         }
+    ) {
+        ScreenContent(
+            viewState,
+            viewModel,
+            onCancelClick = {
+                viewModel.obtainEvent(NewChildEvent.CloseClicked)
+            },
+            onSaveClick = {
+                viewModel.obtainEvent(NewChildEvent.SaveClicked)
+            }
+        )
 
-        ComposeAction.CloseScreen -> {
-            keyboardController?.hide()
-            viewState.outerNavigation?.popBackStack()
-            viewModel.clearAction()
-        }
+        when (viewAction) {
+            ComposeAction.Success -> {
+                keyboardController?.hide()
+                viewState.outerNavigation?.popBackStack()
+                viewModel.clearAction()
+            }
 
-        NewChildAction.CloseClicked -> {
-            viewState.outerNavigation?.popBackStack()
-        }
+            ComposeAction.CloseScreen -> {
+                keyboardController?.hide()
+                viewState.outerNavigation?.popBackStack()
+                viewModel.clearAction()
+            }
 
-        is NewChildAction.SaveChild -> {}
-        NewChildAction.SaveClicked -> {
-            viewModel.obtainEvent(NewChildEvent.CloseClicked)
-        }
+            NewChildAction.CloseClicked -> {
+                viewState.outerNavigation?.popBackStack()
+            }
 
-        is NewChildAction.ReloadScreen -> {
+            is NewChildAction.SaveChild -> {}
+            NewChildAction.SaveClicked -> {
+                viewModel.obtainEvent(NewChildEvent.CloseClicked)
+            }
+
+            is NewChildAction.ReloadScreen -> {
 //            ScreenContent(viewState,viewAction, viewModel,
 //                onCancelClick = {
 //                    viewModel.obtainEvent(NewChildEvent.CloseClicked)
@@ -116,9 +149,10 @@ fun NewChildScreen(
 //                onSaveClick = {
 //                    viewModel.obtainEvent(NewChildEvent.SaveClicked)
 //                })
-        }
+            }
 
-        null -> {}
+            null -> {}
+        }
     }
 }
 
@@ -128,22 +162,20 @@ fun ScreenContent(
     viewState: NewChildState,
     viewModel: NewChildViewModel,
     onSaveClick: () -> Unit,
-    onCancelClick: () -> Unit
+    onCancelClick: () -> Unit,
 ) {
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
     //val viewState by viewModel.viewState().collectAsState()
     var groups = viewState.listScreenChildGroup
+
 //  Установка фокуса после переворота
     LaunchedEffect(true) {
         if (viewState.indexFocus > -1)
             viewModel.listTextField[viewState.indexFocus].requestFocus()
-    }
-    LaunchedEffect(viewState.isError) {
-        if(viewState.isError){
 
-        }
     }
+
     Card(
         modifier = Modifier.fillMaxSize(),
         colors = CardDefaults.cardColors(
@@ -228,13 +260,14 @@ fun ScreenContent(
                     if (viewState.child.birthday.isNullOrEmpty())
                         LocalDate.now().minusYears(5)
                             .format(DateTimeFormatter.ofPattern(DATE_FORMAT_RU))
-                    else{
+                    else {
 
-                        viewState.child.birthday},
+                        viewState.child.birthday
+                    },
 
                     stringResource(R.string.birthday_child)
                 ) {
-                   viewModel.birthdayChange(it?.toDateStrungRU().toString())
+                    viewModel.birthdayChange(it?.toDateStrungRU().toString())
                 }
 
                 TextField(
@@ -251,15 +284,33 @@ fun ScreenContent(
                     keyboardOptions = KeyboardOptions.Default.merge(KeyboardOptions(keyboardType = KeyboardType.Phone)),
                     onValueChange = { phone -> viewModel.phoneChange(phone) },
                 )
+                if(viewState.isNewChild) {
+                    TextField(
+                        value = viewState.startSaldo.toString(),
+                        label = stringResource(R.string.saldo_child),
+                        supportingText = stringResource(R.string.saldo_child),
+                        modifier = modifier
+                            .focusRequester(viewModel.listTextField[3])
+                            .onFocusChanged {
+                                if (it.isFocused)
+                                    viewState.indexFocus = 3
+                            },
+
+                        keyboardOptions = KeyboardOptions.Default.merge(KeyboardOptions(keyboardType = KeyboardType.Phone)),
+                        onValueChange = { saldo -> viewModel.saldoChange(saldo.toInt()) },
+                    )
+                }
+
+
                 TextField(
                     value = viewState.child.note,
                     label = stringResource(R.string.note_label),
                     supportingText = stringResource(R.string.note_label),
                     modifier = modifier
-                        .focusRequester(viewModel.listTextField[3])
+                        .focusRequester(viewModel.listTextField[4])
                         .onFocusChanged {
                             if (it.isFocused)
-                                viewState.indexFocus = 3
+                                viewState.indexFocus = 4
                         },
 
                     onValueChange = { note -> viewModel.noteChange(note) },
@@ -267,72 +318,74 @@ fun ScreenContent(
                     minLines = 4
                 )
 // рисуем список групп с отметками
-                LazyColumn(
-                    Modifier
-                        .height(250.dp)
-                        .padding(16.dp)
-                        .border(
-                            1.dp,
-                            color = ClassJournalTheme.colors.primaryText,
-                            shape = ClassJournalTheme.shapes.cornersStyle
-                        )
-                        .fillMaxWidth(),
-                    state = rememberLazyListState()
-                )
-                {
-                    itemsIndexed(groups!!) { index, item ->
+                if (groups?.isNotEmpty() == true) {
+                    LazyColumn(
+                        Modifier
+                            .height(250.dp)
+                            .padding(16.dp)
+                            .border(
+                                1.dp,
+                                color = ClassJournalTheme.colors.primaryText,
+                                shape = ClassJournalTheme.shapes.cornersStyle
+                            )
+                            .fillMaxWidth(),
+                        state = rememberLazyListState()
+                    )
+                    {
+                        itemsIndexed(groups) { index, item ->
 
-                        Card(
-                            shape = ClassJournalTheme.shapes.cornersStyle,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp, top = 16.dp),
-                            colors = CardDefaults.cardColors(ClassJournalTheme.colors.controlColor),
-                        ) {
-                            Row(
-                                Modifier
+                            Card(
+                                shape = ClassJournalTheme.shapes.cornersStyle,
+                                modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable {
-                                        viewModel.obtainEvent(NewChildEvent.SelectGroup(item.group?.uid.toString()))
-                                    },
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                    .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                                colors = CardDefaults.cardColors(ClassJournalTheme.colors.controlColor),
                             ) {
-                                val modifier = Modifier.padding(
-                                    start = 16.dp,
-                                    top = 8.dp,
-                                    bottom = 8.dp,
-                                    end = 16.dp
-                                )
-                                Text(
-                                    item.group?.name ?: "null",
-                                    modifier = modifier,
-                                    style = ClassJournalTheme.typography.body,
-                                    color = ClassJournalTheme.colors.primaryText
-                                )
-
-                                if (item.isChecked) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.box_ckeck),
-                                        modifier = modifier,
-                                        contentDescription = "",
-                                        tint = ClassJournalTheme.colors.primaryText
+                                Row(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            viewModel.obtainEvent(NewChildEvent.SelectGroup(item.group?.uid.toString()))
+                                        },
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    val modifier = Modifier.padding(
+                                        start = 16.dp,
+                                        top = 8.dp,
+                                        bottom = 8.dp,
+                                        end = 16.dp
                                     )
-                                } else {
-
-                                    Icon(
-                                        painter = painterResource(R.drawable.box_out),
+                                    Text(
+                                        item.group?.name ?: "null",
                                         modifier = modifier,
-                                        contentDescription = "",
-                                        tint = ClassJournalTheme.colors.primaryText
+                                        style = ClassJournalTheme.typography.body,
+                                        color = ClassJournalTheme.colors.primaryText
                                     )
+
+                                    if (item.isChecked) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.box_ckeck),
+                                            modifier = modifier,
+                                            contentDescription = "",
+                                            tint = ClassJournalTheme.colors.primaryText
+                                        )
+                                    } else {
+
+                                        Icon(
+                                            painter = painterResource(R.drawable.box_out),
+                                            modifier = modifier,
+                                            contentDescription = "",
+                                            tint = ClassJournalTheme.colors.primaryText
+                                        )
+                                    }
+
                                 }
-
                             }
                         }
                     }
-
                 }
             }
+
         }
     }
 }

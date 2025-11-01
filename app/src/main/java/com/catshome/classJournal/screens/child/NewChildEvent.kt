@@ -10,5 +10,6 @@ sealed class NewChildEvent {
     data object SaveClicked: NewChildEvent()
     data object ReloadScreen: NewChildEvent()
     data object CloseClicked: NewChildEvent()
+    data object newChild: NewChildEvent()
     class SelectGroup(val uidGroup: String ): NewChildEvent()
 }

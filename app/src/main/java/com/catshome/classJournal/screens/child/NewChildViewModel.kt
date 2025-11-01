@@ -25,36 +25,40 @@ class NewChildViewModel @Inject constructor(
 ) :
     BaseViewModel<NewChildState, NewChildAction, NewChildEvent>
         (installState = NewChildState()) {
-
+    val TEXT_FILD_COUNT = 5
+    val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
+    init {
+        getScreenGroups()
+    }
     private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         if (throwable.message?.contains("SQLITE_CONSTRAINT_UNIQUE") == true) {
+
             viewState = viewState.copy(
-                isError = true,
-                errorMessage = context?.getString(R.string.error_unique_name_group) ?: "Ошибка!!!"
+                isSnackbarShow = true,
+                errorMessage = context?.getString(R.string.error_unique_child) ?: "Ошибка!!!",
+                onDismissed = {viewState=viewState.copy(isSnackbarShow =false)},
+                onAction = {viewState = viewState.copy(isSnackbarShow =false)}
             )
             return@CoroutineExceptionHandler
         }
         if (throwable.message?.contains("SQLITE_CONSTRAINT_PRIMARYKEY") == true) {
             viewState = viewState.copy(
-                isError = true,
-                errorMessage = " ${context?.getString(R.string.error_primarykey_group)}"
+                isSnackbarShow = true,
+                errorMessage = " ${context?.getString(R.string.error_primarykey_group)}",
+                onDismissed = {viewState.isSnackbarShow =false},
+                onAction = {viewState.isSnackbarShow =false}
             )
             return@CoroutineExceptionHandler
         } else {
             viewState = viewState.copy(
-                isError = true,
-                errorMessage = "${context?.getString(R.string.error_save_group)} ${throwable.message} "
+                isSnackbarShow = true,
+                errorMessage = "${context?.getString(R.string.error_save_group)} ${throwable.message} ",
+                onDismissed = {viewState.isSnackbarShow =false},
+                onAction = {viewState.isSnackbarShow =false}
             )
+            Log.e("CLJR", "Save Error - ${throwable.message}")
 
         }
-    }
-
-
-    val TEXT_FILD_COUNT = 4
-    val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
-
-    init {
-        getScreenGroups()
     }
 
     fun nameChange(newValue: String) {
@@ -76,13 +80,18 @@ class NewChildViewModel @Inject constructor(
     fun birthdayChange(newValue: String) {
         viewState = viewState.copy(child = viewState.child.copy(birthday = newValue))
     }
-
+    fun saldoChange(newValue: Int) {
+        viewState = viewState.copy(startSaldo =  newValue)
+    }
     fun noteChange(newValue: String) {
         viewState = viewState.copy(child = viewState.child.copy(note = newValue))
     }
 
     override fun obtainEvent(viewEvent: NewChildEvent) {
         when (viewEvent) {
+            is NewChildEvent.newChild->{
+                viewState = viewState.copy(isNewChild = true)
+            }
             is NewChildEvent.ReloadScreen -> {}
             is NewChildEvent.OpenChild -> {
                 val child = childInteract.getChildByID(viewEvent.uid)
@@ -106,7 +115,7 @@ class NewChildViewModel @Inject constructor(
                             )
                         )
                     }
-
+//TODO сделать сохранение начального сальдо
                     CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
                         childInteract.saveChildUseCase(
                             viewState.child,

@@ -4,6 +4,7 @@ import androidx.core.app.NotificationCompat
 import androidx.navigation.NavHostController
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Group.Models.Group
+import com.google.android.material.snackbar.Snackbar
 
 data class ItemScreenChildGroup(
     val group: Group? ,
@@ -17,8 +18,12 @@ data class NewChildState(
     var indexFocus:Int = -1,
     var isNameError: Boolean= false,
     var isSurnameError: Boolean= false,
-    var isError: Boolean= false,
+    var isSnackbarShow: Boolean= false,
+    var startSaldo: Int = -1,
+    var isNewChild: Boolean = false,
     var errorMessage: String = "",
+    var onDismissed: (()->Unit)? = null,
+    var onAction: (()->Unit)? = null,
 )
 //{
 //    fun copy(child: Child): NewChildState{

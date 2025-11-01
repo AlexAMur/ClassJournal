@@ -11,18 +11,18 @@ import javax.inject.Inject
 
 class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage) : ChildRepository {
     val TAG = "CLJR"
-    override fun saveChild(child: Child, childGroup: List<ChildGroup>) {
-        try {
+    override suspend fun saveChild(child: Child, childGroup: List<ChildGroup>) {
+        //try {
             if (childStorage.getChildById(child.uid) == null)
                 childStorage.insert(child, childGroup)
             else
                 childStorage.update(child = child, childGroup)
-        } catch (e: SQLiteConstraintException) {
-            Log.e(TAG, "Error SQL Constraint Exception ${e.message}")
-        }
+       // } catch (e: SQLiteConstraintException) {
+         //   Log.e(TAG, "Error SQL Constraint Exception ${e.message}")
+        //}
     }
 
-    override fun updateChild(child: Child, childGroup: List<ChildGroup>) {
+    override suspend fun updateChild(child: Child, childGroup: List<ChildGroup>) {
         try {
             childStorage.update(child, childGroup)
         } catch (e: SQLiteConstraintException) {
@@ -30,13 +30,13 @@ class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage) : 
         }
     }
 
-    override fun setDelete(child: Child?) {
+    override suspend fun setDelete(child: Child?) {
         if (child != null)
             updateChild(child, emptyList())
     }
 
 
-    override fun deleteChild(child: Child) {
+    override suspend fun deleteChild(child: Child) {
         childStorage.delete(child)
     }
 
@@ -50,6 +50,10 @@ class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage) : 
     override fun getChildById(uid: String): Child? {
         return childStorage.getChildById(uid)
 
+    }
+
+    override fun childExists(child: Child): Child? {
+       return childStorage.childExists(child.mapToChildEntity())?.mapToChild()
     }
 
     override fun getChildByName(name: String): Child {

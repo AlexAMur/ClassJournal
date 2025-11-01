@@ -32,6 +32,7 @@ interface ChildDAO {
         }
     }
     suspend fun deleteChild(child: ChildEntity){
+        //TODO удаление объектов связанных с ребенком
         if (checkChildGroupByChildID(child.uid)== 0)
             delete(child)
         else
@@ -59,7 +60,7 @@ interface ChildDAO {
 //        note: String,
 //        isDelete: Boolean
 //    )
-
+//TODO Удаление объектов
     @Delete
     suspend fun delete(child: ChildEntity)
 
@@ -71,6 +72,9 @@ interface ChildDAO {
 
     @Query("Select * from 'child'")
     fun getFull(): Flow<List<ChildEntity>>
+
+    @Query("select * from child where child_name = :name and child_surname = :surname and child_birthday = :birthday and isDelete = :isDelete")
+    fun findDeleteChild(name: String, surname: String, birthday: Long, isDelete: Boolean = true): ChildEntity?
 
     @Query("Select * from 'child' where uid = :uid ")
     fun getChildById(uid: String): ChildEntity?

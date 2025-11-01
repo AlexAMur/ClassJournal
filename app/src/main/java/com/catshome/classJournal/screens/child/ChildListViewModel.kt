@@ -71,7 +71,10 @@ class ChildListViewModel @Inject constructor(
 
             is ChildListEvent.deleteChild -> {
                 //Удаление ребенка
-                childInteract.deleteChildUseCase(viewEvent.uid)
+                //TODO обработчик ошибок SQL
+                CoroutineScope(Dispatchers.IO).launch {
+                    childInteract.deleteChildUseCase(viewEvent.uid)
+                }
                 viewState.snackBarShow =false
             }
 
