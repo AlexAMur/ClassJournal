@@ -102,7 +102,7 @@ class RoomChildStorage @Inject constructor(
                     childUid = it.childUid,
                     childName = it.childName,
                     childSurname = it.childSurname,
-                    groupUid = it.childUid,
+                    groupUid = it.groupUid?:"",
                     groupName = it.groupName ?: context.getString(R.string.no_group)
                 )
             }

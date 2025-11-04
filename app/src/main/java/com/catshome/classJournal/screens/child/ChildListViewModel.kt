@@ -114,47 +114,20 @@ class ChildListViewModel @Inject constructor(
             is ChildListEvent.deleteClicked -> {
                 if (viewEvent.uidChild.isNotEmpty()) {
                     viewState = viewState.copy(uidDelete = viewEvent.uidChild)
-                    hideChild(uidChild = viewEvent.uidChild, key = viewEvent.key)
+                    viewState = viewState.copy(item = hideChild(item = viewState.item, uidChild = viewEvent.uidChild ))
                 } else {
                     viewState = viewState.copy(uidDelete = viewEvent.uidGroup)
-                    hideGroup(key = viewEvent.key, uidGroup = viewState.uidDelete)
+                     hideGroup(viewState = viewState,key = viewEvent.key, uidGroup = viewState.uidDelete).let {
+                         if (it != null) {
+                             viewState = it
+                         }
+                    }
                 }
-            //    obtainEvent(ChildListEvent.ReloadScreen)
+               // obtainEvent(ChildListEvent.ReloadScreen)
             }
         }
     }
 
-    private fun hideChild(
-        uidChild: String,
-        key: String
-    ) {
-        val a = viewState.item.filter {
-            it.key != key
-        }
-        val i = viewState.item.remove(key)
-            ?.filter { it.child.childUid != uidChild }
-        val rr = i?.let { a.plus(Pair(key, it)) }?.toSortedMap()?.toMutableMap()
-        rr?.let { viewState = viewState.copy(item = it) }
-    }
-
-    private fun hideGroup(
-        uidGroup: String,
-        key: String
-    ) {
-        val a = viewState.item.get(key)?.filter {
-            it.child.groupUid == uidGroup && it.child.childUid.isNotEmpty()
-        }
-        a?.let {
-            if (it.size > 0) {
-                val i = viewState.item.plus(mapOf(Pair(key, it)))
-                viewState = viewState.copy(item = i.toMutableMap())
-            } else {
-                val i = viewState.item
-                i.remove(key)
-                viewState = viewState.copy(item = i.toMutableMap())
-            }
-        }
-    }
 
     private fun ChangeOptionsRevealed(
         childItem: ChildItem, isOptionsRevealed: Boolean,
@@ -176,19 +149,19 @@ class ChildListViewModel @Inject constructor(
 
     private fun loadScreen() {
         viewModelScope.launch {
-            val listChildGroups = childInteract.getListChildsWithGroups().map {
-                ChildItem(child = it)
-            }
             val childItem = mutableListOf<ChildItem>()
-            listChildGroups.forEach {
-                childItem.add(it)
+             childInteract.getListChildsWithGroups().map {
+            //val listChildGroups = childInteract.getListChildsWithGroups().map {
+                childItem.add(ChildItem(child = it))
             }
+
+
             childInteract.getGroup().collect { listgroup ->
-                listgroup.map {
+                listgroup.map { group->
                     var add = false
-                    listChildGroups.forEach { item ->
-                        if (it.uid == item.child.groupUid)
-                            add = true
+                    childItem.forEach { item ->
+                        //if (group.uid == item.child.groupUid)
+                         //   add = true
                     }
                     if (!add) {
                         childItem.add(
@@ -197,8 +170,8 @@ class ChildListViewModel @Inject constructor(
                                     childUid = "",
                                     childName = "",
                                     childSurname = "",
-                                    groupUid = it.uid,
-                                    groupName = it.name
+                                    groupUid = group.uid,
+                                    groupName = group.name
                                 )
                             )
                         )
