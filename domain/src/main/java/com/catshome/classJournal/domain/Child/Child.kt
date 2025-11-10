@@ -10,6 +10,7 @@ data class Child(
     var birthday: String = "",
     var phone: String = "",
     var note: String = "",
+    val saldo: Int = 0,
     var isDelete: Boolean = false
 
 )

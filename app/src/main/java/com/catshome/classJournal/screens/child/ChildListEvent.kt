@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 
 sealed class ChildListEvent {
     data object  NewGroupClicked: ChildListEvent()
+    data object  SelectItem: ChildListEvent()
     data object NewChildClicked: ChildListEvent()
     data class deleteClicked(val uidChild: String,val uidGroup:String, val key : String): ChildListEvent()
     data object ReloadScreen: ChildListEvent()
@@ -19,5 +20,6 @@ sealed class ChildListEvent {
         val onActionPerformed: ()->Unit,
 
     ): ChildListEvent()
+    data class showFAB(val isShowFAB: Boolean): ChildListEvent()
 
 }

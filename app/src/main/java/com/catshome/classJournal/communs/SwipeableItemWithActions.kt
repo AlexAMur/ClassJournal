@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,14 +46,14 @@ fun SwipeableItemWithActions(
     modifier: Modifier = Modifier,
     onExpanded: () -> Unit = {},
     onCollapsed: () -> Unit = {},
-    content: @Composable () -> Unit
+    content: @Composable (offset: Float ) -> Unit
 ) {
     var contextMenuWidth by remember {
         mutableFloatStateOf(0f)
     }
-    var positionX by remember {
-        mutableFloatStateOf(0f)
-    }
+//    var positionX by remember {
+//        mutableFloatStateOf(0f)
+//    }
     var boxSizeX by remember {
         mutableIntStateOf(0)
     }
@@ -74,7 +75,7 @@ fun SwipeableItemWithActions(
             .fillMaxWidth()
             .onGloballyPositioned { coord ->
                 with(density) {
-                    positionX = coord.positionInParent().x
+                    //positionX = coord.positionInParent().x
                     boxSizeX = (coord.size.width / density).toInt()
                 }
             }
@@ -86,7 +87,7 @@ fun SwipeableItemWithActions(
                 .onSizeChanged {
                     contextMenuWidth = it.width.toFloat()
                 }
-                .offset(x = (boxSizeX - contextMenuWidth / density).dp),
+                .offset(x=(boxSizeX - contextMenuWidth / density).dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             actions()
@@ -123,7 +124,7 @@ fun SwipeableItemWithActions(
                     )
                 }
         ){
-            content()
+            content(if(offset.value < 0) 120f else 0f)
         }
     }
 }

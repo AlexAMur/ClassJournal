@@ -19,48 +19,38 @@ class RoomChildStorage @Inject constructor(
     @ApplicationContext val context: Context,
     val childDAO: ChildDAO,
     val childGroup: ChildGroupDAO
-) :
-    ChildStorage {
+) :ChildStorage {
 
-//    override fun insert(child: Child) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//             childDAO.insert(child.mapToChildEntity())
-//        }
-//    }
 
     override suspend fun insert(
         child: Child,
         childGroup: List<ChildGroup>
     ) {
-        //CoroutineScope(Dispatchers.IO).launch {
             childDAO.insertChild(child.mapToChildEntity(), childGroup.map {
                 it.mapToChildGroupEntity()
             })
-        //}
+    }
+//пометить на удаление  ребенка
+    override suspend fun deleteSet(child: Child) {
+        childDAO.update(child.copy(isDelete = true).mapToChildEntity())
     }
 
     override suspend fun delete(child: Child) {
-        //CoroutineScope(Dispatchers.IO).launch {
             childDAO.delete(child.mapToChildEntity())
-    //    }
     }
 
-    override suspend fun update(
+    override suspend fun updateChildWithGroups(
         child: Child,
         childGroup: List<ChildGroup>
-    ) {
-        //CoroutineScope(Dispatchers.IO).launch {
-            if (childGroup.isEmpty())
-                childDAO.update(child.mapToChildEntity())
-            else
-            {
-                childDAO.updateChild(child.mapToChildEntity(),
+    ) {         childDAO.updateChild(child.mapToChildEntity(),
                     group = childGroup.map { it.mapToChildGroupEntity()}
                 )
-            }
-
-        //}
     }
+
+    override suspend fun update(child: Child) {
+        childDAO.update(child.mapToChildEntity())
+    }
+
     override fun getChildById(uid: String): Child? {
         val defferedChild = CoroutineScope(Dispatchers.IO).async {
             return@async (childDAO.getChildById(uid))
@@ -113,7 +103,7 @@ class RoomChildStorage @Inject constructor(
         return data
     }
 
-    override fun childExists(child: ChildEntity): ChildEntity? {
+    override fun childDeleteExists(child: ChildEntity): ChildEntity? {
         return childDAO.findDeleteChild(name = child.name,
             surname = child.surname,
             birthday = child.birthday,

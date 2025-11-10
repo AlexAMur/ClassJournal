@@ -1,11 +1,10 @@
 package com.catshome.classJournal.screens.child
-
-import androidx.annotation.StringRes
+/*
+*  Функции скрытия и ребёнка или группы при нажатии на корзину в
+* списке экарана СhildListScreen
+*/
 import com.catshome.classJournal.R
 import com.catshome.classJournal.context
-import kotlin.collections.filter
-import kotlin.collections.plus
-import kotlin.collections.toMutableMap
 
 internal fun hideChild(
     item: MutableMap<String, List<ChildItem>>,
@@ -29,7 +28,10 @@ fun hideGroup(
     val a = viewState.item[key]?.filter {  //список детей в группе
         it.child.groupUid == uidGroup && it.child.childUid.isNotEmpty()
     }?.toMutableList()
-    a?.let {
+    a?.let {//  если есть дети в группе
+
+
+
         viewState.item.forEach { k, value ->
             if (a.isEmpty())
                 return@forEach
@@ -38,9 +40,15 @@ fun hideGroup(
                 a.forEachIndexed { index, item ->
                     isDel[index] = value.any { it.child.childUid == item.child.childUid }
                 }
+                var delete= 0
                 isDel.forEachIndexed { i, it ->
-                    if (it)
-                        a.remove(a[i])
+                    if (it){
+                        a.remove(a[i-delete])
+                        delete=delete+1
+
+
+
+                    }
                 }
             }
         }
@@ -56,10 +64,16 @@ fun hideGroup(
             )
         )
     }
-    viewState.item[context.getString(R.string.no_group)]?.map {
-        a?.add(it)
+    a?.size?.let {
+        if(it > 0) {
+            viewState.item[context.getString(R.string.no_group)]?.map {
+                a.add(it)
+            }
+
+        return viewState.copy(item =
+            s.plus(Pair(context.getString(R.string.no_group), a)).toSortedMap().toMutableMap())
+        }
     }
-    return viewState.copy(item = a?.let {
-        s.plus(Pair(context.getString(R.string.no_group), it)).toSortedMap().toMutableMap()
-    } ?: viewState.item)
+
+     return viewState
 }

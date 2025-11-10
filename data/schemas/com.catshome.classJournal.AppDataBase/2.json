@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "347643e5f99804a49de596d523e50f2b",
+    "identityHash": "96b16b71254796c3fe42f9edcf3501c9",
     "entities": [
       {
         "tableName": "groups",
@@ -114,7 +114,7 @@
       },
       {
         "tableName": "child_group",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL, `childId` TEXT NOT NULL, `groupId` TEXT NOT NULL, PRIMARY KEY(`uid`), FOREIGN KEY(`childId`) REFERENCES `child`(`uid`) ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL, `childId` TEXT NOT NULL, `groupId` TEXT NOT NULL, PRIMARY KEY(`uid`), FOREIGN KEY(`childId`) REFERENCES `child`(`uid`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -144,7 +144,7 @@
         "foreignKeys": [
           {
             "table": "child",
-            "onDelete": "NO ACTION",
+            "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
               "childId"
@@ -194,7 +194,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '347643e5f99804a49de596d523e50f2b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '96b16b71254796c3fe42f9edcf3501c9')"
     ]
   }
 }

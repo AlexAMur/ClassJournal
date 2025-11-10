@@ -27,17 +27,20 @@ class NewChildViewModel @Inject constructor(
         (installState = NewChildState()) {
     val TEXT_FILD_COUNT = 5
     val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
+
     init {
         getScreenGroups()
     }
+
     private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         if (throwable.message?.contains("SQLITE_CONSTRAINT_UNIQUE") == true) {
 
             viewState = viewState.copy(
                 isSnackbarShow = true,
                 errorMessage = context?.getString(R.string.error_unique_child) ?: "Ошибка!!!",
-                onDismissed = {viewState=viewState.copy(isSnackbarShow =false)},
-                onAction = {viewState = viewState.copy(isSnackbarShow =false)}
+                snackbarAction = context.getString(R.string.ok),
+                onDismissed = { viewState = viewState.copy(isSnackbarShow = false) },
+                onAction = { viewState = viewState.copy(isSnackbarShow = false) }
             )
             return@CoroutineExceptionHandler
         }
@@ -45,16 +48,18 @@ class NewChildViewModel @Inject constructor(
             viewState = viewState.copy(
                 isSnackbarShow = true,
                 errorMessage = " ${context?.getString(R.string.error_primarykey_group)}",
-                onDismissed = {viewState.isSnackbarShow =false},
-                onAction = {viewState.isSnackbarShow =false}
+                snackbarAction = context.getString(R.string.ok),
+                onDismissed = { viewState.isSnackbarShow = false },
+                onAction = { viewState.isSnackbarShow = false }
             )
             return@CoroutineExceptionHandler
         } else {
             viewState = viewState.copy(
                 isSnackbarShow = true,
                 errorMessage = "${context?.getString(R.string.error_save_group)} ${throwable.message} ",
-                onDismissed = {viewState.isSnackbarShow =false},
-                onAction = {viewState.isSnackbarShow =false}
+                snackbarAction = context.getString(R.string.ok),
+                onDismissed = { viewState.isSnackbarShow = false },
+                onAction = { viewState.isSnackbarShow = false }
             )
             Log.e("CLJR", "Save Error - ${throwable.message}")
 
@@ -80,25 +85,29 @@ class NewChildViewModel @Inject constructor(
     fun birthdayChange(newValue: String) {
         viewState = viewState.copy(child = viewState.child.copy(birthday = newValue))
     }
-    fun saldoChange(newValue: Int) {
-        viewState = viewState.copy(startSaldo =  newValue)
+
+    fun saldoChange(newValue: String) {
+        viewState = viewState.copy(startSaldo = newValue, isSaldoError = false)
     }
+
     fun noteChange(newValue: String) {
         viewState = viewState.copy(child = viewState.child.copy(note = newValue))
     }
 
     override fun obtainEvent(viewEvent: NewChildEvent) {
         when (viewEvent) {
-            is NewChildEvent.newChild->{
+            is NewChildEvent.newChild -> {
                 viewState = viewState.copy(isNewChild = true)
             }
+
             is NewChildEvent.ReloadScreen -> {}
             is NewChildEvent.OpenChild -> {
-                val child = childInteract.getChildByID(viewEvent.uid)
-                viewModelScope.launch {
-                    childGroups.getChildGroups(child.uid).collect { getScreenGroups(it) }
+                childInteract.getChildByID(viewEvent.uid)?.let { child ->
+                    viewModelScope.launch {
+                        childGroups.getChildGroups(child.uid).collect { getScreenGroups(it) }
+                    }
+                    viewState = viewState.copy(child = child)
                 }
-                viewState = viewState.copy(child = child)
             }
 
             is NewChildEvent.SaveChild -> {
@@ -106,28 +115,36 @@ class NewChildViewModel @Inject constructor(
                     viewState = viewState.copy(isNameError = true)
                 if (viewEvent.child.surname.isEmpty())
                     viewState = viewState.copy(isSurnameError = true)
-
+                try {
+                    viewState.startSaldo.toInt()
+                } catch (e: NumberFormatException) {
+                    viewState = viewState.copy(
+                        isSaldoError = true,
+                        saldoError = context.getString(R.string.error_save_group)
+                    )
+                    return
+                }
                 if (!viewState.isNameError && !viewState.isSurnameError) {
                     if (viewState.child.uid.isEmpty()) {
                         viewState = viewState.copy(
                             child = viewState.child.copy(
-                                uid = UUID.randomUUID().toString()
+                                uid = UUID.randomUUID().toString(),
+                                saldo = viewState.startSaldo.toInt()
                             )
                         )
                     }
-//TODO сделать сохранение начального сальдо
                     CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
-                        childInteract.saveChildUseCase(
+                       childInteract.saveChildUseCase(
                             viewState.child,
-                            viewState.listScreenChildGroup?.filter { list ->
-                                list.isChecked == true
-                            }?.map {
-                                ChildGroup(
-                                    uid = UUID.randomUUID().toString(),
-                                    groupId = it.group?.uid.toString(),
-                                    childId = viewState.child.uid
-                                )
-                            } ?: emptyList()
+                           viewState.listScreenChildGroup?.filter { list ->
+                               list.isChecked == true
+                           }?.map {
+                               ChildGroup(
+                                   uid = UUID.randomUUID().toString(),
+                                   groupId = it.group?.uid.toString(),
+                                   childId = viewState.child.uid
+                               )
+                           }?:emptyList()
                         )
                         viewAction = NewChildAction.CloseClicked
                     }
@@ -166,7 +183,7 @@ class NewChildViewModel @Inject constructor(
                             group,
                             childGroup.find { it.groupId == group.uid } != null // если группа найдена == true
                         )
-                    })
+                    }.sortedBy { it.group?.name })
             }
         }
     }

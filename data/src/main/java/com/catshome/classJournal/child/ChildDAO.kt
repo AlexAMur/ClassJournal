@@ -1,5 +1,7 @@
 package com.catshome.classJournal.child
-
+// для  удаления ребенка вызывать функцию deleteChild
+// для  удаления ребенка вызывать функцию deleteChild
+// для  удаления ребенка вызывать функцию deleteChild
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -11,32 +13,33 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ChildDAO {
     @Transaction
-    suspend fun insertChild(child: ChildEntity, group: List<ChildGroupEntity>){
+    suspend fun insertChild(child: ChildEntity, group: List<ChildGroupEntity>) {
         insert(child)
-        if(group.isNotEmpty()) {
-            deleteChildGroupByChildID(child.uid)
+        if (group.isNotEmpty()) {
             group.forEach {
                 insert(it)
             }
         }
     }
-
+    //Обновляем данные ребенка и удаляем связанные данные в ChildGroup
+    // И вставляет новые данные о группах
     @Transaction
-    suspend fun updateChild(child: ChildEntity, group: List<ChildGroupEntity>){
+    suspend fun updateChild(child: ChildEntity, group: List<ChildGroupEntity>) {
         update(child)
-        if(group.isNotEmpty()) {
-            deleteChildGroupByChildID(child.uid)
+        deleteChildGroupByChildID(child.uid)
+        if (group.isNotEmpty()) {
             group.forEach {
                 insert(it)
             }
         }
     }
-    suspend fun deleteChild(child: ChildEntity){
+// для  удаления ребенка вызывать функцию deleteChild
+    suspend fun deleteChild(child: ChildEntity) {
         //TODO удаление объектов связанных с ребенком
-        if (checkChildGroupByChildID(child.uid)== 0)
+        if (checkChildGroupByChildID(child.uid) == 0)
             delete(child)
         else
-            updateChild(child.copy(isDelete = true), emptyList())
+            update(child.copy(isDelete = true))
     }
 
     @Insert
@@ -46,9 +49,9 @@ interface ChildDAO {
     suspend fun insert(child: ChildEntity)
 
     @Update(entity = ChildEntity::class)
-     suspend fun update(child: ChildEntity)
+    suspend fun update(child: ChildEntity)
 
-//    @Query("UPDATE child set child_name = :name, child_surname = :surname, " +
+    //    @Query("UPDATE child set child_name = :name, child_surname = :surname, " +
 //            "child_birthday = :birthday ,  child_phone = :phone," +
 //            " child_note =:note, isDelete = :isDelete where uid = :uid ")
 //    suspend fun updateChild(
@@ -61,6 +64,7 @@ interface ChildDAO {
 //        isDelete: Boolean
 //    )
 //TODO Удаление объектов
+    //Связанные объекты ChildGroups удаляются автоматически
     @Delete
     suspend fun delete(child: ChildEntity)
 
@@ -68,13 +72,18 @@ interface ChildDAO {
     fun deleteChildGroupByChildID(childUid: String)
 
     @Query("Select count()  from 'child_group' where childId = :childUid")
-    fun checkChildGroupByChildID(childUid: String):Int
+    fun checkChildGroupByChildID(childUid: String): Int
 
     @Query("Select * from 'child'")
     fun getFull(): Flow<List<ChildEntity>>
 
     @Query("select * from child where child_name = :name and child_surname = :surname and child_birthday = :birthday and isDelete = :isDelete")
-    fun findDeleteChild(name: String, surname: String, birthday: Long, isDelete: Boolean = true): ChildEntity?
+    fun findDeleteChild(
+        name: String,
+        surname: String,
+        birthday: Long,
+        isDelete: Boolean = true
+    ): ChildEntity?
 
     @Query("Select * from 'child' where uid = :uid ")
     fun getChildById(uid: String): ChildEntity?

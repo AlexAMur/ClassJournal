@@ -3,7 +3,6 @@ package com.catshome.classJournal.child
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
-import androidx.room.ForeignKey.Companion.NO_ACTION
 import androidx.room.PrimaryKey
 import com.catshome.classJournal.domain.Child.ChildGroup
 import java.util.UUID
@@ -15,6 +14,7 @@ import java.util.UUID
             entity = ChildEntity::class,
             parentColumns = arrayOf("uid"),
             childColumns = arrayOf("childId"),
+            onDelete = CASCADE,
             deferred = true
         )
     )

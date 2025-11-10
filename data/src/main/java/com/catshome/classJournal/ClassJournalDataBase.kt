@@ -18,16 +18,18 @@ import com.catshome.classJournal.child.ChildGroupEntity
     ChildEntity::class,
     ChildGroupEntity::class,
     PayEntity::class
-                     ], version = 2)
+                     ], version = 3)
 abstract class AppDataBase : RoomDatabase() {
-    abstract fun groupsDAO():GroupsDAO
+    abstract fun groupsDAO(): GroupsDAO
     abstract fun childDAO(): ChildDAO
     abstract fun childGroupDAO(): ChildGroupDAO
-    abstract fun  payDAO(): PayDAO
-}
-internal val MIGRATION_1_2 = object : Migration (1,2) {
-    override fun migrate(db: SupportSQLiteDatabase) {
+    abstract fun payDAO(): PayDAO
 
-        db.execSQL("")
+    internal val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+
+            db.execSQL("")
+        }
     }
+
 }

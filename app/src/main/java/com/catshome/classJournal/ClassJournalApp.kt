@@ -21,6 +21,7 @@ import com.catshome.classJournal.screens.PayList.PlayListScreen
 import com.catshome.classJournal.screens.Visit.VisitListViewModel
 import com.catshome.classJournal.screens.Visit.visitListScreen
 import com.catshome.classJournal.screens.child.ChildListViewModel
+import com.catshome.classJournal.screens.child.ListScreenChild
 import com.catshome.classJournal.screens.child.NewChildScreen
 import com.catshome.classJournal.screens.child.NewChildViewModel
 import com.catshome.classJournal.screens.group.GroupScreen
@@ -53,9 +54,18 @@ fun classJournalApp(
             visitListScreen(navController, viewModel)
 
         }
+        composable<ListScreenChild> { backStackEntry ->
+            val idGroup = backStackEntry.toRoute<ListScreenChild>()
+            val viewModel = hiltViewModel<ChildListViewModel>()
+            ChildListScreen(
+                viewModel = viewModel,
+                navController = navController)
+
+        }
+
         composable(route = ItemScreen.MainScreen.name) {
             val viewModel = hiltViewModel<ChildListViewModel>()
-            ChildListScreen(navController, viewModel)
+            ChildListScreen(navController, viewModel =  viewModel)
         }
         composable(route = ItemScreen.GroupScreen.name) {
             val viewModel = hiltViewModel<GroupViewModel>()

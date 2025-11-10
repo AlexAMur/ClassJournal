@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "145c37a5583e16d31399ff336515a9e6",
+    "identityHash": "776bdf3a5c68f7e941cd632b59539ee9",
     "entities": [
       {
         "tableName": "groups",
@@ -32,11 +32,22 @@
           "columnNames": [
             "uid"
           ]
-        }
+        },
+        "indices": [
+          {
+            "name": "index_groups_group_name",
+            "unique": true,
+            "columnNames": [
+              "group_name"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_groups_group_name` ON `${TABLE_NAME}` (`group_name`)"
+          }
+        ]
       },
       {
         "tableName": "child",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL, `child_name` TEXT NOT NULL, `child_surname` TEXT NOT NULL, `child_phone` TEXT NOT NULL, `child_note` TEXT NOT NULL, `child_birthday` INTEGER NOT NULL, `isDelete` INTEGER NOT NULL, PRIMARY KEY(`uid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL, `child_name` TEXT NOT NULL, `child_surname` TEXT NOT NULL, `child_phone` TEXT NOT NULL, `child_note` TEXT NOT NULL, `child_birthday` INTEGER NOT NULL, `saldo` INTEGER NOT NULL, `isDelete` INTEGER NOT NULL, PRIMARY KEY(`uid`))",
         "fields": [
           {
             "fieldPath": "uid",
@@ -75,6 +86,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "saldo",
+            "columnName": "saldo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "isDelete",
             "columnName": "isDelete",
             "affinity": "INTEGER",
@@ -86,11 +103,24 @@
           "columnNames": [
             "uid"
           ]
-        }
+        },
+        "indices": [
+          {
+            "name": "index_child_child_name_child_surname_child_birthday",
+            "unique": true,
+            "columnNames": [
+              "child_name",
+              "child_surname",
+              "child_birthday"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_child_child_name_child_surname_child_birthday` ON `${TABLE_NAME}` (`child_name`, `child_surname`, `child_birthday`)"
+          }
+        ]
       },
       {
         "tableName": "child_group",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL, `childId` TEXT NOT NULL, `groupId` TEXT NOT NULL, PRIMARY KEY(`uid`), FOREIGN KEY(`childId`) REFERENCES `child`(`uid`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL, `childId` TEXT NOT NULL, `groupId` TEXT NOT NULL, PRIMARY KEY(`uid`), FOREIGN KEY(`childId`) REFERENCES `child`(`uid`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -170,7 +200,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '145c37a5583e16d31399ff336515a9e6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '776bdf3a5c68f7e941cd632b59539ee9')"
     ]
   }
 }

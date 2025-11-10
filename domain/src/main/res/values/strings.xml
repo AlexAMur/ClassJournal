@@ -20,12 +20,14 @@
 
     <string name="message_cancel">Отменить удаление</string>
     <string name="no_group">Без группы</string>
+    <string name="ok">Ok</string>
 
     <string name="error_name_group">Name group cannot by empty! </string>
     <string name="error_unique_name_group">Имя группы должно быть уникальным! </string>
     <string name="error_unique_child">Клиент с таким именем, фамилией и датой рождениея уже есть в базе данных! </string>
     <string name="error_primarykey_group">Нарушение первичного ключа!</string>
     <string name="error_save_group">Не удалось записать!</string>
+    <string name="error_saldo">Не допустимое значение!</string>
     //<string name="error_uncou_name_group">Имя группы должно быть уникальным! </string>
     <string name="name_group_label">Enter name group. </string>
     <string name="new_child_dialog_headline">New child</string>

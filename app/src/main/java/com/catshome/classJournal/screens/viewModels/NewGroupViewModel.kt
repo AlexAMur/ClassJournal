@@ -12,6 +12,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,29 +22,7 @@ import javax.inject.Inject
 class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupInteractor) :
     BaseViewModel<NewGroupState, ComposeAction, NewGroupEvent>(installState = NewGroupState()) {
     @SuppressLint("SuspiciousIndentation")
-    val cs = CoroutineScope(Dispatchers.IO)
-    private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-        if (throwable.message?.contains("SQLITE_CONSTRAINT_UNIQUE") == true) {
-            viewState = viewState.copy(
-                isError = true,
-                errorMessage = context?.getString(R.string.error_unique_name_group) ?: "Ошибка!!!"
-            )
-            return@CoroutineExceptionHandler
-        }
-        if (throwable.message?.contains("SQLITE_CONSTRAINT_PRIMARYKEY") == true) {
-            viewState = viewState.copy(
-                isError = true,
-                errorMessage = " ${context?.getString(R.string.error_primarykey_group)}"
-            )
-            return@CoroutineExceptionHandler
-        } else {
-            viewState = viewState.copy(
-                isError = true,
-                errorMessage = "${context?.getString(R.string.error_save_group)} ${throwable.message} "
-            )
 
-        }
-    }
 
     override fun obtainEvent(viewEvent: NewGroupEvent) {
         when (viewEvent) {
@@ -62,6 +42,34 @@ class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupIn
 
             NewGroupEvent.ActionInvoked -> viewAction = ComposeAction.CloseScreen
             NewGroupEvent.SaveClicked -> {
+                val cs = CoroutineScope(Dispatchers.IO)
+               val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+
+                    if (throwable.message?.contains("SQLITE_CONSTRAINT_UNIQUE") == true) {
+                        viewState = viewState.copy(
+                            isError = true,
+                            errorMessage = context?.getString(R.string.error_unique_name_group) ?: "Ошибка!!!"
+                        )
+
+                        return@CoroutineExceptionHandler
+                    }
+                    if (throwable.message?.contains("SQLITE_CONSTRAINT_PRIMARYKEY") == true) {
+                        viewState = viewState.copy(
+                            isError = true,
+                            errorMessage = " ${context?.getString(R.string.error_primarykey_group)}"
+                        )
+                        return@CoroutineExceptionHandler
+                    } else {
+                        viewState = viewState.copy(
+                            isError = true,
+                            errorMessage = "${context?.getString(R.string.error_save_group)} ${throwable.message} "
+                        )
+
+                    }
+                   cs.cancel()
+
+                }
+
                 if (viewState.nameGroup.trim() == "" || viewState.nameGroup.isEmpty())
                     viewState = viewState.copy(
                         isError = true,
@@ -77,7 +85,10 @@ class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupIn
                             )
                         )
                         viewAction = ComposeAction.CloseScreen
+
                     }
+
+                    //cs.cancel()
                 }
             }
             NewGroupEvent.NextClicked -> viewAction = null

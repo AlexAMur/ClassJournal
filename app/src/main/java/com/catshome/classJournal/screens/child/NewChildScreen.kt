@@ -98,7 +98,7 @@ fun NewChildScreen(
                     keyboardController?.hide()
                     SnackBarAction(
                         message = viewState.errorMessage,
-                        actionLabel = context.getString(R.string.bottom_yes),
+                        actionLabel = viewState.snackbarAction?:context.getString(R.string.bottom_yes),
                         sbHostState,
                         onDismissed = viewState.onDismissed ?: {},
                         onActionPerformed = viewState.onAction ?: {}
@@ -115,6 +115,7 @@ fun NewChildScreen(
                 viewModel.obtainEvent(NewChildEvent.CloseClicked)
             },
             onSaveClick = {
+                keyboardController?.hide()
                 viewModel.obtainEvent(NewChildEvent.SaveClicked)
             }
         )
@@ -173,7 +174,6 @@ fun ScreenContent(
     LaunchedEffect(true) {
         if (viewState.indexFocus > -1)
             viewModel.listTextField[viewState.indexFocus].requestFocus()
-
     }
 
     Card(
@@ -288,7 +288,9 @@ fun ScreenContent(
                     TextField(
                         value = viewState.startSaldo.toString(),
                         label = stringResource(R.string.saldo_child),
-                        supportingText = stringResource(R.string.saldo_child),
+                        supportingText = if (viewState.isSaldoError)stringResource(R.string.error_saldo)
+                                                            else stringResource(R.string.saldo_child),
+                        errorState = viewState.isSaldoError,
                         modifier = modifier
                             .focusRequester(viewModel.listTextField[3])
                             .onFocusChanged {
@@ -297,7 +299,7 @@ fun ScreenContent(
                             },
 
                         keyboardOptions = KeyboardOptions.Default.merge(KeyboardOptions(keyboardType = KeyboardType.Phone)),
-                        onValueChange = { saldo -> viewModel.saldoChange(saldo.toInt()) },
+                        onValueChange = { saldo -> viewModel.saldoChange(saldo) },
                     )
                 }
 
