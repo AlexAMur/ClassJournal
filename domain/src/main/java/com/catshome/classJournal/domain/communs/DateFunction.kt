@@ -32,7 +32,8 @@ fun String.toDateRu(): Date{
 //    formatter.parse(this).time
 //}
 
-fun Long.toDateStrungRU(): String {
+fun Long.toDateStringRU(): String {
+
  return   convertMillisToDate(this)
 }
 fun convertMillisToDate(millis: Long): String {

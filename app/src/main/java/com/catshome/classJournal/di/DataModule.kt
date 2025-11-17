@@ -6,7 +6,7 @@ import com.catshome.classJournal.Group.GroupRepositorys.GroupRepositoryImpl
 import com.catshome.classJournal.Group.GroupStorege.GroupStorage
 import com.catshome.classJournal.Group.GroupStorege.RoomGroupStorage
 import com.catshome.classJournal.PayList.PayDAO
-import com.catshome.classJournal.PayList.PayListRepositoryImpl
+import com.catshome.classJournal.PayList.PayRepositoryImpl
 import com.catshome.classJournal.PayList.RoomPayStorage
 import com.catshome.classJournal.child.ChildDAO
 import com.catshome.classJournal.child.ChildGroupDAO
@@ -17,7 +17,7 @@ import com.catshome.classJournal.domain.Child.ChildGroupRepository
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Group.GroupRepository
 import com.catshome.classJournal.domain.Group.Models.Group
-import com.catshome.classJournal.domain.PayList.PayListRepository
+import com.catshome.classJournal.domain.PayList.PayRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,8 +27,8 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 class DataModule {
     @Provides
-    fun providePayListRepository(room: RoomPayStorage): PayListRepository{
-        return PayListRepositoryImpl(room)
+    fun providePayRepository(room: RoomPayStorage): PayRepository{
+        return PayRepositoryImpl(room)
     }
     @Provides
     fun provideChildRepository(room: RoomChildStorage): ChildRepository {

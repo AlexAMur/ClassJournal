@@ -3,10 +3,11 @@ package com.catshome.classJournal.child
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.catshome.classJournal.domain.Child.Child
-import com.catshome.classJournal.domain.communs.toDateStrungRU
+import com.catshome.classJournal.domain.communs.toDateStringRU
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -19,7 +20,8 @@ data class ChildEntity(
     @ColumnInfo(name = "child_note") var note: String,
     @ColumnInfo(name = "child_birthday") var birthday: Long,
     var saldo: Int,
-    var isDelete: Boolean = false
+    var isDelete: Boolean = false,
+
 )
 
 fun ChildEntity.mapToChild(): Child{
@@ -27,7 +29,7 @@ fun ChildEntity.mapToChild(): Child{
        uid = this.uid,
        name = this.name,
        surname = this.surname,
-       birthday = this.birthday.toDateStrungRU(),
+       birthday = this.birthday.toDateStringRU(),
        phone = this.phone,
        note = this.note,
        saldo = this.saldo,

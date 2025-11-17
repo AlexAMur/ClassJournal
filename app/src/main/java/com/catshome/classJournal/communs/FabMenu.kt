@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.sharp.Add
 import androidx.compose.material.icons.sharp.Close
@@ -56,58 +57,79 @@ fun fabMenu(
         if (fabVisible) 1f else 0f,
 
         animationSpec = spring(
-            dampingRatio = if (fabVisible)Spring.DampingRatioMediumBouncy
-                                            else Spring.DampingRatioNoBouncy
-            ,
-            stiffness = if (fabVisible)Spring.StiffnessLow else Spring.StiffnessMedium
+            dampingRatio = if (fabVisible) Spring.DampingRatioMediumBouncy
+            else Spring.DampingRatioNoBouncy,
+            stiffness = if (fabVisible) Spring.StiffnessLow else Spring.StiffnessMedium
         )
     )
 
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-        Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.End) {
-            listFAB.forEach { itemFAB ->
-                if (showMenu) {
-                    FloatingActionButton(
-                        modifier = itemFAB.modifier.padding(end = 16.dp),
-                        containerColor = ClassJournalTheme.colors.tintColor,
-                        contentColor = ClassJournalTheme.colors.primaryText,
-                        onClick = {
-                            itemFAB.onClick()
-                            showMenu = false
-                        }) {
-                        Row {
-                            Icon(
-                                painter = (itemFAB.icon ?: Icons.Default.Info) as Painter,
-                                null,
-                                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                                tint = ClassJournalTheme.colors.primaryBackground
-                            )
+        if (listFAB.size > 1) {
+            Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.End) {
+                listFAB.forEach { itemFAB ->
+                    if (showMenu) {
+                        FloatingActionButton(
+                            modifier = itemFAB.modifier.padding(end = 16.dp),
+                            containerColor = ClassJournalTheme.colors.tintColor,
+                            contentColor = ClassJournalTheme.colors.primaryText,
+                            onClick = {
+                                itemFAB.onClick()
+                                showMenu = false
+                            }) {
+                            Row {
+                                Icon(
+                                    painter = (itemFAB.icon ?: Icons.Default.Info) as Painter,
+                                    null,
+                                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                                    tint = ClassJournalTheme.colors.primaryBackground
+                                )
 
+                            }
                         }
                     }
                 }
-            }
-            Spacer(Modifier.padding(bottom = 8.dp))
-            Log.e("CLJR",  "Scale $scale")
-            FloatingActionButton(
-                modifier = Modifier
-                    .padding(bottom = bottomPadding + 16.dp, end = 16.dp)
-                    .scale(scale)
-                ,
-                containerColor = if (showMenu) ClassJournalTheme.colors.controlColor else ClassJournalTheme.colors.tintColor,
-                contentColor = if (showMenu) ClassJournalTheme.colors.primaryText else
-                    ClassJournalTheme.colors.secondaryBackground,
-                shape = if (showMenu) CircleShape else FloatingActionButtonDefaults.shape,
+                Spacer(Modifier.padding(bottom = 8.dp))
+                FloatingActionButton(
+                    modifier = Modifier
+                        .padding(bottom = bottomPadding + 16.dp, end = 16.dp)
+                        .scale(scale),
+                    containerColor = if (showMenu) ClassJournalTheme.colors.controlColor else ClassJournalTheme.colors.tintColor,
+                    contentColor = if (showMenu) ClassJournalTheme.colors.primaryText else
+                        ClassJournalTheme.colors.secondaryBackground,
+                    shape = if (showMenu) CircleShape else FloatingActionButtonDefaults.shape,
 
-                onClick = {
-                    showMenu = !showMenu
-                })
-            {
-                Icon(
-                    if (showMenu) Icons.Sharp.Close else Icons.Sharp.Add, null,
-                    tint = if (showMenu) ClassJournalTheme.colors.primaryText else
-                        ClassJournalTheme.colors.secondaryBackground
+                    onClick = {
+                        showMenu = !showMenu
+                    })
+                {
+                    Icon(
+                        if (showMenu) Icons.Sharp.Close else Icons.Sharp.Add, null,
+                        tint = if (showMenu) ClassJournalTheme.colors.primaryText else
+                            ClassJournalTheme.colors.secondaryBackground
                     )
+                }
+            }
+        } else {
+            if (listFAB.isNotEmpty()) {
+                FloatingActionButton(
+                    modifier = Modifier
+                        .padding(bottom = bottomPadding + 16.dp, end = 16.dp)
+                        .scale(scale),
+                    containerColor =  listFAB[0].containerColor,
+                    contentColor = listFAB[0].contentColor,
+                    shape =  FloatingActionButtonDefaults.shape,
+
+                    onClick =listFAB[0].onClick
+                )
+                {
+                    Icon(
+                        painter = (listFAB[0].icon?: Icons.Sharp.Add) as Painter,
+                        contentDescription = null,
+                        tint = ClassJournalTheme.colors.secondaryBackground,
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp) ,
+
+                    )
+                }
             }
         }
     }

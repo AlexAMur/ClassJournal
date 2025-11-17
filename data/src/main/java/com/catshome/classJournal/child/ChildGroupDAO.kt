@@ -31,6 +31,6 @@ interface ChildGroupDAO {
     @Query("Select * from 'child_group' where childId= :child_uid")
     fun getGroupByIdChild(child_uid: String): Flow<List<ChildGroupEntity>>
 
-    @Query("select c.uid as childUid , c.child_name as childName, c.child_surname as childSurname, g.group_name as groupName, g.uid as groupUid  from child as c  left join   'child_group' as c_g on c_g.childId =c.uid left join  `groups` as g on groupId = g.uid or groupId =null and c.isDelete =:isDelete")
+    @Query("select c.uid as childUid , c.child_name as childName, c.child_surname as childSurname,c.child_birthday as childBirthday , g.group_name as groupName, g.uid as groupUid  from child as c  left join   'child_group' as c_g on c_g.childId =c.uid left join  `groups` as g on groupId = g.uid or groupId =null and c.isDelete =:isDelete")
     fun getChildAndGroups(isDelete: Boolean): List<ChildWithGroupListEntity>
 }

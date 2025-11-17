@@ -22,10 +22,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -34,7 +36,11 @@ import androidx.navigation.NavController
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.R
+import com.catshome.classJournal.communs.ItemFAB
+import com.catshome.classJournal.communs.fabMenu
 import com.catshome.classJournal.navigate.DetailsGroup
+import com.catshome.classJournal.screens.ItemScreen
+import com.catshome.classJournal.screens.child.ChildListEvent
 import com.catshome.classJournal.screens.group.GroupAction
 
 //@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -53,12 +59,18 @@ fun PlayListScreen(
 //        //TODO Called twice
 //        viewModel.obtainEvent(PayListEvent.ReloadScreen)
 //    }
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.obtainEvent(PayListEvent.ShowFAB(false))
+        }
+    }
     Surface(
         Modifier
             .background(ClassJournalTheme.colors.primaryBackground)
             .fillMaxWidth(),
         color = ClassJournalTheme.colors.primaryBackground
     ) {
+        viewModel.obtainEvent(PayListEvent.ShowFAB(true))
         Scaffold(
             Modifier
                 .fillMaxWidth()
@@ -66,14 +78,27 @@ fun PlayListScreen(
 
             bottomBar = {
                 Row(Modifier.fillMaxWidth(), Arrangement.End) {
-                    FloatingActionButton(
-                        modifier = Modifier.padding(
-                            bottom = bottomPadding + 16.dp,
-                            end = 16.dp
-                        ),
-                        onClick = { viewModel.obtainEvent(PayListEvent.NewClicked) }) {
-                        Icon(Icons.Sharp.Add, "")
-                    }
+                    fabMenu(
+                        listFAB = listOf(ItemFAB(
+                            containerColor =  ClassJournalTheme.colors.tintColor,
+                            contentColor = ClassJournalTheme.colors.secondaryBackground,
+                            icon = painterResource(R.drawable.rusrub_48),//R.drawable.pay),
+                            onClick = {
+                                viewModel.obtainEvent(PayListEvent.NewClicked)
+                            }
+                        )),
+                        fabVisible = viewState.showFAB
+                    )
+
+//                    FloatingActionButton(
+//                        modifier = Modifier.padding(
+//                            bottom = bottomPadding + 16.dp,
+//                            end = 16.dp
+//                        ),
+//                        onClick = { viewModel.obtainEvent(PayListEvent.NewClicked) }) {
+//                        Icon( painter = painterResource(R.drawable.rusrub_24)
+//                            , "")
+//                    }
                 }
             }
         ) { padValues ->
@@ -93,68 +118,23 @@ fun PlayListScreen(
                         state = rememberLazyListState()
                     ) {
                         itemsIndexed(viewState.items) { index, item ->
-//                            Card(
-//                                modifier = Modifier
-//                                    .fillMaxWidth(),
-//
-//                            //        .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-//                                colors = CardDefaults.cardColors(ClassJournalTheme.colors.secondaryBackground),
-//                                shape = ClassJournalTheme.shapes.cornersStyle
-//                            ) {
-//                                SwipeToDismissListItems(
-//                                    onEndToStart = {
-//                                        viewModel.obtainEvent(
-//                                            PayListEvent.DeleteClicked(
-//                                                viewState.items[index].uidPay,
-//                                                index
-//                                            )
-//                                        )
-//                                    }
-//                                ) {
 
                                     itemPay(
-                                        fio = viewState.items[index].nameSurname,
+                                        fio = viewState.items[index].surname,
                                          date = viewState.items[index].datePay,
                                        payment = viewState.items[index].payment
                                     ){
 
                                     }
- //                                    Box {
-//                                        Text(
-//                                            viewState.items[index].nameSurname,
-//                                            modifier = Modifier
-//                                                .padding(16.dp)
-//                                                .fillMaxWidth()
-//                                                .clickable {
-//                                                    navController.navigate(
-//                                                        DetailsGroup(
-//                                                            viewState.items[index].uidPay
-//                                                        )
-//                                                    )
-//                                                },
-//                                            color = ClassJournalTheme.colors.primaryText,
-//                                            style = ClassJournalTheme.typography.heading
-//                                        )
-//                                    }
-//                                }
-//                            }
                         }
                     }
                 }
             }
             when (viewAction) {
-                is GroupAction.DeleteGroup -> {}
-                is GroupAction.OpenGroup -> {
+                is PayListAction.NewPay -> {
+                    navController.navigate(ItemScreen.NewPayScreen.name)
                     viewModel.clearAction()
-                    navController.navigate(DetailsGroup(""))
                 }
-
-                is GroupAction.RequestDelete -> {
-                    mupdate = !mupdate
-
-                    // viewState.listItems[(viewAction as GroupAction.RequestDelete).index].revealState = rememberRevealState()
-                }
-
                 null -> {}
             }
         }
@@ -163,7 +143,7 @@ fun PlayListScreen(
 
 
 @Composable
-fun itemPay(fio: String, date: String, payment:  Int,onClick:()->Unit) {
+fun itemPay(fio: String, date: String, payment:  String,onClick:()->Unit) {
     Card(
         Modifier
             .fillMaxWidth()

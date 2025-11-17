@@ -1,14 +1,12 @@
 package com.catshome.classJournal.screens.child
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,13 +54,12 @@ import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.TextField
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
-import com.catshome.classJournal.domain.communs.toDateStrungRU
+import com.catshome.classJournal.domain.communs.toDateStringRU
 import com.catshome.classJournal.localNavHost
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.screens.group.ComposeAction
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 
 @SuppressLint("SuspiciousIndentation", "UnusedMaterial3ScaffoldPaddingParameter")
@@ -267,7 +264,7 @@ fun ScreenContent(
 
                     stringResource(R.string.birthday_child)
                 ) {
-                    viewModel.birthdayChange(it?.toDateStrungRU().toString())
+                    viewModel.birthdayChange(it?.toDateStringRU().toString())
                 }
 
                 TextField(
@@ -288,7 +285,7 @@ fun ScreenContent(
                     TextField(
                         value = viewState.startSaldo.toString(),
                         label = stringResource(R.string.saldo_child),
-                        supportingText = if (viewState.isSaldoError)stringResource(R.string.error_saldo)
+                        supportingText = if (viewState.isSaldoError)stringResource(R.string.error_invalid_value)
                                                             else stringResource(R.string.saldo_child),
                         errorState = viewState.isSaldoError,
                         modifier = modifier

@@ -281,8 +281,9 @@ fun ChildListScreenContent(
                                         //Отрисовка контента  ребенка
                                         itemChild(
                                             offset = offset,
-                                            item.child.childName,
-                                            item.child.childSurname
+                                            name = item.child.childName,
+                                            surname = item.child.childSurname,
+                                            birthday = item.child.childBirthDay
                                         )
                                         {
                                             viewModel.obtainEvent(ChildListEvent.SelectItem)

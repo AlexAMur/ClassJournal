@@ -27,10 +27,11 @@
     <string name="error_unique_child">Клиент с таким именем, фамилией и датой рождениея уже есть в базе данных! </string>
     <string name="error_primarykey_group">Нарушение первичного ключа!</string>
     <string name="error_save_group">Не удалось записать!</string>
-    <string name="error_saldo">Не допустимое значение!</string>
+    <string name="error_invalid_value">Не допустимое значение!</string>
     //<string name="error_uncou_name_group">Имя группы должно быть уникальным! </string>
     <string name="name_group_label">Enter name group. </string>
     <string name="new_child_dialog_headline">New child</string>
+    <string name="new_pay_dialog_headline">Новый платеж</string>
     <string name="new_child_menu_item">New child</string>
     <string name="new_group_dialog_headline">New group</string>
     <string name="new_group_menu_item">New group</string>
@@ -38,6 +39,9 @@
     <string name="name_child">Enter name child.</string>
     <string name="surname_child">Enter surname child.</string>
     <string name="phone_child">Enter phone.</string>
+    <string name="paymant">Укажите сумму платежа.</string>
+    <string name="paymant_error">Cуммa платежа не может быть меньше 0.</string>
+
     <string name="saldo_child">Введите начальные остатки.</string>
     <string name="birthday_child">Enter birthday child.</string>
     <string name="note_label">Note.</string>

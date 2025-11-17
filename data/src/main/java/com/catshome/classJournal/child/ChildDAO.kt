@@ -88,8 +88,8 @@ interface ChildDAO {
     @Query("Select * from 'child' where uid = :uid ")
     fun getChildById(uid: String): ChildEntity?
 
-    @Query("Select * from 'child' where child_surname LIKE :surname")
-    fun getChildByName(surname: String): Flow<List<ChildEntity>>
+    @Query("Select (child_name ||' '|| child_surname)as fio,  uid, child_name, child_surname, child_birthday, child_note, child_phone, saldo, isDelete from 'child' where fio LIKE :name and isDelete = 0")
+    fun getChildByName(name: String): Flow<List<ChildEntity>>
 
     @Query("SELECT * FROM 'child' where isDelete = :isDelete")
     fun getChilds(isDelete: Boolean): Flow<List<ChildEntity>>

@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.domain.communs.toDateRu
-import com.catshome.classJournal.domain.communs.toDateStrungRU
+import com.catshome.classJournal.domain.communs.toDateStringRU
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)

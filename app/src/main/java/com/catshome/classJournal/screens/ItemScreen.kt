@@ -21,6 +21,7 @@ enum class ItemScreen {
     RateScreen,
     ReportScreen,
     NewChildScreen,
+    NewPayScreen,
     NewVisitScreen,
     NewRateScreen,
     NewGroupScreen

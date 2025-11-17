@@ -52,8 +52,8 @@ class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage) : 
         return childStorage.childDeleteExists(child.mapToChildEntity())?.mapToChild()
     }
 
-    override fun getChildByName(name: String): Child {
-        TODO("Not yet implemented")
+    override fun getChildByName(name: String): Flow<List<Child>?> {
+        return childStorage.getChildByName(name = name)
     }
 
     override fun getChilds(isDelete: Boolean): Flow<List<Child>> {

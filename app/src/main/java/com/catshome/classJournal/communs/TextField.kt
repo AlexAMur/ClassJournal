@@ -13,7 +13,7 @@ import com.catshome.classJournal.ClassJournalTheme
 fun TextField(
     value: String,
     label: String,
-    supportingText: String,
+    supportingText: String? = null,
     modifier: Modifier,
     onValueChange: (String) -> Unit,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -46,7 +46,7 @@ fun TextField(
         readOnly = readOnly,
         colors = colors,
         label = { Text(label) },
-        supportingText = { Text(text = supportingText) },
+        supportingText = { supportingText?.let{Text(text = supportingText)} },
         keyboardOptions = keyboardOptions,
         onValueChange = onValueChange,
         singleLine = singleLine,

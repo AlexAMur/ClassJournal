@@ -2,10 +2,12 @@ package com.catshome.classJournal.child
 
 
 import android.content.Context
+import android.util.Log
 import com.catshome.classJournal.R
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildWithGroups
+import com.catshome.classJournal.domain.communs.toDateStringRU
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,32 +21,35 @@ class RoomChildStorage @Inject constructor(
     @ApplicationContext val context: Context,
     val childDAO: ChildDAO,
     val childGroup: ChildGroupDAO
-) :ChildStorage {
+) : ChildStorage {
 
 
     override suspend fun insert(
         child: Child,
         childGroup: List<ChildGroup>
     ) {
-            childDAO.insertChild(child.mapToChildEntity(), childGroup.map {
-                it.mapToChildGroupEntity()
-            })
+        childDAO.insertChild(child.mapToChildEntity(), childGroup.map {
+            it.mapToChildGroupEntity()
+        })
     }
-//пометить на удаление  ребенка
+
+    //пометить на удаление  ребенка
     override suspend fun deleteSet(child: Child) {
         childDAO.update(child.copy(isDelete = true).mapToChildEntity())
     }
 
     override suspend fun delete(child: Child) {
-            childDAO.delete(child.mapToChildEntity())
+        childDAO.delete(child.mapToChildEntity())
     }
 
     override suspend fun updateChildWithGroups(
         child: Child,
         childGroup: List<ChildGroup>
-    ) {         childDAO.updateChild(child.mapToChildEntity(),
-                    group = childGroup.map { it.mapToChildGroupEntity()}
-                )
+    ) {
+        childDAO.updateChild(
+            child.mapToChildEntity(),
+            group = childGroup.map { it.mapToChildGroupEntity() }
+        )
     }
 
     override suspend fun update(child: Child) {
@@ -61,12 +66,13 @@ class RoomChildStorage @Inject constructor(
         return data?.mapToChild()
     }
 
-    override fun getChildByName(child: Child): Flow<List<Child>> {
-        return childDAO.getChildByName(child.surname.toString()).map { list ->
+    override fun getChildByName(name: String): Flow<List<Child>> {
+        val list = childDAO.getChildByName("%${name}%").map { list ->
             list.map { childEntity ->
                 childEntity.mapToChild()
             }
         }
+        return list
     }
 
     override fun read(isDelete: Boolean): Flow<List<Child>> {
@@ -92,8 +98,10 @@ class RoomChildStorage @Inject constructor(
                     childUid = it.childUid,
                     childName = it.childName,
                     childSurname = it.childSurname,
-                    groupUid = it.groupUid?:"",
-                    groupName = it.groupName ?: context.getString(R.string.no_group)
+                    groupUid = it.groupUid ?: "",
+                    groupName = it.groupName ?: context.getString(R.string.no_group),
+                    childBirthDay = it.childBirthday.toLong().toDateStringRU()
+
                 )
             }
         }
@@ -104,9 +112,11 @@ class RoomChildStorage @Inject constructor(
     }
 
     override fun childDeleteExists(child: ChildEntity): ChildEntity? {
-        return childDAO.findDeleteChild(name = child.name,
+        return childDAO.findDeleteChild(
+            name = child.name,
             surname = child.surname,
             birthday = child.birthday,
-            isDelete = true)
+            isDelete = true
+        )
     }
 }

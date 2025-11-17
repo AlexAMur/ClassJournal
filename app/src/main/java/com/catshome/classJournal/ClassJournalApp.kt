@@ -1,6 +1,6 @@
 package com.catshome.classJournal
 
-
+import androidx.activity.viewModels
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.activity.ComponentActivity
@@ -16,18 +16,20 @@ import androidx.navigation.toRoute
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.screens.ItemScreen
+import com.catshome.classJournal.screens.PayList.NewPayViewModel
 import com.catshome.classJournal.screens.PayList.PayListViewModel
 import com.catshome.classJournal.screens.PayList.PlayListScreen
+import com.catshome.classJournal.screens.PayList.newPayScreen
 import com.catshome.classJournal.screens.Visit.VisitListViewModel
 import com.catshome.classJournal.screens.Visit.visitListScreen
 import com.catshome.classJournal.screens.child.ChildListViewModel
-import com.catshome.classJournal.screens.child.ListScreenChild
 import com.catshome.classJournal.screens.child.NewChildScreen
 import com.catshome.classJournal.screens.child.NewChildViewModel
 import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.screens.group.NewGroupScreen
 import com.catshome.classJournal.screens.viewModels.GroupViewModel
 import com.catshome.classJournal.screens.viewModels.NewGroupViewModel
+import kotlin.getValue
 
 internal val localNavHost =
     staticCompositionLocalOf<NavHostController> { error("No default implementation") }
@@ -44,22 +46,22 @@ fun classJournalApp(
     val currentScreen = backStackEntry?.destination?.route ?: ItemScreen.PayListScreen.name
 
     NavHost(navController, startDestination = ItemScreen.PayListScreen.name) {
+        composable(route = ItemScreen.NewPayScreen.name) {
+            // val viewModel =hiltViewModel<PayListViewModel>()
+            val viewModel: NewPayViewModel by  activity.viewModels()      //
+            newPayScreen( viewModel)
+
+        }
+
         composable(route = ItemScreen.PayListScreen.name) {
-            val viewModel = hiltViewModel<PayListViewModel>()
+           // val viewModel =hiltViewModel<PayListViewModel>()
+            val viewModel: PayListViewModel by  activity.viewModels()      //
             PlayListScreen(navController, viewModel)
 
         }
         composable(route = ItemScreen.VisitListScreen.name) {
             val viewModel = hiltViewModel<VisitListViewModel>()
             visitListScreen(navController, viewModel)
-
-        }
-        composable<ListScreenChild> { backStackEntry ->
-            val idGroup = backStackEntry.toRoute<ListScreenChild>()
-            val viewModel = hiltViewModel<ChildListViewModel>()
-            ChildListScreen(
-                viewModel = viewModel,
-                navController = navController)
 
         }
 
