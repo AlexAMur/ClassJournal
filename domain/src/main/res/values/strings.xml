@@ -48,7 +48,7 @@
 
     <string name="saldo_child">Введите начальные остатки.</string>
     <string name="birthday_child">Enter birthday child.</string>
-    <string name="filter_date">Отбор по диапазону даты</string>
+    <string name="filter_date">Отбор по периоду</string>
     <string name="filter_child">Отбор по ребенку</string>
     <string name="begin_date">Дата начала</string>
     <string name="end_date">Дата окончания</string>

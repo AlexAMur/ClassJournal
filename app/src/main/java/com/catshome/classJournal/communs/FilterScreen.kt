@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.catshome.classJournal.ClassJournalTheme
@@ -60,7 +61,7 @@ fun FilterScreen(viewModel: PayListViewModel, modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("fdsakfsa")
+                Text("Статус отбора будет тут")
                 Icon(
                     modifier = Modifier
                         .width(48.dp)
@@ -99,6 +100,17 @@ fun FilterScreen(viewModel: PayListViewModel, modifier: Modifier = Modifier) {
                         color = ClassJournalTheme.colors.primaryText,
                         style = ClassJournalTheme.typography.toolbar
                     )
+
+                    Icon(
+                        painter = painterResource(R.drawable.arrow_drop_up_24),
+                        modifier = Modifier
+                            .width(48.dp)
+                            .clickable {
+                                viewModel.obtainEvent(PayListEvent.onCollapse(true))
+                            },
+                        contentDescription = "",
+                        tint = ClassJournalTheme.colors.controlColor
+                    )
                 }
                 Row(
                     Modifier
@@ -123,16 +135,7 @@ fun FilterScreen(viewModel: PayListViewModel, modifier: Modifier = Modifier) {
                     ) { searchText ->
                         viewModel.obtainEvent(PayListEvent.Search(searchText = searchText))
                     }
-                    Icon(
-                        painter = painterResource(R.drawable.arrow_drop_up_24),
-                        modifier = Modifier
-                            .width(48.dp)
-                            .clickable {
-                                viewModel.obtainEvent(PayListEvent.onCollapse(true))
-                            },
-                        contentDescription = "",
-                        tint = ClassJournalTheme.colors.controlColor
-                    )
+
                 }
                 Row(
                     modifier = Modifier
@@ -164,7 +167,6 @@ fun FilterScreen(viewModel: PayListViewModel, modifier: Modifier = Modifier) {
                     Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp),
-
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     DatePickerFieldToModal(
@@ -196,6 +198,9 @@ fun FilterScreen(viewModel: PayListViewModel, modifier: Modifier = Modifier) {
                     ) {
                         viewModel.endDateChange(it?.toDateStringRU().toString())
                     }
+                }
+                Button({}) {
+
                 }
             }
         }
