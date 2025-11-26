@@ -126,7 +126,7 @@ fun NewChildScreen(
 
             ComposeAction.CloseScreen -> {
                 keyboardController?.hide()
-                viewState.outerNavigation?.popBackStack()
+                //viewState.outerNavigation?.popBackStack()
                 viewModel.clearAction()
             }
 

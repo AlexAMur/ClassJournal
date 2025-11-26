@@ -13,8 +13,8 @@ suspend fun SnackBarAction(message: String, actionLabel: String, snackbarState: 
              withDismissAction = true,
             duration = SnackbarDuration.Short
         )){
-             SnackbarResult.Dismissed -> {onDismissed()}
-             SnackbarResult.ActionPerformed -> {onActionPerformed()}
+             SnackbarResult.Dismissed -> onDismissed()
+             SnackbarResult.ActionPerformed -> onActionPerformed()
          }
 
     }

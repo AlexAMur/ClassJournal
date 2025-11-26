@@ -17,7 +17,7 @@ import java.util.Date
 import java.util.Locale
 const val DATE_FORMAT_RU = "dd.MM.yyyy"
 @RequiresApi(Build.VERSION_CODES.O)
-fun String.toDateRu(): Date{
+fun String.toDateRu(): Date?{
         val formatter =    SimpleDateFormat(DATE_FORMAT_RU, Locale.getDefault())
         try {
             return formatter.parse(this)
@@ -25,7 +25,7 @@ fun String.toDateRu(): Date{
             Log.e("CLJR", e.message.toString())
         }
 
-    return Date()
+    return null
 }
 //fun Long.toDateStringRu(): String{
 //    val formatter =    SimpleDateFormat(DATE_FORMAT_RU, Locale.getDefault())

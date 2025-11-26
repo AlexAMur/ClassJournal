@@ -7,6 +7,7 @@ import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.catshome.classJournal.domain.Child.Child
+import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.communs.toDateStringRU
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -36,6 +37,15 @@ fun ChildEntity.mapToChild(): Child{
        isDelete = this.isDelete
    )
 }
+fun ChildEntity.mapTominiChild(): MiniChild{
+    return MiniChild(
+        uid = this.uid,
+        name = this.name,
+        surname = this.surname,
+
+    )
+}
+
 
 fun Child.mapToChildEntity(): ChildEntity{
     val formatter =    SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())

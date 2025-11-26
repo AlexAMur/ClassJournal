@@ -1,23 +1,18 @@
 package com.catshome.classJournal
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -35,10 +30,7 @@ import com.catshome.classJournal.screens.child.ChildListAction
 import com.catshome.classJournal.screens.child.ChildListEvent
 import com.catshome.classJournal.screens.child.ChildListScreenContent
 import com.catshome.classJournal.screens.child.ChildListViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceAsColor", "SuspiciousIndentation")
@@ -89,8 +81,6 @@ fun ChildListScreen(
             },
             bottomBar = {
                 //Создание меню для нового ребенка и новой группы
-
-
                     val listFAB = listOf(
                         ItemFAB(
                             label = stringResource(R.string.new_child_menu_item),

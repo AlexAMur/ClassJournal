@@ -1,24 +1,24 @@
 package com.catshome.classJournal
 
-import androidx.activity.viewModels
 import android.annotation.SuppressLint
-import android.content.Context
+import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.navigate.DetailsGroup
+import com.catshome.classJournal.navigate.DetailsPay
+import com.catshome.classJournal.navigate.DetailsPayList
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.NewPayViewModel
+import com.catshome.classJournal.screens.PayList.PayListScreen
 import com.catshome.classJournal.screens.PayList.PayListViewModel
-import com.catshome.classJournal.screens.PayList.PlayListScreen
 import com.catshome.classJournal.screens.PayList.newPayScreen
 import com.catshome.classJournal.screens.Visit.VisitListViewModel
 import com.catshome.classJournal.screens.Visit.visitListScreen
@@ -29,7 +29,6 @@ import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.screens.group.NewGroupScreen
 import com.catshome.classJournal.screens.viewModels.GroupViewModel
 import com.catshome.classJournal.screens.viewModels.NewGroupViewModel
-import kotlin.getValue
 
 internal val localNavHost =
     staticCompositionLocalOf<NavHostController> { error("No default implementation") }
@@ -42,21 +41,28 @@ fun classJournalApp(
     navController: NavHostController,
     currentSettings: SettingsBundle
 ) {
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = backStackEntry?.destination?.route ?: ItemScreen.PayListScreen.name
-
     NavHost(navController, startDestination = ItemScreen.PayListScreen.name) {
         composable(route = ItemScreen.NewPayScreen.name) {
-            // val viewModel =hiltViewModel<PayListViewModel>()
-            val viewModel: NewPayViewModel by  activity.viewModels()      //
+             //val viewModel =hiltViewModel<NewPayViewModel>()
+            Log.e("CLJR","NavHost new pay")
+            val viewModel: NewPayViewModel by  activity.viewModels()
             newPayScreen( viewModel)
+        }
+
+        composable<DetailsPayList> { backStackEntry->
+            val detailsPayList = backStackEntry.toRoute<DetailsPayList>()
+            Log.e("CLJR","NavHost pay")
+            val viewModel: PayListViewModel by  activity.viewModels()
+            PayListScreen(navController, viewModel)
+            //PayListScreen(detailsPayList,navController, viewModel)
+           // navController.popBackStack(ItemScreen.PayListScreen.name,false)
 
         }
 
         composable(route = ItemScreen.PayListScreen.name) {
            // val viewModel =hiltViewModel<PayListViewModel>()
             val viewModel: PayListViewModel by  activity.viewModels()      //
-            PlayListScreen(navController, viewModel)
+            PayListScreen(navController = navController, viewModel = viewModel)
 
         }
         composable(route = ItemScreen.VisitListScreen.name) {
@@ -75,9 +81,11 @@ fun classJournalApp(
         }
         composable(route = ItemScreen.RateScreen.name) { RateScreen() }
         composable(route = ItemScreen.ReportScreen.name) { ReportScreen() }
+
         composable<DetailsGroup> { backStackEntry ->
             val idGroup = backStackEntry.toRoute<DetailsGroup>()
-            val viewModel = hiltViewModel<NewGroupViewModel>()
+            //val viewModel = hiltViewModel<NewGroupViewModel>()
+            val viewModel: NewGroupViewModel by activity.viewModels()
             NewGroupScreen(viewModel = viewModel, idGroup = idGroup.GroupID)
         }
         composable(route = ItemScreen.NewGroupScreen.name) {

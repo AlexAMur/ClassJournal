@@ -64,7 +64,7 @@ fun DatePickerFieldToModal(
 
     if (showModal) {
            DatePickerModal(
-            inicialDate = value.toDateRu(),
+            inicialDate = value.toDateRu()?:Date(),
             onDateSelected = onDateSelected,
             onDismiss = { showModal = false }
         )

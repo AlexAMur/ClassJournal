@@ -3,6 +3,7 @@ package com.catshome.classJournal.child
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildWithGroups
+import com.catshome.classJournal.domain.Child.MiniChild
 import kotlinx.coroutines.flow.Flow
 
 interface ChildStorage {
@@ -12,7 +13,7 @@ interface ChildStorage {
         suspend fun updateChildWithGroups(child: Child, childGroup: List<ChildGroup>)
         suspend fun update(child: Child)
         fun getChildById(uid: String):Child?
-        fun getChildByName(name: String): Flow<List<Child>>
+        fun getChildByName(name: String): Flow<List<MiniChild>>
         fun read(isDelete: Boolean): Flow<List<Child>>
         fun readAll(): Flow<List<Child>>
         fun getChildWithGroups(isDelete: Boolean =false): List<ChildWithGroups>

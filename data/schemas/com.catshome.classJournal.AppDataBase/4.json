@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "41aa74a66f0beff05882792e8822a21d",
+    "identityHash": "6f1ea62fa62fd25420bf850da50fa2b8",
     "entities": [
       {
         "tableName": "groups",
@@ -198,15 +198,15 @@
         },
         "indices": [
           {
-            "name": "index_pays_uid_child_date_pay_pay",
-            "unique": true,
+            "name": "paysindex",
+            "unique": false,
             "columnNames": [
               "uid_child",
               "date_pay",
               "pay"
             ],
             "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_pays_uid_child_date_pay_pay` ON `${TABLE_NAME}` (`uid_child`, `date_pay`, `pay`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `paysindex` ON `${TABLE_NAME}` (`uid_child`, `date_pay`, `pay`)"
           }
         ],
         "foreignKeys": [
@@ -226,7 +226,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '41aa74a66f0beff05882792e8822a21d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6f1ea62fa62fd25420bf850da50fa2b8')"
     ]
   }
 }

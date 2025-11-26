@@ -20,12 +20,10 @@ internal val MIGRATION_2_3 = object : Migration(2, 3) {
 internal val MIGRATION_3_4 = object : Migration(3, 4) {
     override fun migrate(db: SupportSQLiteDatabase) {
     //    db.execSQL("CREATE TABLE IF NOT EXISTS `PAYS` (`uid` TEXT NOT NULL, `uid_child` TEXT NOT NULL, `date_pay` INTEGER NOT NULL, `pay` INTEGER NOT NULL, PRIMARY KEY(`uid`))")
-        db.execSQL("CREATE TABLE PAYS (\n" +
-                " 'uid' TEXT PRIMARY KEY,\n" +
-                " 'uid_child' TEXT NOT NULL,\n" +
-                " 'date_pay' TEXT NOT NULL,\n" +
-                " 'pay' INTEGER NOT NULL,\n" +
-                " FOREIGN KEY ('uid_child') REFERENCES 'child'('iud')) DELETE CASCADE")
+        db.execSQL("CREATE TABLE PAYS ('uid' TEXT NOT NULL PRIMARY KEY, 'uid_child' TEXT NOT NULL," +
+                " 'date_pay' INTEGER NOT NULL," +
+                " 'pay' INTEGER NOT NULL,  FOREIGN KEY ('uid_child') REFERENCES 'child'('uid') ON DELETE CASCADE)")
+        db.execSQL("Create Index paysindex on pays ('uid_child','date_pay',  'pay') ")
         db.execSQL("Drop table 'payentity'")
     }
 }

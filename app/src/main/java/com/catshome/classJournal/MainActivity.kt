@@ -37,24 +37,27 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.catshome.classJournal.navigate.DetailsPayList
 import com.catshome.classJournal.screens.ItemBottomBar
 import com.catshome.classJournal.screens.ItemScreen
+import com.catshome.classJournal.screens.PayList.PayListScreen
 import com.catshome.classJournal.screens.PayList.PayListViewModel
 import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.theme.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 lateinit var context: Context
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-         context= application.applicationContext
-        val payListViewModel:PayListViewModel  by viewModels ()
+        context = application.applicationContext
+        val payListViewModel: PayListViewModel by viewModels()
         enableEdgeToEdge()
         setContent {
-             val navController = rememberNavController()
+            val navController = rememberNavController()
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
             var selectedItem by rememberSaveable { mutableIntStateOf(0) }
@@ -76,64 +79,68 @@ class MainActivity : ComponentActivity() {
                 ) {
 
 
-            val bottomItems = listOf(
-                ItemBottomBar(
-                    stringResource(R.string.item_bottom_pay),
-                    ItemScreen.PayListScreen.name,
-                    Icons.Sharp.ShoppingCart,
-                    Icons.Outlined.ShoppingCart,
-                    ChildListScreen(navController)//,currentSettings)
-                ),
-                ItemBottomBar(
-                    stringResource(R.string.item_bottom_visit),
-                    ItemScreen.GroupScreen.name,
-                    Icons.Sharp.DateRange,
-                    Icons.Outlined.DateRange,
-                    GroupScreen(navController)
-                ),
-                ItemBottomBar(
-                    stringResource(R.string.item_bottom_client),
-                    ItemScreen.MainScreen.name,
-                    Icons.Sharp.Face,
-                    Icons.Outlined.Face,
-                    RateScreen()
-                ),
-                ItemBottomBar(
-                    stringResource(R.string.item_bottom_report),
-                    ItemScreen.ReportScreen.name,
-                    Icons.AutoMirrored.Sharp.List,
-                    Icons.AutoMirrored.Outlined.List,
-                    ReportScreen()
-                )
-            )
-
-
-                    Surface(Modifier.background(ClassJournalTheme.colors.primaryBackground)
-                        .fillMaxSize()
-                        ) {
+                    val bottomItems = listOf(
+                        ItemBottomBar(
+                            stringResource(R.string.item_bottom_pay),
+                            ItemScreen.PayListScreen.name,
+                            Icons.Sharp.ShoppingCart,
+                            Icons.Outlined.ShoppingCart,
+                            PayListScreen(navController)//,currentSettings)
+                        ),
+                        ItemBottomBar(
+                            stringResource(R.string.item_bottom_visit),
+                            ItemScreen.GroupScreen.name,
+                            Icons.Sharp.DateRange,
+                            Icons.Outlined.DateRange,
+                            GroupScreen(navController)
+                        ),
+                        ItemBottomBar(
+                            stringResource(R.string.item_bottom_client),
+                            ItemScreen.MainScreen.name,
+                            Icons.Sharp.Face,
+                            Icons.Outlined.Face,
+                            RateScreen()
+                        ),
+                        ItemBottomBar(
+                            stringResource(R.string.item_bottom_report),
+                            ItemScreen.ReportScreen.name,
+                            Icons.AutoMirrored.Sharp.List,
+                            Icons.AutoMirrored.Outlined.List,
+                            ReportScreen()
+                        )
+                    )
+                    Surface(
+                        Modifier
+                            .background(ClassJournalTheme.colors.primaryBackground)
+                            .fillMaxSize()
+                    ) {
                         Scaffold(
-                            Modifier.background(ClassJournalTheme.colors.primaryBackground)
-                                ,
+                            Modifier.background(ClassJournalTheme.colors.primaryBackground),
                             bottomBar = {
                                 NavigationBar(containerColor = ClassJournalTheme.colors.tintColor) {
                                     bottomItems.forEachIndexed { index, screen ->
                                         NavigationBarItem(
 
-                                            label = { Text(screen.label, style = ClassJournalTheme.typography.body) },
-                                            selected =currentDestination?.hierarchy?.any{it.route== screen.route} ==true ,
+                                            label = {
+                                                Text(
+                                                    screen.label,
+                                                    style = ClassJournalTheme.typography.body
+                                                )
+                                            },
+                                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                                             onClick = {
-                                               // selectedItem = index
-                                                navController.navigate(screen.route)
+                                                // selectedItem = index
+                                                if (currentDestination?.route != screen.route)
+                                                    navController.navigate(screen.route)
                                             },
                                             icon = {
                                                 Icon(
-                                                    if (currentDestination?.hierarchy?.any{it.route== screen.route} == true)
-                                                            screen.icon else screen.iconUnselect , "",
-                                                    tint = if (currentDestination?.hierarchy?.any{it.route== screen.route} == true)
-                                                         ClassJournalTheme.colors.primaryBackground
-
+                                                    if (currentDestination?.hierarchy?.any { it.route == screen.route } == true)
+                                                        screen.icon else screen.iconUnselect, "",
+                                                    tint = if (currentDestination?.hierarchy?.any { it.route == screen.route } == true)
+                                                        ClassJournalTheme.colors.primaryBackground
                                                     else
-                                                       ClassJournalTheme.colors.secondaryBackground
+                                                        ClassJournalTheme.colors.secondaryBackground
                                                 )
 
                                             }

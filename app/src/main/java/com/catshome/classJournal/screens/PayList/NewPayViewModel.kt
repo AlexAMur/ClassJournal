@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.Child
+import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.PayList.Pay
 import com.catshome.classJournal.domain.PayList.PayInteract
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,23 +22,86 @@ class NewPayViewModel @Inject constructor(
         (installState = NewPayState(pay = Pay())) {
     val TEXT_FILD_COUNT = 3
     val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
+    private val exceptionHandlerPays = CoroutineExceptionHandler { coroutineContext, throwable ->
+        if (throwable.message?.contains("UID ребенка") == true) {
+            viewState = viewState.copy(
+                isChildError = true,
+                isSnackbarShow = true,
+                errorMessage = throwable.message.toString(),
+                snackbarAction = context.getString(R.string.ok),
+                onDismissed = { viewState = viewState.copy(isSnackbarShow = false) },
+                onAction = { viewState = viewState.copy(isSnackbarShow = false) }
+            )
+            return@CoroutineExceptionHandler
+        }
+        if (throwable.message?.contains("нулевым или отрицательным.") == true) {
+            viewState = viewState.copy(
+                isPayError =  true,
+                PayError = throwable.message?:"Error!!!")
+            return@CoroutineExceptionHandler
+        }
+
+        if (throwable.message?.contains("SQLITE_CONSTRAINT_UNIQUE") == true) {
+            viewState = viewState.copy(
+                isSnackbarShow = true,
+                errorMessage = context?.getString(R.string.error_unique_child) ?: "Ошибка!!!",
+                snackbarAction = context.getString(R.string.ok),
+                onDismissed = { viewState = viewState.copy(isSnackbarShow = false) },
+                onAction = { viewState = viewState.copy(isSnackbarShow = false) }
+            )
+            return@CoroutineExceptionHandler
+        }
+        if (throwable.message?.contains("SQLITE_CONSTRAINT_PRIMARYKEY") == true) {
+            viewState = viewState.copy(
+                isSnackbarShow = true,
+                errorMessage = " ${context?.getString(R.string.error_primarykey_group)}",
+                snackbarAction = context.getString(R.string.ok),
+                onDismissed = { viewState.isSnackbarShow = false },
+                onAction = { viewState.isSnackbarShow = false }
+            )
+            return@CoroutineExceptionHandler
+        } else {
+            viewState = viewState.copy(
+                isSnackbarShow = true,
+                errorMessage = "${context?.getString(R.string.error_save_group)} ${throwable.message} ",
+                snackbarAction = context.getString(R.string.ok),
+                onDismissed = { viewState.isSnackbarShow = false },
+                onAction = { viewState.isSnackbarShow = false }
+            )
+            return@CoroutineExceptionHandler
+        }
+    }
 
 
     override fun obtainEvent(viewEvent: NewPayEvent) {
         when (viewEvent) {
             NewPayEvent.CancelClicked -> {
+
+                viewState = viewState.copy(
+                    searchText = "",
+                    listChild = null,
+                    selectChild = null
+                )
                 viewAction = NewPayAction.CloseScreen
             }
+
             NewPayEvent.SaveClicked -> {
                 try {
-                    viewState.pay.payment.toInt()
+                    if (viewState.selectChild == null) {
+                        viewState = viewState.copy(
+                            isChildError = true,
+                            ChildErrorMessage = context.getString(R.string.search_child_error)
+                        )
+                    }
+
                     if (viewState.pay.payment.toInt() < 0) {
                         viewState = viewState.copy(
                             isPayError = true,
                             PayError = context.getString(R.string.paymant_error)
                         )
-                        return
                     }
+                    if (viewState.isChildError || viewState.isPayError)
+                        return          //для подсветки сразу всех ошибок в интерфейсе
                 } catch (e: NumberFormatException) {
                     viewState = viewState.copy(
                         isPayError = true,
@@ -44,15 +109,16 @@ class NewPayViewModel @Inject constructor(
                     )
                     return
                 }
-                viewState.selectChild?.let {child->
-                    viewModelScope.launch() {
+                viewState.selectChild?.let { child ->
+                    viewModelScope.launch(exceptionHandlerPays) {
                         payInteract.savePay(
-                            child = child,
+                            uid = child.uid,
                             payment = viewState.pay
                         )
                     }
-                    viewAction = NewPayAction.Successful
+
                 }
+                viewAction = NewPayAction.Successful
             }
 
             is NewPayEvent.Search -> {
@@ -60,16 +126,19 @@ class NewPayViewModel @Inject constructor(
                 if (viewState.searchText.isEmpty()) {
                     viewState = viewState.copy(listChild = null)
                     return
+                } else {
+                    if (viewState.isChildError) {
+                        viewState = viewState.copy(isChildError = false, ChildErrorMessage = null)
+                    }
                 }
                 viewModelScope.launch {
-                    payInteract.searchChild(viewEvent.searchText)?.collect {
+                    payInteract.searchChild(viewEvent.searchText).collect {
                         if (it.isNullOrEmpty()) {
                             viewState =
-                                viewState.copy(listChild = listOf(Child(uid = "", name = "пусто")))
+                                viewState.copy(listChild = listOf(MiniChild(uid = "", name = "пусто")))
                             return@collect
                         }
-
-                        it?.let {
+                        it.let {
                             viewState = viewState.copy(listChild = it)
                         }
 

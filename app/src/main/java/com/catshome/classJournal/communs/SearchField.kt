@@ -6,13 +6,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.catshome.classJournal.ClassJournalTheme
-import kotlinx.coroutines.flow.MutableStateFlow
-import androidx.compose.runtime.collectAsState
-import kotlinx.coroutines.flow.asStateFlow
 
 @Composable
-fun SearchField(label: String ="",
+fun SearchField(label: String = "",
                 text: String,
+                isError: Boolean = false,
+                errorMessage: String? = null,
                 modifier: Modifier = Modifier,
                 onSearch:(String)->Unit){
 
@@ -21,7 +20,7 @@ fun SearchField(label: String ="",
         value = text,
         label = label,
         modifier = modifier,
-        errorState = false,
+        errorState = isError,
         onValueChange = {
             onSearch(it)
         },
@@ -33,7 +32,7 @@ fun SearchField(label: String ="",
                 tint = ClassJournalTheme.colors.controlColor
             )
         },
-        supportingText = null,
+        supportingText = errorMessage,
 
     )
 }

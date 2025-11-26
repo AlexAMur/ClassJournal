@@ -1,12 +1,11 @@
 package com.catshome.classJournal.screens.PayList
 
 import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.animation.core.animate
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
@@ -22,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -30,6 +30,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -43,7 +44,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.BlurEffect
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -60,8 +62,7 @@ import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.toDateStringRU
 import com.catshome.classJournal.localNavHost
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.debounce
+import com.catshome.classJournal.navigate.DetailsPayList
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -71,14 +72,13 @@ fun newPayScreen(
     viewModel: NewPayViewModel = viewModel()
 ) {
     val viewState by viewModel.viewState().collectAsState()
-    viewState.outerNavigation = localNavHost.current
+   val outerNavigation = localNavHost.current
     val viewAction by viewModel.viewActions().collectAsState(null)
     val keyboardController = LocalSoftwareKeyboardController.current
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
 
     val sbHostState = remember { SnackbarHostState() }
-
     Scaffold(
         snackbarHost = {
             SnackbarHost(
@@ -114,13 +114,16 @@ fun newPayScreen(
         when (viewAction) {
             NewPayAction.Successful -> {
                 keyboardController?.hide()
-                viewState.outerNavigation?.popBackStack()
+                Log.e("CLJR", "NAvigation")
                 viewModel.clearAction()
+               // viewState.outerNavigation?.navigate(DetailsPayList(true, stringResource(R.string.save_successful)))
+               outerNavigation.popBackStack()
+
             }
             NewPayAction.CloseScreen -> {
                 keyboardController?.hide()
-                viewState.outerNavigation?.popBackStack()
                 viewModel.clearAction()
+                outerNavigation.popBackStack()
             }
             null -> {}
         }
@@ -136,7 +139,7 @@ fun PayScreenContent(
     onCancelClick: () -> Unit,
 ) {
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
-        .value.innerPadding.calculateBottomPadding()
+                                         .value.innerPadding.calculateBottomPadding()
     val viewState by viewModel.viewState().collectAsState()
 //  Установка фокуса после переворота
     LaunchedEffect(true) {
@@ -196,11 +199,18 @@ fun PayScreenContent(
 
                 SearchField(
                     text = viewState.searchText,
+                    label = stringResource(R.string.search_label),
+                    isError = viewState.isChildError,
+                    errorMessage = viewState.ChildErrorMessage,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 0.dp)
+                     .padding(start = 16.dp, end = 16.dp, bottom = 0.dp)
+                        .focusRequester(viewModel.listTextField[0])
+                        .onFocusChanged {
+                            if (it.isFocused)
+                                viewState.indexFocus = 0
+                        },
                 ) { searchText ->
-
                     viewModel.obtainEvent(NewPayEvent.Search(searchText = searchText))
                 }
                 viewState.listChild?.let { listChild ->
@@ -209,18 +219,21 @@ fun PayScreenContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 16.dp, end = 16.dp)
-                                .offset(y = (-16).dp),
+                                .offset(y = -19.dp),
+                              //  .background(color = ClassJournalTheme.colors.controlColor, shape = RectangleShape),
                             colors = CardDefaults.cardColors(
-                                containerColor = ClassJournalTheme.colors.tintColor,
-                                contentColor = ClassJournalTheme.colors.secondaryText
+                                containerColor = ClassJournalTheme.colors.secondaryBackground,
+                                contentColor = ClassJournalTheme.colors.primaryText
                             ),
-                            //shape = ClassJournalTheme.shapes.cornersStyle
+                            border = BorderStroke(2.dp, color = ClassJournalTheme.colors.tintColor),
+                            shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
                         )
                         {
                             LazyColumn(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .heightIn(min = 56.dp, max = 300.dp)
+                                    .padding(top = 12.dp,bottom = 8.dp)
+                                    .heightIn(min = 0.dp, max = 300.dp)
                             ) {
                                 itemsIndexed(listChild) { index, child ->
                                     ItemChildInSearch(
@@ -228,8 +241,11 @@ fun PayScreenContent(
                                         surname = child.surname,
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(start = 16.dp, top = 8.dp, end = 16.dp),
+                                            //.height(48.dp)
+                                          //  .background(color = ClassJournalTheme.colors.tintColor)
+                                            .padding(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 8.dp),
                                         style = ClassJournalTheme.typography.body,
+                                        contentColor = ClassJournalTheme.colors.tintColor,
                                         onClicked = {
                                             if (child.uid.isNotEmpty())
                                                 viewModel.obtainEvent(NewPayEvent.SelectedChild(child))
@@ -241,7 +257,7 @@ fun PayScreenContent(
                     }
                 }
                 DatePickerFieldToModal(
-                    modifier = modifier,
+                    modifier = if(viewState.isChildError)   modifier.padding(top = 16.dp) else  modifier ,
                     if (viewState.pay.datePay.isNullOrEmpty())
                         LocalDate.now()
                             .format(DateTimeFormatter.ofPattern(DATE_FORMAT_RU))

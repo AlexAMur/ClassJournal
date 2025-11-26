@@ -6,6 +6,7 @@ import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Child.ChildWithGroups
+import com.catshome.classJournal.domain.Child.MiniChild
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -52,7 +53,7 @@ class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage) : 
         return childStorage.childDeleteExists(child.mapToChildEntity())?.mapToChild()
     }
 
-    override fun getChildByName(name: String): Flow<List<Child>?> {
+    override fun getChildByName(name: String): Flow<List<MiniChild>?> {
         return childStorage.getChildByName(name = name)
     }
 

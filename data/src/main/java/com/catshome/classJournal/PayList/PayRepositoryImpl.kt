@@ -8,12 +8,20 @@ import javax.inject.Inject
 
 class PayRepositoryImpl @Inject constructor(val storage: RoomPayStorage) : PayRepository {
 
-    override suspend fun getAllPays(): Flow<List<Pay>>? {
-        return storage.getAllPay()?.map {listPayEntity-> listPayEntity.map { it.mapToPay() } }
+    override suspend fun getAllPays(isDelete: Boolean): Flow<List<Pay>>? {
+        return storage.getAllPay(isDelete)?.map {
+            listPayEntity-> listPayEntity.map {
+                it.mapToPay()
+            }
+        }
     }
 
     override suspend fun getPayByChild(uidChild: String): Flow<List<Pay>>? {
-        TODO("Not yet implemented")
+        return storage.getPayByChild(uidChild)?.map {list->
+            list.map {
+                it.mapToPay()
+            }
+        }
     }
 
     override suspend fun getPayByChildWithPeriod(

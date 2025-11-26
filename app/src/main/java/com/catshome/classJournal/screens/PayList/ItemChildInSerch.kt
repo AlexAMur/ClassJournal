@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.core.view.TintableBackgroundView
 import androidx.wear.compose.material.Text
 import com.catshome.classJournal.ClassJournalTheme
 
@@ -23,7 +24,8 @@ fun ItemChildInSearch(
 
     contentColor: Color = ClassJournalTheme.colors.primaryText
 ){
-    Row(modifier = modifier.clickable(onClick =  onClicked)) {
+    Row(modifier = modifier.
+                    clickable(onClick =  onClicked)) {
         Text(name, color= contentColor, style = style )
         Text(text = surname,modifier= Modifier.padding(start = 16.dp),
             style = style , color= contentColor)

@@ -2,11 +2,11 @@ package com.catshome.classJournal.child
 
 
 import android.content.Context
-import android.util.Log
 import com.catshome.classJournal.R
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildWithGroups
+import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.communs.toDateStringRU
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -66,10 +66,10 @@ class RoomChildStorage @Inject constructor(
         return data?.mapToChild()
     }
 
-    override fun getChildByName(name: String): Flow<List<Child>> {
+    override fun getChildByName(name: String): Flow<List<MiniChild>> {
         val list = childDAO.getChildByName("%${name}%").map { list ->
             list.map { childEntity ->
-                childEntity.mapToChild()
+                childEntity.mapTominiChild()
             }
         }
         return list

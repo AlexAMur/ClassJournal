@@ -9,7 +9,7 @@ interface ChildRepository {
    // fun checkDeleteChild(child: Child , isDelete: Boolean)
     fun getChildById(uid: String): Child?
     fun childDeleteExists(child: Child): Child?
-    fun getChildByName(name: String): Flow<List<Child>?>
+    fun getChildByName(name: String): Flow<List<MiniChild>?>
     fun getChilds(isDelete: Boolean): Flow<List<Child>>
     fun getAllChilds(): Flow<List<Child>>
     fun getChildWithGroups(): List<ChildWithGroups>
