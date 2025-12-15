@@ -13,6 +13,8 @@ data class ClassJournalColors(
     val secondaryBackground: Color,
     val tintColor: Color,
     val controlColor: Color,
+    val disableColor: Color,
+    val disableContentColor: Color,
     val errorColor: Color,
 )
 
@@ -20,7 +22,8 @@ data class ClassJournalTypography(
     val heading: TextStyle,
     val body: TextStyle,
     val toolbar: TextStyle,
-    val caption: TextStyle
+    val caption: TextStyle,
+    val small: TextStyle
 )
 
 data class ClassJournalShape(

@@ -3,18 +3,27 @@ package com.catshome.classJournal.PayList
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
-import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.catshome.classJournal.child.ChildEntity
 import com.catshome.classJournal.domain.PayList.Pay
 import com.catshome.classJournal.domain.communs.toDateRu
 import com.catshome.classJournal.domain.communs.toDateStringRU
+import com.catshome.classJournal.domain.communs.toLocalDateTime
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.toLong
+import com.catshome.classJournal.domain.communs.toRuString
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.Date
 
-@Entity(tableName = "pays",
-    indices = [Index(value = ["uid_child","date_pay",  "pay"],
-        name = "paysindex", unique = false)],
+@Entity(
+    tableName = "pays",
+    indices = [Index(
+        value = ["uid_child", "date_pay", "pay"],
+        name = "paysindex", unique = false
+    )],
     foreignKeys = arrayOf(
         ForeignKey(
             entity = ChildEntity::class,
@@ -33,6 +42,7 @@ data class PayEntity(
     val date_pay: Long,
     val pay: Int
 )
+
 data class PayScreenEntity(
     val uid: String,
     val uid_child: String,
@@ -42,15 +52,8 @@ data class PayScreenEntity(
     val pay: Int
 )
 
-//{
-//    constructor( uid: String,
-//                uid_child: String,
-//                date_pay: Long,
-//                pay: Int) : this(uid, uid_child, "", "", date_pay, pay)
-//
-//}
-fun PayEntity.mapToPay(): Pay{
-   return Pay(
+fun PayEntity.mapToPay(): Pay {
+    return Pay(
         uidPay = this.uid,
         uidChild = this.uid_child,
 //       Name =  this.Name,
@@ -59,24 +62,23 @@ fun PayEntity.mapToPay(): Pay{
         payment = pay.toString()
     )
 }
-fun PayScreenEntity.mapToPay(): Pay{
+
+fun PayScreenEntity.mapToPay(): Pay {
     return Pay(
         uidPay = this.uid,
         uidChild = this.uid_child,
-       Name =  this.Name,
-       Surname = this.Surname,
-        datePay = this.date_pay.toDateStringRU(),
+        name = this.Name,
+        surName = this.Surname,
+        datePay = this.date_pay.toLocalDateTimeRu().toRuString(),
         payment = pay.toString()
     )
 }
-fun Pay.mapToPayEntity(): PayEntity{
+
+fun Pay.mapToPayEntity(): PayEntity {
     return PayEntity(
         uid = this.uidPay,
         uid_child = this.uidChild,
-        date_pay = this.datePay.toDateRu()?.time ?: Date().time,
+        date_pay = this.datePay.toLocalDateTime()?.toLong()?:0,
         pay = this.payment.toInt(),
-//        Name = "",
-//        Surname = ""
     )
-
 }

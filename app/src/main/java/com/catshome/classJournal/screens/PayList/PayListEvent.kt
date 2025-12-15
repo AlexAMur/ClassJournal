@@ -1,6 +1,6 @@
 package com.catshome.classJournal.screens.PayList
 
-import android.os.Message
+import com.catshome.classJournal.navigate.DetailsPayList
 
 sealed class PayListEvent {
     data object NewClicked : PayListEvent()
@@ -13,4 +13,5 @@ sealed class PayListEvent {
     data class Search(val  searchText: String): PayListEvent()
     class DeleteClicked(val uid: String,val index: Int) : PayListEvent()
     class UndoDeleteClicked(val uid: String, val index: Int) : PayListEvent()
+    class SetOption(val option: DetailsPayList) : PayListEvent()
 }

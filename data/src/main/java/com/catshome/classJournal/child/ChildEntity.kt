@@ -40,6 +40,7 @@ fun ChildEntity.mapToChild(): Child{
 fun ChildEntity.mapTominiChild(): MiniChild{
     return MiniChild(
         uid = this.uid,
+        fio = "${this.name} ${this.surname}",
         name = this.name,
         surname = this.surname,
 

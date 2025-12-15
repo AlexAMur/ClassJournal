@@ -35,6 +35,7 @@ fun DatePickerFieldToModal(
     modifier: Modifier = Modifier,
     value: String,
     label: String,
+    supportText: String?= null,
     onDateSelected: (Long?) -> Unit
 ) {
     //var selectedDate by remember { mutableStateOf(value) }
@@ -45,7 +46,7 @@ fun DatePickerFieldToModal(
     TextField(
         value = value,
         label = label,
-        supportingText = label,
+        supportingText = supportText,
         modifier = modifier,
         onValueChange = {},
         readOnly = true,
@@ -61,7 +62,6 @@ fun DatePickerFieldToModal(
         keyboardOptions = KeyboardOptions.Default.merge(KeyboardOptions(keyboardType = KeyboardType.Number)
         )
     )
-
     if (showModal) {
            DatePickerModal(
             inicialDate = value.toDateRu()?:Date(),

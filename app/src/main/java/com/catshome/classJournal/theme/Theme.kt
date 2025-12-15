@@ -81,7 +81,15 @@ internal fun MainTheme(
                 ClassJournalSize.Medium -> 12.sp
                 ClassJournalSize.Big -> 14.sp
             }
-        )
+        ),
+       small = TextStyle(
+                fontSize = when (textSize) {
+                    ClassJournalSize.Small -> 8.sp
+                    ClassJournalSize.Medium -> 10.sp
+                    ClassJournalSize.Big -> 12.sp
+                },
+        fontWeight = FontWeight.Normal
+    ),
     )
 
     val shapes = ClassJournalShape(

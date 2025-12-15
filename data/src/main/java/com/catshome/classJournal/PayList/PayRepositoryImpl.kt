@@ -29,14 +29,28 @@ class PayRepositoryImpl @Inject constructor(val storage: RoomPayStorage) : PayRe
         begin: Long,
         end: Long
     ): Flow<List<Pay>>? {
-        TODO("Not yet implemented")
+       return storage.getPayByChildWithPeriod(
+           uid = uidChild,
+           begin = begin,
+           end = end
+       )?.map {list->
+           list.map {
+               it.mapToPay()
+           }
+       }
     }
 
     override suspend fun getPayByPeriod(
         begin: Long,
         end: Long
     ): Flow<List<Pay>>? {
-        TODO("Not yet implemented")
+        return storage.getPayByPeriod(
+            begin = begin,
+            end = end)?.map {list->
+            list.map {
+                it.mapToPay()
+            }
+        }
     }
 
     override suspend fun deletePay(pay: Pay) {

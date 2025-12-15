@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.catshome.classJournal"
-    compileSdk = 35
+    compileSdk = 36
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_21

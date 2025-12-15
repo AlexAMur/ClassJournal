@@ -8,18 +8,21 @@ import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.PayList.Pay
 import com.catshome.classJournal.domain.PayList.PayInteract
+import com.catshome.classJournal.domain.communs.toRuString
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
+import kotlin.Boolean
 
 @HiltViewModel
 class NewPayViewModel @Inject constructor(
     private val payInteract: PayInteract
 ) :
     BaseViewModel<NewPayState, NewPayAction, NewPayEvent>
-        (installState = NewPayState(pay = Pay())) {
+        (installState = NewPayState(pay = Pay(datePay = LocalDateTime.now().toRuString()))) {
     val TEXT_FILD_COUNT = 3
     val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
     private val exceptionHandlerPays = CoroutineExceptionHandler { coroutineContext, throwable ->
@@ -36,8 +39,9 @@ class NewPayViewModel @Inject constructor(
         }
         if (throwable.message?.contains("нулевым или отрицательным.") == true) {
             viewState = viewState.copy(
-                isPayError =  true,
-                PayError = throwable.message?:"Error!!!")
+                isPayError = true,
+                PayError = throwable.message ?: "Error!!!"
+            )
             return@CoroutineExceptionHandler
         }
 
@@ -72,16 +76,10 @@ class NewPayViewModel @Inject constructor(
         }
     }
 
-
     override fun obtainEvent(viewEvent: NewPayEvent) {
         when (viewEvent) {
             NewPayEvent.CancelClicked -> {
-
-                viewState = viewState.copy(
-                    searchText = "",
-                    listChild = null,
-                    selectChild = null
-                )
+                resetStatus()
                 viewAction = NewPayAction.CloseScreen
             }
 
@@ -116,8 +114,8 @@ class NewPayViewModel @Inject constructor(
                             payment = viewState.pay
                         )
                     }
-
                 }
+                resetStatus()
                 viewAction = NewPayAction.Successful
             }
 
@@ -135,7 +133,14 @@ class NewPayViewModel @Inject constructor(
                     payInteract.searchChild(viewEvent.searchText).collect {
                         if (it.isNullOrEmpty()) {
                             viewState =
-                                viewState.copy(listChild = listOf(MiniChild(uid = "", name = "пусто")))
+                                viewState.copy(
+                                    listChild = listOf(
+                                        MiniChild(
+                                            uid = "",
+                                            fio = "пусто"
+                                        )
+                                    )
+                                )
                             return@collect
                         }
                         it.let {
@@ -148,7 +153,7 @@ class NewPayViewModel @Inject constructor(
 
             is NewPayEvent.SelectedChild -> {
                 viewState = viewState.copy(
-                    searchText = "${viewEvent.child.name} ${viewEvent.child.surname}",
+                    searchText = viewEvent.child.fio,
                     selectChild = viewEvent.child,
                     listChild = null
                 )
@@ -156,10 +161,27 @@ class NewPayViewModel @Inject constructor(
         }
     }
 
-    fun datePayChange(newDate: String) {
-        viewState = viewState.copy(pay = viewState.pay.copy(datePay = newDate))
+    private fun resetStatus(){
+        viewState = viewState.copy(
+            selectChild = null,
+            searchText = "",
+            pay = Pay(datePay = LocalDateTime.now().toRuString()),
+            isChildError = false,
+            ChildErrorMessage = null,
+            indexFocus = -1,
+            isSurnameError = false,
+            isSnackbarShow = false,
+            snackbarAction = "",
+            isPayError = false,
+            PayError = "",
+            errorMessage= ""
+        )
     }
-
+    fun datePayChange(newDate: String?) {
+        newDate?.let {
+        viewState = viewState.copy(pay = viewState.pay.copy(datePay = newDate))
+        }
+    }
     fun paymentChange(newValue: String) {
         viewState = viewState.copy(pay = viewState.pay.copy(payment = newValue))
         if (viewState.pay.payment.isNotEmpty())

@@ -11,6 +11,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.catshome.classJournal.communs.FilterScreen.FilterOptionsDetails
+import com.catshome.classJournal.communs.FilterScreen.FilterScreen
+import com.catshome.classJournal.communs.FilterScreen.FilterSetting
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.navigate.DetailsPay
@@ -41,6 +44,7 @@ fun classJournalApp(
     navController: NavHostController,
     currentSettings: SettingsBundle
 ) {
+
     NavHost(navController, startDestination = ItemScreen.PayListScreen.name) {
         composable(route = ItemScreen.NewPayScreen.name) {
              //val viewModel =hiltViewModel<NewPayViewModel>()
@@ -51,11 +55,10 @@ fun classJournalApp(
 
         composable<DetailsPayList> { backStackEntry->
             val detailsPayList = backStackEntry.toRoute<DetailsPayList>()
-            Log.e("CLJR","NavHost pay")
             val viewModel: PayListViewModel by  activity.viewModels()
-            PayListScreen(navController, viewModel)
-            //PayListScreen(detailsPayList,navController, viewModel)
-           // navController.popBackStack(ItemScreen.PayListScreen.name,false)
+            PayListScreen(navController = navController,
+                viewModel = viewModel,
+                detailsPayList = detailsPayList)
 
         }
 
@@ -65,10 +68,18 @@ fun classJournalApp(
             PayListScreen(navController = navController, viewModel = viewModel)
 
         }
+        composable<FilterSetting>{backState->
+           val setting = backState.toRoute<FilterSetting>()
+            FilterScreen(navController,setting)
+        }
+//        composable(route = ItemScreen.FilterScreen.name) {
+////            val viewModel = hiltViewModel<VisitListViewModel>()
+//            FilterScreen(navController,)
+//        }
+
         composable(route = ItemScreen.VisitListScreen.name) {
             val viewModel = hiltViewModel<VisitListViewModel>()
             visitListScreen(navController, viewModel)
-
         }
 
         composable(route = ItemScreen.MainScreen.name) {
@@ -96,7 +107,6 @@ fun classJournalApp(
         composable<DetailsChild> { backStackEntry ->
             val ChildviewModel = hiltViewModel<NewChildViewModel>()
             val idChild = backStackEntry.toRoute<DetailsChild>()
-
             NewChildScreen(idChild, ChildviewModel)
         }
         composable(route = ItemScreen.NewChildScreen.name) {

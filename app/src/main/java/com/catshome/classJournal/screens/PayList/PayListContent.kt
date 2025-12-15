@@ -1,33 +1,39 @@
 package com.catshome.classJournal.screens.PayList
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.R
-import com.catshome.classJournal.communs.FilterScreen
 import com.catshome.classJournal.communs.ItemFAB
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.fabMenu
@@ -37,7 +43,7 @@ import com.catshome.classJournal.context
 fun PayListContent(
     viewState: PayListState,
     viewModel: PayListViewModel,
-    ) {
+) {
     val sbHostState = remember { SnackbarHostState() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val padValues = LocalSettingsEventBus.current.currentSettings.collectAsState()
@@ -58,8 +64,8 @@ fun PayListContent(
                     modifier = Modifier.padding(bottom = padValues)
                 )
                 LaunchedEffect(viewState.isShowSnackBar) {
-                    if (viewState.isShowSnackBar) {
-                        keyboardController?.hide()
+                    if (viewState.isShowSnackBar && viewState.isCanShowSnackBar) {
+                    //    keyboardController?.hide()
                         SnackBarAction(
                             message = viewState.messageShackBar,
                             actionLabel = viewState.snackBarAction
@@ -71,12 +77,10 @@ fun PayListContent(
                             onActionPerformed = viewState.onAction ?: {
                                 viewModel.obtainEvent(PayListEvent.ShowSnackBar(false, ""))
                             }
-
                         )
                     }
                 }
             },
-
             bottomBar = {
                 Row(Modifier.fillMaxWidth(), Arrangement.End) {
                     fabMenu(
@@ -104,31 +108,93 @@ fun PayListContent(
                 }
             }
         ) { padValues ->
-            Column(Modifier.fillMaxSize()
-                .background(ClassJournalTheme.colors.primaryBackground)
-                ) {
-                FilterScreen(
-                    viewModel,
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .background(ClassJournalTheme.colors.primaryBackground)
+            ) {
+                Card(
+                    Modifier.fillMaxSize()
+                        .statusBarsPadding(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = ClassJournalTheme.colors.secondaryBackground,
+                        contentColor = ClassJournalTheme.colors.primaryText
                     )
+                ) {
+                    Column(Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp))
+                    {
+                        viewState.selectChild?.let {
+                            Text(
+                                modifier = Modifier
+                                    .padding(start = 16.dp, top = 8.dp),
+                                color = ClassJournalTheme.colors.tintColor,
+                                text = viewState.selectChild.fio
+                            )
+                        }
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    viewModel.obtainEvent(PayListEvent.onCollapse(true))
+                                },
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            viewState.beginDate?.let {
+                                if (it.isNotEmpty()) {
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(start = 16.dp),
+                                        color = ClassJournalTheme.colors.tintColor,
+                                        text = "c ${viewState.beginDate}"
+                                    )
+                                }
+                            }
+                            viewState.endDate?.let {
+                                Text(
+                                    modifier = Modifier
+                                        .padding(start = 8.dp)
+                                        .weight(1f),
+                                    color = ClassJournalTheme.colors.tintColor,
+                                    text = if (viewState.endDate.isNotEmpty()) " по ${viewState.endDate}" else
+                                        "${stringResource(R.string.filter_all)} время"
+                                )
+                            }
+
+                            Icon(
+                                modifier = Modifier,
+                                    //.width(48.dp),
+                                painter = painterResource(R.drawable.arrow_drop_down_48),
+                                contentDescription = "",
+                                tint = ClassJournalTheme.colors.tintColor
+                            )
+                        }
+                    }
+                }
                 if (viewState.items.isEmpty())
                     payScreenNoItems(
                         bottomPadding = padValues.calculateBottomPadding()
                     )
                 else {
-                    Column(
-                        Modifier
-                            .background(ClassJournalTheme.colors.primaryBackground)
-                    ) {
+//                    Column(
+//                        Modifier
+//                            .background(ClassJournalTheme.colors.primaryBackground)
+//                    ) {
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(top = 24.dp, bottom = padValues.calculateBottomPadding())
+                                .padding(
+                                    top = 24.dp,
+                                    bottom = padValues.calculateBottomPadding()
+                                )
                                 .background(ClassJournalTheme.colors.primaryBackground),
                             state = rememberLazyListState()
                         ) {
                             itemsIndexed(viewState.items) { index, item ->
                                 itemPay(
-                                    fio = "${viewState.items[index].Name} ${viewState.items[index].Surname}",
+                                    fio = "${viewState.items[index].name} ${viewState.items[index].surName}",
                                     date = viewState.items[index].datePay,
                                     payment = viewState.items[index].payment
                                 ) {
@@ -137,7 +203,7 @@ fun PayListContent(
                             }
                         }
                     }
-                }
+                
             }
         }
     }

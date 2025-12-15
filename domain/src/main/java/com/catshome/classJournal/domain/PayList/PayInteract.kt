@@ -1,11 +1,7 @@
 package com.catshome.classJournal.domain.PayList
 
-import android.R
-import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Child.MiniChild
-import com.catshome.classJournal.domain.CodeError
-import com.catshome.classJournal.domain.SaveError
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 import javax.inject.Inject

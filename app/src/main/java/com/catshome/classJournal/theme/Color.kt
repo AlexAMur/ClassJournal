@@ -10,7 +10,9 @@ internal val baseLightPalette = ClassJournalColors(
     secondaryText = Color(0xCC7A8A99),
     tintColor = Color.Magenta,
     controlColor = Color(0xFF7A8A99),
-    errorColor = Color(0xFFEA1A1A)
+    errorColor = Color(0xFFEA1A1A),
+    disableColor = Color.DarkGray,
+    disableContentColor = Color.LightGray
 )
 
 internal val baseDarkPalette = ClassJournalColors(
@@ -20,7 +22,9 @@ internal val baseDarkPalette = ClassJournalColors(
     secondaryText = Color(0xCC7A8A99),
     tintColor = Color.Magenta,
     controlColor = Color(0xFF7A8A99),
-    errorColor = Color(0xFFEA1A1A)
+    errorColor = Color(0xFFEA1A1A),
+    disableColor = Color.DarkGray,
+    disableContentColor = Color.LightGray
 )
 
 val purpleLightPalette = baseLightPalette.copy(

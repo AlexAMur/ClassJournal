@@ -19,18 +19,24 @@ interface PayDAO {
    @Update
    suspend fun update(payEntity: PayEntity)
 
-   @Query("Select p.uid , p.uid_child , c.child_name as Name, c.child_surname as Surname , p.date_pay ,p.pay  from pays p join child c where p.uid_child =c.uid and c.isDelete = :isDelete")
+   @Query("Select p.uid , p.uid_child , c.child_name as Name, c.child_surname as Surname, p.date_pay " +
+           ",p.pay  from pays p join child c where p.uid_child =c.uid and c.isDelete = :isDelete")
     fun getFull(isDelete: Boolean): Flow<List<PayScreenEntity>>?
 
-    @Query("Select * from pays where uid_child = :uid")
-    fun getPayByChildID(uid: String): Flow<List<PayEntity>>?
+    @Query("Select p.uid , p.uid_child , c.child_name as Name, c.child_surname as Surname, p.date_pay, " +
+            "p.pay  from pays p join child c where p.uid_child =c.uid and p.uid_child= :uid")
+    fun getPayByChildID(uid: String): Flow<List<PayScreenEntity>>?
 
-//    @Query("Select p.uid as payID, p.uid_child as childID, p.date_pay as datePay ,p.pay  from pays p where uid_child = :uid and date_pay >= :begin and date_pay <= :end")
-//    fun getPayByChildIDWithPeriod(uid: String,begin: Long,end: Long): Flow<List<PayEntity>?>
+    @Query("Select p.uid  , p.uid_child , c.child_name as Name, c.child_surname as Surname, p.date_pay, " +
+            "p.pay  from pays p join child c where p.uid_child =c.uid and p.uid_child= :uid and " +
+            "date_pay>= :begin and date_pay <= :end")
+    fun getPayByChildIDWithPeriod(uid: String,begin: Long,end: Long): Flow<List<PayScreenEntity>>?
 
-//
-//    @Query("select p.uid as payID, p.uid_child as childID, c.child_name as Name, c.child_surname as Surname , p.date_pay as datePay ,p.pay from pays p join child c where p.uid_child =c.uid and c.isDelete = 0 and p.date_pay >= :begin and date_pay <= :end")
-//    fun getPayByPeriod(begin: Long,end: Long): Flow<List<PayScreenEntity>?>
+
+    @Query("select p.uid , p.uid_child ,  c.child_name as Name, c.child_surname as Surname, " +
+            "p.date_pay, p.pay from pays p join child c where p.uid_child =c.uid " +
+            "and c.isDelete = 0 and p.date_pay >= :begin and date_pay <= :end" )
+    fun getPayByPeriod(begin: Long,end: Long): Flow<List<PayScreenEntity>>?
 
 }
 

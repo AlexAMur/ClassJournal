@@ -21,12 +21,11 @@ fun ItemChildInSearch(
     modifier: Modifier,
     style: TextStyle,
     onClicked: ()->Unit,
-
     contentColor: Color = ClassJournalTheme.colors.primaryText
 ){
     Row(modifier = modifier.
                     clickable(onClick =  onClicked)) {
-        Text(name, color= contentColor, style = style )
+        Text(text = name, color= contentColor, style = style)
         Text(text = surname,modifier= Modifier.padding(start = 16.dp),
             style = style , color= contentColor)
     }

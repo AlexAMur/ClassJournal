@@ -20,15 +20,15 @@ class RoomPayStorage @Inject constructor(private val payDAO: PayDAO) {
         return payDAO.getFull(isDelete = isDelete)
     }
 
-    suspend fun getPayByChild(uid: String): Flow<List<PayEntity>>? {
+    suspend fun getPayByChild(uid: String): Flow<List<PayScreenEntity>>? {
         return payDAO.getPayByChildID(uid = uid)
     }
 
-    /*suspend fun getPayByChildWithPeriod(
+    suspend fun getPayByChildWithPeriod(
         uid: String,
         begin: Long,
         end: Long
-    ): Flow<List<PayEntity>>? {
+    ): Flow<List<PayScreenEntity>>? {
         return payDAO.getPayByChildIDWithPeriod(
             uid = uid,
             begin = begin,
@@ -36,10 +36,10 @@ class RoomPayStorage @Inject constructor(private val payDAO: PayDAO) {
         )
     }
 
-    suspend fun getPayByPeriod(begin: Long, end: Long): Flow<List<PayEntity>>? {
+    suspend fun getPayByPeriod(begin: Long, end: Long): Flow<List<PayScreenEntity>>? {
         return payDAO.getPayByPeriod(
             begin = begin,
             end = end
         )
-    }*/
+    }
 }

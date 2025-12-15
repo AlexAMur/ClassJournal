@@ -16,6 +16,7 @@
     <string name="bottom_delete">Delete</string>
     <string name="bottom_cancel">Cancel</string>
     <string name="bottom_yes">Да</string>
+    <string name="bottom_no">Нет</string>
 
 
     <string name="message_cancel">Отменить удаление</string>
@@ -53,5 +54,13 @@
     <string name="begin_date">Дата начала</string>
     <string name="end_date">Дата окончания</string>
     <string name="note_label">Note.</string>
+
+    //Набор кнопок для фильтрации
+    <string name="filter_day">День</string>
+    <string name="filter_week">Неделя</string>
+    <string name="filter_month">Месяц</string>
+    <string name="filter_year">Год</string>
+    <string name="filter_period">Период</string>
+    <string name="filter_all">Все</string>
 
 </resources>

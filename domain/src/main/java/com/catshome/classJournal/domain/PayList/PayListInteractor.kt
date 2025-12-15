@@ -9,21 +9,29 @@ import javax.inject.Inject
 class PayListInteractor @Inject constructor (val payListRepository: PayRepository,
                                     val childRepository: ChildRepository) {
 
-    suspend fun getPays(): Flow<List<Pay>>?{
-         return payListRepository.getAllPays(false)
-
+    suspend fun getPays(uid: String?, beginDate: Long?, endDate: Long?): Flow<List<Pay>>?{
+            if (uid?.isNullOrEmpty() == false ) {
+                if (beginDate != null && endDate != null) {
+                    return payListRepository.getPayByChildWithPeriod(
+                        uidChild = uid,
+                        begin = beginDate,
+                        end = endDate)
+                }
+                return payListRepository.getPayByChild(uid)
+            } else{
+                if (beginDate != null && endDate !=null)
+                    return  payListRepository.getPayByPeriod(
+                        begin = beginDate,
+                        end = endDate
+                    )
+                else
+                    return payListRepository.getAllPays(false)
+            }
     }
     fun deletePay(pay: Pay){
       //  payListRepository.delete(pay)
     }
-
-    fun savePay(): Boolean{
-        TODO("Save pay emplamented")
-        //payListRepository.insertPay(Pay)
-    }
     suspend fun searchChild(searchText: String):Flow<List<MiniChild>?>{
         return childRepository.getChildByName(searchText)
     }
-
-
 }

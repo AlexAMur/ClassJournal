@@ -24,5 +24,6 @@ enum class ItemScreen {
     NewPayScreen,
     NewVisitScreen,
     NewRateScreen,
-    NewGroupScreen
+    NewGroupScreen,
+    FilterScreen,
 }
