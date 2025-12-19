@@ -63,4 +63,6 @@
     <string name="filter_period">Период</string>
     <string name="filter_all">Все</string>
 
+    <string name="filter_sort">Сортировать по:</string>
+
 </resources>

@@ -4,25 +4,29 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.R
 import com.catshome.classJournal.context
-import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.PayList.Pay
 import com.catshome.classJournal.domain.PayList.PayInteract
-import com.catshome.classJournal.domain.communs.toRuString
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
-import kotlin.Boolean
 
 @HiltViewModel
 class NewPayViewModel @Inject constructor(
     private val payInteract: PayInteract
 ) :
     BaseViewModel<NewPayState, NewPayAction, NewPayEvent>
-        (installState = NewPayState(pay = Pay(datePay = LocalDateTime.now().toRuString()))) {
+        (
+        installState = NewPayState(
+            pay = Pay(
+                datePay = LocalDateTime.now().toDateTimeRuString()
+            )
+        )
+    ) {
     val TEXT_FILD_COUNT = 3
     val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
     private val exceptionHandlerPays = CoroutineExceptionHandler { coroutineContext, throwable ->
@@ -78,8 +82,12 @@ class NewPayViewModel @Inject constructor(
 
     override fun obtainEvent(viewEvent: NewPayEvent) {
         when (viewEvent) {
+            NewPayEvent.ResetState -> {
+                resetState()
+                viewState.isResetState = false
+            }
+
             NewPayEvent.CancelClicked -> {
-                resetStatus()
                 viewAction = NewPayAction.CloseScreen
             }
 
@@ -115,7 +123,6 @@ class NewPayViewModel @Inject constructor(
                         )
                     }
                 }
-                resetStatus()
                 viewAction = NewPayAction.Successful
             }
 
@@ -146,7 +153,6 @@ class NewPayViewModel @Inject constructor(
                         it.let {
                             viewState = viewState.copy(listChild = it)
                         }
-
                     }
                 }
             }
@@ -161,11 +167,11 @@ class NewPayViewModel @Inject constructor(
         }
     }
 
-    private fun resetStatus(){
+    private fun resetState() {
         viewState = viewState.copy(
             selectChild = null,
             searchText = "",
-            pay = Pay(datePay = LocalDateTime.now().toRuString()),
+            pay = Pay(datePay = LocalDateTime.now().toDateTimeRuString()),
             isChildError = false,
             ChildErrorMessage = null,
             indexFocus = -1,
@@ -174,14 +180,16 @@ class NewPayViewModel @Inject constructor(
             snackbarAction = "",
             isPayError = false,
             PayError = "",
-            errorMessage= ""
+            errorMessage = ""
         )
     }
+
     fun datePayChange(newDate: String?) {
         newDate?.let {
-        viewState = viewState.copy(pay = viewState.pay.copy(datePay = newDate))
+            viewState = viewState.copy(pay = viewState.pay.copy(datePay = newDate))
         }
     }
+
     fun paymentChange(newValue: String) {
         viewState = viewState.copy(pay = viewState.pay.copy(payment = newValue))
         if (viewState.pay.payment.isNotEmpty())

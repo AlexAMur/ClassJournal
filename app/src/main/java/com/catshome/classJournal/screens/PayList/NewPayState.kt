@@ -3,6 +3,7 @@ package com.catshome.classJournal.screens.PayList
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.PayList.Pay
+import org.jetbrains.annotations.Blocking
 
 data class NewPayState(
     val searchText: String = "",
@@ -11,6 +12,7 @@ data class NewPayState(
     val isChildError: Boolean =false,
     val ChildErrorMessage: String? = null,
     var indexFocus:Int = -1,
+    var isResetState: Boolean = false,
     var isSurnameError: Boolean= false,
     var isSnackbarShow: Boolean= false,
     var snackbarAction: String = "",

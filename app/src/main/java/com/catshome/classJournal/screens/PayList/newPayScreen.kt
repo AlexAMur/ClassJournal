@@ -7,6 +7,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,7 +21,8 @@ import com.catshome.classJournal.R
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.context
 import com.catshome.classJournal.localNavHost
-import com.catshome.classJournal.navigate.DetailsPayList
+import com.catshome.classJournal.navigate.DetailsPay
+import com.catshome.classJournal.navigate.OptionFilterPaysList
 import com.catshome.classJournal.screens.ItemScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -33,9 +35,11 @@ fun newPayScreen(
     val viewAction by viewModel.viewActions().collectAsState(null)
     val keyboardController = LocalSoftwareKeyboardController.current
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
-        .value.innerPadding.calculateBottomPadding()
-
+                                .value.innerPadding.calculateBottomPadding()
     val sbHostState = remember { SnackbarHostState() }
+    if (viewState.isResetState){
+        viewModel.obtainEvent(NewPayEvent.ResetState)
+    }
     Scaffold(
         snackbarHost = {
             SnackbarHost(
@@ -57,6 +61,12 @@ fun newPayScreen(
             }
         }
     ) {
+        DisposableEffect(viewState.isResetState) {
+            onDispose {
+                if (viewState.isResetState)
+                    viewModel.obtainEvent(NewPayEvent.ResetState)
+            }
+        }
         PayScreenContent(
             viewState,
             viewModel,
@@ -71,10 +81,9 @@ fun newPayScreen(
         when (viewAction) {
             NewPayAction.Successful -> {
                 keyboardController?.hide()
-                Log.e("CLJR", "NAvigation")
                 viewModel.clearAction()
                 outerNavigation?.navigate(
-                    DetailsPayList(
+                    DetailsPay(
                         isShowSnackBar = true,
                         Message = stringResource(R.string.save_successful)
                     )
@@ -83,15 +92,21 @@ fun newPayScreen(
                         inclusive = true
                     }
                 }
-                //outerNavigation.popBackStack()
+                viewState.isResetState = true
             }
 
             NewPayAction.CloseScreen -> {
                 keyboardController?.hide()
                 viewModel.clearAction()
-                outerNavigation.popBackStack()
+                //outerNavigation.clearBackStack(ItemScreen.NewPayScreen.name)
+                outerNavigation.navigate(ItemScreen.PayListScreen.name){
+                   // не удаляет последние посещения
+                    popUpTo(ItemScreen.PayListScreen.name){
+                        inclusive = true
+                    }
+                }
+                viewState.isResetState = true
             }
-
             null -> {}
         }
     }

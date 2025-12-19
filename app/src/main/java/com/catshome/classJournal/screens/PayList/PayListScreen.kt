@@ -8,7 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
-import com.catshome.classJournal.navigate.DetailsPayList
+import com.catshome.classJournal.navigate.DetailsPay
+import com.catshome.classJournal.navigate.OptionFilterPaysList
 import com.catshome.classJournal.screens.ItemScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PayListScreen(
-    detailsPayList: DetailsPayList? = null,
+    optionFilter: OptionFilterPaysList? = null,
+    detailsPay: DetailsPay? = null,
     navController: NavController,
     viewModel: PayListViewModel = viewModel()
 ) {
@@ -25,9 +27,12 @@ fun PayListScreen(
     val viewAction by viewModel.viewActions().collectAsState(null)
 
     LaunchedEffect(Unit) {
-        detailsPayList?.let {
-            viewModel.obtainEvent(PayListEvent.SetOption(detailsPayList))
+        optionFilter?.let {
+            viewModel.obtainEvent(PayListEvent.SetOption(optionFilter))
 
+        }
+        detailsPay?.let {
+            viewModel.obtainEvent(PayListEvent.ShowSnackBar(it))
         }
         viewModel.obtainEvent(PayListEvent.ReloadScreen)
 
@@ -62,13 +67,12 @@ fun PayListScreen(
                 navController.navigate(ItemScreen.NewPayScreen.name)
                 viewModel.clearAction()
             }
-
         }
 
         PayListAction.OpenFilter -> {
             navController.navigate(
                 FilterSetting(
-                    childId = viewState.selectChild?.fio,
+                    childId = viewState.selectChild?.uid,
                     childFIO = viewState.selectChild?.fio,
                     optionsIndex = viewState.selectedOption,
                     beginDate = viewState.beginDate,//"01.${LocalDateTime.now().month.value}.${LocalDateTime.now().year}",

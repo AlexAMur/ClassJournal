@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.DateTimeException
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -17,18 +16,21 @@ import kotlin.time.Instant
 import kotlin.time.toJavaInstant
 
 const val DATE_FORMAT_RU = "dd.MM.yyyy"
-const val DATETIME_FORMAT_RU = "dd.MM.yyyy HH:mm"
+const val DATETIME_FORMAT_RU = "dd.MM.yyyy HH:mm:ss"
 const val TIME_FORMAT = "HH:mm"
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun String.toDateRu(): Date? {
-    val formatter = SimpleDateFormat(DATE_FORMAT_RU, Locale.getDefault())
-    try {
-        return formatter.parse(this)
+    val formatter = SimpleDateFormat(DATETIME_FORMAT_RU, Locale.getDefault())
+       try {
+       return formatter.parse(this)
     } catch (e: ParseException) {
-        Log.e("CLJR", e.message.toString())
+        Log.e("CLJR", "toDateRu ${e.message.toString()}")
+        this.toLocalDateTime()?.toLong()?.let {
+            return  Date(it.toLong())
+        }
     }
-
     return null
 }
 
@@ -44,19 +46,25 @@ fun String.toLocalDateTime(): LocalDateTime? {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun LocalDateTime.toRuString(): String {
+fun LocalDateTime.toDateTimeRuString(): String {
     val formatter = DateTimeFormatter.ofPattern(DATETIME_FORMAT_RU)
     return this.format(formatter)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
+fun LocalDateTime.toDateRuString(): String {
+    val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_RU)
+    return this.format(formatter)
+}
+@RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime.toLong(): Long {
     return this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
+
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalTime::class)
-fun Long.toLocalDateTimeRu(): LocalDateTime{
-    val instant =Instant.fromEpochMilliseconds(this)
+fun Long.toLocalDateTimeRu(): LocalDateTime {
+    val instant = Instant.fromEpochMilliseconds(this)
     return LocalDateTime.ofInstant(instant.toJavaInstant(), ZoneId.systemDefault())
 }
 

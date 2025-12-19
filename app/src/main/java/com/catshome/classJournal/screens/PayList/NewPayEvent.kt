@@ -7,4 +7,5 @@ sealed class NewPayEvent {
     data object CancelClicked : NewPayEvent()
     data class Search(val  searchText: String): NewPayEvent()
     data class SelectedChild(val  child: MiniChild): NewPayEvent()
+   data object ResetState: NewPayEvent()
 }

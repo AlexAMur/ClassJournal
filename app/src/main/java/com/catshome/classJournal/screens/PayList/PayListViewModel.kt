@@ -1,49 +1,36 @@
 package com.catshome.classJournal.screens.PayList
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.PayList.PayListInteractor
-import com.catshome.classJournal.domain.communs.toDateRu
+import com.catshome.classJournal.domain.communs.toDateRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTime
 import com.catshome.classJournal.domain.communs.toLong
-import com.catshome.classJournal.navigate.DetailsPayList
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
 class PayListViewModel @Inject constructor(private val payListInteractor: PayListInteractor) :
     BaseViewModel<PayListState, PayListAction, PayListEvent>(
-        installState = PayListState()
+        installState = PayListState(
+            beginDate = "01.${LocalDateTime.now().month.value}.${LocalDateTime.now().year} 00:00:00",
+            endDate = "${LocalDateTime.now().toDateRuString()} 23:59:59"
+        )
     ) {
-//    fun beginDateChange(newValue: String) {
-//        viewState = viewState.copy(beginDate = newValue)
-//    }
-//    fun endDateChange(newValue: String) {
-//        viewState = viewState.copy(endDate = newValue)
-//    }
-//    fun Search(newValue: String) {
-//        viewState = viewState.copy(searchText = newValue)
-//       // if (viewState.selectChild.name.isNotEmpty())
-//            //viewState = viewState.copy(isNameError = false)
-//    }
 
     override fun obtainEvent(viewEvent: PayListEvent) {
         when (viewEvent) {
-            is PayListEvent.SetOption -> {
 
+            is PayListEvent.SetOption -> {
                 with(viewEvent.option) {
                     viewState = viewState.copy(
-                        isShowSnackBar = isShowSnackBar && viewState.isCanShowSnackBar,
-                        messageShackBar = Message ?: "",
                         selectedOption = selectOption,
-                        beginDate = beginDate ?: "",
-                        endDate = endDate ?: "",
+                        beginDate = beginDate ?: LocalDateTime.now().toDateTimeRuString(),
+                        endDate = endDate ?:LocalDateTime.now().toDateTimeRuString(),
                         selectChild = MiniChild(uid = childId ?: "", fio = childFIO ?: "")
                     )
                 }
@@ -73,10 +60,10 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
 
             is PayListEvent.ShowSnackBar -> {
                 viewState = viewState.copy(
-                    isShowSnackBar = viewEvent.isShow,
-                    messageShackBar = viewEvent.message
+                    isShowSnackBar = viewEvent.detailsPay.isShowSnackBar,
+                    messageShackBar = viewEvent.detailsPay.Message
                 )
-                if (viewEvent.isShow ==false)
+                if (viewEvent.detailsPay.isShowSnackBar == false)
                     viewState.isCanShowSnackBar =false
             }
 

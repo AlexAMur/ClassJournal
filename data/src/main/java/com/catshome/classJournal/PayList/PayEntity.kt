@@ -7,16 +7,11 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.catshome.classJournal.child.ChildEntity
 import com.catshome.classJournal.domain.PayList.Pay
-import com.catshome.classJournal.domain.communs.toDateRu
 import com.catshome.classJournal.domain.communs.toDateStringRU
 import com.catshome.classJournal.domain.communs.toLocalDateTime
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
-import com.catshome.classJournal.domain.communs.toRuString
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.util.Date
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
 
 @Entity(
     tableName = "pays",
@@ -69,7 +64,7 @@ fun PayScreenEntity.mapToPay(): Pay {
         uidChild = this.uid_child,
         name = this.Name,
         surName = this.Surname,
-        datePay = this.date_pay.toLocalDateTimeRu().toRuString(),
+        datePay = this.date_pay.toLocalDateTimeRu().toDateTimeRuString(),
         payment = pay.toString()
     )
 }

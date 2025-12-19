@@ -1,26 +1,15 @@
 package com.catshome.classJournal.communs.FilterScreen
 
-import android.util.Log
-import androidx.collection.emptyLongSet
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
 import com.catshome.classJournal.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.PayList.PayListInteractor
-import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
-import com.catshome.classJournal.domain.communs.toLocalDateTime
-import com.catshome.classJournal.domain.communs.toRuString
-import com.catshome.classJournal.screens.PayList.PayListEvent
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Calendar
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -80,14 +69,6 @@ class FilterViewModel @Inject constructor(
             }
 
             is FilterEvent.Search -> {
-//                viewState = viewState.copy(searchText = viewEvent.value)
-//                val l = mutableListOf<MiniChild>()
-//                for (item in 1..100) {
-//                    l.add(MiniChild(fio = "item $item"))
-//                }
-//                viewState = viewState.copy(searchList = l, isShowList = true)
-//                return
-
                 if (viewEvent.value.isNotEmpty()) {
                     viewModelScope.launch {
                         payListInteractor.searchChild(viewEvent.value).collect {
@@ -141,9 +122,9 @@ class FilterViewModel @Inject constructor(
                 with(viewEvent.init) {
                     viewState = viewState.copy(
                         selectChild = MiniChild(
-                            uid = childId?:"",
-                            fio = childFIO?:""
-                       ),
+                            uid = childId ?: "",
+                            fio = childFIO ?: ""
+                        ),
                         selectedOption = optionsIndex,
                         beginDate = beginDate.toString(),
                         endDate = endDate.toString(),
@@ -158,32 +139,30 @@ class FilterViewModel @Inject constructor(
         when (viewState.selectedOption) {
             0 -> {
                 viewState = viewState.copy(
-                    beginDate = LocalDate.now().atStartOfDay().toRuString(),
+                    beginDate = LocalDate.now().atStartOfDay().toDateTimeRuString(),
                     endDate = LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1)
-                        .toRuString()
+                        .toDateTimeRuString()
                 )
             }
 
             1 -> {
                 viewState = viewState.copy(
-                    beginDate = "01.${LocalDate.now().month.value}.${LocalDate.now().year}",
+                    beginDate = "01.${LocalDate.now().month.value}.${LocalDate.now().year} 00:00:00",
                     endDate = LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1)
-                        .toRuString()
+                        .toDateTimeRuString()
                 )
-
             }
 
             2 -> {
                 viewState = viewState.copy(
-                    beginDate = "01.01.${LocalDate.now().year}",
+                    beginDate = "01.01.${LocalDate.now().year} 00:00:00",
                     endDate = LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1)
-                        .toRuString()
+                        .toDateTimeRuString()
                 )
             }
 
-            3 -> {
-                // viewState = viewState.copy(beginDate = "", endDate = "")
-            }
+            3 -> {//тут выбор переода стоит
+                 }
 
             4 -> {
                 viewState = viewState.copy(beginDate = "", endDate = "")

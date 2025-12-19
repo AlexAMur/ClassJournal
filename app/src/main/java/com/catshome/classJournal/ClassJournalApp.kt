@@ -11,13 +11,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.catshome.classJournal.communs.FilterScreen.FilterOptionsDetails
 import com.catshome.classJournal.communs.FilterScreen.FilterScreen
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.navigate.DetailsPay
-import com.catshome.classJournal.navigate.DetailsPayList
+import com.catshome.classJournal.navigate.OptionFilterPaysList
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.NewPayViewModel
 import com.catshome.classJournal.screens.PayList.PayListScreen
@@ -53,12 +52,21 @@ fun classJournalApp(
             newPayScreen( viewModel)
         }
 
-        composable<DetailsPayList> { backStackEntry->
-            val detailsPayList = backStackEntry.toRoute<DetailsPayList>()
+        composable<OptionFilterPaysList> { backStackEntry->
+            val optionFilterPaysList = backStackEntry.toRoute<OptionFilterPaysList>()
             val viewModel: PayListViewModel by  activity.viewModels()
             PayListScreen(navController = navController,
                 viewModel = viewModel,
-                detailsPayList = detailsPayList)
+                optionFilter = optionFilterPaysList)
+
+        }
+
+        composable<DetailsPay> { backStackEntry->
+            val detailsPay = backStackEntry.toRoute<DetailsPay>()
+            val viewModel: PayListViewModel by  activity.viewModels()
+            PayListScreen(navController = navController,
+                viewModel = viewModel,
+                detailsPay = detailsPay)
 
         }
 

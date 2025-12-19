@@ -31,45 +31,34 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.catshome.classJournal.ClassJournalTheme
-import com.catshome.classJournal.ClassJournalTypography
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.R
 import com.catshome.classJournal.communs.DatePickerFieldToModal
 import com.catshome.classJournal.communs.GroupButton
 import com.catshome.classJournal.communs.SearchField
-import com.catshome.classJournal.domain.PayList.PayListInteractor
-import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
-import com.catshome.classJournal.domain.communs.toDateRu
 import com.catshome.classJournal.domain.communs.toDateStringRU
-import com.catshome.classJournal.domain.communs.toLocalDateTime
-import com.catshome.classJournal.navigate.DetailsPayList
+import com.catshome.classJournal.navigate.OptionFilterPaysList
 import com.catshome.classJournal.screens.ItemScreen
-import com.catshome.classJournal.screens.bottomBar
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -77,25 +66,25 @@ import java.time.format.DateTimeParseException
 fun FilterScreen(navController: NavController, setting: FilterSetting) {
     val viewModel by (LocalActivity.current as ComponentActivity).viewModels<FilterViewModel>()
 
-    viewModel.obtainEvent(FilterEvent.Init(setting))
+   LaunchedEffect(Unit) {
+       viewModel.obtainEvent(FilterEvent.Init(setting))
+   }
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
     val columnVerticalScrollSate = rememberScrollState()
     val listState = rememberLazyListState()
     val localDensity = LocalDensity.current
-    val bottomPadding =
-        LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding.calculateBottomPadding()
+    val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState().value
+            .innerPadding.calculateBottomPadding()
     var screenHigh = LocalConfiguration.current.screenHeightDp
     var sizeList = 200f
     var bottomGroup = 0
     val keyboardController = LocalSoftwareKeyboardController.current
-//    Log.e("CLJR", "LocalTime- ${LocalDate.now().atStartOfDay()}")
-//    Log.e("CLJR", "LocalTime- ${LocalDateTime.now().atZone(ZoneId.systemDefault())}")
-//    Log.e("CLJR", "LocalTime- ${LocalDate.now().atStartOfDay().plusHours(23).plusMinutes(59).plusSeconds(59)}")
     Surface(color = ClassJournalTheme.colors.secondaryBackground) {
         Column(
             Modifier
-                .padding(bottom = LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding.calculateBottomPadding().value.dp)
+                .padding(bottom = LocalSettingsEventBus.current.currentSettings.collectAsState()
+                                .value.innerPadding.calculateBottomPadding().value.dp)
                 .fillMaxSize()
                 .statusBarsPadding()
                 .verticalScroll(columnVerticalScrollSate)
@@ -222,7 +211,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                             value = viewState.beginDate,
                             label = stringResource(R.string.begin_date)
                         ) {
-                            viewModel.beginDateChange(it?.toDateStringRU().toString())
+                            viewModel.beginDateChange("${it?.toDateStringRU()} 00:00:00")
                         }
                         DatePickerFieldToModal(
                             modifier = Modifier
@@ -230,10 +219,17 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                             value = viewState.endDate,
                             label = stringResource(R.string.end_date)
                         ) {
-                            viewModel.endDateChange(it?.toDateStringRU().toString())
+                            viewModel.endDateChange("${it?.toDateStringRU()} 23:59:59")
                         }
                     }
                 }
+
+                var (selectedOption, onOptionSelected) = rememberSaveable { mutableStateOf(optionList[0]) }
+
+                radioOptionSorting(selectedOption,onOptionSelected)
+//                {text,index->
+//                    selectedOption =text,
+//                }
                 Button(
                     modifier = Modifier,
                     shape = ClassJournalTheme.shapes.cornersStyle,
@@ -252,8 +248,11 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
     when (viewAction) {
         FilterAction.CloseScreen -> {
             keyboardController?.hide()
-            navController.navigate(ItemScreen.PayListScreen.name)
-            //navController.popBackStack()
+            navController.navigate(ItemScreen.PayListScreen.name){
+                popUpTo(ItemScreen.PayListScreen.name){
+                    inclusive =true
+                }
+            }
             viewModel.clearAction()
         }
 
@@ -262,7 +261,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
             viewModel.clearAction()
             try {
                 navController.navigate(
-                    DetailsPayList(
+                    OptionFilterPaysList(
                         childId = viewState.selectChild?.uid,
                         childFIO = viewState.selectChild?.fio,
                         selectOption = viewState.selectedOption,
@@ -275,7 +274,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                     }
                 }
             } catch (e: DateTimeParseException) {
-
+                Log.e("CLJR", "SuccessfulAction on filter screen ${e.message}")
             }
         }
 
