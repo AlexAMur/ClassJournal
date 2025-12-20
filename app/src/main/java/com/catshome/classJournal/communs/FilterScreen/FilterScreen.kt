@@ -224,12 +224,12 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                     }
                 }
 
-                var (selectedOption, onOptionSelected) = rememberSaveable { mutableStateOf(optionList[0]) }
+              //  var (selectedOption, onOptionSelected) = rememberSaveable { mutableStateOf(optionList[0]) }
 
-                radioOptionSorting(selectedOption,onOptionSelected)
-//                {text,index->
-//                    selectedOption =text,
-//                }
+                radioOptionSorting(viewState.textSorting)
+                {text->
+                    viewModel.obtainEvent(FilterEvent.SelectSort(text))
+                }
                 Button(
                     modifier = Modifier,
                     shape = ClassJournalTheme.shapes.cornersStyle,

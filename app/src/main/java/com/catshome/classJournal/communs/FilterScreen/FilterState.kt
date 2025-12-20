@@ -14,6 +14,8 @@ data class FilterState(
                         context.getString(R.string.filter_all),
                         ),
     val searchList: List<MiniChild>? = null,
+    val textSorting: String =  "",
+    val indexSorting: Int = 0,
     val selectedOption: Int = 0,
     val selectChild: MiniChild? = null,
     val isShowList: Boolean = false,

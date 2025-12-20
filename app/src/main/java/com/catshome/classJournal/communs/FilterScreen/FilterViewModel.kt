@@ -132,6 +132,10 @@ class FilterViewModel @Inject constructor(
                 }
                 obtainEvent(FilterEvent.NewStatus)
             }
+
+            is FilterEvent.SelectSort -> {
+                viewState = viewState.copy(textSorting = viewEvent.value)
+            }
         }
     }
 

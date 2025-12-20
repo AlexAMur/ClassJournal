@@ -11,4 +11,5 @@ sealed class FilterEvent {
     data class Init(val init: FilterSetting): FilterEvent()
     data class ChildSelected(val child: MiniChild): FilterEvent()
     data class Search(val value: String): FilterEvent()
+    data class SelectSort(val value: String): FilterEvent()
 }

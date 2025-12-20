@@ -24,7 +24,7 @@ import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.R
 
 @Composable
-fun radioOptionSorting(sdf, onOptionSelected:(String)-> Unit){//, onSelected:(String, Int)->Unit) {
+fun radioOptionSorting(value: String,onOptionSelected:(String)-> Unit){//, onSelected:(String, Int)->Unit) {
     val optionList = listOf("Дате", "Фамилии и Дате", "Фамилии")
     Card(
         Modifier
@@ -48,7 +48,7 @@ fun radioOptionSorting(sdf, onOptionSelected:(String)-> Unit){//, onSelected:(St
                         .fillMaxWidth()
                         .padding(start = 32.dp, bottom = 16.dp)
                         .selectable(
-                            selected = (text == ),
+                            selected = (text == value),
                             onClick = {onOptionSelected(text)},// onOptionSelected(text) },
                             role = Role.RadioButton
                         ),
@@ -59,7 +59,7 @@ fun radioOptionSorting(sdf, onOptionSelected:(String)-> Unit){//, onSelected:(St
                         colors = RadioButtonDefaults.colors(
                             ClassJournalTheme.colors.tintColor
                         ),
-                        selected = (text == selectedOption),
+                        selected = (text == value),
                         onClick = null
                     )
                     Text(
