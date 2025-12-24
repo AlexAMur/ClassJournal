@@ -110,8 +110,7 @@ fun PayListContent(
                     .background(ClassJournalTheme.colors.primaryBackground)
             ) {
                 Card(
-                    Modifier
-                        .statusBarsPadding(),
+                    Modifier.statusBarsPadding(),
                     colors = CardDefaults.cardColors(
                         containerColor = ClassJournalTheme.colors.secondaryBackground,
                         contentColor = ClassJournalTheme.colors.primaryText
@@ -187,7 +186,7 @@ fun PayListContent(
                     ) {
                         itemsIndexed(viewState.items) { index, item ->
                             itemPay(
-                                fio = "${viewState.items[index].name} ${viewState.items[index].surName}",
+                                fio = "${viewState.items[index].surName} ${viewState.items[index].name}",
                                 date = viewState.items[index].datePay,
                                 payment = viewState.items[index].payment
                             ) {

@@ -3,29 +3,31 @@ package com.catshome.classJournal.domain.PayList
 
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Child.MiniChild
+import com.catshome.classJournal.domain.communs.SortEnum
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class PayListInteractor @Inject constructor (val payListRepository: PayRepository,
                                     val childRepository: ChildRepository) {
 
-    suspend fun getPays(uid: String?, beginDate: Long?, endDate: Long?): Flow<List<Pay>>?{
+    suspend fun getPays(uid: String?, beginDate: Long?, endDate: Long?, sort: SortEnum?): Flow<List<Pay>>?{
             if (uid?.isNullOrEmpty() == false ) {
                 if (beginDate != null && endDate != null) {
                     return payListRepository.getPayByChildWithPeriod(
                         uidChild = uid,
                         begin = beginDate,
-                        end = endDate)
+                        end = endDate,sort?: SortEnum.date_pay)
                 }
-                return payListRepository.getPayByChild(uid)
+                return payListRepository.getPayByChild(uid,sort?: SortEnum.date_pay)
             } else{
                 if (beginDate != null && endDate !=null)
                     return  payListRepository.getPayByPeriod(
                         begin = beginDate,
-                        end = endDate
+                        end = endDate,
+                        sort?: SortEnum.date_pay
                     )
                 else
-                    return payListRepository.getAllPays(false)
+                    return payListRepository.getAllPays(false, sort?: SortEnum.date_pay)
             }
     }
     fun deletePay(pay: Pay){

@@ -18,12 +18,17 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import com.catshome.classJournal.ClassJournalTheme
+import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
+import com.catshome.classJournal.domain.communs.toDateRu
 import com.catshome.classJournal.domain.communs.toLocalDateTime
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.toLong
 import java.time.ZoneOffset
 import java.util.Date
 
@@ -36,7 +41,14 @@ fun DatePickerFieldToModal(
     supportText: String?= null,
     onDateSelected: (Long?) -> Unit
 ) {
-    //var selectedDate by remember { mutableStateOf(value) }
+
+
+        var date by remember { mutableStateOf(
+            if (value.length == DATE_FORMAT_RU.length)
+            value.toDateRu()?.time
+            else
+            value.toLocalDateTime()?.toLong()
+        ) }
     var showModal by rememberSaveable { mutableStateOf(false) }
     //val datePickerState = rememberDatePickerState()
     //var t =  convertMillisToDate(selectedDate?:0)?:""
@@ -62,7 +74,7 @@ fun DatePickerFieldToModal(
     )
     if (showModal) {
            DatePickerModal(
-            inicialDate = Date.from(value.toLocalDateTime()?.toInstant(ZoneOffset.UTC))?: Date(),
+               inicialDate = Date.from(date?.toLocalDateTimeRu()?.toInstant(ZoneOffset.UTC))?: Date(),//Date.from(date.toLocalDateTime()?.toInstant(ZoneOffset.UTC))?: Date(),
             onDateSelected = onDateSelected,
             onDismiss = { showModal = false }
         )

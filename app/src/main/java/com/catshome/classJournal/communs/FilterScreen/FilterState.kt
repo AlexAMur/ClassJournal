@@ -1,9 +1,9 @@
 package com.catshome.classJournal.communs.FilterScreen
 
-import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
+import com.catshome.classJournal.domain.communs.SortEnum
 
 data class FilterState(
     val optionList: List<String> = listOf(
@@ -13,6 +13,8 @@ data class FilterState(
                         context.getString(R.string.filter_period),
                         context.getString(R.string.filter_all),
                         ),
+    val sortList: List<String> = listOf("Дате",  "Фамилии"),
+    var sortValue: SortEnum? = null,
     val searchList: List<MiniChild>? = null,
     val textSorting: String =  "",
     val indexSorting: Int = 0,

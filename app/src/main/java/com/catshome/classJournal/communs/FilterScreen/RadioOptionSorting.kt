@@ -12,9 +12,6 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,8 +21,8 @@ import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.R
 
 @Composable
-fun radioOptionSorting(value: String,onOptionSelected:(String)-> Unit){//, onSelected:(String, Int)->Unit) {
-    val optionList = listOf("Дате", "Фамилии и Дате", "Фамилии")
+fun radioOptionSorting(value: String, optionList: List<String>, onOptionSelected:(String)-> Unit){//, onSelected:(String, Int)->Unit) {
+
     Card(
         Modifier
             .padding(16.dp)

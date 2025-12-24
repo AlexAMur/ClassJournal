@@ -31,15 +31,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -65,7 +62,6 @@ import java.time.format.DateTimeParseException
 @Composable
 fun FilterScreen(navController: NavController, setting: FilterSetting) {
     val viewModel by (LocalActivity.current as ComponentActivity).viewModels<FilterViewModel>()
-
    LaunchedEffect(Unit) {
        viewModel.obtainEvent(FilterEvent.Init(setting))
    }
@@ -118,7 +114,8 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                     .padding(start = 16.dp, end = 16.dp, bottom = 0.dp)
                     .onGloballyPositioned { coordinate ->
                         sizeList =
-                            (screenHigh - (bottomPadding.value + coordinate.positionOnScreen().y + bottomGroup + coordinate.size.height) / localDensity.density).toFloat()
+                            (screenHigh - (bottomPadding.value + coordinate.positionOnScreen().y +
+                                    bottomGroup + coordinate.size.height) / localDensity.density).toFloat()
                     },
                 onClickClose = {
                     viewModel.obtainEvent(FilterEvent.ClearSearch)
@@ -224,9 +221,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                     }
                 }
 
-              //  var (selectedOption, onOptionSelected) = rememberSaveable { mutableStateOf(optionList[0]) }
-
-                radioOptionSorting(viewState.textSorting)
+                radioOptionSorting(viewState.textSorting, viewState.sortList)
                 {text->
                     viewModel.obtainEvent(FilterEvent.SelectSort(text))
                 }
@@ -259,12 +254,14 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
         FilterAction.Successful -> {
             keyboardController?.hide()
             viewModel.clearAction()
+
             try {
                 navController.navigate(
                     OptionFilterPaysList(
                         childId = viewState.selectChild?.uid,
                         childFIO = viewState.selectChild?.fio,
                         selectOption = viewState.selectedOption,
+                        sort = viewState.sortValue,
                         beginDate = viewState.beginDate,
                         endDate = viewState.endDate
                     )

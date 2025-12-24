@@ -1,9 +1,8 @@
 package com.catshome.classJournal.screens.PayList
 
+import com.catshome.classJournal.domain.communs.SortEnum
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.PayList.Pay
-import com.catshome.classJournal.domain.communs.toDateRuString
-import java.time.LocalDateTime
 
 data class PayListState(
     val showFAB: Boolean = false,
@@ -12,6 +11,7 @@ data class PayListState(
     val isFilterChild: Boolean =false,
     val selectChild: MiniChild? = null,
     val listSearch: List<MiniChild>? = null,
+    val sortValue: SortEnum? = SortEnum.Surname,
     val searchText: String = "",
     val selectedOption: Int = 1,
     val beginDate: String = "",

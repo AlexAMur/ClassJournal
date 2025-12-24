@@ -2,22 +2,23 @@ package com.catshome.classJournal.PayList
 
 import com.catshome.classJournal.domain.PayList.Pay
 import com.catshome.classJournal.domain.PayList.PayRepository
+import com.catshome.classJournal.domain.communs.SortEnum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class PayRepositoryImpl @Inject constructor(val storage: RoomPayStorage) : PayRepository {
 
-    override suspend fun getAllPays(isDelete: Boolean): Flow<List<Pay>>? {
-        return storage.getAllPay(isDelete)?.map {
+    override suspend fun getAllPays(isDelete: Boolean,  sortEnum: SortEnum): Flow<List<Pay>>? {
+        return storage.getAllPay(isDelete, sortEnum)?.map {
             listPayEntity-> listPayEntity.map {
                 it.mapToPay()
             }
         }
     }
 
-    override suspend fun getPayByChild(uidChild: String): Flow<List<Pay>>? {
-        return storage.getPayByChild(uidChild)?.map {list->
+    override suspend fun getPayByChild(uidChild: String, sortEnum: SortEnum): Flow<List<Pay>>? {
+        return storage.getPayByChild(uidChild, sortEnum)?.map {list->
             list.map {
                 it.mapToPay()
             }
@@ -26,13 +27,13 @@ class PayRepositoryImpl @Inject constructor(val storage: RoomPayStorage) : PayRe
 
     override suspend fun getPayByChildWithPeriod(
         uidChild: String,
-        begin: Long,
-        end: Long
+        begin: Long, end: Long, sortEnum: SortEnum
     ): Flow<List<Pay>>? {
        return storage.getPayByChildWithPeriod(
            uid = uidChild,
            begin = begin,
-           end = end
+           end = end,
+           sortEnum
        )?.map {list->
            list.map {
                it.mapToPay()
@@ -42,11 +43,12 @@ class PayRepositoryImpl @Inject constructor(val storage: RoomPayStorage) : PayRe
 
     override suspend fun getPayByPeriod(
         begin: Long,
-        end: Long
+        end: Long,
+        sortEnum: SortEnum
     ): Flow<List<Pay>>? {
         return storage.getPayByPeriod(
             begin = begin,
-            end = end)?.map {list->
+            end = end, sortEnum)?.map {list->
             list.map {
                 it.mapToPay()
             }

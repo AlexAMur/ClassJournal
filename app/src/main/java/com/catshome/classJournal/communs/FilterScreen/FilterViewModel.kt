@@ -5,6 +5,7 @@ import com.catshome.classJournal.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.PayList.PayListInteractor
+import com.catshome.classJournal.domain.communs.SortEnum
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -126,6 +127,8 @@ class FilterViewModel @Inject constructor(
                             fio = childFIO ?: ""
                         ),
                         selectedOption = optionsIndex,
+                        sortValue = sortEnum,
+                        textSorting = viewState.sortList[sortEnum?.ordinal?:0],
                         beginDate = beginDate.toString(),
                         endDate = endDate.toString(),
                     )
@@ -135,6 +138,15 @@ class FilterViewModel @Inject constructor(
 
             is FilterEvent.SelectSort -> {
                 viewState = viewState.copy(textSorting = viewEvent.value)
+                when(viewEvent.value){
+                 viewState.sortList[0]->{
+                     viewState.sortValue = SortEnum.date_pay
+                 }
+                 viewState.sortList[1]->{
+                     viewState.sortValue = SortEnum.Surname
+                 }
+                 else -> {}
+                }
             }
         }
     }

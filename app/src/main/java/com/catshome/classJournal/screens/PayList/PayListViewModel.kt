@@ -31,6 +31,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                         selectedOption = selectOption,
                         beginDate = beginDate ?: LocalDateTime.now().toDateTimeRuString(),
                         endDate = endDate ?:LocalDateTime.now().toDateTimeRuString(),
+                        sortValue = sort,
                         selectChild = MiniChild(uid = childId ?: "", fio = childFIO ?: "")
                     )
                 }
@@ -114,6 +115,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 viewState.selectChild?.uid,
                 viewState.beginDate.toLocalDateTime()?.toLong(),
                 viewState.endDate.toLocalDateTime()?.toLong(),
+                viewState.sortValue
             )?.collect { listPay ->
                 viewState = viewState.copy(items = listPay)
             }

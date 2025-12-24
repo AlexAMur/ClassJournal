@@ -75,6 +75,7 @@ fun PayListScreen(
                     childId = viewState.selectChild?.uid,
                     childFIO = viewState.selectChild?.fio,
                     optionsIndex = viewState.selectedOption,
+                    sortEnum = viewState.sortValue,
                     beginDate = viewState.beginDate,//"01.${LocalDateTime.now().month.value}.${LocalDateTime.now().year}",
                     endDate = viewState.endDate,//LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1)
                 )

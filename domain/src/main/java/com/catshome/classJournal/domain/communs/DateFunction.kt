@@ -22,13 +22,18 @@ const val TIME_FORMAT = "HH:mm"
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun String.toDateRu(): Date? {
-    val formatter = SimpleDateFormat(DATETIME_FORMAT_RU, Locale.getDefault())
-       try {
-       return formatter.parse(this)
+    try {
+        var formatter: SimpleDateFormat
+        if (this.length == DATE_FORMAT_RU.length)
+            formatter = SimpleDateFormat(DATE_FORMAT_RU, Locale.getDefault())
+        else{
+            formatter = SimpleDateFormat(DATETIME_FORMAT_RU, Locale.getDefault())
+        }
+        return formatter.parse(this)
     } catch (e: ParseException) {
         Log.e("CLJR", "toDateRu ${e.message.toString()}")
         this.toLocalDateTime()?.toLong()?.let {
-            return  Date(it.toLong())
+            return Date(it.toLong())
         }
     }
     return null
@@ -56,6 +61,7 @@ fun LocalDateTime.toDateRuString(): String {
     val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_RU)
     return this.format(formatter)
 }
+
 @RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime.toLong(): Long {
     return this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
