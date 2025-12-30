@@ -10,6 +10,10 @@ class VisitListViewModel @Inject constructor(private val groupInteractor: GroupI
     BaseViewModel<VisitListState, VisitListAction, VisitListEvent>(installState = VisitListState()) {
 
         override fun obtainEvent(viewEvent: VisitListEvent) {
-            TODO("Not yet implemented")
+           when(viewEvent){
+               VisitListEvent.NewVisit -> {
+                   viewAction = VisitListAction.NewVisit
+               }
+           }
         }
     }

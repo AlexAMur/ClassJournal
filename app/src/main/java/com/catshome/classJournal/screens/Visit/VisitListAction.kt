@@ -1,4 +1,7 @@
 package com.catshome.classJournal.screens.Visit
 
-class VisitListAction {
+import com.catshome.classJournal.screens.PayList.PayListAction
+
+sealed class VisitListAction {
+    data object NewVisit: VisitListAction()
 }

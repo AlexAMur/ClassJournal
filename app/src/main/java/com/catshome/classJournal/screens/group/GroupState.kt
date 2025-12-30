@@ -1,6 +1,6 @@
 package com.catshome.classJournal.screens.group
 
-import android.os.Message
+
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.ui.focus.FocusRequester
 import androidx.wear.compose.foundation.SwipeToDismissBoxState
