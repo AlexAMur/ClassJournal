@@ -27,7 +27,14 @@ internal val MIGRATION_3_4 = object : Migration(3, 4) {
         db.execSQL("Drop table 'payentity'")
     }
 }
-
+internal val MIGRATION_6_7 = object : Migration(6, 7) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("CREATE TABLE VISIT ('uid' TEXT NOT NULL PRIMARY KEY, 'uidChild' TEXT NOT NULL," +
+                " 'dateVisit' INTEGER NOT NULL," +
+                " 'priceVisit' INTEGER NOT NULL,  FOREIGN KEY ('uidChild') REFERENCES 'child'('uid') ON DELETE CASCADE)")
+        db.execSQL("Create Index indexVisit on visit ('dateVisit')")
+    }
+}
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -38,6 +45,7 @@ class AppModule {
             .fallbackToDestructiveMigration(dropAllTables = true)
             .addMigrations(MIGRATION_2_3)
             .addMigrations(MIGRATION_3_4)
+            .addMigrations(MIGRATION_6_7)
             .build()
 
     }

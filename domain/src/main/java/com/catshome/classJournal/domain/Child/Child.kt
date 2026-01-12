@@ -1,8 +1,5 @@
 package com.catshome.classJournal.domain.Child
 
-import java.sql.Date
-import java.util.UUID
-
 data class Child(
     var uid : String = "",
     var name: String = "",
@@ -12,5 +9,4 @@ data class Child(
     var note: String = "",
     val saldo: Int = 0,
     var isDelete: Boolean = false
-
 )

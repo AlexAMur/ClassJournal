@@ -22,3 +22,6 @@ kotlin {
         ksp(libs.hilt.compiler)
     }
 }
+dependencies {
+    implementation(libs.identity.jvm)
+}

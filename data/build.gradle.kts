@@ -1,4 +1,5 @@
 import com.google.devtools.ksp.KspExperimental
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
@@ -37,8 +38,10 @@ android {
         @OptIn(KspExperimental::class)
         useKsp2 = true
     }
-    kotlinOptions {
-        jvmTarget = "21"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_23
+        }
     }
     room{
         schemaDirectory("$projectDir/schemas")

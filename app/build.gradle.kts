@@ -1,5 +1,7 @@
 import com.google.devtools.ksp.KspExperimental
 import org.gradle.kotlin.dsl.androidTest
+import org.gradle.kotlin.dsl.kotlinOptions
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
@@ -35,14 +37,16 @@ android {
     }
     ksp{
         @OptIn(KspExperimental::class)
-        useKsp2 = false
+        useKsp2 = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_23
+        targetCompatibility = JavaVersion.VERSION_23
     }
-    kotlinOptions {
-        jvmTarget = "21"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_23
+        }
     }
 
 
