@@ -33,7 +33,7 @@ fun String.toDateRu(): Date? {
     } catch (e: ParseException) {
         Log.e("CLJR", "toDateRu ${e.message.toString()}")
         this.toLocalDateTime()?.toLong()?.let {
-            return Date(it.toLong())
+            return Date(it)
         }
     }
     return null

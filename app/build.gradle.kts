@@ -40,27 +40,26 @@ android {
         useKsp2 = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_23
-        targetCompatibility = JavaVersion.VERSION_23
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_23
+            jvmTarget = JvmTarget.JVM_21
         }
     }
-
-
     buildFeatures {
         compose = true
     }
 
 }
 dependencies {
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.material)
-    implementation(platform(libs.androidx.compose.bom))
+
 
     implementation(libs.androidx.material)
     implementation(libs.material)

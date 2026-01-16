@@ -7,20 +7,19 @@ import com.catshome.classJournal.navigate.DetailsPay
 
 data class NewVisitState(
     val searchText: String = "",
+    val isChildError: Boolean = false,
+    val ChildErrorMessage: String = "",
     val listChild: List<MiniChild>? =null,
     val selectChild: MiniChild? = null,
-    val isChildError: Boolean =false,
-    val ChildErrorMessage: String? = null,
     var indexFocus:Int = -1,
     var isResetState: Boolean = false,
     var isSurnameError: Boolean= false,
     var isSnackbarShow: Boolean= false,
     var snackbarAction: String = "",
-    var isPayError: Boolean= false,
-    //var Error: String = "",
+    var isPriceError: Boolean= false,
     var errorMessage: String = "",
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
-    val listPays: List<Visit>
+    val listVisit: List<Visit>
 
 )

@@ -17,5 +17,6 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
             navController.navigate(VisitDetails())
         }
         null -> TODO()
+        else -> {}
     }
 }

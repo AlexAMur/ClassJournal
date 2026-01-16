@@ -19,6 +19,6 @@ interface VisitRepository {
         sortEnum: SortEnum
     ): Flow<List<Visit>>?
     suspend fun deleteVisit(visit: Visit)
-    suspend fun insetVisit(visit: Visit)
+    suspend fun insetVisit(visit: List<Visit>)
     suspend fun updateVisit(visit: Visit)
 }

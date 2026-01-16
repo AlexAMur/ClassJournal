@@ -32,8 +32,6 @@ import com.catshome.classJournal.domain.communs.toDateTimeRuString
 data class PayEntity(
     @PrimaryKey val uid: String,
     val uid_child: String,
-//    @Ignore val Name: String,
-//    @Ignore val Surname: String,
     val date_pay: Long,
     val pay: Int
 )

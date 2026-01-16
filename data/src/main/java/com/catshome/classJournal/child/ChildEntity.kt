@@ -22,7 +22,6 @@ data class ChildEntity(
     @ColumnInfo(name = "child_birthday") var birthday: Long,
     var saldo: Int,
     var isDelete: Boolean = false,
-
 )
 
 fun ChildEntity.mapToChild(): Child{

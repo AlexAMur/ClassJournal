@@ -8,6 +8,9 @@ import com.catshome.classJournal.Group.GroupStorege.RoomGroupStorage
 import com.catshome.classJournal.PayList.PayDAO
 import com.catshome.classJournal.PayList.PayRepositoryImpl
 import com.catshome.classJournal.PayList.RoomPayStorage
+import com.catshome.classJournal.Visit.VisitDAO
+import com.catshome.classJournal.Visit.VisitRepositoryImpl
+import com.catshome.classJournal.Visit.VisitRoomStorage
 import com.catshome.classJournal.child.ChildDAO
 import com.catshome.classJournal.child.ChildGroupDAO
 import com.catshome.classJournal.child.ChildGroupsRepositoryImpl
@@ -18,6 +21,7 @@ import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Group.GroupRepository
 import com.catshome.classJournal.domain.Group.Models.Group
 import com.catshome.classJournal.domain.PayList.PayRepository
+import com.catshome.classJournal.domain.Visit.VisitRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,6 +30,10 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 class DataModule {
+    @Provides
+    fun provideVisitRepository(room: VisitRoomStorage): VisitRepository{
+        return VisitRepositoryImpl(room)
+    }
     @Provides
     fun providePayRepository(room: RoomPayStorage): PayRepository{
         return PayRepositoryImpl(room)
@@ -41,6 +49,10 @@ class DataModule {
     @Provides
     fun provideChildGroupRepository(childGroupDAO: ChildGroupDAO): ChildGroupRepository {
         return ChildGroupsRepositoryImpl(childGroupDAO)
+    }
+    @Provides
+    fun provideVisitDAO(room: AppDataBase): VisitDAO {
+        return room.visitDAO()
     }
     @Provides
     fun provideChildDAO(room: AppDataBase): ChildDAO{

@@ -8,6 +8,8 @@ import com.catshome.classJournal.DAO.GroupsDAO
 import com.catshome.classJournal.Group.Models.GroupEntity
 import com.catshome.classJournal.PayList.PayDAO
 import com.catshome.classJournal.PayList.PayEntity
+import com.catshome.classJournal.Scheduler.SchedulerDAO
+import com.catshome.classJournal.Scheduler.SchedulerEntity
 import com.catshome.classJournal.Visit.VisitDAO
 import com.catshome.classJournal.Visit.VisitEntity
 
@@ -21,7 +23,8 @@ import com.catshome.classJournal.child.ChildGroupEntity
     ChildEntity::class,
     ChildGroupEntity::class,
     PayEntity::class,
-    VisitEntity::class],
+    VisitEntity::class,
+    SchedulerEntity::class],
     version = 7)
 abstract class AppDataBase : RoomDatabase() {
     abstract fun groupsDAO(): GroupsDAO
@@ -30,10 +33,10 @@ abstract class AppDataBase : RoomDatabase() {
     abstract fun payDAO(): PayDAO
 
     abstract fun visitDAO(): VisitDAO
+    abstract fun schedulerDAO(): SchedulerDAO
 
     internal val MIGRATION_1_2 = object : Migration(1, 2) {
         override fun migrate(db: SupportSQLiteDatabase) {
-
             db.execSQL("")
         }
     }
