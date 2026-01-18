@@ -14,7 +14,8 @@ import com.catshome.classJournal.domain.communs.toLong
         tableName = "visits",
         indices = [Index(
             value = ["dateVisit"],
-            name = "indexVisit", unique = false
+            name = "indexVisit",
+            unique = false
         )],
         foreignKeys = [ForeignKey(
             entity = ChildEntity::class,
