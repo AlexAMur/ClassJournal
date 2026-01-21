@@ -145,8 +145,8 @@ class MainActivity : ComponentActivity() {
                             Icons.Outlined.Face,
                             RateScreen()
                         ), ItemBottomBar(
-                            stringResource(R.string.item_bottom_report),
-                            ItemScreen.ReportScreen.name,
+                            stringResource(R.string.item_bottom_scheduler),
+                            ItemScreen.SchedulerScreen.name,
                             Icons.AutoMirrored.Sharp.List,
                             Icons.AutoMirrored.Outlined.List,
                             ReportScreen()

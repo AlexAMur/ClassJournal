@@ -8,31 +8,25 @@ import androidx.room.Query
 import androidx.room.Update
 import com.catshome.classJournal.PayList.PayEntity
 import com.catshome.classJournal.PayList.PayScreenEntity
+import com.catshome.classJournal.domain.Scheduler.Scheduler
 import kotlinx.coroutines.flow.Flow
 @Dao
 interface SchedulerDAO{
     @Insert(onConflict = ABORT)
-    suspend fun insert(payEntity: SchedulerEntity)
+    suspend fun insert(schedulerEntity: SchedulerEntity)
 
     @Delete
-    suspend fun delete(payEntity: SchedulerEntity)
+    suspend fun delete(schedulerEntity: SchedulerEntity)
 
     @Update
-    suspend fun update(payEntity:SchedulerEntity)
-//
-//    @Query(
-//        "Select p.uid , p.uid_child , c.child_name as Name, c.child_surname as Surname, p.date_pay " +
-//                ",p.pay  from pays p join child c where p.uid_child =c.uid and c.isDelete = :isDelete ORDER BY " +
-//                " CASE WHEN :sortDate = 'date_pay' THEN date_pay END DESC ," +
-//                " CASE WHEN :sortSurname = 'Surname' THEN surname END ASC, "+
-//                " CASE WHEN :sortName = 'Name' THEN name END ASC"
-//    )
-//    fun getFull(
-//        isDelete: Boolean,
-//        sortDate: String,
-//        sortName: String,
-//        sortSurname: String
-//    ): Flow<List<PayScreenEntity>>?
+    suspend fun update(schedulerEntity:SchedulerEntity)
+
+    @Query(
+        "Select s.uid , s.uidChild,s.uidGroup, dayOfWeek,startLesson, duration ," +
+                " c.child_name as name, c.child_surname as Surname ,group_name as groupName from scheduler s join child c , 'groups' g" +
+                " where uidChild =c.uid and uidGroup = g.uid ORDER BY dayOfWeek ASC, 'Surname', 'Name' ASC"
+    )
+    fun getFull(): Flow<List<SchedulerScreenEntity>>?
 //
 //    @Query(
 //        "Select p.uid , p.uid_child , c.child_name as Name, c.child_surname as Surname, p.date_pay, " +

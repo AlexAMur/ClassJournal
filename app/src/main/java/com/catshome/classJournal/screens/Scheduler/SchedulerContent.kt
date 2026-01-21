@@ -1,7 +1,6 @@
 package com.catshome.classJournal.screens.Scheduler
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
@@ -20,30 +20,23 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.R
-import com.catshome.classJournal.Scheduler.SchedulerListEvent
-import com.catshome.classJournal.Scheduler.SchedulerListState
 import com.catshome.classJournal.communs.ItemFAB
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.fabMenu
 import com.catshome.classJournal.context
-import com.catshome.classJournal.navigate.DetailsPay
-import com.catshome.classJournal.screens.PayList.PayListEvent
+import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.screens.PayList.itemPay
-import com.catshome.classJournal.screens.PayList.payScreenNoItems
 
 @Composable
 fun schedulerContent(viewModel: SchedulerListViewModel) {
@@ -53,6 +46,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
         .value.innerPadding.calculateBottomPadding()
     Surface(
         Modifier
+            .background(ClassJournalTheme.colors.primaryBackground)
             .fillMaxWidth(),
     ) {
         Scaffold(
@@ -72,10 +66,10 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                 ?: context.getString(R.string.ok),
                             sbHostState,
                             onDismissed = viewState.onDismissed ?: {
-                                viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
+                                //     viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
                             },
                             onActionPerformed = viewState.onAction ?: {
-                                viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
+                                //      viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
                             }
                         )
                     }
@@ -88,7 +82,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                             ItemFAB(
                                 containerColor = ClassJournalTheme.colors.tintColor,
                                 contentColor = ClassJournalTheme.colors.secondaryBackground,
-                                icon = painterResource(R.drawable.rusrub_48),//R.drawable.pay),
+                                icon = painterResource(R.drawable.outline_add_card_24),//R.drawable.pay),
                                 onClick = {
                                     viewModel.obtainEvent(SchedulerListEvent.NewClicked)
                                 }
@@ -98,11 +92,11 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                     FloatingActionButton(
                         modifier = Modifier.padding(
                             bottom = paddingValues + 16.dp,
-                            end = 16.dp
+                            end = 106.dp
                         ),
                         onClick = { viewModel.obtainEvent(SchedulerListEvent.NewClicked) }) {
                         Icon(
-                            painter = painterResource(R.drawable.rusrub_24), ""
+                            painter = painterResource(R.drawable.outline_add_card_24), ""
                         )
                     }
                 }
@@ -110,6 +104,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
         ) { padValues ->
             Column(
                 Modifier
+                    .padding(bottom = padValues.calculateBottomPadding())
                     .background(ClassJournalTheme.colors.primaryBackground)
             ) {
                 Card(
@@ -119,35 +114,34 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         contentColor = ClassJournalTheme.colors.primaryText
                     )
                 ) {
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(0.dp)
-                    )
-                    {}
-                }
-                if (viewState.items.isEmpty())
-                    schedulerScreenNoItems(
-                        bottomPadding = padValues.calculateBottomPadding()
-                    )
-                else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(
-                                top = 8.dp,
-                                bottom = paddingValues
-                            )
-                            .background(ClassJournalTheme.colors.primaryBackground),
-                        state = rememberLazyListState()
-                    ) {
-                        itemsIndexed(viewState.items) { index, item ->
-                            itemPay(
-                                fio = "${viewState.items[index].surName} ${viewState.items[index].name}",
-                                date = viewState.items[index].datePay,
-                                payment = viewState.items[index].payment
-                            ) {
 
+
+
+//                    if (viewState.items.isEmpty())
+//                        schedulerScreenNoItems(
+//                            bottomPadding = padValues.calculateBottomPadding()
+//                        )
+//                    else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(
+                                    top = 8.dp,
+                                    bottom = paddingValues
+                                )
+                                .background(ClassJournalTheme.colors.primaryBackground),
+                            state = rememberLazyListState()
+                        ) {
+
+                           items( DayOfWeek.values()){ day->
+                            //itemsIndexed() { index, item ->
+                                itemPay(
+                                    fio = day.shortName,//"${viewState.items[index].name} ",
+                                    date = "",//viewState.items[index].startLesson.toString(),
+                                    payment ="",// viewState.items[index].duration.toString()
+                                ) {
+                                        TODO("Onclik")
+                                }
                             }
                         }
                     }
@@ -155,4 +149,3 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
             }
         }
     }
-}

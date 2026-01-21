@@ -1,4 +1,4 @@
-package com.catshome.classJournal.communs
+package com.catshome.classJournal.domain.communs
 
 enum class DayOfWeek(val shortName: String) {
         MONDAY("Пн"), TUESDAY("Вт"), WEDNESDAY("Ср"), THURSDAY("Чт"),

@@ -1,9 +1,7 @@
 package com.catshome.classJournal.screens.Scheduler
 
-import com.catshome.classJournal.Scheduler.SchedulerListAction
-import com.catshome.classJournal.Scheduler.SchedulerListEvent
-import com.catshome.classJournal.Scheduler.SchedulerListState
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
+import com.catshome.classJournal.screens.PayList.PayListAction
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -17,6 +15,13 @@ class SchedulerListViewModel @Inject constructor(
         installState = SchedulerListState()
     ) {
     override fun obtainEvent(viewEvent: SchedulerListEvent) {
-        TODO("Not yet implemented")
+        when(viewEvent){
+            SchedulerListEvent.NewClicked -> {
+                viewState.isCanShowSnackBar = true
+                viewAction = SchedulerListAction.NewClick
+            }
+            is SchedulerListEvent.ShowFAB -> { viewState = viewState.copy(showFAB = viewEvent.show)}
+            is SchedulerListEvent.ShowSnackBar -> TODO()
+        }
     }
 }

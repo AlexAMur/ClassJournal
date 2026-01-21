@@ -22,6 +22,10 @@ import com.catshome.classJournal.screens.PayList.NewPayViewModel
 import com.catshome.classJournal.screens.PayList.PayListScreen
 import com.catshome.classJournal.screens.PayList.PayListViewModel
 import com.catshome.classJournal.screens.PayList.newPayScreen
+import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerScreen
+import com.catshome.classJournal.screens.Scheduler.NewSchedulerViewModel
+import com.catshome.classJournal.screens.Scheduler.SchedulerListScreen
+import com.catshome.classJournal.screens.Scheduler.SchedulerListViewModel
 import com.catshome.classJournal.screens.Visit.VisitListViewModel
 import com.catshome.classJournal.screens.Visit.visitListScreen
 import com.catshome.classJournal.screens.child.ChildListViewModel
@@ -76,6 +80,20 @@ fun classJournalApp(
             PayListScreen(navController = navController, viewModel = viewModel)
 
         }
+
+        composable(route = ItemScreen.SchedulerScreen.name) {
+            // val viewModel =hiltViewModel<PayListViewModel>()
+            val viewModel: SchedulerListViewModel by  activity.viewModels()      //
+           SchedulerListScreen(navController = navController, viewModel = viewModel)
+
+        }
+        composable(route = ItemScreen.NewSchedulerScreen.name) {
+            // val viewModel =hiltViewModel<PayListViewModel>()
+            val viewModel: NewSchedulerViewModel by  activity.viewModels()      //
+           NewSchedulerScreen(navController = navController, viewModel = viewModel)
+
+        }
+
         composable<FilterSetting>{backState->
            val setting = backState.toRoute<FilterSetting>()
             FilterScreen(navController,setting)

@@ -1,4 +1,6 @@
-package com.catshome.classJournal.Scheduler
+package com.catshome.classJournal.screens.Scheduler
+
+import com.catshome.classJournal.domain.Scheduler.Scheduler
 
 data class SchedulerListState(
     val showFAB: Boolean = false,
@@ -7,6 +9,6 @@ data class SchedulerListState(
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
     val isShowSnackBar: Boolean = false,
-    val isCanShowSnackBar: Boolean = false,
+    var isCanShowSnackBar: Boolean = false,
     val items: List<Scheduler> = emptyList()
 )

@@ -35,10 +35,10 @@ internal val MIGRATION_6_7 = object : Migration(6, 7) {
         db.execSQL("Create Index indexVisit on visits ('dateVisit')")
 
         db.execSQL("CREATE TABLE SCHEDULER ('uid' TEXT NOT NULL PRIMARY KEY, 'dayOfWeek' INTEGER NOT NULL," +
-                " 'uidGroup' STRING, 'uidChild' STRING, 'startLesson' INTEGER NOT NULL, " +
+                " 'uidGroup' TEXT, 'uidChild' TEXT, 'startLesson' INTEGER NOT NULL, " +
                 "'duration' INTEGER NOT NULL, " +
                 "FOREIGN KEY ('uidChild') REFERENCES 'child'('uid') ON DELETE CASCADE, " +
-                "FOREIGN KEY ('uidGroup') REFERENCES 'group'('uid') ON DELETE CASCADE)"
+                "FOREIGN KEY ('uidGroup') REFERENCES 'groups'('uid') ON DELETE CASCADE)"
             )
         db.execSQL("Create Index indexScheduler on SCHEDULER ('dayOfWeek', 'startLesson')")
     }

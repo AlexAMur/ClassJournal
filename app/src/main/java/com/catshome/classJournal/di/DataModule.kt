@@ -8,6 +8,8 @@ import com.catshome.classJournal.Group.GroupStorege.RoomGroupStorage
 import com.catshome.classJournal.PayList.PayDAO
 import com.catshome.classJournal.PayList.PayRepositoryImpl
 import com.catshome.classJournal.PayList.RoomPayStorage
+import com.catshome.classJournal.Scheduler.SchedulerDAO
+import com.catshome.classJournal.Scheduler.SchedulerRoomStorage
 import com.catshome.classJournal.Visit.VisitDAO
 import com.catshome.classJournal.Visit.VisitRepositoryImpl
 import com.catshome.classJournal.Visit.VisitRoomStorage
@@ -21,6 +23,8 @@ import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Group.GroupRepository
 import com.catshome.classJournal.domain.Group.Models.Group
 import com.catshome.classJournal.domain.PayList.PayRepository
+import com.catshome.classJournal.domain.Scheduler.SchedulerRepository
+import com.catshome.classJournal.Scheduler.SchedulerRepositoryImpl
 import com.catshome.classJournal.domain.Visit.VisitRepository
 import dagger.Module
 import dagger.Provides
@@ -37,6 +41,14 @@ class DataModule {
     @Provides
     fun providePayRepository(room: RoomPayStorage): PayRepository{
         return PayRepositoryImpl(room)
+    }
+    @Provides
+    fun provideSchedulerRepository(room: SchedulerRoomStorage): SchedulerRepository{
+        return SchedulerRepositoryImpl(room)
+    }
+    @Provides
+    fun provideSchedulerDAO(room: AppDataBase): SchedulerDAO{
+        return room.schedulerDAO()
     }
     @Provides
     fun provideChildRepository(room: RoomChildStorage): ChildRepository {

@@ -7,6 +7,9 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.catshome.classJournal.Group.Models.GroupEntity
 import com.catshome.classJournal.child.ChildEntity
+import com.catshome.classJournal.domain.Scheduler.Scheduler
+import com.catshome.classJournal.domain.communs.DayOfWeek
+
 
 @Entity(
     tableName = "scheduler",
@@ -33,9 +36,32 @@ import com.catshome.classJournal.child.ChildEntity
 )
 data class SchedulerEntity(
     @PrimaryKey val uid: String,
-    val uidChild: String,
+    val uidChild: String?,
     val dayOfWeek: Int,
-    val uidGroup: String,
+    val uidGroup: String?,
     val startLesson: Long,
     val duration: Int
 )
+
+data class SchedulerScreenEntity(
+    @PrimaryKey val uid: String,
+    val uidChild: String?,
+    val dayOfWeek: Int,
+    val uidGroup: String?,
+    val name: String?,
+    val groupName: String?,
+    val startLesson: Long,
+    val duration: Int
+)
+fun SchedulerScreenEntity.mapToScheduler(): Scheduler{
+ return Scheduler(
+     uid = this.uid,
+     dayOfWeek = DayOfWeek.entries[this.dayOfWeek].shortName,
+     dayOfWeekInt = this.dayOfWeek,
+     uidChild = this.uidChild,
+     uidGroup = this.uidGroup,
+     name = this.name?:this.groupName?:"",
+     startLesson = this.startLesson,
+     duration = this.duration
+ )
+}

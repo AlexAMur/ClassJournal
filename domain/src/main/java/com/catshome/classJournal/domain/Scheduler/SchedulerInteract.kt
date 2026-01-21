@@ -1,4 +1,9 @@
 package com.catshome.classJournal.domain.Scheduler
 
-class SchedulerInteract {
+import javax.inject.Inject
+
+class SchedulerInteract @Inject constructor(val repository: SchedulerRepository) {
+    suspend fun save(){
+      repository.getScheduler()
+    }
 }

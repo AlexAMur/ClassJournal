@@ -1,0 +1,7 @@
+package com.catshome.classJournal.screens.Scheduler
+
+sealed class SchedulerListEvent {
+    data object NewClicked: SchedulerListEvent()
+    data class ShowSnackBar(val message: String): SchedulerListEvent()
+    data class ShowFAB(val show: Boolean): SchedulerListEvent()
+}
