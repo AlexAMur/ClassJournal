@@ -20,8 +20,12 @@ class SchedulerListViewModel @Inject constructor(
                 viewState.isCanShowSnackBar = true
                 viewAction = SchedulerListAction.NewClick
             }
+            SchedulerListEvent.NewLesson->{
+                viewAction = SchedulerListAction.NewLesson
+            }
             is SchedulerListEvent.ShowFAB -> { viewState = viewState.copy(showFAB = viewEvent.show)}
             is SchedulerListEvent.ShowSnackBar -> TODO()
+
         }
     }
 }

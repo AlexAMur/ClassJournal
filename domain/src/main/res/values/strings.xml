@@ -9,7 +9,8 @@
     <string name="no_pay_item">Add pay</string>
     <string name="no_child_item">Add child or group</string>
     <string name="no_visit_item">Add visit</string>
-    <string name="no_scheduler">Add scheduler</string>
+    <string name="no_scheduler">Добавь урок</string>
+    <string name="add_scheduler_">Добавь ученика или группу</string>
 
     <string name="paymant_date">Payment date</string>
 
@@ -64,7 +65,6 @@
     <string name="filter_year">Год</string>
     <string name="filter_period">Период</string>
     <string name="filter_all">Все</string>
-
     <string name="filter_sort">Сортировать по:</string>
 
 </resources>

@@ -7,6 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.catshome.classJournal.communs.TimePikerDialog
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.PayListEvent
 import kotlinx.coroutines.CoroutineScope
@@ -39,6 +40,15 @@ fun SchedulerListScreen(
         SchedulerListAction.NewClick -> {
             navController.navigate(ItemScreen.NewSchedulerScreen.name)
             viewModel.clearAction()
+        }
+        SchedulerListAction.NewLesson->{
+            TimePikerDialog(
+                title = "Начало занятия",
+                onDismiss = {},
+                onConfirm = {}
+            ){
+
+            }
         }
         null -> {}
     }

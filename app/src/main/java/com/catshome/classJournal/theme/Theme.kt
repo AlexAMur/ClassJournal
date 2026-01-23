@@ -61,9 +61,9 @@ internal fun MainTheme(
         ),
         body = TextStyle(
             fontSize = when (textSize) {
-                ClassJournalSize.Small -> 14.sp
-                ClassJournalSize.Medium -> 16.sp
-                ClassJournalSize.Big -> 18.sp
+                ClassJournalSize.Small -> 10.sp
+                ClassJournalSize.Medium -> 14.sp
+                ClassJournalSize.Big -> 16.sp
             },
             fontWeight = FontWeight.Normal
         ),
@@ -77,9 +77,9 @@ internal fun MainTheme(
         ),
         caption = TextStyle(
             fontSize = when (textSize) {
-                ClassJournalSize.Small -> 10.sp
-                ClassJournalSize.Medium -> 12.sp
-                ClassJournalSize.Big -> 14.sp
+                ClassJournalSize.Small -> 16.sp
+                ClassJournalSize.Medium -> 18.sp
+                ClassJournalSize.Big -> 20.sp
             }
         ),
        small = TextStyle(

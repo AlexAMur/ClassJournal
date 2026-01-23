@@ -44,77 +44,49 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
     val sbHostState = remember { SnackbarHostState() }
     val paddingValues = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
-    Surface(
+
+    Scaffold(
         Modifier
-            .background(ClassJournalTheme.colors.primaryBackground)
             .fillMaxWidth(),
-    ) {
-        Scaffold(
-            Modifier
-                .fillMaxWidth(),
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = sbHostState,
-                    modifier = Modifier.padding(bottom = paddingValues)
-                )
-                LaunchedEffect(viewState.isShowSnackBar) {
-                    if (viewState.isShowSnackBar && viewState.isCanShowSnackBar) {
-                        //    keyboardController?.hide()
-                        SnackBarAction(
-                            message = viewState.messageShackBar,
-                            actionLabel = viewState.snackBarAction
-                                ?: context.getString(R.string.ok),
-                            sbHostState,
-                            onDismissed = viewState.onDismissed ?: {
-                                //     viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
-                            },
-                            onActionPerformed = viewState.onAction ?: {
-                                //      viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
-                            }
-                        )
-                    }
-                }
-            },
-            bottomBar = {
-                Row(Modifier.fillMaxWidth(), Arrangement.End) {
-                    fabMenu(
-                        listFAB = listOf(
-                            ItemFAB(
-                                containerColor = ClassJournalTheme.colors.tintColor,
-                                contentColor = ClassJournalTheme.colors.secondaryBackground,
-                                icon = painterResource(R.drawable.outline_add_card_24),//R.drawable.pay),
-                                onClick = {
-                                    viewModel.obtainEvent(SchedulerListEvent.NewClicked)
-                                }
-                            )),
-                        fabVisible = viewState.showFAB
+        snackbarHost = {
+            SnackbarHost(
+                hostState = sbHostState,
+                modifier = Modifier.padding(bottom = paddingValues)
+            )
+            LaunchedEffect(viewState.isShowSnackBar) {
+                if (viewState.isShowSnackBar && viewState.isCanShowSnackBar) {
+                    //    keyboardController?.hide()
+                    SnackBarAction(
+                        message = viewState.messageShackBar,
+                        actionLabel = viewState.snackBarAction
+                            ?: context.getString(R.string.ok),
+                        sbHostState,
+                        onDismissed = viewState.onDismissed ?: {
+                            //     viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
+                        },
+                        onActionPerformed = viewState.onAction ?: {
+                            //      viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
+                        }
                     )
-                    FloatingActionButton(
-                        modifier = Modifier.padding(
-                            bottom = paddingValues + 16.dp,
-                            end = 106.dp
-                        ),
-                        onClick = { viewModel.obtainEvent(SchedulerListEvent.NewClicked) }) {
-                        Icon(
-                            painter = painterResource(R.drawable.outline_add_card_24), ""
-                        )
-                    }
                 }
             }
-        ) { padValues ->
-            Column(
-                Modifier
-                    .padding(bottom = padValues.calculateBottomPadding())
-                    .background(ClassJournalTheme.colors.primaryBackground)
-            ) {
-                Card(
-                    Modifier.statusBarsPadding(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = ClassJournalTheme.colors.secondaryBackground,
-                        contentColor = ClassJournalTheme.colors.primaryText
-                    )
-                ) {
+        },
 
+        ) { padValues ->
+
+        Column(
+            Modifier
+
+                //.padding(bottom = padValues.calculateBottomPadding())
+                .background(ClassJournalTheme.colors.primaryBackground)
+        ) {
+            Card(
+                Modifier.statusBarsPadding(),
+                colors = CardDefaults.cardColors(
+                    containerColor = ClassJournalTheme.colors.secondaryBackground,
+                    contentColor = ClassJournalTheme.colors.primaryText
+                )
+            ) {
 
 
 //                    if (viewState.items.isEmpty())
@@ -122,30 +94,59 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
 //                            bottomPadding = padValues.calculateBottomPadding()
 //                        )
 //                    else {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(
-                                    top = 8.dp,
-                                    bottom = paddingValues
-                                )
-                                .background(ClassJournalTheme.colors.primaryBackground),
-                            state = rememberLazyListState()
-                        ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            top = 8.dp,
+                            bottom = paddingValues
+                        )
+                        .background(ClassJournalTheme.colors.primaryBackground),
+                    state = rememberLazyListState()
+                ) {
 
-                           items( DayOfWeek.values()){ day->
-                            //itemsIndexed() { index, item ->
-                                itemPay(
-                                    fio = day.shortName,//"${viewState.items[index].name} ",
-                                    date = "",//viewState.items[index].startLesson.toString(),
-                                    payment ="",// viewState.items[index].duration.toString()
-                                ) {
-                                        TODO("Onclik")
-                                }
-                            }
-                        }
+                    items(DayOfWeek.values()) { day ->
+                        //itemsIndexed() { index, item ->
+                        itemScheduler(
+                            day = day.shortName,//"${viewState.items[index].name} ",
+                            emptyList(),
+                           newTime = {
+                               viewModel.obtainEvent(SchedulerListEvent.NewLesson)
+                           }
+
+                        )
+
                     }
                 }
             }
         }
     }
+}
+
+
+//bottomBar = {
+//    Row(Modifier.fillMaxWidth(), Arrangement.End) {
+//        fabMenu(
+//            listFAB = listOf(
+//                ItemFAB(
+//                    containerColor = ClassJournalTheme.colors.tintColor,
+//                    contentColor = ClassJournalTheme.colors.secondaryBackground,
+//                    icon = painterResource(R.drawable.outline_add_card_24),//R.drawable.pay),
+//                    onClick = {
+//                        viewModel.obtainEvent(SchedulerListEvent.NewClicked)
+//                    }
+//                )),
+//            fabVisible = viewState.showFAB
+//        )
+//        FloatingActionButton(
+//            modifier = Modifier.padding(
+//                bottom = paddingValues + 16.dp,
+//                end = 106.dp
+//            ),
+//            onClick = { viewModel.obtainEvent(SchedulerListEvent.NewClicked) }) {
+//            Icon(
+//                painter = painterResource(R.drawable.outline_add_card_24), ""
+//            )
+//        }
+//    }
+//}

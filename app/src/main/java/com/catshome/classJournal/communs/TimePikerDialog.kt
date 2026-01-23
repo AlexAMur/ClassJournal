@@ -57,7 +57,7 @@ fun TimePikerDialog(
                     text = title,
                     style = ClassJournalTheme.typography.body
                 )
-                content()
+                //content()
                 Row(
                     modifier = Modifier
                         .height(40.dp)
