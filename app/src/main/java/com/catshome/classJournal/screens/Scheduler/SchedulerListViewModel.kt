@@ -16,14 +16,18 @@ class SchedulerListViewModel @Inject constructor(
     ) {
     override fun obtainEvent(viewEvent: SchedulerListEvent) {
         when(viewEvent){
+           is SchedulerListEvent.ShowTimePiker->{
+               viewState =  viewState.copy(showStartTimePicker = viewEvent.show)
+           }
             SchedulerListEvent.NewClicked -> {
                 viewState.isCanShowSnackBar = true
                 viewAction = SchedulerListAction.NewClick
             }
             SchedulerListEvent.NewLesson->{
+               obtainEvent(SchedulerListEvent.ShowTimePiker(show = true))
                 viewAction = SchedulerListAction.NewLesson
             }
-            is SchedulerListEvent.ShowFAB -> { viewState = viewState.copy(showFAB = viewEvent.show)}
+
             is SchedulerListEvent.ShowSnackBar -> TODO()
 
         }

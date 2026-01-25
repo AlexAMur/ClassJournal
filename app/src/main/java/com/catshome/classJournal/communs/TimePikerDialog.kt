@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +25,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePikerDialog(
     title: String,
@@ -58,12 +62,14 @@ fun TimePikerDialog(
                     style = ClassJournalTheme.typography.body
                 )
                 //content()
+                toggle()
+                TimePicker(state = TimePickerState(initialHour = 15, initialMinute = 0, is24Hour = true))
                 Row(
                     modifier = Modifier
-                        .height(40.dp)
-                        .fillMaxWidth()
+                        //height(40.dp)
+                       // .fillMaxWidth()
                 ) {
-                    toggle()
+
                     Spacer(modifier = Modifier.weight(1f))
                     TextButton(onClick = onDismiss) { Text(stringResource(R.string.bottom_cancel)) }
                     TextButton(onClick = onConfirm) { Text(stringResource(R.string.ok)) }

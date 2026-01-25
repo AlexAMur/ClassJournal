@@ -3,7 +3,7 @@ package com.catshome.classJournal.screens.Scheduler
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 
 data class SchedulerListState(
-    val showFAB: Boolean = false,
+    var showStartTimePicker: Boolean = false,
     val messageShackBar: String = "",
     val snackBarAction: String? =null,
     var onDismissed: (()->Unit)? = null,

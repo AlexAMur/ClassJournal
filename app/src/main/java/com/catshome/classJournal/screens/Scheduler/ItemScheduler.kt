@@ -44,7 +44,7 @@ import com.catshome.classJournal.domain.Scheduler.Scheduler
 import java.util.Locale
 
 @Composable
-fun itemScheduler(day: String, scheduler: List<Scheduler>?,newTime:()->Unit) {
+fun itemScheduler(day: String, scheduler: List<Scheduler>?,newTime:()->Unit, newMember:()->Unit) {
     Card(
         Modifier
             .fillMaxWidth()
@@ -90,7 +90,7 @@ fun itemScheduler(day: String, scheduler: List<Scheduler>?,newTime:()->Unit) {
                     )
                 TextButton(
                     modifier = Modifier,
-                    onClick = newTime
+                    onClick = newMember
                 ) {
 
                     Icon(
@@ -145,9 +145,7 @@ fun itemScheduler(day: String, scheduler: List<Scheduler>?,newTime:()->Unit) {
                             bottom = 16.dp,
                             end = 16.dp
                         ),
-                    onClick = {
-                        //    viewModel.obtainEvent(PayListEvent.NewClicked)
-                    }) {
+                    onClick = newTime) {
 
                     Icon(
                         painter = painterResource(R.drawable.outline_add_card_24),

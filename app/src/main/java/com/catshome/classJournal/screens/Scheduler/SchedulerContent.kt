@@ -33,6 +33,7 @@ import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.R
 import com.catshome.classJournal.communs.ItemFAB
 import com.catshome.classJournal.communs.SnackBarAction
+import com.catshome.classJournal.communs.TimePikerDialog
 import com.catshome.classJournal.communs.fabMenu
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.communs.DayOfWeek
@@ -76,7 +77,6 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
 
         Column(
             Modifier
-
                 //.padding(bottom = padValues.calculateBottomPadding())
                 .background(ClassJournalTheme.colors.primaryBackground)
         ) {
@@ -87,7 +87,6 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                     contentColor = ClassJournalTheme.colors.primaryText
                 )
             ) {
-
 
 //                    if (viewState.items.isEmpty())
 //                        schedulerScreenNoItems(
@@ -105,18 +104,28 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                     state = rememberLazyListState()
                 ) {
 
-                    items(DayOfWeek.values()) { day ->
+                    items(DayOfWeek.entries.toTypedArray()) { day ->
                         //itemsIndexed() { index, item ->
                         itemScheduler(
                             day = day.shortName,//"${viewState.items[index].name} ",
                             emptyList(),
-                           newTime = {
-                               viewModel.obtainEvent(SchedulerListEvent.NewLesson)
-                           }
-
+                            newTime = {
+                                viewModel.obtainEvent(SchedulerListEvent.NewLesson)
+                            },
+                            newMember = {
+                                TODO("Добавить открытия окна выбора клиента")
+                            }
                         )
-
                     }
+                }
+            }
+            if (viewState.showStartTimePicker) {
+                TimePikerDialog(
+                    title = "Начало занятия",
+                    onDismiss = { viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false)) },
+                    onConfirm = {}
+                ) {
+
                 }
             }
         }

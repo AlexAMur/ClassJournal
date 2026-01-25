@@ -22,18 +22,18 @@ fun SchedulerListScreen(
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
-    LaunchedEffect(Unit) {
-        CoroutineScope(Dispatchers.Default).launch {
-            viewModel.obtainEvent(SchedulerListEvent.ShowFAB(false))
-            delay(100)
-            viewModel.obtainEvent(SchedulerListEvent.ShowFAB(true))
-        }
-    }
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModel.obtainEvent(SchedulerListEvent.ShowFAB(false))
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        CoroutineScope(Dispatchers.Default).launch {
+//            viewModel.obtainEvent(SchedulerListEvent.ShowFAB(false))
+//            delay(100)
+//            viewModel.obtainEvent(SchedulerListEvent.ShowFAB(true))
+//        }
+//    }
+//    DisposableEffect(Unit) {
+//        onDispose {
+//            viewModel.obtainEvent(SchedulerListEvent.ShowFAB(false))
+//        }
+//    }
     schedulerContent(viewModel)
 
     when(viewAction){
@@ -42,13 +42,7 @@ fun SchedulerListScreen(
             viewModel.clearAction()
         }
         SchedulerListAction.NewLesson->{
-            TimePikerDialog(
-                title = "Начало занятия",
-                onDismiss = {},
-                onConfirm = {}
-            ){
 
-            }
         }
         null -> {}
     }
