@@ -167,7 +167,7 @@ class MainActivity : ComponentActivity() {
                                             label = {
                                                 Text(
                                                     screen.label,
-                                                    style = ClassJournalTheme.typography.toolbar
+                                                    style = ClassJournalTheme.typography.body
                                                 )
                                             },
                                             selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,

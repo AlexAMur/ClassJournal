@@ -14,8 +14,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -27,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
@@ -38,7 +41,9 @@ import com.catshome.classJournal.communs.fabMenu
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.screens.PayList.itemPay
+import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun schedulerContent(viewModel: SchedulerListViewModel) {
     val viewState by viewModel.viewState().collectAsState()
@@ -74,7 +79,6 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
         },
 
         ) { padValues ->
-
         Column(
             Modifier
                 //.padding(bottom = padValues.calculateBottomPadding())
@@ -88,11 +92,6 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                 )
             ) {
 
-//                    if (viewState.items.isEmpty())
-//                        schedulerScreenNoItems(
-//                            bottomPadding = padValues.calculateBottomPadding()
-//                        )
-//                    else {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -105,12 +104,13 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                 ) {
 
                     items(DayOfWeek.entries.toTypedArray()) { day ->
-                        //itemsIndexed() { index, item ->
+
                         itemScheduler(
-                            day = day.shortName,//"${viewState.items[index].name} ",
-                            emptyList(),
-                            newTime = {
-                                viewModel.obtainEvent(SchedulerListEvent.NewLesson)
+                            day = day,
+                            items = viewState.items[day.name],
+                            viewModel =viewModel,
+                            collapsItem={
+                                viewModel.obtainEvent(SchedulerListEvent.CollapseItem(it))
                             },
                             newMember = {
                                 TODO("Добавить открытия окна выбора клиента")
@@ -118,12 +118,20 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         )
                     }
                 }
+
+
             }
             if (viewState.showStartTimePicker) {
                 TimePikerDialog(
                     title = "Начало занятия",
-                    onDismiss = { viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false)) },
-                    onConfirm = {}
+                    context = context,
+                    onDismiss = {
+                        viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
+                                },
+                    onConfirm = {time, duration->
+                        viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
+                        viewModel.obtainEvent(SchedulerListEvent.NewLesson(0,duration=duration))
+                    }
                 ) {
 
                 }

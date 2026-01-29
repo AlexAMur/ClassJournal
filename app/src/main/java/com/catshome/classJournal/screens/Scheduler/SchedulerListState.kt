@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.Scheduler
 
+import androidx.collection.emptyIntList
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 
 data class SchedulerListState(
@@ -10,5 +11,6 @@ data class SchedulerListState(
     var onAction: (()->Unit)? = null,
     val isShowSnackBar: Boolean = false,
     var isCanShowSnackBar: Boolean = false,
-    val items: List<Scheduler> = emptyList()
+    val dayList: List<Boolean> = listOf(false,false,false,false,false,false,false),
+    val items: Map<String,List<Scheduler>> = emptyMap()
 )

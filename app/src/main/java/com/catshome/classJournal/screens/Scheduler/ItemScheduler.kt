@@ -1,9 +1,11 @@
 package com.catshome.classJournal.screens.Scheduler
 
 import android.app.LocaleConfig
+import android.util.Log
 import android.view.Surface
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +18,10 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.twotone.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,6 +32,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusModifier
@@ -41,94 +48,122 @@ import androidx.wear.compose.material.Button
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.R
 import com.catshome.classJournal.domain.Scheduler.Scheduler
+import com.catshome.classJournal.domain.communs.DayOfWeek
 import java.util.Locale
+import kotlin.collections.forEachIndexed
 
 @Composable
-fun itemScheduler(day: String, scheduler: List<Scheduler>?,newTime:()->Unit, newMember:()->Unit) {
-    Card(
-        Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, bottom = 16.dp, end = 16.dp),
-        //    .clickable(onClick = onClick)
-        colors = CardDefaults.cardColors(ClassJournalTheme.colors.secondaryBackground),
-        shape = ClassJournalTheme.shapes.cornersStyle,
-        // border = BorderStroke(width = 1.dp, color = ClassJournalTheme.colors.tintColor)
-    )
-    {
-        Column(
-            Modifier.fillMaxWidth()
-        ) {
+fun itemScheduler(
+    day: DayOfWeek,
+    items: List<Scheduler>?,
+    viewModel: SchedulerListViewModel,
+    collapsItem: (Int) -> Unit,
+    newMember: () -> Unit
+) {
+    val viewState by viewModel.viewState().collectAsState()
+    val index = DayOfWeek.entries.indexOf(day)
+//    Card(
+//        Modifier
+//            .fillMaxWidth()
+//            .padding(start = 16.dp, bottom = 16.dp, end = 16.dp),
+//        //    .clickable(onClick = onClick)
+//        colors = CardDefaults.cardColors(ClassJournalTheme.colors.secondaryBackground),
+//        shape = ClassJournalTheme.shapes.cornersStyle,
+//        // border = BorderStroke(width = 1.dp, color = ClassJournalTheme.colors.tintColor)
+//    )
+//    {
+    Column(
+        Modifier.fillMaxWidth()
+    ) {
 //            val insets = WindowInsets.safeDrawing.asPaddingValues()
 //            Text("Доступная высота (примерно): ${insets.calculateBottomPadding() + insets.calculateTopPadding()}")
-            Row(Modifier.background(ClassJournalTheme.colors.controlColor)) {
-                Text(
-                    day,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth(),
-                    color = ClassJournalTheme.colors.primaryText,
-                    style = ClassJournalTheme.typography.toolbar
-                )
-            }
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = ClassJournalTheme.colors.disableColor,
-                    ),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "17:10",
-                    modifier = Modifier
-                        .padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
-                    //.fillMaxWidth(0.8f),
-                    color = ClassJournalTheme.colors.primaryText,
-                    style = ClassJournalTheme.typography.caption,
+        Row(
+            Modifier
+                .background(ClassJournalTheme.colors.controlColor)
+                .clickable(
+                    onClick = { collapsItem(index) }
+//                        {
+//                        viewModel.obtainEvent(SchedulerListEvent.CollapseItem(0))
+//                        Log.e("CLJR",viewState.daylist.toString())
+//                    }
+                )) {
+            Text(
+                day.shortName,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .weight(0.8f),
+                color = ClassJournalTheme.colors.primaryText,
+                style = ClassJournalTheme.typography.toolbar
+            )
+            Icon(
+                imageVector = if (viewState.dayList[DayOfWeek.entries.indexOf(day)]) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                contentDescription = null
+            )
+        }
+        if (viewState.dayList[index]) {
+            var startTime = -1L
+            items?.forEachIndexed { index, list ->
 
-                    )
-                TextButton(
-                    modifier = Modifier,
-                    onClick = newMember
-                ) {
-
-                    Icon(
-                        Icons.TwoTone.Add,
-                        contentDescription = stringResource(R.string.no_scheduler),
-                        tint = ClassJournalTheme.colors.tintColor
-
-                    )
-                }
-            }
-            val scheduler = listOf("Item1", "Item     2", "Item3", "Item         4", "Item5")
-
-            LazyColumn(Modifier.heightIn(min = 56.dp, max = 500.dp)
-                .background(ClassJournalTheme.colors.disableColor)) {
-                items(scheduler.size) {
+                if (startTime != list.startLesson) {
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp)
-                            ,
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
+                            .background(color = ClassJournalTheme.colors.disableColor),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
+                            text = startTime.toString(),
                             modifier = Modifier
-                                .weight(0.8f)
-                                .padding(start = 8.dp)
-                            ,
-                            text = scheduler[it],
-                            style = ClassJournalTheme.typography.body,
+                                .padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
+                            //.fillMaxWidth(0.8f),
+                            color = ClassJournalTheme.colors.primaryText,
+                            style = ClassJournalTheme.typography.caption,
 
                             )
-                        IconButton(onClick = {}) {
+                        TextButton(
+                            modifier = Modifier,
+                            onClick = newMember
+                        ) {
                             Icon(
-                                Icons.Default.Close,
-                                contentDescription = null,
+                                Icons.TwoTone.Add,
+                                contentDescription = stringResource(R.string.no_scheduler),
                                 tint = ClassJournalTheme.colors.tintColor
                             )
+                        }
+                    }
+                    startTime = list.startLesson
+                }
+
+                LazyColumn(
+                    Modifier
+                        .heightIn(min = 56.dp, max = 500.dp)
+                        .background(ClassJournalTheme.colors.disableColor)
+                ) {
+                    items(index) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 4.dp)
+                                .background(ClassJournalTheme.colors.secondaryBackground),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .weight(0.8f)
+                                    .padding(start = 8.dp),
+                                text = list.toString(),
+                                style = ClassJournalTheme.typography.body,
+
+                                )
+                            IconButton(onClick = {}) {
+                                Icon(
+                                    Icons.Default.Close,
+                                    contentDescription = null,
+                                    tint = ClassJournalTheme.colors.tintColor
+                                )
+                            }
                         }
                     }
                 }
@@ -145,15 +180,16 @@ fun itemScheduler(day: String, scheduler: List<Scheduler>?,newTime:()->Unit, new
                             bottom = 16.dp,
                             end = 16.dp
                         ),
-                    onClick = newTime) {
-
+                    onClick = {
+                        viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(true))
+                    }
+                ) {
                     Icon(
                         painter = painterResource(R.drawable.outline_add_card_24),
                         stringResource(R.string.no_scheduler)
                     )
                 }
             }
-
         }
     }
 }
