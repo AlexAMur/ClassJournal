@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
@@ -55,7 +56,7 @@ import kotlin.collections.forEachIndexed
 @Composable
 fun itemScheduler(
     day: DayOfWeek,
-    items: List<Scheduler>?,
+    items: Map<Long, List<Scheduler>?>?,
     viewModel: SchedulerListViewModel,
     collapsItem: (Int) -> Unit,
     newMember: () -> Unit
@@ -102,45 +103,45 @@ fun itemScheduler(
         }
         if (viewState.dayList[index]) {
             var startTime = -1L
-            items?.forEachIndexed { index, list ->
-
-                if (startTime != list.startLesson) {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .background(color = ClassJournalTheme.colors.disableColor),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = startTime.toString(),
-                            modifier = Modifier
-                                .padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
-                            //.fillMaxWidth(0.8f),
-                            color = ClassJournalTheme.colors.primaryText,
-                            style = ClassJournalTheme.typography.caption,
-
-                            )
-                        TextButton(
-                            modifier = Modifier,
-                            onClick = newMember
-                        ) {
-                            Icon(
-                                Icons.TwoTone.Add,
-                                contentDescription = stringResource(R.string.no_scheduler),
-                                tint = ClassJournalTheme.colors.tintColor
-                            )
-                        }
-                    }
-                    startTime = list.startLesson
-                }
-
+            items?.forEach { (key, lists) ->
+                //items?.forEachIndexed { index, list ->
                 LazyColumn(
                     Modifier
                         .heightIn(min = 56.dp, max = 500.dp)
                         .background(ClassJournalTheme.colors.disableColor)
                 ) {
-                    items(index) {
+                    stickyHeader {
+                        //    if (startTime != list.startLesson) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .background(color = ClassJournalTheme.colors.disableColor),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = key.toString(),
+                                modifier = Modifier
+                                    .padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
+                                //.fillMaxWidth(0.8f),
+                                color = ClassJournalTheme.colors.primaryText,
+                                style = ClassJournalTheme.typography.caption,
+
+                                )
+                            TextButton(
+                                modifier = Modifier,
+                                onClick = newMember
+                            ) {
+                                Icon(
+                                    Icons.TwoTone.Add,
+                                    contentDescription = stringResource(R.string.add_scheduler_),
+                                    tint = ClassJournalTheme.colors.tintColor
+                                )
+                            }
+                        }
+                    }
+                    lists?.let {list->
+                        itemsIndexed(list) {index, item->
                         Row(
                             Modifier
                                 .fillMaxWidth()
@@ -153,10 +154,10 @@ fun itemScheduler(
                                 modifier = Modifier
                                     .weight(0.8f)
                                     .padding(start = 8.dp),
-                                text = list.toString(),
-                                style = ClassJournalTheme.typography.body,
+                                text =item.toString(),
+                            style = ClassJournalTheme.typography.body,
 
-                                )
+                            )
                             IconButton(onClick = {}) {
                                 Icon(
                                     Icons.Default.Close,
@@ -165,6 +166,7 @@ fun itemScheduler(
                                 )
                             }
                         }
+                    }
                     }
                 }
             }
@@ -181,7 +183,12 @@ fun itemScheduler(
                             end = 16.dp
                         ),
                     onClick = {
-                        viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(true))
+                        viewModel.obtainEvent(
+                            SchedulerListEvent.ShowTimePiker(
+                                show = true,
+                                day = DayOfWeek.entries[index]
+                            )
+                        )
                     }
                 ) {
                     Icon(

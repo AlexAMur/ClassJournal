@@ -107,7 +107,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
 
                         itemScheduler(
                             day = day,
-                            items = viewState.items[day.name],
+                            items = viewState.items[day.name]?.groupBy { it.startLesson as Long },
                             viewModel =viewModel,
                             collapsItem={
                                 viewModel.obtainEvent(SchedulerListEvent.CollapseItem(it))
@@ -129,8 +129,8 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
                                 },
                     onConfirm = {time, duration->
-                        viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
-                        viewModel.obtainEvent(SchedulerListEvent.NewLesson(0,duration=duration))
+                        viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false, day = DayOfWeek.entries[ind]))
+                        viewModel.obtainEvent(SchedulerListEvent.SetTime(time= 0 ,duration=duration))
                     }
                 ) {
 

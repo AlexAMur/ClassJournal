@@ -2,12 +2,14 @@ package com.catshome.classJournal.screens.Scheduler
 
 import androidx.compose.material3.TimePickerState
 import androidx.room.Index
+import com.catshome.classJournal.domain.communs.DayOfWeek
 import kotlin.time.Duration
 
 sealed class SchedulerListEvent {
     data object NewClicked: SchedulerListEvent()
-    data class NewLesson(val time: Long, val duration: Long): SchedulerListEvent()
+    data class NewLesson(val day: DayOfWeek, val time: Long, val duration: Int): SchedulerListEvent()
+    data class SetTime(val time: Long, val duration: Int): SchedulerListEvent()
     data class CollapseItem(val index: Int): SchedulerListEvent()
     data class ShowSnackBar(val message: String): SchedulerListEvent()
-    data class ShowTimePiker(val show: Boolean): SchedulerListEvent()
+    data class ShowTimePiker(val show: Boolean, val day: DayOfWeek?=null): SchedulerListEvent()
 }

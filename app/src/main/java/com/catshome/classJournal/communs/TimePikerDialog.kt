@@ -42,14 +42,14 @@ fun TimePikerDialog(
     title: String,
     context: Context,
     onDismiss: () -> Unit,
-    onConfirm:  (TimePickerState, Long) -> Unit,
+    onConfirm: (TimePickerState, Int) -> Unit,
     toggle: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     val currentTime = Calendar.getInstance()
     var duration by rememberSaveable { mutableStateOf("0") }
     var support by remember { mutableStateOf("") }
-    var error  by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf(false) }
     val timePickerState = rememberTimePickerState(
         initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
         initialMinute = currentTime.get(Calendar.MINUTE),
@@ -112,14 +112,14 @@ fun TimePikerDialog(
                     label = "Продолжительность занятия",
                     onValueChange = {
                         duration = it
-                        error=false
-                                    },
+                        error = false
+                    },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     supportingText = support,
                     errorState = error,
-                   // colors = if (error.value) ClassJournalTheme.colors.errorColor else ClassJournalTheme.colors.tintColor,
+                    // colors = if (error.value) ClassJournalTheme.colors.errorColor else ClassJournalTheme.colors.tintColor,
                     modifier = Modifier
-                    )
+                )
 
                 Row(
                     modifier = Modifier
@@ -139,11 +139,15 @@ fun TimePikerDialog(
                     TextButton(
                         onClick = {
                             try {
-                                onConfirm(timePickerState, duration.toLong())
-                            }
-                            catch (e: NumberFormatException){
-                                   error  = true
-                                    support =  context.getString(R.string.error_invalid_value)
+                                if (duration.toInt() < 1)
+                                    throw IllegalArgumentException(context.getString(R.string.error_zero_value))
+                                onConfirm(timePickerState, duration.toInt())
+                            } catch (e: Exception) {
+                                error = true
+                                if (e is NumberFormatException) {
+
+                                    support = context.getString(R.string.error_invalid_value)
+                                } else support = e.message ?: "Ошибка."
                             }
                         },
 

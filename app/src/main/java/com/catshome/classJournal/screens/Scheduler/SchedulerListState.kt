@@ -12,5 +12,6 @@ data class SchedulerListState(
     val isShowSnackBar: Boolean = false,
     var isCanShowSnackBar: Boolean = false,
     val dayList: List<Boolean> = listOf(false,false,false,false,false,false,false),
-    val items: Map<String,List<Scheduler>> = emptyMap()
+    val items: Map<String,List<Scheduler>?> = emptyMap(),
+    val newScheduler: Scheduler? =null
 )
