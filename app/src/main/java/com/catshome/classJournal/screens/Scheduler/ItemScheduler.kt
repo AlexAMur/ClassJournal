@@ -184,8 +184,7 @@ fun itemScheduler(
                         ),
                     onClick = {
                         viewModel.obtainEvent(
-                            SchedulerListEvent.ShowTimePiker(
-                                show = true,
+                            SchedulerListEvent.NewLesson(
                                 day = DayOfWeek.entries[index]
                             )
                         )

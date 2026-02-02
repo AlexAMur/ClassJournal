@@ -129,7 +129,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
                                 },
                     onConfirm = {time, duration->
-                        viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false, day = DayOfWeek.entries[ind]))
+                        viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
                         viewModel.obtainEvent(SchedulerListEvent.SetTime(time= 0 ,duration=duration))
                     }
                 ) {

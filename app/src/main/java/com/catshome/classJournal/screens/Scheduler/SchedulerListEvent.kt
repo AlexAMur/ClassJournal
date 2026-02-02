@@ -7,9 +7,9 @@ import kotlin.time.Duration
 
 sealed class SchedulerListEvent {
     data object NewClicked: SchedulerListEvent()
-    data class NewLesson(val day: DayOfWeek, val time: Long, val duration: Int): SchedulerListEvent()
+    data class NewLesson(val day: DayOfWeek): SchedulerListEvent()
     data class SetTime(val time: Long, val duration: Int): SchedulerListEvent()
     data class CollapseItem(val index: Int): SchedulerListEvent()
     data class ShowSnackBar(val message: String): SchedulerListEvent()
-    data class ShowTimePiker(val show: Boolean, val day: DayOfWeek?=null): SchedulerListEvent()
+    data class ShowTimePiker(val show: Boolean,): SchedulerListEvent()
 }

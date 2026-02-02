@@ -25,12 +25,7 @@ class SchedulerListViewModel @Inject constructor(
         when (viewEvent) {
             is SchedulerListEvent.ShowTimePiker -> {
                 viewState = viewState.copy(
-                    showStartTimePicker = viewEvent.show,
-                    newScheduler = Scheduler(
-                        uid = null,
-                        dayOfWeek = viewEvent.day?.shortName ?: "",
-                        dayOfWeekInt = viewEvent.day?.ordinal ?: 0,
-                    )
+                    showStartTimePicker = viewEvent.show
                 )
             }
 
@@ -40,37 +35,34 @@ class SchedulerListViewModel @Inject constructor(
             }
 
             is SchedulerListEvent.NewLesson -> {
-                viewState = viewState.copy(
-                    items = viewState.items.toMutableMap().plus(
-                        Pair(
-                            first = viewEvent.day.shortName,
-                            second = listOf(
-                                Scheduler(
-                                    dayOfWeek = viewEvent.day.shortName,
-                                    dayOfWeekInt = viewEvent.day.ordinal,
-                                    uidChild = null,
-                                    uidGroup = null,
-                                    name = "",
-                                    startLesson = viewEvent.time,
-                                    duration = viewEvent.duration
-                                )
-                            )
-                        )
-                    )
-                )
+                viewState.selectDay = viewEvent.day
+                obtainEvent(SchedulerListEvent.ShowTimePiker(true))
+
                 viewAction = SchedulerListAction.NewLesson
             }
 
             is SchedulerListEvent.SetTime -> {
-                viewState.newScheduler?.let { scheduler ->
-                    obtainEvent(
-                        SchedulerListEvent.NewLesson(
-                            day = DayOfWeek.entries[scheduler.dayOfWeekInt],
-                            time = viewEvent.time,
-                            duration = viewEvent.duration,
+                viewState.selectDay?.let { selectDay ->
+                    viewState = viewState.copy(
+                        items = viewState.items.toMutableMap().plus(
+                            Pair(
+                                first = selectDay.shortName,
+                                second = listOf(
+                                    Scheduler(
+                                        dayOfWeek = selectDay.shortName,
+                                        dayOfWeekInt = selectDay.ordinal,
+                                        uidChild = null,
+                                        uidGroup = null,
+                                        name = "",
+                                        startLesson = viewEvent.time,
+                                        duration = viewEvent.duration
+                                    )
+                                )
+                            )
                         )
                     )
                 }
+                Log.e("CLJR", viewState.items.toString())
             }
 
             is SchedulerListEvent.CollapseItem -> {

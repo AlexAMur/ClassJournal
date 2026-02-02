@@ -1,5 +1,6 @@
 package com.catshome.classJournal.child
 
+import android.R.attr.name
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -8,6 +9,7 @@ import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Update
 import com.catshome.classJournal.Group.Models.GroupEntity
+import com.catshome.classJournal.domain.Child.MiniChild
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -33,4 +35,10 @@ interface ChildGroupDAO {
 
     @Query("select c.uid as childUid , c.child_name as childName, c.child_surname as childSurname,c.child_birthday as childBirthday , g.group_name as groupName, g.uid as groupUid  from child as c  left join   'child_group' as c_g on c_g.childId =c.uid left join  `groups` as g on groupId = g.uid or groupId =null and c.isDelete =:isDelete")
     fun getChildAndGroups(isDelete: Boolean): List<ChildWithGroupListEntity>
+
+    @Query("Select uid as uidGroup from 'groups' where group_name LIKE :name and  isDelete = 0")
+    fun getGroupsByName(name: String): List<ChildWithGroupListEntity>
+
+    @Query("Select uid as uidChild, child_name as name, child_surname as surname  from child where name LIKE :name or surname Like :name and  isDelete = 0")
+    fun getChildByName(name: String): List<MiniChild>
 }

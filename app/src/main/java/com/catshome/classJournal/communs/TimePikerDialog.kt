@@ -47,7 +47,7 @@ fun TimePikerDialog(
     content: @Composable () -> Unit
 ) {
     val currentTime = Calendar.getInstance()
-    var duration by rememberSaveable { mutableStateOf("0") }
+    var duration by rememberSaveable { mutableStateOf("40") }
     var support by remember { mutableStateOf("") }
     var error by remember { mutableStateOf(false) }
     val timePickerState = rememberTimePickerState(

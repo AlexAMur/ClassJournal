@@ -7,13 +7,20 @@ import javax.inject.Inject
 class SchedulerInteract @Inject constructor(private val repository: SchedulerRepository) {
 
     suspend fun save() {
-        repository.getScheduler()
+    //    repository.getScheduler()
     }
 
     suspend fun getScheduler(): Flow<List<Scheduler>>? {
         return  repository.getScheduler()
     }
+    suspend fun getListClient(): Flow<List<ClientScheduler>>{
+        return repository.getClientList()
+    }
 }
+
+
+
+
 //val spisoc = listOf(
 //    Scheduler(
 //        uid = "1",

@@ -2,6 +2,7 @@ package com.catshome.classJournal.screens.Scheduler
 
 import androidx.collection.emptyIntList
 import com.catshome.classJournal.domain.Scheduler.Scheduler
+import com.catshome.classJournal.domain.communs.DayOfWeek
 
 data class SchedulerListState(
     var showStartTimePicker: Boolean = false,
@@ -12,6 +13,7 @@ data class SchedulerListState(
     val isShowSnackBar: Boolean = false,
     var isCanShowSnackBar: Boolean = false,
     val dayList: List<Boolean> = listOf(false,false,false,false,false,false,false),
+    var selectDay: DayOfWeek? = null,
     val items: Map<String,List<Scheduler>?> = emptyMap(),
     val newScheduler: Scheduler? =null
 )
