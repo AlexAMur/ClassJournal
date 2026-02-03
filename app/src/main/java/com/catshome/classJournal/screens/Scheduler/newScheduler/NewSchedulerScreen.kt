@@ -37,7 +37,7 @@ import com.catshome.classJournal.communs.Search.ItemWithCheck
 import com.catshome.classJournal.communs.SearchField
 import com.catshome.classJournal.screens.PayList.ItemChildInSearch
 import com.catshome.classJournal.screens.PayList.NewPayEvent
-import com.catshome.classJournal.screens.Scheduler.NewSchedulerViewModel
+import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerViewModel
 
 
 @Composable

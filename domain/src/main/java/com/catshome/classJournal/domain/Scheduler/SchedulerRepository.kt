@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 interface SchedulerRepository {
    // suspend fun saveScheduler(scheduler: Scheduler)
     suspend fun getScheduler(): Flow<List<Scheduler>>?
-    suspend fun getClientList(): Flow<List<ClientScheduler>>
+    suspend fun getClientList(name: String): List<ClientScheduler>
 }

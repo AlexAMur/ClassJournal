@@ -59,6 +59,7 @@ fun itemScheduler(
     items: Map<Long, List<Scheduler>?>?,
     viewModel: SchedulerListViewModel,
     collapsItem: (Int) -> Unit,
+    newTime:(Int)->Unit,
     newMember: () -> Unit
 ) {
     val viewState by viewModel.viewState().collectAsState()
@@ -182,13 +183,7 @@ fun itemScheduler(
                             bottom = 16.dp,
                             end = 16.dp
                         ),
-                    onClick = {
-                        viewModel.obtainEvent(
-                            SchedulerListEvent.NewLesson(
-                                day = DayOfWeek.entries[index]
-                            )
-                        )
-                    }
+                    onClick =  {newTime(index)}
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.outline_add_card_24),

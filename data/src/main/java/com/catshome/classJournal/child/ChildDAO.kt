@@ -77,7 +77,8 @@ interface ChildDAO {
     @Query("Select * from 'child'")
     fun getFull(): Flow<List<ChildEntity>>
 
-    @Query("select * from child where child_name = :name and child_surname = :surname and child_birthday = :birthday and isDelete = :isDelete")
+    @Query("select * from child where child_name = :name and child_surname = :surname" +
+            " and child_birthday = :birthday and isDelete = :isDelete")
     fun findDeleteChild(
         name: String,
         surname: String,

@@ -50,7 +50,6 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
     val sbHostState = remember { SnackbarHostState() }
     val paddingValues = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
-
     Scaffold(
         Modifier
             .fillMaxWidth(),
@@ -102,9 +101,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         .background(ClassJournalTheme.colors.primaryBackground),
                     state = rememberLazyListState()
                 ) {
-
                     items(DayOfWeek.entries.toTypedArray()) { day ->
-
                         itemScheduler(
                             day = day,
                             items = viewState.items[day.name]?.groupBy { it.startLesson as Long },
@@ -113,13 +110,18 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                 viewModel.obtainEvent(SchedulerListEvent.CollapseItem(it))
                             },
                             newMember = {
-                                TODO("Добавить открытия окна выбора клиента")
+                              // viewModel.obtainEvent(SchedulerListEvent.NewLesson(day, ))
+                            },
+                            newTime ={
+                                //TODO(new time)
+//                                viewModel.obtainEvent(
+//                                    SchedulerListEvent.(
+//                                        day = DayOfWeek.entries[it]
+//                                    )
                             }
                         )
                     }
                 }
-
-
             }
             if (viewState.showStartTimePicker) {
                 TimePikerDialog(
@@ -130,7 +132,11 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                 },
                     onConfirm = {time, duration->
                         viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
-                        viewModel.obtainEvent(SchedulerListEvent.SetTime(time= 0 ,duration=duration))
+                        viewModel.obtainEvent(
+                            SchedulerListEvent.SetTime(
+                                time= time.hour*60+time.minute,
+                                duration=duration)
+                        )
                     }
                 ) {
 

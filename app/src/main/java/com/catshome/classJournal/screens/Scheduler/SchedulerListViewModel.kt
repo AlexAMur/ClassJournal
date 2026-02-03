@@ -17,7 +17,6 @@ class SchedulerListViewModel @Inject constructor(
     BaseViewModel<SchedulerListState, SchedulerListAction, SchedulerListEvent>
         (
         installState = SchedulerListState()
-
     ) {
 
     override fun obtainEvent(viewEvent: SchedulerListEvent) {
@@ -36,32 +35,35 @@ class SchedulerListViewModel @Inject constructor(
 
             is SchedulerListEvent.NewLesson -> {
                 viewState.selectDay = viewEvent.day
-                obtainEvent(SchedulerListEvent.ShowTimePiker(true))
-
+                viewState.selectTime = viewEvent.time
+                viewState.selectDuration = viewEvent.duration
+                //obtainEvent(SchedulerListEvent.ShowTimePiker(true))
                 viewAction = SchedulerListAction.NewLesson
             }
 
             is SchedulerListEvent.SetTime -> {
-                viewState.selectDay?.let { selectDay ->
-                    viewState = viewState.copy(
-                        items = viewState.items.toMutableMap().plus(
-                            Pair(
-                                first = selectDay.shortName,
-                                second = listOf(
-                                    Scheduler(
-                                        dayOfWeek = selectDay.shortName,
-                                        dayOfWeekInt = selectDay.ordinal,
-                                        uidChild = null,
-                                        uidGroup = null,
-                                        name = "",
-                                        startLesson = viewEvent.time,
-                                        duration = viewEvent.duration
-                                    )
-                                )
-                            )
-                        )
-                    )
-                }
+
+
+//                viewState.selectDay?.let { selectDay ->
+//                    viewState = viewState.copy(
+//                        items = viewState.items.toMutableMap().plus(
+//                            Pair(
+//                                first = selectDay.shortName,
+//                                second = listOf(
+//                                    Scheduler(
+//                                        dayOfWeek = selectDay.shortName,
+//                                        dayOfWeekInt = selectDay.ordinal,
+//                                        uidChild = null,
+//                                        uidGroup = null,
+//                                        name = "",
+//                                        startLesson = viewEvent.time,
+//                                        duration = viewEvent.duration
+//                                    )
+//                                )
+//                            )
+//                        )
+//                    )
+//                }
                 Log.e("CLJR", viewState.items.toString())
             }
 

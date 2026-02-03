@@ -42,7 +42,7 @@ fun SchedulerListScreen(
             viewModel.clearAction()
         }
         SchedulerListAction.NewLesson->{
-
+            //navController.navigate(NewLesson())
         }
         null -> {}
     }

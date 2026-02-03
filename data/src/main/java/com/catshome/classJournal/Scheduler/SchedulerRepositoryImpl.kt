@@ -1,5 +1,6 @@
 package com.catshome.classJournal.Scheduler
 
+import com.catshome.classJournal.domain.Scheduler.ClientScheduler
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.Scheduler.SchedulerRepository
 import kotlinx.coroutines.flow.Flow
@@ -7,5 +8,9 @@ import kotlinx.coroutines.flow.Flow
 class SchedulerRepositoryImpl(val storage: SchedulerRoomStorage): SchedulerRepository {
     override suspend fun getScheduler(): Flow<List<Scheduler>>? {
        return storage.getSchedulers()
+    }
+
+    override suspend fun getClientList(name:String): List<ClientScheduler> {
+      return  storage.getClients(name)
     }
 }
