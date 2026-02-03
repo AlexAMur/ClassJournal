@@ -38,8 +38,8 @@ fun SchedulerListScreen(
 
     when(viewAction){
         SchedulerListAction.NewClick -> {
-            navController.navigate(ItemScreen.NewSchedulerScreen.name)
-            viewModel.clearAction()
+
+
         }
         SchedulerListAction.NewLesson->{
             //navController.navigate(NewLesson())

@@ -114,10 +114,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                             },
                             newTime ={
                                 //TODO(new time)
-//                                viewModel.obtainEvent(
-//                                    SchedulerListEvent.(
-//                                        day = DayOfWeek.entries[it]
-//                                    )
+
                             }
                         )
                     }

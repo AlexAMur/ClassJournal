@@ -59,7 +59,7 @@ fun itemScheduler(
     items: Map<Long, List<Scheduler>?>?,
     viewModel: SchedulerListViewModel,
     collapsItem: (Int) -> Unit,
-    newTime:(Int)->Unit,
+    newTime: (Int) -> Unit,
     newMember: () -> Unit
 ) {
     val viewState by viewModel.viewState().collectAsState()
@@ -103,16 +103,13 @@ fun itemScheduler(
             )
         }
         if (viewState.dayList[index]) {
-            var startTime = -1L
             items?.forEach { (key, lists) ->
-                //items?.forEachIndexed { index, list ->
                 LazyColumn(
                     Modifier
                         .heightIn(min = 56.dp, max = 500.dp)
                         .background(ClassJournalTheme.colors.disableColor)
                 ) {
                     stickyHeader {
-                        //    if (startTime != list.startLesson) {
                         Row(
                             Modifier
                                 .fillMaxWidth()
@@ -124,10 +121,8 @@ fun itemScheduler(
                                 text = key.toString(),
                                 modifier = Modifier
                                     .padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
-                                //.fillMaxWidth(0.8f),
                                 color = ClassJournalTheme.colors.primaryText,
                                 style = ClassJournalTheme.typography.caption,
-
                                 )
                             TextButton(
                                 modifier = Modifier,
@@ -141,33 +136,34 @@ fun itemScheduler(
                             }
                         }
                     }
-                    lists?.let {list->
-                        itemsIndexed(list) {index, item->
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 4.dp)
-                                .background(ClassJournalTheme.colors.secondaryBackground),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Text(
-                                modifier = Modifier
-                                    .weight(0.8f)
-                                    .padding(start = 8.dp),
-                                text =item.toString(),
-                            style = ClassJournalTheme.typography.body,
+                    lists?.let { list ->
+                        itemsIndexed(list) { index, item ->
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 4.dp)
+                                    .background(ClassJournalTheme.colors.secondaryBackground),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .weight(0.8f)
+                                        .padding(start = 8.dp),
+                                    text = item.toString(),
+                                    style = ClassJournalTheme.typography.body,
 
-                            )
-                            IconButton(onClick = {}) {
-                                Icon(
-                                    Icons.Default.Close,
-                                    contentDescription = null,
-                                    tint = ClassJournalTheme.colors.tintColor
-                                )
+                                    )
+                                IconButton(onClick = {//TODO delete item childItems scheduler
+                                     }) {
+                                    Icon(
+                                        Icons.Default.Close,
+                                        contentDescription = null,
+                                        tint = ClassJournalTheme.colors.tintColor
+                                    )
+                                }
                             }
                         }
-                    }
                     }
                 }
             }
@@ -183,7 +179,7 @@ fun itemScheduler(
                             bottom = 16.dp,
                             end = 16.dp
                         ),
-                    onClick =  {newTime(index)}
+                    onClick = { newTime(index) } //запуск  диалога выбора времени
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.outline_add_card_24),
