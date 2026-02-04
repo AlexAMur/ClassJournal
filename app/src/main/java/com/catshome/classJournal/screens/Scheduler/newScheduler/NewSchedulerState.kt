@@ -4,6 +4,6 @@ import com.catshome.classJournal.domain.Scheduler.ClientScheduler
 
 data class NewSchedulerState(
     val startTime: Int = 0,
-    val searchText: String = "",
+    var searchText: String = "",
     val itemsList: List<ClientScheduler>? = null
 )

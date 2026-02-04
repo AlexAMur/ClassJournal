@@ -54,7 +54,7 @@ fun NewSchedulerScreen(
             .fillMaxSize()
             .background(ClassJournalTheme.colors.tintColor),
         shape = ClassJournalTheme.shapes.cornersStyle,
-        colors = CardDefaults.cardColors(ClassJournalTheme.colors.tintColor),
+        colors = CardDefaults.cardColors(ClassJournalTheme.colors.primaryBackground),
     ) {
         Column(
             Modifier
@@ -76,7 +76,7 @@ fun NewSchedulerScreen(
                     )
                 }
                 Text(
-                    stringResource(R.string.new_child_dialog_headline),
+                    stringResource(R.string.new_lesson_headline),
                     color = ClassJournalTheme.colors.primaryText,
                     style = ClassJournalTheme.typography.caption
                 )
@@ -88,7 +88,10 @@ fun NewSchedulerScreen(
                 }
 
             }
-            HorizontalDivider(color = ClassJournalTheme.colors.primaryBackground)
+//            HorizontalDivider(
+//                modifier = Modifier.fillMaxWidth(),
+//                color = ClassJournalTheme.colors.disableContentColor
+//            )
 //--------------Окно поиска---------------------------------
             SearchField(
                 text = viewState.searchText,
@@ -108,7 +111,10 @@ fun NewSchedulerScreen(
             }
 //----------------------------------------------
         }
-        HorizontalDivider(color = ClassJournalTheme.colors.primaryBackground)
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            color = ClassJournalTheme.colors.disableContentColor
+        )
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()

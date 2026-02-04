@@ -19,6 +19,7 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
             NewSchedulerEvent.CloseEvent -> {}
             NewSchedulerEvent.SaveEvent -> {}
             is NewSchedulerEvent.Search -> {
+                viewState =viewState.copy(searchText = viewEvent.search)
                 CoroutineScope(Dispatchers.IO).launch {
                     viewState = viewState.copy(itemsList = interact.getListClient("%${viewEvent.search}%"))
                 }
