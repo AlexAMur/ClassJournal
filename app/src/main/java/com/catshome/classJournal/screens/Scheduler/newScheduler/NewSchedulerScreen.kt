@@ -35,6 +35,7 @@ import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.R
 import com.catshome.classJournal.communs.Search.ItemWithCheck
 import com.catshome.classJournal.communs.SearchField
+import com.catshome.classJournal.navigate.NewLesson
 import com.catshome.classJournal.screens.PayList.ItemChildInSearch
 import com.catshome.classJournal.screens.PayList.NewPayEvent
 import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerViewModel
@@ -43,7 +44,8 @@ import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerView
 @Composable
 fun NewSchedulerScreen(
     navController: NavController,
-    viewModel: NewSchedulerViewModel = viewModel()
+    viewModel: NewSchedulerViewModel = viewModel(),
+    newLesson: NewLesson? =null
 
 ) {
     val viewState by viewModel.viewState().collectAsState()

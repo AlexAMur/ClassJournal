@@ -112,9 +112,13 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                             newMember = {
                               // viewModel.obtainEvent(SchedulerListEvent.NewLesson(day, ))
                             },
-                            newTime ={
-                                //TODO(new time)
-
+                            newTime ={ index->
+                                //запускаем диалог выбора времени и передаем данные о дне недели  и признак добавления
+                                viewModel.obtainEvent(SchedulerListEvent.NewClicked(index, isNewLesson = true))
+                            },
+                            editTime ={ index->
+                                //запускаем диалог выбора времени для изменения
+                                viewModel.obtainEvent(SchedulerListEvent.NewClicked(index, isNewLesson = false))
                             }
                         )
                     }
@@ -128,6 +132,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
                                 },
                     onConfirm = {time, duration->
+                        // закрываем окно выбора времени  и сохраняем новое значение
                         viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
                         viewModel.obtainEvent(
                             SchedulerListEvent.SetTime(
@@ -136,7 +141,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         )
                     }
                 ) {
-
+                    //тут можно добавить контент
                 }
             }
         }

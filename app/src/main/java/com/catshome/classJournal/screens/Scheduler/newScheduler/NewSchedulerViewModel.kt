@@ -4,6 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,8 +19,8 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
             NewSchedulerEvent.CloseEvent -> {}
             NewSchedulerEvent.SaveEvent -> {}
             is NewSchedulerEvent.Search -> {
-                viewModelScope.launch {
-                    viewState = viewState.copy(itemsList = interact.getListClient(viewEvent.search))
+                CoroutineScope(Dispatchers.IO).launch {
+                    viewState = viewState.copy(itemsList = interact.getListClient("%${viewEvent.search}%"))
                 }
             }
         }

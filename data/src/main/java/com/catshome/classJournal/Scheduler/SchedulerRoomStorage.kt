@@ -4,6 +4,7 @@ import com.catshome.classJournal.PayList.PayDAO
 import com.catshome.classJournal.child.ChildGroupDAO
 import com.catshome.classJournal.domain.Scheduler.ClientScheduler
 import com.catshome.classJournal.domain.Scheduler.Scheduler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -31,7 +32,8 @@ class SchedulerRoomStorage @Inject constructor(
         }
     }
 
-    fun getClients(name: String): List<ClientScheduler> {
+   suspend fun getClients(name: String): List<ClientScheduler> {
+
         val clients = daoClient.getGroupsByName(name).map {
             ClientScheduler(
                 uidChild = null,

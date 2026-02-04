@@ -6,10 +6,14 @@ import com.catshome.classJournal.domain.communs.DayOfWeek
 import kotlin.time.Duration
 
 sealed class SchedulerListEvent {
-    data object NewClicked: SchedulerListEvent()
-    data class NewLesson(val day: DayOfWeek, val time: Int, val duration: Int): SchedulerListEvent()
+    //при нажатии на кнопку новый урок
+    data class NewClicked(val index: Int,val  isNewLesson: Boolean): SchedulerListEvent()
+    data object NewLesson: SchedulerListEvent()//(val day: DayOfWeek, val time: Int, val duration: Int): SchedulerListEvent()
+    data object EditTime: SchedulerListEvent()
+    //получение данных из диалога времени
     data class SetTime(val time: Int, val duration: Int): SchedulerListEvent()
     data class CollapseItem(val index: Int): SchedulerListEvent()
     data class ShowSnackBar(val message: String): SchedulerListEvent()
+    //запуск и скрытие диалога времени
     data class ShowTimePiker(val show: Boolean,): SchedulerListEvent()
 }

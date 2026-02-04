@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.communs.TimePikerDialog
+import com.catshome.classJournal.navigate.NewLesson
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.PayListEvent
 import kotlinx.coroutines.CoroutineScope
@@ -36,14 +37,30 @@ fun SchedulerListScreen(
 //    }
     schedulerContent(viewModel)
 
-    when(viewAction){
+    when (viewAction) {
         SchedulerListAction.NewClick -> {
 
 
         }
-        SchedulerListAction.NewLesson->{
-            //navController.navigate(NewLesson())
+
+        SchedulerListAction.NewLesson -> {
+            viewModel.clearAction()
+            with(viewState) {
+                viewState.selectDay?.let { day ->
+                    timeLesson?.let { timeLesson ->
+                        navController.navigate(
+                            NewLesson(
+                                day,
+                                startTime = timeLesson,
+                                duration = durationLesson ?: 0,
+                            )
+                        )
+                    }
+                }
+            }
+
         }
+
         null -> {}
     }
 }

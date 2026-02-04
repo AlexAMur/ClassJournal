@@ -60,6 +60,7 @@ fun itemScheduler(
     viewModel: SchedulerListViewModel,
     collapsItem: (Int) -> Unit,
     newTime: (Int) -> Unit,
+    editTime: (Int) -> Unit,
     newMember: () -> Unit
 ) {
     val viewState by viewModel.viewState().collectAsState()
@@ -120,7 +121,8 @@ fun itemScheduler(
                             Text(
                                 text = key.toString(),
                                 modifier = Modifier
-                                    .padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
+                                    .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
+                                    .clickable(onClick = {editTime(index)}),
                                 color = ClassJournalTheme.colors.primaryText,
                                 style = ClassJournalTheme.typography.caption,
                                 )

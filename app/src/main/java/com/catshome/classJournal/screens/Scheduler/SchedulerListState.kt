@@ -3,6 +3,7 @@ package com.catshome.classJournal.screens.Scheduler
 import androidx.collection.emptyIntList
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
+import com.catshome.classJournal.navigate.NewLesson
 
 data class SchedulerListState(
     var showStartTimePicker: Boolean = false,
@@ -14,8 +15,11 @@ data class SchedulerListState(
     var isCanShowSnackBar: Boolean = false,
     val dayList: List<Boolean> = listOf(false,false,false,false,false,false,false),
     var selectDay: DayOfWeek? = null,
-    var selectTime: Int?  = null,
-    var selectDuration: Int? = null,
+    var isNewLesson: Boolean = false,
+    var oldTimeLesson: Int? = null,
+    var timeLesson: Int?  = null,
+    var durationLesson: Int? = null,
+    var oldDurationLesson: Int? = null,
     val items: Map<String,List<Scheduler>?> = emptyMap(),
     val newScheduler: Scheduler? =null
 )
