@@ -11,16 +11,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.R
 
 @Composable
-fun ItemWithCheck(
+fun ItemWithContent(
     item: String,
+    startImage: Painter,
+    endImage: Painter,
     isChecked: Boolean,
-    onClick:(String)->Unit
+    onClickRow:()->Unit,
+    onClickEndImage:()->Unit
 ){
     Card(
         shape = ClassJournalTheme.shapes.cornersStyle,
@@ -44,6 +48,12 @@ fun ItemWithCheck(
                 top = 8.dp,
                 bottom = 8.dp,
                 end = 16.dp
+            )
+            Icon(
+                painter = painterResource(R.drawable.box_ckeck),
+                modifier = modifier,
+                contentDescription = "",
+                tint = ClassJournalTheme.colors.primaryText
             )
             Text(
                 text = item,

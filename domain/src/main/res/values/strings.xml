@@ -3,7 +3,7 @@
     <string name="item_bottom_pay">Оплата</string>
     <string name="item_bottom_visit">Занятие</string>
     <string name="item_bottom_client">Клиенты</string>
-    <string name="item_bottom_scheduler">Расписание</string>
+    <string name="item_bottom_scheduler">Рас-ние</string>
 
     <string name="no_group_item">Add group</string>
     <string name="no_pay_item">Add pay</string>
@@ -48,7 +48,7 @@
     <string name="name_child">Enter name child.</string>
     <string name="surname_child">Enter surname child.</string>
     <string name="phone_child">Enter phone.</string>
-    <string name="search_label">Поиск по Имени/Фамилии</string>
+    <string name="search_label">Искать </string>
     <string name="paymant">Укажите сумму платежа.</string>
     <string name="paymant_error">Cуммa платежа не может быть меньше или равна 0</string>
     <string name="search_child_error">Выберите ученика для внесения отплаты.</string>

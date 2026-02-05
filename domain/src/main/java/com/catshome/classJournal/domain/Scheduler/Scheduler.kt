@@ -1,6 +1,4 @@
-package com.catshome.classJournal.domain.Scheduler
-
-import java.time.DayOfWeek
+ package com.catshome.classJournal.domain.Scheduler
 
 data class Scheduler(
     val uid: String? = null,

@@ -120,7 +120,7 @@ class SchedulerListViewModel @Inject constructor(
 
     fun loadData() {
         viewModelScope.launch {
-            schedulerInteract.getScheduler()?.collect { schedulerList ->
+            schedulerInteract.getScheduler(null)?.collect { schedulerList ->
                 viewState = viewState.copy(
                     items =
                         schedulerList.sortedBy { it.dayOfWeekInt }.groupBy {

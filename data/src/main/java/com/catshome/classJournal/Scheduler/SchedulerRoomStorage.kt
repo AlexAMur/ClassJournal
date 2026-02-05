@@ -1,10 +1,9 @@
 package com.catshome.classJournal.Scheduler
 
-import com.catshome.classJournal.PayList.PayDAO
 import com.catshome.classJournal.child.ChildGroupDAO
 import com.catshome.classJournal.domain.Scheduler.ClientScheduler
 import com.catshome.classJournal.domain.Scheduler.Scheduler
-import kotlinx.coroutines.CoroutineScope
+import com.catshome.classJournal.domain.communs.DayOfWeek
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -28,12 +27,20 @@ class SchedulerRoomStorage @Inject constructor(
     suspend fun getSchedulers(): Flow<List<Scheduler>>? {
         return dao.getFull()?.map { list ->
             list.map { it.mapToScheduler() }
-
         }
     }
-
-   suspend fun getClients(name: String): List<ClientScheduler> {
-
+    suspend fun getSchedulersByDay(dayOfWeek: Int): Flow<List<Scheduler>>? {
+        return dao.getSchedulerByDay(dayOfWeek)?.map { list ->
+            list.map { it.mapToScheduler() }
+        }
+    }
+    suspend fun getClientByLesson(dayOfWeek: Int, startTime: Long): Flow<List<Scheduler>>? {
+        return dao.getClientsSchedulerByLesson(dayOfWeek, startTime)?.map { list ->
+            list.map { it.mapToScheduler() }
+        }
+    }
+    // отбор клиентов и/или групп по имени
+    fun getClients(name: String): List<ClientScheduler> {
         val clients = daoClient.getGroupsByName(name).map {
             ClientScheduler(
                 uidChild = null,
@@ -51,7 +58,6 @@ class SchedulerRoomStorage @Inject constructor(
                     isChecked = false
                 )
             }.sortedBy { name })
-
         return clients.toList()
     }
 }

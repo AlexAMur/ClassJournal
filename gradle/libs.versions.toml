@@ -17,7 +17,7 @@ material = "1.13.0"
 room_version = "2.8.4"
 ksp_ver= "2.1.21-2.0.1"
 serial_ver = "2.3.0"
-ver_serial_json="1.9.0"
+ver_serial_json="1.10.0"
 compose_material_ver = "1.5.6"
 material3_exp_ver = "1.4.0"
 
@@ -57,6 +57,7 @@ compose-material = {module ="androidx.wear.compose:compose-material", name = "co
 hilt-navigation-compose= {module ="androidx.hilt:hilt-navigation-compose", name = "hilt-navigation-compose", version.ref="hiltnavigation_ver"}
 kotlinx-datetime={module = "org.jetbrains.kotlinx:kotlinx-datetime",name = "kotlinx-datetime", version.ref= "kotlinx_datetime_ver"}
 identity-jvm = { group = "com.android.identity", name = "identity-jvm", version.ref = "identityJvm" }
+serialisation = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "ver_serial_json" }
 
 
 [plugins]

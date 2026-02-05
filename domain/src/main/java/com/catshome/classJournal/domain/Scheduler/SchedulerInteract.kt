@@ -15,8 +15,12 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
             //TODO здесь  будет измение времени занятия
     }
 
-    suspend fun getScheduler(): Flow<List<Scheduler>>? {
-        return  repository.getScheduler()
+    //Возвращает список клиентов в расписании весь или за опред. день(DayOfWeek)
+    suspend fun getScheduler(dayOfWeek: DayOfWeek?): Flow<List<Scheduler>>? {
+        return repository.getScheduler(dayOfWeek)
+    }
+    suspend fun getClientsSchedulerLesson (dayOfWeek: DayOfWeek, startTime: Int): Flow<List<Scheduler>>? {
+        return repository.getClientsByLesson(dayOfWeek, startTime)
     }
     suspend fun getListClient(name: String): List<ClientScheduler>{
         return repository.getClientList(name)

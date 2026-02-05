@@ -41,8 +41,6 @@ fun DatePickerFieldToModal(
     supportText: String?= null,
     onDateSelected: (Long?) -> Unit
 ) {
-
-
         var date by remember { mutableStateOf(
             if (value.length == DATE_FORMAT_RU.length)
             value.toDateRu()?.time

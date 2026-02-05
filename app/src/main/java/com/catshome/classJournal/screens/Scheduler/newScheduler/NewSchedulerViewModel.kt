@@ -1,7 +1,9 @@
 package com.catshome.classJournal.screens.Scheduler.newScheduler
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
+import com.catshome.classJournal.screens.PayList.NewPayEvent
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -14,15 +16,26 @@ import javax.inject.Inject
 class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerInteract) :
     BaseViewModel<NewSchedulerState, NewSchedulerAction, NewSchedulerEvent>
         (installState = NewSchedulerState()) {
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            viewState = viewState.copy(itemsList = interact.getListClient("%%"))
+        }
+    }
+
     override fun obtainEvent(viewEvent: NewSchedulerEvent) {
         when (viewEvent) {
-            NewSchedulerEvent.CloseEvent -> {}
-            NewSchedulerEvent.SaveEvent -> {}
+            NewSchedulerEvent.CloseEvent -> viewAction = NewSchedulerAction.CloseScreen
+                NewSchedulerEvent.SaveEvent-> {}
             is NewSchedulerEvent.Search -> {
-                viewState =viewState.copy(searchText = viewEvent.search)
+                viewState = viewState.copy(searchText = viewEvent.search)
                 CoroutineScope(Dispatchers.IO).launch {
-                    viewState = viewState.copy(itemsList = interact.getListClient("%${viewEvent.search}%"))
+                    viewState =
+                        viewState.copy(itemsList = interact.getListClient("%${viewEvent.search}%"))
                 }
+            }
+
+            NewSchedulerEvent.ClearSearch -> {
+                obtainEvent(NewSchedulerEvent.Search(""))
             }
         }
     }

@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.communs.TimePikerDialog
 import com.catshome.classJournal.navigate.NewLesson
+import com.catshome.classJournal.navigate.SaveLesson
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.PayListEvent
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SchedulerListScreen(
     navController: NavController,
-    viewModel: SchedulerListViewModel = viewModel()
+    viewModel: SchedulerListViewModel = viewModel(),
+    saveLesson: SaveLesson?= null
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
@@ -53,6 +55,7 @@ fun SchedulerListScreen(
                                 day,
                                 startTime = timeLesson,
                                 duration = durationLesson ?: 0,
+                                isEdit = false
                             )
                         )
                     }

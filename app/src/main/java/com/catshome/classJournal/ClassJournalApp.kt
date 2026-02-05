@@ -18,6 +18,7 @@ import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.navigate.DetailsPay
 import com.catshome.classJournal.navigate.NewLesson
 import com.catshome.classJournal.navigate.OptionFilterPaysList
+import com.catshome.classJournal.navigate.SaveLesson
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.NewPayViewModel
 import com.catshome.classJournal.screens.PayList.PayListScreen
@@ -52,61 +53,77 @@ fun classJournalApp(
 
     NavHost(navController, startDestination = ItemScreen.PayListScreen.name) {
         composable(route = ItemScreen.NewPayScreen.name) {
-             //val viewModel =hiltViewModel<NewPayViewModel>()
-            Log.e("CLJR","NavHost new pay")
-            val viewModel: NewPayViewModel by  activity.viewModels()
-            newPayScreen( viewModel)
+            //val viewModel =hiltViewModel<NewPayViewModel>()
+            Log.e("CLJR", "NavHost new pay")
+            val viewModel: NewPayViewModel by activity.viewModels()
+            newPayScreen(viewModel)
         }
 
-        composable<OptionFilterPaysList> { backStackEntry->
+        composable<OptionFilterPaysList> { backStackEntry ->
             val optionFilterPaysList = backStackEntry.toRoute<OptionFilterPaysList>()
-            val viewModel: PayListViewModel by  activity.viewModels()
-            PayListScreen(navController = navController,
+            val viewModel: PayListViewModel by activity.viewModels()
+            PayListScreen(
+                navController = navController,
                 viewModel = viewModel,
-                optionFilter = optionFilterPaysList)
+                optionFilter = optionFilterPaysList
+            )
 
         }
 
-        composable<DetailsPay> { backStackEntry->
+        composable<DetailsPay> { backStackEntry ->
             val detailsPay = backStackEntry.toRoute<DetailsPay>()
-            val viewModel: PayListViewModel by  activity.viewModels()
-            PayListScreen(navController = navController,
+            val viewModel: PayListViewModel by activity.viewModels()
+            PayListScreen(
+                navController = navController,
                 viewModel = viewModel,
-                detailsPay = detailsPay)
+                detailsPay = detailsPay
+            )
 
         }
 
         composable(route = ItemScreen.PayListScreen.name) {
 
-            val viewModel: PayListViewModel by  activity.viewModels()      //
+            val viewModel: PayListViewModel by activity.viewModels()      //
             PayListScreen(navController = navController, viewModel = viewModel)
         }
 
         composable(route = ItemScreen.SchedulerScreen.name) {
             // val viewModel =hiltViewModel<PayListViewModel>()
-            val viewModel: SchedulerListViewModel by  activity.viewModels()      //
-           SchedulerListScreen(navController = navController, viewModel = viewModel)
+            val viewModel: SchedulerListViewModel by activity.viewModels()      //
+            SchedulerListScreen(navController = navController, viewModel = viewModel)
 
         }
 
-        composable<NewLesson> { backStackEntry->
+        composable<SaveLesson> { backStackEntry ->
+            val saveLesson = backStackEntry.toRoute<SaveLesson>()
+            val viewModel: SchedulerListViewModel by activity.viewModels()      //
+            SchedulerListScreen(
+                navController = navController,
+                viewModel = viewModel,
+                saveLesson = saveLesson
+            )
+        }
+
+        composable<NewLesson> { backStackEntry ->
             val newLesson = backStackEntry.toRoute<NewLesson>()
-
-            val viewModel: NewSchedulerViewModel by  activity.viewModels()      //
-            NewSchedulerScreen(navController = navController, viewModel = viewModel)
-
+            val viewModel: NewSchedulerViewModel by activity.viewModels()
+            NewSchedulerScreen(
+                navController = navController,
+                viewModel = viewModel,
+                newLesson = newLesson
+            )
         }
 
         composable(route = ItemScreen.NewSchedulerScreen.name) {
             // val viewModel =hiltViewModel<PayListViewModel>()
-            val viewModel: NewSchedulerViewModel by  activity.viewModels()      //
-           NewSchedulerScreen(navController = navController, viewModel = viewModel)
+            val viewModel: NewSchedulerViewModel by activity.viewModels()      //
+            NewSchedulerScreen(navController = navController, viewModel = viewModel)
 
         }
 
-        composable<FilterSetting>{backState->
-           val setting = backState.toRoute<FilterSetting>()
-            FilterScreen(navController,setting)
+        composable<FilterSetting> { backState ->
+            val setting = backState.toRoute<FilterSetting>()
+            FilterScreen(navController, setting)
         }
 //        composable(route = ItemScreen.FilterScreen.name) {
 ////            val viewModel = hiltViewModel<VisitListViewModel>()
@@ -120,7 +137,7 @@ fun classJournalApp(
 
         composable(route = ItemScreen.MainScreen.name) {
             val viewModel = hiltViewModel<ChildListViewModel>()
-            ChildListScreen(navController, viewModel =  viewModel)
+            ChildListScreen(navController, viewModel = viewModel)
         }
         composable(route = ItemScreen.GroupScreen.name) {
             val viewModel = hiltViewModel<GroupViewModel>()
