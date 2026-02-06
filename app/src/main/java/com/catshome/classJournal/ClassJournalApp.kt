@@ -115,7 +115,6 @@ fun classJournalApp(
         }
 
         composable(route = ItemScreen.NewSchedulerScreen.name) {
-            // val viewModel =hiltViewModel<PayListViewModel>()
             val viewModel: NewSchedulerViewModel by activity.viewModels()      //
             NewSchedulerScreen(navController = navController, viewModel = viewModel)
 

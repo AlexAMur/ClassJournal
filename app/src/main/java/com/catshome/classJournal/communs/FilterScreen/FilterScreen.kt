@@ -117,7 +117,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                             (screenHigh - (bottomPadding.value + coordinate.positionOnScreen().y +
                                     bottomGroup + coordinate.size.height) / localDensity.density).toFloat()
                     },
-                onClickClose = {
+                onClickCancel = {
                     viewModel.obtainEvent(FilterEvent.ClearSearch)
                 }
             ) { searchText ->

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
 import com.catshome.classJournal.screens.PayList.NewPayEvent
+import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerEvent.*
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,7 +26,9 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
     override fun obtainEvent(viewEvent: NewSchedulerEvent) {
         when (viewEvent) {
             NewSchedulerEvent.CloseEvent -> viewAction = NewSchedulerAction.CloseScreen
-                NewSchedulerEvent.SaveEvent-> {}
+            NewSchedulerEvent.SaveEvent-> {
+                viewAction = NewSchedulerAction.Save
+            }
             is NewSchedulerEvent.Search -> {
                 viewState = viewState.copy(searchText = viewEvent.search)
                 CoroutineScope(Dispatchers.IO).launch {
@@ -35,7 +38,17 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
             }
 
             NewSchedulerEvent.ClearSearch -> {
-                obtainEvent(NewSchedulerEvent.Search(""))
+                obtainEvent(Search(""))
+            }
+            is NewSchedulerEvent.Checked -> {
+                viewState =  viewState.copy(itemsList =
+                    viewState.itemsList?.mapIndexed { index, scheduler ->
+                        if (viewEvent.index == index)
+                            scheduler.copy(isChecked = !scheduler.isChecked)
+                        else
+                            scheduler
+                    }
+                )
             }
         }
     }

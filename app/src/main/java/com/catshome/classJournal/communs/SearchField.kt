@@ -17,7 +17,7 @@ fun SearchField(
     isError: Boolean = false,
     errorMessage: String? = null,
     modifier: Modifier = Modifier,
-    onClickClose: ()->Unit = {},
+    onClickCancel: ()->Unit = {},
     onSearch: (String) -> Unit
 ) {
 
@@ -43,7 +43,7 @@ fun SearchField(
                     Icons.Default.Clear,
                     contentDescription = null,
                     modifier = Modifier
-                        .clickable{onClickClose()},
+                        .clickable{onClickCancel()},
                     tint = ClassJournalTheme.colors.controlColor
                 )
             }

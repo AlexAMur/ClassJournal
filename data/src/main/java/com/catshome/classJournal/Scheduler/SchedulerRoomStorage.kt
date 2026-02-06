@@ -40,24 +40,27 @@ class SchedulerRoomStorage @Inject constructor(
         }
     }
     // отбор клиентов и/или групп по имени
-    fun getClients(name: String): List<ClientScheduler> {
+    suspend fun getClients(name: String): Flow<List<ClientScheduler>> {
         val clients = daoClient.getGroupsByName(name).map {
+            it.map {
             ClientScheduler(
                 uidChild = null,
                 uidGroup = it.uid,
                 name = it.name,
                 isChecked = false
             )
-        }.sortedBy { name }.toMutableList()
-        clients.addAll(
-            daoClient.getChildByName(name).map {
-                ClientScheduler(
+        }.sortedBy { name }.toMutableList()}
+        clients.collect{list->
+            daoClient.getChildByName(name).map{miniChild->
+                miniChild.map {
+                    list.add( ClientScheduler(
                     uidChild = it.uid,
                     uidGroup = null,
                     name = it.name,
                     isChecked = false
-                )
-            }.sortedBy { name })
-        return clients.toList()
+                ))
+            }.sortedBy { name }
+            }}
+        return clients
     }
 }

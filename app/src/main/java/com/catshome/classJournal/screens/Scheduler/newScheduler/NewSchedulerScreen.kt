@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.Scheduler.newScheduler
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
@@ -24,10 +27,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -44,7 +49,6 @@ import com.catshome.classJournal.screens.PayList.ItemChildInSearch
 import com.catshome.classJournal.screens.PayList.NewPayEvent
 import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerViewModel
 
-
 @Composable
 fun NewSchedulerScreen(
     navController: NavController,
@@ -54,6 +58,7 @@ fun NewSchedulerScreen(
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
+    val stateList =  rememberLazyListState(0)
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -80,7 +85,7 @@ fun NewSchedulerScreen(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TextButton(onClick = {}) {
+                    TextButton(onClick = {viewModel.obtainEvent(NewSchedulerEvent.CloseEvent)}) {
                         Icon(
                             Icons.Default.Close, "", tint = ClassJournalTheme.colors.tintColor
                         )
@@ -90,7 +95,7 @@ fun NewSchedulerScreen(
                         color = ClassJournalTheme.colors.primaryText,
                         style = ClassJournalTheme.typography.caption
                     )
-                    TextButton(onClick = {}) {
+                    TextButton(onClick = { viewModel.obtainEvent(NewSchedulerEvent.SaveEvent)}) {
                         Text(
                             stringResource(R.string.save_button),
                             color = ClassJournalTheme.colors.tintColor
@@ -116,6 +121,9 @@ fun NewSchedulerScreen(
                             //if (it.isFocused)
                             //      viewState.indexFocus = 0
                         },
+                    onClickCancel ={
+                        viewModel.obtainEvent(NewSchedulerEvent.ClearSearch)
+                    }
                 ) { searchText ->
                     viewModel.obtainEvent(NewSchedulerEvent.Search(search = searchText))
                 }
@@ -127,28 +135,19 @@ fun NewSchedulerScreen(
             )
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .background(ClassJournalTheme.colors.primaryBackground)
-                    .padding(top = 12.dp, bottom = 8.dp)
-                    .heightIn(min = 0.dp, max = 300.dp)
+                    .padding(top = 12.dp, bottom = 8.dp),
+                state = stateList
+
             ) {
                 viewState.itemsList?.let {
                     itemsIndexed(it) { index, child ->
                         ItemWithCheck(
                             item = child.name,
-
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(
-//                            start = 16.dp,
-//                            top = 4.dp,
-//                            end = 16.dp,
-//                            bottom = 8.dp
-//                        ),
-//                    style = ClassJournalTheme.typography.body,
-//                    contentColor = ClassJournalTheme.colors.tintColor,
+                            texStyle = ClassJournalTheme.typography.caption,
                             onClick = {
-
+                                viewModel.obtainEvent(NewSchedulerEvent.Checked(index))
 //                        if (child.uid.isNotEmpty())
 //                            viewModel.obtainEvent(
 //                                NewPayEvent.SelectedChild(
@@ -156,9 +155,12 @@ fun NewSchedulerScreen(
 //                                )
 //                            )
                             },
-                            isChecked = false,
-
-                            )
+                            isChecked = child.isChecked,
+                            startImage = if (child.uidChild.isNullOrEmpty())
+                                    painterResource(R.drawable.outline_group_24)
+                                    else
+                                        painterResource(R.drawable.outline_account_circle_48),
+                        )
                     }
                 }
             }
@@ -168,7 +170,6 @@ fun NewSchedulerScreen(
         NewSchedulerAction.CloseScreen -> {
             viewModel.clearAction()
             navController.popBackStack()
-
         }
 
         NewSchedulerAction.Save -> {

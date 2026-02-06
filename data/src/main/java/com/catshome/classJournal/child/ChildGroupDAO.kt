@@ -37,10 +37,10 @@ interface ChildGroupDAO {
     fun getChildAndGroups(isDelete: Boolean): List<ChildWithGroupListEntity>
 //Поиск по названию группы
     @Query("Select uid , group_name  , isDelete  from 'groups' where group_name LIKE :name and  isDelete = 0")
-    fun getGroupsByName(name: String): List<GroupEntity>
+    fun getGroupsByName(name: String): Flow<List<GroupEntity>>
 //Поиск по имени
     @Query("Select uid, (child_name|' '|child_surname) as fio , child_name as name, " +
             "child_surname as surname  from child where name LIKE :name or surname Like :name" +
             " and  isDelete = 0")
-    fun getChildByName(name: String): List<MiniChild>
+    fun getChildByName(name: String): Flow<List<MiniChild>>
 }
