@@ -9,6 +9,8 @@ import com.catshome.classJournal.Group.Models.GroupEntity
 import com.catshome.classJournal.child.ChildEntity
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
+import java.util.UUID
+import kotlin.uuid.Uuid
 
 
 @Entity(
@@ -64,4 +66,14 @@ fun SchedulerScreenEntity.mapToScheduler(): Scheduler{
      startLesson = this.startLesson,
      duration = this.duration
  )
+}
+fun Scheduler.mapToSchedulerEntity(): SchedulerEntity{
+    return SchedulerEntity(
+        uid = this.uid?: UUID.randomUUID().toString(),
+        uidChild = this.uidChild,
+        dayOfWeek = this.dayOfWeekInt,
+        uidGroup = this.uidGroup,
+        startLesson = this.startLesson?:0,
+        duration = this.duration?:0
+    )
 }

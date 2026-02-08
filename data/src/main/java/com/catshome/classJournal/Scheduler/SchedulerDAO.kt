@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.ABORT
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.catshome.classJournal.PayList.PayEntity
 import com.catshome.classJournal.PayList.PayScreenEntity
@@ -14,14 +15,28 @@ import java.time.DayOfWeek
 
 @Dao
 interface SchedulerDAO{
+    @Transaction
+    suspend fun saveScheduler(dayOfWeek: Int,
+                              startLesson: Long,
+                              list: List<SchedulerEntity>)
+    {
+        deleteLesson(dayOfWeek= dayOfWeek, startLesson = startLesson)
+        insert(list)
+
+    }
     @Insert(onConflict = ABORT)
-    suspend fun insert(schedulerEntity: SchedulerEntity)
+    suspend fun insert(schedulerEntity: List<SchedulerEntity>)
 
     @Delete
     suspend fun delete(schedulerEntity: SchedulerEntity)
 
     @Update
     suspend fun update(schedulerEntity:SchedulerEntity)
+
+    @Query(
+        "Delete from scheduler where dayOfWeek = :dayOfWeek and startLesson =:startLesson "
+    )
+    fun deleteLesson(dayOfWeek: Int, startLesson: Long)
 
     @Query(
         "Select s.uid , s.uidChild,s.uidGroup, dayOfWeek,startLesson, duration ," +

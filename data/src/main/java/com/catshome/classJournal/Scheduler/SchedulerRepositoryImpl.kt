@@ -7,6 +7,13 @@ import com.catshome.classJournal.domain.communs.DayOfWeek
 import kotlinx.coroutines.flow.Flow
 
 class SchedulerRepositoryImpl(val storage: SchedulerRoomStorage): SchedulerRepository {
+    override suspend fun saveScheduler(dayOfWeek: DayOfWeek, startTime: Long, scheduler: List<Scheduler>) {
+        storage.saveScheduler(dayOfWeek =  dayOfWeek,
+            startTime = startTime,
+            scheduler = scheduler.map { it.mapToSchedulerEntity()}
+        )
+    }
+
     override suspend fun getScheduler(dayOfWeek: DayOfWeek?): Flow<List<Scheduler>>? {
         dayOfWeek?.let {
             return storage.getSchedulersByDay(it.ordinal)
@@ -21,7 +28,7 @@ class SchedulerRepositoryImpl(val storage: SchedulerRoomStorage): SchedulerRepos
       return storage.getClientByLesson(dayOfWeek.ordinal, startTime.toLong())
     }
 
-    override suspend fun getClientList(name:String): List<ClientScheduler> {
+    override suspend fun getClientList(name:String): List<ClientScheduler>{
       return  storage.getClients(name)
     }
 }
