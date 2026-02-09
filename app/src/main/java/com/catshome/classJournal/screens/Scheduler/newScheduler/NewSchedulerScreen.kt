@@ -25,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -59,12 +60,21 @@ fun NewSchedulerScreen(
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
     val stateList =  rememberLazyListState(0)
+    LaunchedEffect(Unit) {
+        newLesson?.let{
+            viewState.dayOfWeek = it.dayOfWeek
+            viewState.startTime = it.startTime
+            viewState.duration = it.duration
+        }
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
             ,
         color = ClassJournalTheme.colors.disableColor
     ) {
+
         Card(
             modifier = Modifier
                 .fillMaxSize(),

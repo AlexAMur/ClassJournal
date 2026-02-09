@@ -20,16 +20,17 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
         (installState = NewSchedulerState()) {
     init {
         CoroutineScope(Dispatchers.IO).launch {
-                viewState = viewState.copy(itemsList = interact.getListClient("%%"))
+            viewState = viewState.copy(itemsList = interact.getListClient("%%"))
 
         }
     }
 
     override fun obtainEvent(viewEvent: NewSchedulerEvent) {
         when (viewEvent) {
-            NewSchedulerEvent.CloseEvent -> viewAction = NewSchedulerAction.CloseScreen
-            NewSchedulerEvent.SaveEvent -> {
-                viewState.itemsList?.let { list ->
+            CloseEvent -> viewAction = NewSchedulerAction.CloseScreen
+            SaveEvent -> {
+                val list = viewState.itemsList?.filter { it.isChecked }
+                list?.let {
                     viewState.dayOfWeek?.let { dayOfWeek ->
                         viewModelScope.launch {
                             interact.saveScheduler(
@@ -44,11 +45,11 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
                 viewAction = NewSchedulerAction.Save
             }
 
-            is NewSchedulerEvent.Search -> {
+            is Search -> {
                 viewState = viewState.copy(searchText = viewEvent.search)
                 CoroutineScope(Dispatchers.IO).launch {
-                        viewState =
-                            viewState.copy(itemsList = interact.getListClient("%${viewEvent.search}%"))
+                    viewState =
+                        viewState.copy(itemsList = interact.getListClient("%${viewEvent.search}%"))
                 }
             }
 

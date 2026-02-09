@@ -5,9 +5,9 @@ import com.catshome.classJournal.domain.communs.DayOfWeek
 import kotlin.time.Duration
 
 data class NewSchedulerState(
-    val dayOfWeek: DayOfWeek?= null,
-    val startTime: Int = 0,
-    val duration: Int = 0,
+    var dayOfWeek: DayOfWeek?= null,
+    var startTime: Int = 0,
+    var duration: Int = 0,
     var searchText: String = "",
     val itemsList: List<ClientScheduler>? = null
 )

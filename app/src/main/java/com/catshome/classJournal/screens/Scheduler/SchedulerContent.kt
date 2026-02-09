@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.Scheduler
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -80,7 +81,6 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
         ) { padValues ->
         Column(
             Modifier
-                //.padding(bottom = padValues.calculateBottomPadding())
                 .background(ClassJournalTheme.colors.primaryBackground)
         ) {
             Card(
@@ -101,10 +101,13 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         .background(ClassJournalTheme.colors.primaryBackground),
                     state = rememberLazyListState()
                 ) {
+
                     items(DayOfWeek.entries.toTypedArray()) { day ->
                         itemScheduler(
                             day = day,
-                            items = viewState.items[day.name]?.groupBy { it.startLesson as Long },
+                            items =  viewState.items[day.shortName]?.groupBy {
+                                it.startLesson as Long
+                            },
                             viewModel =viewModel,
                             collapsItem={
                                 viewModel.obtainEvent(SchedulerListEvent.CollapseItem(it))

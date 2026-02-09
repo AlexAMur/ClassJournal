@@ -119,7 +119,7 @@ fun itemScheduler(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = key.toString(),
+                                text = "${key/60}:${key%60}",
                                 modifier = Modifier
                                     .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
                                     .clickable(onClick = {editTime(index)}),
@@ -152,7 +152,7 @@ fun itemScheduler(
                                     modifier = Modifier
                                         .weight(0.8f)
                                         .padding(start = 8.dp),
-                                    text = item.toString(),
+                                    text = item.name?:"",
                                     style = ClassJournalTheme.typography.body,
 
                                     )

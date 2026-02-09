@@ -113,7 +113,6 @@ class SchedulerListViewModel @Inject constructor(
                     }
                 )
             }
-
             is SchedulerListEvent.ShowSnackBar -> TODO()
         }
     }
@@ -128,5 +127,6 @@ class SchedulerListViewModel @Inject constructor(
                         })
             }
         }
+        Log.e("CLJR","LoadData ${viewState.items}")
     }
 }
