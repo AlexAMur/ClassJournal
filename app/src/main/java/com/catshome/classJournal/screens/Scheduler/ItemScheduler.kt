@@ -50,6 +50,7 @@ import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.R
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
+import com.catshome.classJournal.domain.communs.toTimeString
 import java.util.Locale
 import kotlin.collections.forEachIndexed
 
@@ -119,7 +120,7 @@ fun itemScheduler(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "${key/60}:${key%60}",
+                                text = key.toTimeString(),
                                 modifier = Modifier
                                     .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
                                     .clickable(onClick = {editTime(index)}),

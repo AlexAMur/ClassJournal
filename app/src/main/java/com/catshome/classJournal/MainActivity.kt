@@ -3,6 +3,7 @@ package com.catshome.classJournal
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -35,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.catshome.classJournal.domain.communs.toTimeString
 import com.catshome.classJournal.screens.ItemBottomBar
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.PayListScreen
@@ -49,6 +51,9 @@ class MainActivity : ComponentActivity() {
     var isShowExitDialog = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.e("CLJR", "Time ${1020.toTimeString()}")
+        Log.e("CLJR", "Time ${800.toTimeString()}")
+        Log.e("CLJR", "Time ${1439.toTimeString()}")
         //LocalActivity.provides(this)
         context = application.applicationContext
 
