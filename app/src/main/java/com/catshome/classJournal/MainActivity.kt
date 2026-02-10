@@ -51,9 +51,6 @@ class MainActivity : ComponentActivity() {
     var isShowExitDialog = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("CLJR", "Time ${1020.toTimeString()}")
-        Log.e("CLJR", "Time ${800.toTimeString()}")
-        Log.e("CLJR", "Time ${1439.toTimeString()}")
         //LocalActivity.provides(this)
         context = application.applicationContext
 

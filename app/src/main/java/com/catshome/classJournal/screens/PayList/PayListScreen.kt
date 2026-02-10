@@ -61,14 +61,12 @@ fun PayListScreen(
         PayListAction.CloseScreen -> {
             viewModel.clearAction()
         }
-
         PayListAction.NewPay -> {
             if (viewModel.viewActions().replayCache.last().toString() == "NewPay") {
                 navController.navigate(ItemScreen.NewPayScreen.name)
                 viewModel.clearAction()
             }
         }
-
         PayListAction.OpenFilter -> {
             navController.navigate(
                 FilterSetting(

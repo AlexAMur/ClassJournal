@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SaveLesson(
+
     val isShowSnackBar: Boolean,
     val message: String
 )

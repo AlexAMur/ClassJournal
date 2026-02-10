@@ -1,12 +1,12 @@
 package com.catshome.classJournal.domain.communs
 
-fun Long.toTimeString(formatter: String = TIME_FORMAT ,is24Hour: Boolean = true): String{
+fun Long.toTimeString(is24Hour: Boolean = true): String{
     val MIN =60L
     var s = ""
     val HOUR=24L
     if(this/ MIN < 10L)
         if (this/ MIN == 0L)
-            s= ":00"
+            s= "00"
         else  s = "0${this/MIN}"
     else s = "${this/MIN}"
     s += if(this%MIN < 10)
@@ -18,13 +18,13 @@ fun Long.toTimeString(formatter: String = TIME_FORMAT ,is24Hour: Boolean = true)
         ":${this%MIN}"
     return s
 }
-fun Int.toTimeString(formatter: String = TIME_FORMAT ,is24Hour: Boolean = true): String{
+fun Int.toTimeString(is24Hour: Boolean = true): String{
     val MIN =60
     var s = ""
     val HOUR=24
     if(this/ MIN < 10)
         if (this/ MIN == 0)
-            s= ":00"
+            s= "00"
         else  s = "0${this/MIN}"
     else s = "${this/MIN}"
     if(this%MIN < 10)

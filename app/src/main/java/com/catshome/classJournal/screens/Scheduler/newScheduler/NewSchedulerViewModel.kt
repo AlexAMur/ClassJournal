@@ -27,6 +27,10 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
 
     override fun obtainEvent(viewEvent: NewSchedulerEvent) {
         when (viewEvent) {
+            ReloadClient->{
+                Log.e("CLJR", "ReloadClient")
+               obtainEvent(NewSchedulerEvent.Search(viewState.searchText))
+            }
             CloseEvent -> viewAction = NewSchedulerAction.CloseScreen
             SaveEvent -> {
                 val list = viewState.itemsList?.filter { it.isChecked }

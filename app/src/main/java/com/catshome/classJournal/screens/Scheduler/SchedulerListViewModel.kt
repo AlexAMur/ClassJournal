@@ -21,8 +21,12 @@ class SchedulerListViewModel @Inject constructor(
     ) {
 
     override fun obtainEvent(viewEvent: SchedulerListEvent) {
-        loadData()
+
         when (viewEvent) {
+            SchedulerListEvent.ReloadScheduler-> {
+
+                loadData()
+            }
             is SchedulerListEvent.ShowTimePiker -> {
                 viewState = viewState.copy(
                     showStartTimePicker = viewEvent.show
@@ -30,7 +34,7 @@ class SchedulerListViewModel @Inject constructor(
             }
 
             is SchedulerListEvent.NewClicked -> {
-                viewState.isCanShowSnackBar = true
+                //viewState.isCanShowSnackBar = true
                 viewState.selectDay = DayOfWeek.entries[viewEvent.index]
                 viewState.isNewLesson = viewEvent.isNewLesson
                 obtainEvent(SchedulerListEvent.ShowTimePiker(show = true))
@@ -38,13 +42,13 @@ class SchedulerListViewModel @Inject constructor(
             }
 
             is SchedulerListEvent.NewLesson -> {
+                viewState.isCanShowSnackBar = true
                 Log.e("CLJR", "NewLesson")
                 viewAction = SchedulerListAction.NewLesson
             }
 
             SchedulerListEvent.EditTime -> {
                 //установка нового времени
-                Log.e("CLJR", "edittime")
                 with(viewState) {
                     selectDay?.let {
                         if (oldTimeLesson != null && timeLesson!= null) {
@@ -63,7 +67,6 @@ class SchedulerListViewModel @Inject constructor(
             }
 
             is SchedulerListEvent.SetTime -> {
-                Log.e("CLJR", "Settime")
                 if (viewState.durationLesson != viewEvent.duration) {
                     viewState.oldDurationLesson = viewState.durationLesson
                     viewState.durationLesson = viewEvent.duration
@@ -102,7 +105,7 @@ class SchedulerListViewModel @Inject constructor(
 //                        )
 //                    )
 //                }
-                Log.e("CLJR", viewState.items.toString())
+
             }
 
             is SchedulerListEvent.CollapseItem -> {
@@ -113,7 +116,11 @@ class SchedulerListViewModel @Inject constructor(
                     }
                 )
             }
-            is SchedulerListEvent.ShowSnackBar -> TODO()
+            is SchedulerListEvent.ShowSnackBar -> {
+                viewState = viewState.copy(
+                    isShowSnackBar = viewEvent.showSnackBar,
+                    messageShackBar = viewEvent.message)
+            }
         }
     }
 
@@ -127,6 +134,6 @@ class SchedulerListViewModel @Inject constructor(
                         })
             }
         }
-        Log.e("CLJR","LoadData ${viewState.items}")
+        Log.e("CLJR","LoadData scheduler")
     }
 }

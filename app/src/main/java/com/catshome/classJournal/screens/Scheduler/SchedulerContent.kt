@@ -60,17 +60,23 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                 modifier = Modifier.padding(bottom = paddingValues)
             )
             LaunchedEffect(viewState.isShowSnackBar) {
+                Log.e("CLJR", "Запуск лаунч эффф")
                 if (viewState.isShowSnackBar && viewState.isCanShowSnackBar) {
+                    Log.e("CLJR", "Вывод сообщения")
                     //    keyboardController?.hide()
                     SnackBarAction(
-                        message = viewState.messageShackBar,
+                        message = viewState.messageShackBar?:"",
                         actionLabel = viewState.snackBarAction
                             ?: context.getString(R.string.ok),
                         sbHostState,
                         onDismissed = viewState.onDismissed ?: {
+                            viewState.isCanShowSnackBar =false
+                            viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(false))
                             //     viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
                         },
                         onActionPerformed = viewState.onAction ?: {
+                            viewState.isCanShowSnackBar =false
+                            viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(false))
                             //      viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
                         }
                     )
@@ -105,7 +111,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                     items(DayOfWeek.entries.toTypedArray()) { day ->
                         itemScheduler(
                             day = day,
-                            items =  viewState.items[day.shortName]?.groupBy {
+                            items =  viewState.items[day.shortName]?.sortedBy { it.startLesson }?.groupBy {
                                 it.startLesson as Long
                             },
                             viewModel =viewModel,

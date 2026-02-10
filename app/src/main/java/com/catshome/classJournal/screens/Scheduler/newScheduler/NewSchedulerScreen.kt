@@ -55,23 +55,34 @@ fun NewSchedulerScreen(
     navController: NavController,
     viewModel: NewSchedulerViewModel = viewModel(),
     newLesson: NewLesson? = null
-
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
-    val stateList =  rememberLazyListState(0)
-    LaunchedEffect(Unit) {
-        newLesson?.let{
-            viewState.dayOfWeek = it.dayOfWeek
-            viewState.startTime = it.startTime
-            viewState.duration = it.duration
+    val stateList = rememberLazyListState(0)
+    newLesson?.let {
+        LaunchedEffect(
+            viewState.dayOfWeek != it.dayOfWeek ||
+                    viewState.startTime != it.startTime ||
+                    viewState.duration != it.duration
+        ) {
+            if (viewState.dayOfWeek != it.dayOfWeek ||
+                viewState.startTime != it.startTime ||
+                viewState.duration != it.duration
+            ) {
+                Log.e("CLJR", "${viewState.dayOfWeek} - dayOfWeek - ${it.dayOfWeek}")
+                Log.e("CLJR", "${viewState.startTime} - startTime - ${it.startTime}")
+                Log.e("CLJR", "${viewState.duration} - duration - ${it.duration}")
+                viewState.dayOfWeek = it.dayOfWeek
+                viewState.startTime = it.startTime
+                viewState.duration = it.duration
+                viewModel.obtainEvent(NewSchedulerEvent.ReloadClient)
+            }
         }
     }
 
     Surface(
         modifier = Modifier
-            .fillMaxSize()
-            ,
+            .fillMaxSize(),
         color = ClassJournalTheme.colors.disableColor
     ) {
 
@@ -80,7 +91,7 @@ fun NewSchedulerScreen(
                 .fillMaxSize(),
             //        .background(ClassJournalTheme.colors.tintColor),
             //      shape = ClassJournalTheme.shapes.cornersStyle,
-        colors = CardDefaults.cardColors(ClassJournalTheme.colors.primaryBackground),
+            colors = CardDefaults.cardColors(ClassJournalTheme.colors.primaryBackground),
         ) {
             Column(
                 Modifier
@@ -95,7 +106,7 @@ fun NewSchedulerScreen(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TextButton(onClick = {viewModel.obtainEvent(NewSchedulerEvent.CloseEvent)}) {
+                    TextButton(onClick = { viewModel.obtainEvent(NewSchedulerEvent.CloseEvent) }) {
                         Icon(
                             Icons.Default.Close, "", tint = ClassJournalTheme.colors.tintColor
                         )
@@ -105,7 +116,7 @@ fun NewSchedulerScreen(
                         color = ClassJournalTheme.colors.primaryText,
                         style = ClassJournalTheme.typography.caption
                     )
-                    TextButton(onClick = { viewModel.obtainEvent(NewSchedulerEvent.SaveEvent)}) {
+                    TextButton(onClick = { viewModel.obtainEvent(NewSchedulerEvent.SaveEvent) }) {
                         Text(
                             stringResource(R.string.save_button),
                             color = ClassJournalTheme.colors.tintColor
@@ -131,7 +142,7 @@ fun NewSchedulerScreen(
                             //if (it.isFocused)
                             //      viewState.indexFocus = 0
                         },
-                    onClickCancel ={
+                    onClickCancel = {
                         viewModel.obtainEvent(NewSchedulerEvent.ClearSearch)
                     }
                 ) { searchText ->
@@ -167,9 +178,9 @@ fun NewSchedulerScreen(
                             },
                             isChecked = child.isChecked,
                             startImage = if (child.uidChild.isNullOrEmpty())
-                                    painterResource(R.drawable.outline_group_24)
-                                    else
-                                        painterResource(R.drawable.outline_account_circle_48),
+                                painterResource(R.drawable.outline_group_24)
+                            else
+                                painterResource(R.drawable.outline_account_circle_48),
                         )
                     }
                 }
@@ -179,7 +190,13 @@ fun NewSchedulerScreen(
     when (viewAction) {
         NewSchedulerAction.CloseScreen -> {
             viewModel.clearAction()
-            navController.popBackStack()
+
+            navController.navigate(
+                SaveLesson(
+                    isShowSnackBar = false,
+                    message = ""
+                )
+            )
         }
 
         NewSchedulerAction.Save -> {

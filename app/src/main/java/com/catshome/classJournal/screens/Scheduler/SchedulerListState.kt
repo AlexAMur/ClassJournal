@@ -7,7 +7,7 @@ import com.catshome.classJournal.navigate.NewLesson
 
 data class SchedulerListState(
     var showStartTimePicker: Boolean = false,
-    val messageShackBar: String = "",
+    val messageShackBar: String?= null,
     val snackBarAction: String? =null,
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,

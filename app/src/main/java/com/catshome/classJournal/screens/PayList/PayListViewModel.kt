@@ -17,7 +17,11 @@ import javax.inject.Inject
 class PayListViewModel @Inject constructor(private val payListInteractor: PayListInteractor) :
     BaseViewModel<PayListState, PayListAction, PayListEvent>(
         installState = PayListState(
-            beginDate = "01.${LocalDateTime.now().month.value}.${LocalDateTime.now().year} 00:00:00",
+            beginDate = "01.${if(LocalDateTime.now().month.value.toString().length==1)
+                "0${LocalDateTime.now().month.value}"
+            else
+                "${LocalDateTime.now().month.value}"
+            }.${LocalDateTime.now().year} 00:00:00",
             endDate = "${LocalDateTime.now().toDateRuString()} 23:59:59"
         )
     ) {
