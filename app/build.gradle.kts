@@ -58,7 +58,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.compose.material)
+    implementation(libs.compose.wear.material)
+    implementation(libs.androidx.compose.material)
 
 
     implementation(libs.androidx.material)
@@ -88,4 +89,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
 }
