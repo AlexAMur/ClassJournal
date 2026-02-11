@@ -69,9 +69,6 @@ fun NewSchedulerScreen(
                 viewState.startTime != it.startTime ||
                 viewState.duration != it.duration
             ) {
-                Log.e("CLJR", "${viewState.dayOfWeek} - dayOfWeek - ${it.dayOfWeek}")
-                Log.e("CLJR", "${viewState.startTime} - startTime - ${it.startTime}")
-                Log.e("CLJR", "${viewState.duration} - duration - ${it.duration}")
                 viewState.dayOfWeek = it.dayOfWeek
                 viewState.startTime = it.startTime
                 viewState.duration = it.duration

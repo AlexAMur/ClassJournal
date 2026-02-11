@@ -141,29 +141,9 @@ fun itemScheduler(
                     }
                     lists?.let { list ->
                         itemsIndexed(list) { index, item ->
-                            Row(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 4.dp)
-                                    .background(ClassJournalTheme.colors.secondaryBackground),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                Text(
-                                    modifier = Modifier
-                                        .weight(0.8f)
-                                        .padding(start = 8.dp),
-                                    text = item.name?:"",
-                                    style = ClassJournalTheme.typography.body,
-
-                                    )
-                                IconButton(onClick = {//TODO delete item childItems scheduler
-                                     }) {
-                                    Icon(
-                                        Icons.Default.Close,
-                                        contentDescription = null,
-                                        tint = ClassJournalTheme.colors.tintColor
-                                    )
+                            item.name?.let {
+                                ItemListScheduler(it) {
+                                    //Todo onClick
                                 }
                             }
                         }
