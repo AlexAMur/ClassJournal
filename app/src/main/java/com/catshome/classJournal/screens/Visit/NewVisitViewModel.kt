@@ -7,7 +7,6 @@ import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Visit.VisitInteract
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -62,7 +61,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
         } else {
             viewState = viewState.copy(
                 isSnackbarShow = true,
-                errorMessage = "${context?.getString(R.string.error_save_group)} ${throwable.message} ",
+                errorMessage = "${context?.getString(R.string.error_save)} ${throwable.message} ",
                 snackbarAction = context.getString(R.string.ok),
                 onDismissed = { viewState.isSnackbarShow = false },
                 onAction = { viewState.isSnackbarShow = false }

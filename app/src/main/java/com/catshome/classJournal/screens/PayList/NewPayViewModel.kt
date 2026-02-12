@@ -71,7 +71,7 @@ class NewPayViewModel @Inject constructor(
         } else {
             viewState = viewState.copy(
                 isSnackbarShow = true,
-                errorMessage = "${context?.getString(R.string.error_save_group)} ${throwable.message} ",
+                errorMessage = "${context?.getString(R.string.error_save)} ${throwable.message} ",
                 snackbarAction = context.getString(R.string.ok),
                 onDismissed = { viewState.isSnackbarShow = false },
                 onAction = { viewState.isSnackbarShow = false }

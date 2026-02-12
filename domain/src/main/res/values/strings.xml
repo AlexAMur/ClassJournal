@@ -30,7 +30,7 @@
     <string name="error_unique_name_group">Имя группы должно быть уникальным! </string>
     <string name="error_unique_child">Клиент с таким именем, фамилией и датой рождениея уже есть в базе данных! </string>
     <string name="error_primarykey_group">Нарушение первичного ключа!</string>
-    <string name="error_save_group">Не удалось записать!</string>
+    <string name="error_save">Не удалось записать!</string>
     <string name="error_invalid_value">Не допустимое значение!</string>
     <string name="error_zero_value">Время занятия не может быть меньше или равно 0!</string>
     <string name="error_uncou_name_group">Имя группы должно быть уникальным! </string>

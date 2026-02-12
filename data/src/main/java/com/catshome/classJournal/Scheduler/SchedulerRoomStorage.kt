@@ -25,8 +25,11 @@ class SchedulerRoomStorage @Inject constructor(
         daoScheduler.update(scheduler)
     }
 
-    suspend fun delete(scheduler: SchedulerEntity) {
-        daoScheduler.delete(scheduler)
+    suspend fun delete(scheduler: SchedulerEntity): Boolean {
+        if (daoScheduler.delete(scheduler)>0)
+            return true
+        else
+            return false
     }
 
     suspend fun getSchedulers(): Flow<List<Scheduler>>? {

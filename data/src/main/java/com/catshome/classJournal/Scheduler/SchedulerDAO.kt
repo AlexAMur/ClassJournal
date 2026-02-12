@@ -29,7 +29,7 @@ interface SchedulerDAO{
     suspend fun insert(schedulerEntity: List<SchedulerEntity>)
 
     @Delete
-    suspend fun delete(schedulerEntity: SchedulerEntity)
+    suspend fun delete(schedulerEntity: SchedulerEntity): Int
 
     @Update
     suspend fun update(schedulerEntity:SchedulerEntity)

@@ -1,9 +1,12 @@
 package com.catshome.classJournal.screens.Scheduler
 
-import androidx.collection.emptyIntList
+import androidx.compose.material.DismissState
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberDismissState
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
-import com.catshome.classJournal.navigate.NewLesson
+import java.util.Collections.emptyMap
 
 data class SchedulerListState(
     var showStartTimePicker: Boolean = false,
@@ -20,6 +23,11 @@ data class SchedulerListState(
     var timeLesson: Int?  = null,
     var durationLesson: Int? = null,
     var oldDurationLesson: Int? = null,
-    val items: Map<String,List<Scheduler>?> = emptyMap(),
+    val items: MutableMap<String, List<SchedulerItem>?> = emptyMap(),
     val newScheduler: Scheduler? =null
+)
+data class SchedulerItem @OptIn(ExperimentalMaterialApi::class) constructor(
+    val scheduler: Scheduler,
+    var isRemoved: Boolean =false,
+    val state: DismissState
 )

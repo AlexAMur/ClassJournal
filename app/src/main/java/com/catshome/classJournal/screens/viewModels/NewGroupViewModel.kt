@@ -13,7 +13,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -62,7 +61,7 @@ class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupIn
                     } else {
                         viewState = viewState.copy(
                             isError = true,
-                            errorMessage = "${context?.getString(R.string.error_save_group)} ${throwable.message} "
+                            errorMessage = "${context?.getString(R.string.error_save)} ${throwable.message} "
                         )
 
                     }

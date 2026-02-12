@@ -4,7 +4,9 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -22,36 +24,40 @@ import com.catshome.classJournal.ClassJournalTheme
 import kotlin.time.Clock
 
 @Composable
-fun ItemListScheduler(text: String, onClick: ()->Unit){
-    val offsetAnime = remember {
-        Animatable(initialValue = 0f)
-    }
-    LaunchedEffect(offset) {
-        offsetAnime.animateTo(offset)
-    }
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(bottom = 4.dp)
-            .offset(x = offsetAnime.value.dp)
-            .background(ClassJournalTheme.colors.secondaryBackground),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Text(
-            modifier = Modifier
-                .weight(0.8f)
-                .padding(start = 8.dp),
-            text = text,
-            style = ClassJournalTheme.typography.body,
+fun ItemListScheduler(text: String, onClick: () -> Unit = {}) {
 
-            )
-        IconButton(onClick = onClick) {
+    //  Row
+//    (
+//        Modifier
+//            //.weight(0.8f)
+//            //.fillMaxWidth()
+//            .fillMaxWidth()
+//            .height(32.dp)
+//
+//            //.padding(bottom = 4.dp)
+//            .background(ClassJournalTheme.colors.secondaryBackground),
+//        verticalAlignment = Alignment.CenterVertically,
+//        horizontalArrangement = Arrangement.Start
+//    )
+    Row {
+                IconButton(modifier = Modifier.background(ClassJournalTheme.colors.primaryBackground),
+            onClick = onClick) {
             Icon(
                 Icons.Default.Close,
                 contentDescription = null,
                 tint = ClassJournalTheme.colors.tintColor
             )
         }
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                //.weight(0.8f, )
+                .background(ClassJournalTheme.colors.primaryBackground)
+                .padding(16.dp),
+            text = text,
+            style = ClassJournalTheme.typography.body,
+
+            )
+
     }
 }

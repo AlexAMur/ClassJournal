@@ -5,21 +5,19 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissState
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberDismissState
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,55 +26,15 @@ import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import kotlinx.coroutines.delay
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun f1() {
-    val programmingLanguages = remember {
-        mutableStateListOf(
-            "Kotlin",
-            "Java",
-            "C++",
-            "C#",
-            "JavaScript",
-        )
-    }
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        items(
-            items = programmingLanguages,
-            key = { it }
-        ) { language ->
-            SwipeToDeleteContainer(
-                item = language,
-                onDelete = {
-                    programmingLanguages -= language
-                }
-            ) { language ->
-                Text(
-                    text = language,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(ClassJournalTheme.colors.primaryBackground)
-                        .padding(16.dp)
-                )
-            }
-        }
-    }
-}
-
-
-
+import androidx.compose.ui.graphics.Color
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun <T> SwipeToDeleteContainer(
     item: T,
+    state: DismissState,
     onDelete: (T) -> Unit,
     animationDuration: Int = 500,
     content: @Composable (T) -> Unit
@@ -84,8 +42,9 @@ fun <T> SwipeToDeleteContainer(
     var isRemoved by remember {
         mutableStateOf(false)
     }
+
     val state = rememberDismissState(
-        confirmValueChange = { value ->
+        confirmStateChange = { value ->
             if (value == DismissValue.DismissedToStart) {
                 isRemoved = true
                 true
@@ -119,13 +78,13 @@ fun <T> SwipeToDeleteContainer(
         )
     }
 }
-
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DeleteBackground(
     swipeDismissState: DismissState
 ) {
     val color = if (swipeDismissState.dismissDirection == DismissDirection.EndToStart) {
-        Color.Red
+        ClassJournalTheme.colors.errorColor
     } else Color.Transparent
 
     Box(

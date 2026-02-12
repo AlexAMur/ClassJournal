@@ -30,4 +30,7 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
     suspend fun getListClient(name: String):List<ClientScheduler>{
         return repository.getClientList(name)
     }
+    suspend fun deleteClient(scheduler: Scheduler): Boolean{
+       return repository.deleteSchedule(scheduler)
+    }
 }

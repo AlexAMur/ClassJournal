@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.R
 import com.catshome.classJournal.child.ChildGroupsRepositoryImpl
 import com.catshome.classJournal.context
-import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildInteractor
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
@@ -56,7 +55,7 @@ class NewChildViewModel @Inject constructor(
         } else {
             viewState = viewState.copy(
                 isSnackbarShow = true,
-                errorMessage = "${context?.getString(R.string.error_save_group)} ${throwable.message} ",
+                errorMessage = "${context?.getString(R.string.error_save)} ${throwable.message} ",
                 snackbarAction = context.getString(R.string.ok),
                 onDismissed = { viewState.isSnackbarShow = false },
                 onAction = { viewState.isSnackbarShow = false }
@@ -120,7 +119,7 @@ class NewChildViewModel @Inject constructor(
                 } catch (e: NumberFormatException) {
                     viewState = viewState.copy(
                         isSaldoError = true,
-                        saldoError = context.getString(R.string.error_save_group)
+                        saldoError = context.getString(R.string.error_save)
                     )
                     return
                 }

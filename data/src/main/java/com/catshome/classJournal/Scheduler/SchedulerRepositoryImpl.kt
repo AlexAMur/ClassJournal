@@ -31,4 +31,8 @@ class SchedulerRepositoryImpl(val storage: SchedulerRoomStorage): SchedulerRepos
     override suspend fun getClientList(name:String): List<ClientScheduler>{
       return  storage.getClients(name)
     }
+
+    override suspend fun deleteSchedule(scheduler: Scheduler): Boolean {
+       return storage.delete(scheduler.mapToSchedulerEntity())
+    }
 }

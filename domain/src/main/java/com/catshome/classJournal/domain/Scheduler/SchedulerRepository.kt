@@ -8,4 +8,5 @@ interface SchedulerRepository {
     suspend fun getScheduler(dayOfWeek: DayOfWeek?): Flow<List<Scheduler>>?
     suspend fun getClientsByLesson(dayOfWeek: DayOfWeek, startTime: Int): Flow<List<Scheduler>>?
     suspend fun getClientList(name: String):List<ClientScheduler>
+    suspend fun deleteSchedule(scheduler: Scheduler): Boolean
 }

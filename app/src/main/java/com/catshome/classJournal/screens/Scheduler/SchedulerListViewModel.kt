@@ -2,13 +2,13 @@ package com.catshome.classJournal.screens.Scheduler
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.catshome.classJournal.R
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.jetbrains.annotations.NotNull
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,10 +23,41 @@ class SchedulerListViewModel @Inject constructor(
     override fun obtainEvent(viewEvent: SchedulerListEvent) {
 
         when (viewEvent) {
-            SchedulerListEvent.ReloadScheduler-> {
+            is SchedulerListEvent.DeleteSwipe -> {
+                //Удаление в расписании
+                when (viewEvent.type) {
+                    ItemType.day -> {   //Если смахнули день
+                        TODO()
+                    }
 
+                    ItemType.lesson -> {//Если смахнули урок
+                        TODO()
+                    }
+
+                    ItemType.client -> {
+                        viewEvent.scheduler?.let { scheduler ->
+                            viewModelScope.launch {
+                                if (!schedulerInteract.deleteClient(scheduler)) {
+                                    viewState.isCanShowSnackBar = true
+                                    obtainEvent(
+                                        SchedulerListEvent.ShowSnackBar(
+                                            true,
+                                            message = viewEvent.context.getString(R.string.error_save)
+                                        )
+                                    )
+                                } else
+
+                                viewState.items[viewEvent.key] = viewState.items[viewEvent.key]?.filter { it!=scheduler }
+                            }
+                        }
+                    }//Если смахнули только одну запись
+                }
+            }
+
+            SchedulerListEvent.ReloadScheduler -> {
                 loadData()
             }
+
             is SchedulerListEvent.ShowTimePiker -> {
                 viewState = viewState.copy(
                     showStartTimePicker = viewEvent.show
@@ -34,16 +65,13 @@ class SchedulerListViewModel @Inject constructor(
             }
 
             is SchedulerListEvent.NewClicked -> {
-                //viewState.isCanShowSnackBar = true
                 viewState.selectDay = DayOfWeek.entries[viewEvent.index]
                 viewState.isNewLesson = viewEvent.isNewLesson
                 obtainEvent(SchedulerListEvent.ShowTimePiker(show = true))
-                // viewAction = SchedulerListAction.NewClick
             }
 
             is SchedulerListEvent.NewLesson -> {
                 viewState.isCanShowSnackBar = true
-                Log.e("CLJR", "NewLesson")
                 viewAction = SchedulerListAction.NewLesson
             }
 
@@ -51,13 +79,13 @@ class SchedulerListViewModel @Inject constructor(
                 //установка нового времени
                 with(viewState) {
                     selectDay?.let {
-                        if (oldTimeLesson != null && timeLesson!= null) {
+                        if (oldTimeLesson != null && timeLesson != null) {
                             viewModelScope.launch {
                                 schedulerInteract.editTime(
                                     dayOfWeek = it,
-                                    oldTime = oldTimeLesson?:0,
-                                    newTime = timeLesson?:0,
-                                    duration = durationLesson?:0
+                                    oldTime = oldTimeLesson ?: 0,
+                                    newTime = timeLesson ?: 0,
+                                    duration = durationLesson ?: 0
 
                                 )
                             }
@@ -83,29 +111,6 @@ class SchedulerListViewModel @Inject constructor(
                     viewState.timeLesson = viewEvent.time
                     obtainEvent(SchedulerListEvent.NewLesson)
                 }
-
-
-//                viewState.selectDay?.let { selectDay ->
-//                    viewState = viewState.copy(
-//                        items = viewState.items.toMutableMap().plus(
-//                            Pair(
-//                                first = selectDay.shortName,
-//                                second = listOf(
-//                                    Scheduler(
-//                                        dayOfWeek = selectDay.shortName,
-//                                        dayOfWeekInt = selectDay.ordinal,
-//                                        uidChild = null,
-//                                        uidGroup = null,
-//                                        name = "",
-//                                        startLesson = viewEvent.time,
-//                                        duration = viewEvent.duration
-//                                    )
-//                                )
-//                            )
-//                        )
-//                    )
-//                }
-
             }
 
             is SchedulerListEvent.CollapseItem -> {
@@ -116,10 +121,12 @@ class SchedulerListViewModel @Inject constructor(
                     }
                 )
             }
+
             is SchedulerListEvent.ShowSnackBar -> {
                 viewState = viewState.copy(
                     isShowSnackBar = viewEvent.showSnackBar,
-                    messageShackBar = viewEvent.message)
+                    messageShackBar = viewEvent.message
+                )
             }
         }
     }
@@ -129,11 +136,11 @@ class SchedulerListViewModel @Inject constructor(
             schedulerInteract.getScheduler(null)?.collect { schedulerList ->
                 viewState = viewState.copy(
                     items =
-                        schedulerList.sortedBy { it.dayOfWeekInt }.groupBy {
-                            it.dayOfWeek
-                        })
+                        schedulerList.sortedBy{ it.dayOfWeekInt }.toMutableList().groupBy {
+                            it.dayOfWeek}.toMutableMap()
+                )
             }
         }
-        Log.e("CLJR","LoadData scheduler")
+        Log.e("CLJR", "LoadData scheduler")
     }
 }

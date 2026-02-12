@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 fun SchedulerListScreen(
     navController: NavController,
     viewModel: SchedulerListViewModel = viewModel(),
-    saveLesson: SaveLesson?= null
+    saveLesson: SaveLesson? = null
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
@@ -41,48 +41,14 @@ fun SchedulerListScreen(
             )
         )
     }
-        LaunchedEffect(Unit) {
-            Log.e("CLJR","Launch reload scheduler")
-            viewModel.obtainEvent(SchedulerListEvent.ReloadScheduler)
-        }
+    LaunchedEffect(Unit) {
+        Log.e("CLJR", "Launch reload scheduler")
+        viewModel.obtainEvent(SchedulerListEvent.ReloadScheduler)
+    }
 
-//        if (viewState.isShowSnackBar) {// && viewState.isCanShowSnackBar) {
-//            //    keyboardController?.hide()
-//            SnackBarAction(
-//                message = viewState.messageShackBar ?: "",
-//                actionLabel = viewState.snackBarAction
-//                    ?: context.getString(R.string.ok),
-//                sbHostState,
-//                onDismissed = viewState.onDismissed ?: {
-//                    viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(false))
-//                },
-//                onActionPerformed = viewState.onAction ?: {
-//                    viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(false))
-//                }
-//            )
-//        }
-    //}
-
-//    LaunchedEffect(Unit) {
-//        CoroutineScope(Dispatchers.Default).launch {
-//            viewModel.obtainEvent(SchedulerListEvent.ShowFAB(false))
-//            delay(100)
-//            viewModel.obtainEvent(SchedulerListEvent.ShowFAB(true))
-//        }
-//    }
-//    DisposableEffect(Unit) {
-//        onDispose {
-//            viewModel.obtainEvent(SchedulerListEvent.ShowFAB(false))
-//        }
-//    }
     schedulerContent(viewModel)
 
     when (viewAction) {
-        SchedulerListAction.NewClick -> {
-
-
-        }
-
         SchedulerListAction.NewLesson -> {
             viewModel.clearAction()
             with(viewState) {
@@ -99,9 +65,7 @@ fun SchedulerListScreen(
                     }
                 }
             }
-
         }
-
         null -> {}
     }
 }
