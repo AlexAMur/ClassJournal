@@ -21,14 +21,6 @@ data class SchedulerListState(
     var timeLesson: Int?  = null,
     var durationLesson: Int? = null,
     var oldDurationLesson: Int? = null,
-    val items: MutableMap<String, List<SchedulerItem>?> = emptyMap(),
+    val items: MutableMap<String, List<Scheduler>?> = emptyMap(),
     val newScheduler: Scheduler? =null
 )
-data class SchedulerItem @OptIn(ExperimentalMaterialApi::class) constructor(
-    val scheduler: Scheduler,
-    var isRemoved: Boolean,
-    var state: DismissState?= null
-)
-fun SchedulerItem.toScheduler(): Scheduler{
-    return this.scheduler
-}

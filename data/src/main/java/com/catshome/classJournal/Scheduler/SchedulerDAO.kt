@@ -17,6 +17,11 @@ import java.time.DayOfWeek
 @Dao
 interface SchedulerDAO{
     @Transaction
+    suspend fun deleteLesson(dayOfWeek: Int,
+                             time: Long): Boolean{
+        return deleteByTimeLesson(dayOfWeek,time)>0
+    }
+    @Transaction
     suspend fun saveScheduler(dayOfWeek: Int,
                               startLesson: Long,
                               list: List<SchedulerEntity>)
@@ -34,10 +39,6 @@ interface SchedulerDAO{
     @Update
     suspend fun update(schedulerEntity:SchedulerEntity)
 
-    @Query(
-        "Delete from scheduler where dayOfWeek = :dayOfWeek and startLesson =:startLesson "
-    )
-    fun deleteLesson(dayOfWeek: Int, startLesson: Long)
 
     @Query(
         "Select s.uid , s.uidChild,s.uidGroup, dayOfWeek,startLesson, duration ," +
@@ -60,5 +61,8 @@ interface SchedulerDAO{
                 " and dayOfWeek = :dayOfWeek  and startLesson = :startTime ORDER BY dayOfWeek ASC, 'Surname', 'Name' ASC"
     )
     fun getClientsSchedulerByLesson (dayOfWeek: Int, startTime: Long): Flow<List<SchedulerScreenEntity>>?
-
+    @Query(
+        "Delete from scheduler where startLesson = :time and dayOfWeek = :dayOfWeek"
+    )
+    fun deleteByTimeLesson(dayOfWeek: Int, time: Long):Int
 }

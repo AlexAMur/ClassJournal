@@ -98,8 +98,8 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                     items(DayOfWeek.entries.toTypedArray()) { day ->
                         itemScheduler(
                             day = day,
-                            itemsMap =  viewState.items[day.shortName]?.sortedBy { it.scheduler.startLesson }?.groupBy {
-                                it.scheduler.startLesson as Long
+                            itemsMap =  viewState.items[day.shortName]?.sortedBy { it.startLesson }?.groupBy {
+                                it.startLesson as Long
                             },
                             viewModel =viewModel,
                             collapsItem={

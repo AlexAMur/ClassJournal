@@ -15,6 +15,9 @@ class SchedulerRoomStorage @Inject constructor(
     private val daoScheduler: SchedulerDAO,
     private val daoClient: ChildGroupDAO
 ) {
+    suspend fun deleteLesson(dayOfWeek: DayOfWeek, time: Long): Boolean{
+       return daoScheduler.deleteLesson(dayOfWeek.ordinal, time)
+    }
     suspend fun saveScheduler(dayOfWeek: DayOfWeek, startTime: Long, scheduler: List<SchedulerEntity>) {
         daoScheduler.saveScheduler(dayOfWeek = dayOfWeek.ordinal,
             startLesson = startTime,

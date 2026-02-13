@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.R
 import com.catshome.classJournal.communs.SwipeToDeleteContainer
+import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.toTimeString
 
@@ -39,7 +40,7 @@ import com.catshome.classJournal.domain.communs.toTimeString
 @Composable
 fun itemScheduler(
     day: DayOfWeek,
-    itemsMap: Map<Long, List<SchedulerItem>?>?,
+    itemsMap: Map<Long, List<Scheduler>?>?,
     viewModel: SchedulerListViewModel,
     collapsItem: (Int) -> Unit,
     newTime: (Int) -> Unit,
@@ -95,50 +96,72 @@ fun itemScheduler(
                         .background(ClassJournalTheme.colors.disableColor)
                 ) {
                     stickyHeader {
-
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .background(color = ClassJournalTheme.colors.disableColor),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = timeLessonKey.toTimeString(),
-                                modifier = Modifier
-                                    .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
-                                    .clickable(onClick = { editTime(index) }),
-                                color = ClassJournalTheme.colors.primaryText,
-                                style = ClassJournalTheme.typography.caption,
-                            )
-                            TextButton(
-                                modifier = Modifier,
-                                onClick = newMember
-                            ) {
-                                Icon(
-                                    Icons.TwoTone.Add,
-                                    contentDescription = stringResource(R.string.add_scheduler_),
-                                    tint = ClassJournalTheme.colors.tintColor
+                        SwipeToDeleteContainer(
+                            item = timeLessonKey.toTimeString(),
+                            onDelete = { deleteItem ->
+                                // if (deleteItem == value.scheduler.name)
+                                viewModel.obtainEvent(
+                                    SchedulerListEvent.DeleteSwipe(
+                                        type = ItemType.lesson,
+                                        key = day.shortName,
+                                        scheduler = Scheduler(
+                                            dayOfWeek = day.shortName,
+                                            dayOfWeekInt = day.ordinal,
+                                            startLesson = timeLessonKey
+                                        ),
+                                        dayOfWeek = day,
+                                        context = context
+                                    )
                                 )
+                            }
+                        ) { name ->//тут контент
+
+
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .background(color = ClassJournalTheme.colors.disableColor),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = timeLessonKey.toTimeString(),
+                                    modifier = Modifier
+                                        .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
+                                        .clickable(onClick = { editTime(index) }),
+                                    color = ClassJournalTheme.colors.primaryText,
+                                    style = ClassJournalTheme.typography.caption,
+                                )
+                                TextButton(
+                                    modifier = Modifier,
+                                    onClick = newMember
+                                ) {
+                                    Icon(
+                                        Icons.TwoTone.Add,
+                                        contentDescription = stringResource(R.string.add_scheduler_),
+                                        tint = ClassJournalTheme.colors.tintColor
+                                    )
+                                }
                             }
                         }
                     }
                     lists?.let { listsScheduler ->
                         items(
                             listsScheduler,
-                            key = { it.scheduler.uid!! }
+                            key = { it.uid!! }
                         ) { value ->
-                            value.scheduler.name?.let { text ->
+                            value.name?.let { text ->
                                 SwipeToDeleteContainer(
                                     item = text,
                                     onDelete = { deleteItem ->
-                                        if (deleteItem == value.scheduler.name)
+                                        if (deleteItem == value.name)
                                             viewModel.obtainEvent(
                                                 SchedulerListEvent.DeleteSwipe(
                                                     type = ItemType.client,
                                                     key = day.shortName,
                                                     scheduler = value,
-                                                    context = context
+                                                    context = context,
+                                                    dayOfWeek = day
                                                 )
                                             )
                                     }
@@ -147,9 +170,10 @@ fun itemScheduler(
                                 }
                             }
                         }
-                   }
+                    }
                 }
             }
+
             Row(
                 Modifier
                     .fillMaxWidth()

@@ -3,6 +3,7 @@ package com.catshome.classJournal.screens.Scheduler
 import android.util.Log
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.catshome.classJournal.R
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
 import com.catshome.classJournal.domain.communs.DayOfWeek
@@ -31,13 +32,19 @@ class SchedulerListViewModel @Inject constructor(
                     }
 
                     ItemType.lesson -> {//Если смахнули урок
-                        TODO()
+
+                       viewEvent.scheduler?.startLesson?.let { startLesson ->
+                           viewModelScope.launch {
+                               schedulerInteract.deleteLesson(dayOfWeek = viewEvent.dayOfWeek,
+                                   time = startLesson)
+                           }
+                       }
                     }
 
                     ItemType.client -> {
                         viewEvent.scheduler?.let { scheduler ->
                             viewModelScope.launch {
-                                if (!schedulerInteract.deleteClient(scheduler.toScheduler())) {
+                                if (!schedulerInteract.deleteClient(scheduler)) {
                                     viewState.isCanShowSnackBar = true
                                     obtainEvent(
                                         viewEvent = SchedulerListEvent.ShowSnackBar(
@@ -137,17 +144,12 @@ class SchedulerListViewModel @Inject constructor(
             schedulerInteract.getScheduler(null)?.collect { schedulerList ->
                 viewState = viewState.copy(
                     items =
-                        schedulerList.map {
-                            SchedulerItem(
-                                scheduler = it,
-                                isRemoved = false
-                            )
-                        }.sortedBy { it.scheduler.dayOfWeekInt }.toMutableList().groupBy {
-                            it.scheduler.dayOfWeek
+                        schedulerList.sortedBy { it.dayOfWeekInt }.toMutableList().groupBy {
+                            it.dayOfWeek
                         }.toMutableMap()
                 )
             }
         }
-        Log.e("CLJR", "LoadData scheduler")
+        Log.e("CLJR", "LoadData scheduler ${viewState.items}")
     }
 }

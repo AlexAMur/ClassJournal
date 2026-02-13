@@ -19,6 +19,9 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
     suspend fun editTime(dayOfWeek: DayOfWeek, oldTime:Int, newTime: Int, duration: Int) {
             //TODO здесь  будет измение времени занятия
     }
+    suspend fun deleteLesson(dayOfWeek: DayOfWeek, time: Long){
+        repository.deleteLesson(dayOfWeek = dayOfWeek , startTime = time)
+    }
 
     //Возвращает список клиентов в расписании весь или за опред. день(DayOfWeek)
     suspend fun getScheduler(dayOfWeek: DayOfWeek?): Flow<List<Scheduler>>? {

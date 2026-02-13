@@ -7,6 +7,13 @@ import com.catshome.classJournal.domain.communs.DayOfWeek
 import kotlinx.coroutines.flow.Flow
 
 class SchedulerRepositoryImpl(val storage: SchedulerRoomStorage): SchedulerRepository {
+    override suspend fun deleteLesson(
+        dayOfWeek: DayOfWeek,
+        startTime: Long
+    ): Boolean {
+       return storage.deleteLesson(dayOfWeek, startTime)
+    }
+
     override suspend fun saveScheduler(dayOfWeek: DayOfWeek, startTime: Long, scheduler: List<Scheduler>) {
         storage.saveScheduler(dayOfWeek =  dayOfWeek,
             startTime = startTime,
