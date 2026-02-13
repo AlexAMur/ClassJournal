@@ -29,9 +29,6 @@ fun hideGroup(
         it.child.groupUid == uidGroup && it.child.childUid.isNotEmpty()
     }?.toMutableList()
     a?.let {//  если есть дети в группе
-
-
-
         viewState.item.forEach { k, value ->
             if (a.isEmpty())
                 return@forEach

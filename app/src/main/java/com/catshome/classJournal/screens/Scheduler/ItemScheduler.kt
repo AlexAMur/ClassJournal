@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.Scheduler
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,7 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -30,14 +32,14 @@ import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.R
 import com.catshome.classJournal.communs.SwipeToDeleteContainer
-import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.toTimeString
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun itemScheduler(
     day: DayOfWeek,
-    itemsMap: Map<Long, List<Scheduler>?>?,
+    itemsMap: Map<Long, List<SchedulerItem>?>?,
     viewModel: SchedulerListViewModel,
     collapsItem: (Int) -> Unit,
     newTime: (Int) -> Unit,
@@ -93,6 +95,7 @@ fun itemScheduler(
                         .background(ClassJournalTheme.colors.disableColor)
                 ) {
                     stickyHeader {
+
                         Row(
                             Modifier
                                 .fillMaxWidth()
@@ -104,10 +107,10 @@ fun itemScheduler(
                                 text = timeLessonKey.toTimeString(),
                                 modifier = Modifier
                                     .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
-                                    .clickable(onClick = {editTime(index)}),
+                                    .clickable(onClick = { editTime(index) }),
                                 color = ClassJournalTheme.colors.primaryText,
                                 style = ClassJournalTheme.typography.caption,
-                                )
+                            )
                             TextButton(
                                 modifier = Modifier,
                                 onClick = newMember
@@ -120,36 +123,32 @@ fun itemScheduler(
                             }
                         }
                     }
-                   lists?.let {listsScheduler ->
-                        itemsIndexed(listsScheduler) {index, value ->
-                            value.name?.let {
+                    lists?.let { listsScheduler ->
+                        items(
+                            listsScheduler,
+                            key = { it.scheduler.uid!! }
+                        ) { value ->
+                            value.scheduler.name?.let { text ->
                                 SwipeToDeleteContainer(
-                                    item = it,
-                                    onDelete = {
-                                        //programmingLanguages -= language
-                                        viewModel.obtainEvent(SchedulerListEvent.DeleteSwipe(
-                                            type = ItemType.client,
-                                            key = day.shortName,
-                                            scheduler = value,
-                                            context =context)
-                                        )
+                                    item = text,
+                                    onDelete = { deleteItem ->
+                                        if (deleteItem == value.scheduler.name)
+                                            viewModel.obtainEvent(
+                                                SchedulerListEvent.DeleteSwipe(
+                                                    type = ItemType.client,
+                                                    key = day.shortName,
+                                                    scheduler = value,
+                                                    context = context
+                                                )
+                                            )
                                     }
                                 ) { name ->
-//                                    Row {
-//                                    Text(
-//                                        text = name,
-//                                        modifier = Modifier
-//                                            .fillMaxWidth()
-//                                            .background(ClassJournalTheme.colors.primaryBackground)
-//                                            .padding(16.dp)
-//                                    )
-//                                }
                                     ItemListScheduler(name) //можно добввить onClick
                                 }
                             }
                         }
-                    }
-               // }
+                   }
+                }
             }
             Row(
                 Modifier

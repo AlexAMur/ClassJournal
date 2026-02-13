@@ -1,9 +1,7 @@
 package com.catshome.classJournal.screens.Scheduler
 
 import androidx.compose.material.DismissState
-import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.rememberDismissState
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import java.util.Collections.emptyMap
@@ -28,6 +26,9 @@ data class SchedulerListState(
 )
 data class SchedulerItem @OptIn(ExperimentalMaterialApi::class) constructor(
     val scheduler: Scheduler,
-    var isRemoved: Boolean =false,
-    val state: DismissState
+    var isRemoved: Boolean,
+    var state: DismissState?= null
 )
+fun SchedulerItem.toScheduler(): Scheduler{
+    return this.scheduler
+}

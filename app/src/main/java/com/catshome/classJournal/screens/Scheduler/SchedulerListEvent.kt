@@ -11,7 +11,7 @@ import kotlin.time.Duration
 sealed class SchedulerListEvent {
     //при нажатии на кнопку новый урок
     data class NewClicked(val index: Int,val  isNewLesson: Boolean): SchedulerListEvent()
-    data class DeleteSwipe(val type: ItemType,val key: String, val scheduler: Scheduler?,val  context: Context): SchedulerListEvent()
+    data class DeleteSwipe(val type: ItemType,val key: String, val scheduler: SchedulerItem?,val  context: Context): SchedulerListEvent()
     data object NewLesson: SchedulerListEvent()//(val day: DayOfWeek, val time: Int, val duration: Int): SchedulerListEvent()
     data object EditTime: SchedulerListEvent()
     data object ReloadScheduler: SchedulerListEvent()

@@ -28,6 +28,7 @@ roomplagin_version = "2.8.4"
 kotlinandroid_ver = "2.3.10"
 kotlinx_datetime_ver = "0.7.1"
 identityJvm = "202411.1"
+foundation = "1.10.2"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -60,6 +61,7 @@ hilt-navigation-compose= {module ="androidx.hilt:hilt-navigation-compose", name 
 kotlinx-datetime={module = "org.jetbrains.kotlinx:kotlinx-datetime",name = "kotlinx-datetime", version.ref= "kotlinx_datetime_ver"}
 identity-jvm = { group = "com.android.identity", name = "identity-jvm", version.ref = "identityJvm" }
 serialisation = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "ver_serial_json" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 
 [plugins]

@@ -1,5 +1,6 @@
 package com.catshome.classJournal.communs
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
@@ -30,11 +31,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import com.catshome.classJournal.screens.Scheduler.SchedulerItem
+import com.catshome.classJournal.screens.Scheduler.SchedulerListState
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun <T> SwipeToDeleteContainer(
     item: T,
-    state: DismissState,
     onDelete: (T) -> Unit,
     animationDuration: Int = 500,
     content: @Composable (T) -> Unit
@@ -42,7 +45,6 @@ fun <T> SwipeToDeleteContainer(
     var isRemoved by remember {
         mutableStateOf(false)
     }
-
     val state = rememberDismissState(
         confirmStateChange = { value ->
             if (value == DismissValue.DismissedToStart) {
@@ -53,7 +55,6 @@ fun <T> SwipeToDeleteContainer(
             }
         }
     )
-
     LaunchedEffect(key1 = isRemoved) {
         if (isRemoved) {
             delay(animationDuration.toLong())
@@ -68,14 +69,17 @@ fun <T> SwipeToDeleteContainer(
             shrinkTowards = Alignment.Top
         ) + fadeOut()
     ) {
-        SwipeToDismiss(
-            state = state,
-            background = {
-                DeleteBackground(swipeDismissState = state)
-            },
-            dismissContent = { content(item) },
-            directions = setOf(DismissDirection.EndToStart)
-        )
+
+        if (state != null) {
+            SwipeToDismiss(
+                state = state,
+                background = {
+                    DeleteBackground(swipeDismissState = state)
+                },
+                dismissContent = { content(item) },
+                directions = setOf(DismissDirection.EndToStart)
+            )
+        }
     }
 }
 @OptIn(ExperimentalMaterialApi::class)

@@ -1,9 +1,9 @@
 package com.catshome.classJournal.screens.Scheduler
 
 import android.util.Log
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.R
-import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
@@ -37,17 +37,17 @@ class SchedulerListViewModel @Inject constructor(
                     ItemType.client -> {
                         viewEvent.scheduler?.let { scheduler ->
                             viewModelScope.launch {
-                                if (!schedulerInteract.deleteClient(scheduler)) {
+                                if (!schedulerInteract.deleteClient(scheduler.toScheduler())) {
                                     viewState.isCanShowSnackBar = true
                                     obtainEvent(
-                                        SchedulerListEvent.ShowSnackBar(
-                                            true,
+                                        viewEvent = SchedulerListEvent.ShowSnackBar(
+                                            showSnackBar = true,
                                             message = viewEvent.context.getString(R.string.error_save)
                                         )
                                     )
                                 } else
-
-                                viewState.items[viewEvent.key] = viewState.items[viewEvent.key]?.filter { it!=scheduler }
+                                    viewState.items[viewEvent.key] =
+                                        viewState.items[viewEvent.key]?.filter { it != scheduler }
                             }
                         }
                     }//Если смахнули только одну запись
@@ -131,13 +131,20 @@ class SchedulerListViewModel @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     fun loadData() {
         viewModelScope.launch {
             schedulerInteract.getScheduler(null)?.collect { schedulerList ->
                 viewState = viewState.copy(
                     items =
-                        schedulerList.sortedBy{ it.dayOfWeekInt }.toMutableList().groupBy {
-                            it.dayOfWeek}.toMutableMap()
+                        schedulerList.map {
+                            SchedulerItem(
+                                scheduler = it,
+                                isRemoved = false
+                            )
+                        }.sortedBy { it.scheduler.dayOfWeekInt }.toMutableList().groupBy {
+                            it.scheduler.dayOfWeek
+                        }.toMutableMap()
                 )
             }
         }
