@@ -32,6 +32,7 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
                obtainEvent(NewSchedulerEvent.Search(viewState.searchText))
             }
             CloseEvent -> viewAction = NewSchedulerAction.CloseScreen
+
             SaveEvent -> {
                 val list = viewState.itemsList?.filter { it.isChecked }
                 list?.let {
@@ -57,11 +58,11 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
                 }
             }
 
-            NewSchedulerEvent.ClearSearch -> {
+            ClearSearch -> {
                 obtainEvent(Search(""))
             }
 
-            is NewSchedulerEvent.Checked -> {
+            is Checked -> {
                 viewState = viewState.copy(
                     itemsList =
                         viewState.itemsList?.mapIndexed { index, scheduler ->

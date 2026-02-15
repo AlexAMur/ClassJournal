@@ -1,6 +1,5 @@
 package com.catshome.classJournal.screens.Scheduler
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,7 +44,7 @@ fun itemScheduler(
     collapsItem: (Int) -> Unit,
     newTime: (Int) -> Unit,
     editTime: (Int) -> Unit,
-    newMember: () -> Unit
+    addMember: () -> Unit
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val context = LocalContext.current
@@ -115,8 +114,6 @@ fun itemScheduler(
                                 )
                             }
                         ) { name ->//тут контент
-
-
                             Row(
                                 Modifier
                                     .fillMaxWidth()
@@ -134,7 +131,7 @@ fun itemScheduler(
                                 )
                                 TextButton(
                                     modifier = Modifier,
-                                    onClick = newMember
+                                    onClick = addMember
                                 ) {
                                     Icon(
                                         Icons.TwoTone.Add,
@@ -153,17 +150,16 @@ fun itemScheduler(
                             value.name?.let { text ->
                                 SwipeToDeleteContainer(
                                     item = text,
-                                    onDelete = { deleteItem ->
-                                        if (deleteItem == value.name)
-                                            viewModel.obtainEvent(
-                                                SchedulerListEvent.DeleteSwipe(
-                                                    type = ItemType.client,
-                                                    key = day.shortName,
-                                                    scheduler = value,
-                                                    context = context,
-                                                    dayOfWeek = day
-                                                )
+                                    onDelete = {
+                                        viewModel.obtainEvent(
+                                            SchedulerListEvent.DeleteSwipe(
+                                                type = ItemType.client,
+                                                key = day.shortName,
+                                                scheduler = value,
+                                                context = context,
+                                                dayOfWeek = day
                                             )
+                                        )
                                     }
                                 ) { name ->
                                     ItemListScheduler(name) //можно добввить onClick
@@ -173,7 +169,6 @@ fun itemScheduler(
                     }
                 }
             }
-
             Row(
                 Modifier
                     .fillMaxWidth()

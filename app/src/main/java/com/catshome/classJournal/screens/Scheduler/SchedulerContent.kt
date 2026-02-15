@@ -105,7 +105,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                             collapsItem={
                                 viewModel.obtainEvent(SchedulerListEvent.CollapseItem(it))
                             },
-                            newMember = {
+                            addMember = {
                               // viewModel.obtainEvent(SchedulerListEvent.NewLesson(day, ))
                             },
                             newTime ={ index->

@@ -24,15 +24,14 @@ class SchedulerListViewModel @Inject constructor(
     override fun obtainEvent(viewEvent: SchedulerListEvent) {
 
         when (viewEvent) {
+            is SchedulerListEvent.AddMemberLesson->{
+                // Добавление ученика в урок
+                фывафвдлфыджол
+            }
             is SchedulerListEvent.DeleteSwipe -> {
                 //Удаление в расписании
                 when (viewEvent.type) {
-                    ItemType.day -> {   //Если смахнули день
-                        TODO()
-                    }
-
                     ItemType.lesson -> {//Если смахнули урок
-
                        viewEvent.scheduler?.startLesson?.let { startLesson ->
                            viewModelScope.launch {
                                schedulerInteract.deleteLesson(dayOfWeek = viewEvent.dayOfWeek,
