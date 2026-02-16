@@ -19,12 +19,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import kotlin.time.Clock
 
 @Composable
-fun ItemListScheduler(text: String, onClick: () -> Unit = {}) {
+fun ItemListScheduler(image: Painter, text: String, onClick: () -> Unit = {}) {
 
     //  Row
 //    (
@@ -43,7 +45,7 @@ fun ItemListScheduler(text: String, onClick: () -> Unit = {}) {
                 IconButton(modifier = Modifier.background(ClassJournalTheme.colors.primaryBackground),
             onClick = onClick) {
             Icon(
-                Icons.Default.Close,
+                painter = image,
                 contentDescription = null,
                 tint = ClassJournalTheme.colors.tintColor
             )

@@ -209,6 +209,7 @@ fun NewSchedulerScreen(
 //                }
 //            }
             //viewState.isResetState = true
+
             viewModel.clearAction()
 
         }

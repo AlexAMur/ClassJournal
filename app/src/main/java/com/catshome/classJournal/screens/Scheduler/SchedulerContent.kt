@@ -52,17 +52,17 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
 
                     //    keyboardController?.hide()
                     SnackBarAction(
-                        message = viewState.messageShackBar?:"",
+                        message = viewState.messageShackBar ?: "",
                         actionLabel = viewState.snackBarAction
                             ?: context.getString(R.string.ok),
                         sbHostState,
                         onDismissed = viewState.onDismissed ?: {
-                            viewState.isCanShowSnackBar =false
+                            viewState.isCanShowSnackBar = false
                             viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(false))
                             //     viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
                         },
                         onActionPerformed = viewState.onAction ?: {
-                            viewState.isCanShowSnackBar =false
+                            viewState.isCanShowSnackBar = false
                             viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(false))
                             //      viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
                         }
@@ -98,23 +98,40 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                     items(DayOfWeek.entries.toTypedArray()) { day ->
                         itemScheduler(
                             day = day,
-                            itemsMap =  viewState.items[day.shortName]?.sortedBy { it.startLesson }?.groupBy {
-                                it.startLesson as Long
-                            },
-                            viewModel =viewModel,
-                            collapsItem={
+                            itemsMap = viewState.items[day.shortName]?.sortedBy { it.startLesson }
+                                ?.groupBy {
+                                    it.startLesson as Long
+                                },
+                            viewModel = viewModel,
+                            collapsItem = {
                                 viewModel.obtainEvent(SchedulerListEvent.CollapseItem(it))
                             },
-                            addMember = {
-                              // viewModel.obtainEvent(SchedulerListEvent.NewLesson(day, ))
+                            addMember = { day, time, duration ->
+                                viewModel.obtainEvent(
+                                    SchedulerListEvent.AddMemberLesson(
+                                        dayOfWeek = day,
+                                        time = time,
+                                        duration = duration
+                                    )
+                                )
                             },
-                            newTime ={ index->
+                            newTime = { index ->
                                 //запускаем диалог выбора времени и передаем данные о дне недели  и признак добавления
-                                viewModel.obtainEvent(SchedulerListEvent.NewClicked(index, isNewLesson = true))
+                                viewModel.obtainEvent(
+                                    SchedulerListEvent.NewClicked(
+                                        index,
+                                        isNewLesson = true
+                                    )
+                                )
                             },
-                            editTime ={ index->
-                                //запускаем диалог выбора времени для изменения
-                                viewModel.obtainEvent(SchedulerListEvent.NewClicked(index, isNewLesson = false))
+                            editTime = { index ->
+                                //запускаем диалог выбора времени изменения
+                                viewModel.obtainEvent(
+                                    SchedulerListEvent.NewClicked(
+                                        index,
+                                        isNewLesson = false
+                                    )
+                                )
                             }
                         )
                     }
@@ -126,14 +143,15 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                     context = context,
                     onDismiss = {
                         viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
-                                },
-                    onConfirm = {time, duration->
+                    },
+                    onConfirm = { time, duration ->
                         // закрываем окно выбора времени  и сохраняем новое значение
                         viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
                         viewModel.obtainEvent(
                             SchedulerListEvent.SetTime(
-                                time= time.hour*60+time.minute,
-                                duration=duration)
+                                time = time.hour * 60 + time.minute,
+                                duration = duration
+                            )
                         )
                     }
                 ) {

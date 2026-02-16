@@ -18,7 +18,7 @@ fun ClientScheduler.mapToScheduler(
     duration: Int
 ): Scheduler {
     return Scheduler(
-        uid = this.uid,
+        uid = this.uid.ifEmpty { UUID.randomUUID().toString() },
         dayOfWeek = dayOfWeek.shortName,
         dayOfWeekInt = dayOfWeek.ordinal,
         uidChild = this.uidChild,

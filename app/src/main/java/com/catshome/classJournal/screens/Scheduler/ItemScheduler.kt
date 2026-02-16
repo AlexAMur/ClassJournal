@@ -44,7 +44,7 @@ fun itemScheduler(
     collapsItem: (Int) -> Unit,
     newTime: (Int) -> Unit,
     editTime: (Int) -> Unit,
-    addMember: () -> Unit
+    addMember: (DayOfWeek,Int, Int) -> Unit
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val context = LocalContext.current
@@ -122,16 +122,17 @@ fun itemScheduler(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = timeLessonKey.toTimeString(),
+                                    text = "Начало:${timeLessonKey.toTimeString()} длительность: ${lists?.first()?.duration}",
                                     modifier = Modifier
                                         .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
                                         .clickable(onClick = { editTime(index) }),
                                     color = ClassJournalTheme.colors.primaryText,
                                     style = ClassJournalTheme.typography.caption,
                                 )
+
                                 TextButton(
                                     modifier = Modifier,
-                                    onClick = addMember
+                                    onClick = {addMember(day, timeLessonKey.toInt(), lists?.first()?.duration?:viewState.durationLesson?:viewState.durationLesson?:0)}
                                 ) {
                                     Icon(
                                         Icons.TwoTone.Add,
@@ -162,7 +163,12 @@ fun itemScheduler(
                                         )
                                     }
                                 ) { name ->
-                                    ItemListScheduler(name) //можно добввить onClick
+                                    ItemListScheduler(
+                                        image= if(value.uidChild.isNullOrEmpty())
+                                            painterResource(R.drawable.fil_group_24)
+                                        else
+                                            painterResource(R.drawable.account_box_24),
+                                        text=  name) //можно добввить onClick
                                 }
                             }
                         }

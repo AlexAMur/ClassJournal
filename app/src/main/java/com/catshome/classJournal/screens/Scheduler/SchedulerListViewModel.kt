@@ -26,7 +26,10 @@ class SchedulerListViewModel @Inject constructor(
         when (viewEvent) {
             is SchedulerListEvent.AddMemberLesson->{
                 // Добавление ученика в урок
-                фывафвдлфыджол
+               viewState.selectDay = viewEvent.dayOfWeek
+               viewState.timeLesson = viewEvent.time
+                viewState.durationLesson = viewEvent.duration
+                obtainEvent(SchedulerListEvent.NewLesson)
             }
             is SchedulerListEvent.DeleteSwipe -> {
                 //Удаление в расписании
@@ -101,13 +104,13 @@ class SchedulerListViewModel @Inject constructor(
             }
 
             is SchedulerListEvent.SetTime -> {
-                if (viewState.durationLesson != viewEvent.duration) {
+                if (viewState.durationLesson != viewEvent.duration) { // новое время
                     viewState.oldDurationLesson = viewState.durationLesson
                     viewState.durationLesson = viewEvent.duration
                 } else
                     viewState.oldDurationLesson = null
 
-                if (!viewState.isNewLesson || viewState.oldDurationLesson != null) {
+                if (!viewState.isNewLesson || viewState.oldDurationLesson != null) {  //новое занятие
                     //обновить время для всех записей со старым зачение времени
                     viewState.oldTimeLesson = viewState.timeLesson
                     viewState.timeLesson = viewEvent.time

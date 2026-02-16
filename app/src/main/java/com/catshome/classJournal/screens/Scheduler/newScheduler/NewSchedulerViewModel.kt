@@ -2,6 +2,7 @@ package com.catshome.classJournal.screens.Scheduler.newScheduler
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
 import com.catshome.classJournal.domain.Scheduler.mapToScheduler
 import com.catshome.classJournal.screens.PayList.NewPayEvent
@@ -11,6 +12,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,27 +30,33 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
 
     override fun obtainEvent(viewEvent: NewSchedulerEvent) {
         when (viewEvent) {
-            ReloadClient->{
-                Log.e("CLJR", "ReloadClient")
-               obtainEvent(NewSchedulerEvent.Search(viewState.searchText))
+            ReloadClient -> {
+                obtainEvent(NewSchedulerEvent.Search(viewState.searchText))
             }
+
             CloseEvent -> viewAction = NewSchedulerAction.CloseScreen
 
             SaveEvent -> {
                 val list = viewState.itemsList?.filter { it.isChecked }
                 list?.let {
-                    viewState.dayOfWeek?.let { dayOfWeek ->
-                        viewModelScope.launch {
-                            interact.saveScheduler(
-                                dayOfWeek = dayOfWeek,
-                                time = viewState.startTime.toLong(),
-                                duration = viewState.duration,
-                                list = list
-                            )
+                    viewModelScope.launch {
+                        viewState.dayOfWeek?.let { dayOfWeek ->
+                            val deferred = CoroutineScope(Dispatchers.IO).async {
+                                interact.saveScheduler(
+                                    dayOfWeek = dayOfWeek,
+                                    time = viewState.startTime.toLong(),
+                                    duration = viewState.duration,
+                                    list = list
+                                )
+                                return@async true
+                            }
+                            if (deferred.await()) {
+                                obtainEvent(ClearState)
+                                viewAction = NewSchedulerAction.Save
+                            }
                         }
                     }
                 }
-                viewAction = NewSchedulerAction.Save
             }
 
             is Search -> {
@@ -71,6 +80,16 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
                             else
                                 scheduler
                         }
+                )
+            }
+
+            ClearState -> {
+                viewState = viewState.copy(
+                    itemsList = null,
+                    dayOfWeek = null,
+                    startTime = 0,
+                    duration = 0,
+                    searchText = ""
                 )
             }
         }

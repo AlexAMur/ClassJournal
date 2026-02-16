@@ -1,5 +1,6 @@
 package com.catshome.classJournal.domain.Scheduler
 
+import com.android.identity.util.UUID
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +12,11 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
         repository.saveScheduler(dayOfWeek= dayOfWeek,
             startTime = time,
             list.map {
-                it.mapToScheduler(dayOfWeek = dayOfWeek,
+
+
+                it.mapToScheduler(
+
+                    dayOfWeek = dayOfWeek,
                     startLesson = time,
                     duration = duration)
             })
