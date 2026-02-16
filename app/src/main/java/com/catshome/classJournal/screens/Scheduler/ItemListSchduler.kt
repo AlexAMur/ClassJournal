@@ -4,6 +4,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,10 +42,12 @@ fun ItemListScheduler(image: Painter, text: String, onClick: () -> Unit = {}) {
 //        verticalAlignment = Alignment.CenterVertically,
 //        horizontalArrangement = Arrangement.Start
 //    )
-    Row {
+    Row(modifier = Modifier.background(ClassJournalTheme.colors.primaryBackground),
+        verticalAlignment = Alignment.CenterVertically) {
                 IconButton(modifier = Modifier.background(ClassJournalTheme.colors.primaryBackground),
             onClick = onClick) {
             Icon(
+                modifier = Modifier.fillMaxHeight(),
                 painter = image,
                 contentDescription = null,
                 tint = ClassJournalTheme.colors.tintColor
