@@ -208,7 +208,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                             value = viewState.beginDate,
                             label = stringResource(R.string.begin_date)
                         ) {
-                            viewModel.beginDateChange("${it?.toDateStringRU()} 00:00:00")
+                            viewModel.beginDateChange("${it?.toDateStringRU()} 00:00")
                         }
                         DatePickerFieldToModal(
                             modifier = Modifier
@@ -216,7 +216,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                             value = viewState.endDate,
                             label = stringResource(R.string.end_date)
                         ) {
-                            viewModel.endDateChange("${it?.toDateStringRU()} 23:59:59")
+                            viewModel.endDateChange("${it?.toDateStringRU()} 23:59")
                         }
                     }
                 }

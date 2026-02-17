@@ -139,7 +139,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
             }
             if (viewState.showStartTimePicker) {
                 TimePikerDialog(
-                    title = "Начало занятия",
+                    title = "Начало:",
                     context = context,
                     onDismiss = {
                         viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))

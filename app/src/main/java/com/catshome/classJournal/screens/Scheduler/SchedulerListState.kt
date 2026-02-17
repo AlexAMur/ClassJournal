@@ -1,7 +1,5 @@
 package com.catshome.classJournal.screens.Scheduler
 
-import androidx.compose.material.DismissState
-import androidx.compose.material.ExperimentalMaterialApi
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import java.util.Collections.emptyMap

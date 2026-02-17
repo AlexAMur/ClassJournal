@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.Scheduler
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,8 +21,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,7 +50,7 @@ fun itemScheduler(
     collapsItem: (Int) -> Unit,
     newTime: (Int) -> Unit,
     editTime: (Int) -> Unit,
-    addMember: (DayOfWeek,Int, Int) -> Unit
+    addMember: (DayOfWeek, Int, Int) -> Unit
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val context = LocalContext.current
@@ -89,6 +95,7 @@ fun itemScheduler(
         }
         if (viewState.dayList[index]) {
             itemsMap?.forEach { (timeLessonKey, lists) ->
+                var isCollapse by rememberSaveable { mutableStateOf(true) }
                 LazyColumn(
                     Modifier
                         .heightIn(min = 56.dp, max = 500.dp)
@@ -122,9 +129,10 @@ fun itemScheduler(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Начало:${timeLessonKey.toTimeString()} длительность: ${lists?.first()?.duration}",
+                                    text = "Начало:${timeLessonKey.toTimeString()}  ${lists?.first()?.duration} min",
                                     modifier = Modifier
                                         .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
+                                        .weight(1f)
                                         .clickable(onClick = { editTime(index) }),
                                     color = ClassJournalTheme.colors.primaryText,
                                     style = ClassJournalTheme.typography.caption,
@@ -132,7 +140,27 @@ fun itemScheduler(
 
                                 TextButton(
                                     modifier = Modifier,
-                                    onClick = {addMember(day, timeLessonKey.toInt(), lists?.first()?.duration?:viewState.durationLesson?:viewState.durationLesson?:0)}
+                                    onClick = {
+                                        isCollapse = !isCollapse
+                                    }
+                                ) {
+                                    Icon(
+                                        if (isCollapse) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                                        contentDescription = stringResource(R.string.add_scheduler_),
+                                        tint = ClassJournalTheme.colors.tintColor
+                                    )
+                                }
+
+                                TextButton(
+                                    modifier = Modifier,
+                                    onClick = {
+                                        addMember(
+                                            day,
+                                            timeLessonKey.toInt(),
+                                            lists?.first()?.duration ?: viewState.durationLesson
+                                            ?: viewState.durationLesson ?: 0
+                                        )
+                                    }
                                 ) {
                                     Icon(
                                         Icons.TwoTone.Add,
@@ -148,28 +176,16 @@ fun itemScheduler(
                             listsScheduler,
                             key = { it.uid!! }
                         ) { value ->
-                            value.name?.let { text ->
-                                SwipeToDeleteContainer(
-                                    item = text,
-                                    onDelete = {
-                                        viewModel.obtainEvent(
-                                            SchedulerListEvent.DeleteSwipe(
-                                                type = ItemType.client,
-                                                key = day.shortName,
-                                                scheduler = value,
-                                                context = context,
-                                                dayOfWeek = day
-                                            )
-                                        )
-                                    }
-                                ) { name ->
-                                    ItemListScheduler(
-                                        image= if(value.uidChild.isNullOrEmpty())
-                                            painterResource(R.drawable.fil_group_24)
-                                        else
-                                            painterResource(R.drawable.account_box_24),
-                                        text=  name) //можно добввить onClick
-                                }
+                            ItemLesson(value, isCollapse) {
+                                viewModel.obtainEvent(
+                                    SchedulerListEvent.DeleteSwipe(
+                                        type = ItemType.client,
+                                        key = day.shortName,
+                                        scheduler = value,
+                                        context = context,
+                                        dayOfWeek = day
+                                    )
+                                )
                             }
                         }
                     }

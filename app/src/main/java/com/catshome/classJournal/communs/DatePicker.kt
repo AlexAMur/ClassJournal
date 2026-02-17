@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.toDateRu
+import com.catshome.classJournal.domain.communs.toDateStringRU
 import com.catshome.classJournal.domain.communs.toLocalDateTime
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
@@ -38,21 +39,27 @@ fun DatePickerFieldToModal(
     modifier: Modifier = Modifier,
     value: String,
     label: String,
-    supportText: String?= null,
+    supportText: String? = null,
     onDateSelected: (Long?) -> Unit
 ) {
-        var date by remember { mutableStateOf(
+    var date by remember {
+        mutableStateOf(
             if (value.length == DATE_FORMAT_RU.length)
-            value.toDateRu()?.time
-            else
-            value.toLocalDateTime()?.toLong()
-        ) }
+                value.toDateRu()?.time
+            else {
+                if (value.isEmpty())
+                    Date().time
+                else
+                value.toLocalDateTime()?.toLong()
+            }
+        )
+    }
     var showModal by rememberSaveable { mutableStateOf(false) }
     //val datePickerState = rememberDatePickerState()
     //var t =  convertMillisToDate(selectedDate?:0)?:""
 
     TextField(
-        value = value,
+        value = date?.toDateStringRU()?:Date().time.toDateStringRU(),
         label = label,
         supportingText = supportText,
         modifier = modifier,
@@ -67,12 +74,14 @@ fun DatePickerFieldToModal(
                 )
             }
         },
-        keyboardOptions = KeyboardOptions.Default.merge(KeyboardOptions(keyboardType = KeyboardType.Number)
+        keyboardOptions = KeyboardOptions.Default.merge(
+            KeyboardOptions(keyboardType = KeyboardType.Number)
         )
     )
     if (showModal) {
-           DatePickerModal(
-               inicialDate = Date.from(date?.toLocalDateTimeRu()?.toInstant(ZoneOffset.UTC))?: Date(),//Date.from(date.toLocalDateTime()?.toInstant(ZoneOffset.UTC))?: Date(),
+        DatePickerModal(
+            inicialDate = Date.from(date?.toLocalDateTimeRu()?.toInstant(ZoneOffset.UTC))
+                ?: Date(),//Date.from(date.toLocalDateTime()?.toInstant(ZoneOffset.UTC))?: Date(),
             onDateSelected = onDateSelected,
             onDismiss = { showModal = false }
         )

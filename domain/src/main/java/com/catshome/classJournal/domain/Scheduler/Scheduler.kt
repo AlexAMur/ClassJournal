@@ -8,5 +8,6 @@ data class Scheduler(
     val uidGroup: String?  = null,
     val name: String?  = null,
     val startLesson: Long?  = null,
-    val duration: Int?  = null
+    val duration: Int?  = null,
+    val isUnCollapse: Boolean = true
 )

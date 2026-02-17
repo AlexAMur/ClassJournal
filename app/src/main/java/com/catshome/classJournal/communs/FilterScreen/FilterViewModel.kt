@@ -6,11 +6,13 @@ import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.PayList.PayListInteractor
 import com.catshome.classJournal.domain.communs.SortEnum
+import com.catshome.classJournal.domain.communs.toDateRuString
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -163,21 +165,35 @@ class FilterViewModel @Inject constructor(
 
             1 -> {
                 viewState = viewState.copy(
-                    beginDate = "01.${LocalDate.now().month.value}.${LocalDate.now().year} 00:00:00",
-                    endDate = LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1)
-                        .toDateTimeRuString()
+                    beginDate = "01.${if(LocalDateTime.now().month.value.toString().length==1)
+                        "0${LocalDateTime.now().month.value}"
+                    else
+                        "${LocalDateTime.now().month.value}"
+                    }.${LocalDateTime.now().year} 00:00",
+                    endDate = "${LocalDateTime.now().toDateRuString()} 23:59"
                 )
             }
 
             2 -> {
                 viewState = viewState.copy(
-                    beginDate = "01.01.${LocalDate.now().year} 00:00:00",
+                    beginDate = "01.01.${LocalDate.now().year} 00:00",
                     endDate = LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1)
                         .toDateTimeRuString()
                 )
             }
 
             3 -> {//тут выбор переода стоит
+
+                if(viewState.beginDate.isEmpty() || viewState.endDate.isEmpty())
+                viewState = viewState.copy(
+                    beginDate = "01.${if(LocalDateTime.now().month.value.toString().length==1)
+                        "0${LocalDateTime.now().month.value}"
+                    else
+                        "${LocalDateTime.now().month.value}"
+                    }.${LocalDateTime.now().year} 00:00",
+                    endDate = "${LocalDateTime.now().toDateRuString()} 23:59"
+                )
+
                  }
 
             4 -> {

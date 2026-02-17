@@ -16,7 +16,7 @@ import kotlin.time.Instant
 import kotlin.time.toJavaInstant
 
 const val DATE_FORMAT_RU = "dd.MM.yyyy"
-const val DATETIME_FORMAT_RU = "dd.MM.yyyy HH:mm:ss"
+const val DATETIME_FORMAT_RU = "dd.MM.yyyy HH:mm"
 const val TIME_FORMAT = "HH:mm"
 
 
