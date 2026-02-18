@@ -145,13 +145,10 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
                     },
                     onConfirm = { time, duration ->
-                        // закрываем окно выбора времени  и сохраняем новое значение
-                        viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
                         viewModel.obtainEvent(
-                            SchedulerListEvent.SetTime(
+                            SchedulerListEvent.CheckTimeLesson(dayOfWeek = viewState.selectDay,
                                 time = time.hour * 60 + time.minute,
-                                duration = duration
-                            )
+                                duration)
                         )
                     }
                 ) {

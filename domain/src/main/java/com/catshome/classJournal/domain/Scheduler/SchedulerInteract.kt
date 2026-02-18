@@ -21,6 +21,12 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
                     duration = duration)
             })
     }
+    fun checkTimeLesson(dayOfWeek: DayOfWeek, startTime: Int, duration: Int): Boolean {
+        return repository.checkTimeLesson(dayOfWeek = dayOfWeek,
+            startTime = startTime,
+            duration = duration
+            )
+    }
     suspend fun editTime(dayOfWeek: DayOfWeek, oldTime:Int, newTime: Int, duration: Int) {
             //TODO здесь  будет измение времени занятия
     }

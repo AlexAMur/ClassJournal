@@ -5,8 +5,10 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.catshome.classJournal.R
+import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
 import com.catshome.classJournal.domain.communs.DayOfWeek
+import com.catshome.classJournal.screens.Scheduler.SchedulerListEvent.*
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -49,7 +51,7 @@ class SchedulerListViewModel @Inject constructor(
                                 if (!schedulerInteract.deleteClient(scheduler)) {
                                     viewState.isCanShowSnackBar = true
                                     obtainEvent(
-                                        viewEvent = SchedulerListEvent.ShowSnackBar(
+                                        viewEvent = ShowSnackBar(
                                             showSnackBar = true,
                                             message = viewEvent.context.getString(R.string.error_save)
                                         )
@@ -76,7 +78,7 @@ class SchedulerListViewModel @Inject constructor(
             is SchedulerListEvent.NewClicked -> {
                 viewState.selectDay = DayOfWeek.entries[viewEvent.index]
                 viewState.isNewLesson = viewEvent.isNewLesson
-                obtainEvent(SchedulerListEvent.ShowTimePiker(show = true))
+                obtainEvent(ShowTimePiker(show = true))
             }
 
             is SchedulerListEvent.NewLesson -> {
@@ -131,11 +133,33 @@ class SchedulerListViewModel @Inject constructor(
                 )
             }
 
-            is SchedulerListEvent.ShowSnackBar -> {
+            is ShowSnackBar -> {
                 viewState = viewState.copy(
                     isShowSnackBar = viewEvent.showSnackBar,
                     messageShackBar = viewEvent.message
                 )
+            }
+
+            is CheckTimeLesson -> {
+               if( schedulerInteract.checkTimeLesson(dayOfWeek = viewEvent.dayOfWeek, startTime =  viewEvent.time, duration = viewEvent.duration)){
+                obtainEvent(SchedulerListEvent.ShowSnackBar(
+                    showSnackBar = true,
+                    message = context.getString(R.string.error_lesson_time)
+                ))
+               }
+
+                viewState = viewState
+
+                // закрываем окно выбора времени  и сохраняем новое значение
+                obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
+                obtainEvent(
+                    SchedulerListEvent.SetTime(
+                        time = time.hour * 60 + time.minute,
+                        duration = duration
+                    )
+                )
+
+
             }
         }
     }

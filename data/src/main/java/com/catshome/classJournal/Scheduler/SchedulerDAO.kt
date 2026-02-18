@@ -65,4 +65,9 @@ interface SchedulerDAO{
         "Delete from scheduler where startLesson = :time and dayOfWeek = :dayOfWeek"
     )
     fun deleteByTimeLesson(dayOfWeek: Int, time: Long):Int
+
+    @Query("select count(*) from (select UID, startLesson, startLesson + duration as endTime  " +
+            " from scheduler where (startLesson between :start and :end or  " +
+            "endTime  between :start and :end) and dayOfWeek =:day)")
+    fun checkTimeLesson(day: Int, start: Int, end: Int):Int
 }

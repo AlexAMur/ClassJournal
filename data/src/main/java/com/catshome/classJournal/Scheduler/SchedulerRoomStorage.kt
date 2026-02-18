@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.zip
 import javax.inject.Inject
+import kotlin.time.Duration
 
 class SchedulerRoomStorage @Inject constructor(
     private val daoScheduler: SchedulerDAO,
@@ -70,5 +71,9 @@ class SchedulerRoomStorage @Inject constructor(
             }.sortedBy { name })
 
         return clients.toList()
+    }
+    //вернет tree если в этот день и время есть урок
+    fun checkLessonTime(dayOfWeek: DayOfWeek, startTime: Int, duration:Int): Boolean{
+        return daoScheduler.checkTimeLesson(dayOfWeek.ordinal, startTime, startTime+duration ) > 0
     }
 }

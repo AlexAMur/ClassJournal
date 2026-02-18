@@ -42,4 +42,12 @@ class SchedulerRepositoryImpl(val storage: SchedulerRoomStorage): SchedulerRepos
     override suspend fun deleteSchedule(scheduler: Scheduler): Boolean {
        return storage.delete(scheduler.mapToSchedulerEntity())
     }
+
+    override fun checkTimeLesson(
+        dayOfWeek: DayOfWeek,
+        startTime: Int,
+        duration: Int
+    ): Boolean {
+       return storage.checkLessonTime(dayOfWeek, startTime, duration)
+    }
 }

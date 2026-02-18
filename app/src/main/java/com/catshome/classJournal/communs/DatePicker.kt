@@ -47,10 +47,10 @@ fun DatePickerFieldToModal(
             if (value.length == DATE_FORMAT_RU.length)
                 value.toDateRu()?.time
             else {
-                if (value.isEmpty())
+                if (value.isEmpty()) {
                     Date().time
-                else
-                value.toLocalDateTime()?.toLong()
+                } else
+                    value.toLocalDateTime()?.toLong()
             }
         )
     }
@@ -59,7 +59,7 @@ fun DatePickerFieldToModal(
     //var t =  convertMillisToDate(selectedDate?:0)?:""
 
     TextField(
-        value = date?.toDateStringRU()?:Date().time.toDateStringRU(),
+        value = date?.toDateStringRU() ?: Date().time.toDateStringRU(),
         label = label,
         supportingText = supportText,
         modifier = modifier,
