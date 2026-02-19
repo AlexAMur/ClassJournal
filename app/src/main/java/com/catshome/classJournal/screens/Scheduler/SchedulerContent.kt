@@ -145,11 +145,15 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
                     },
                     onConfirm = { time, duration ->
-                        viewModel.obtainEvent(
-                            SchedulerListEvent.CheckTimeLesson(dayOfWeek = viewState.selectDay,
-                                time = time.hour * 60 + time.minute,
-                                duration)
-                        )
+                        viewState.selectDay?.let {day->
+                            viewModel.obtainEvent(
+                                SchedulerListEvent.CheckTimeLesson(
+                                    dayOfWeek = day,
+                                    time = time.hour * 60 + time.minute,
+                                    duration
+                                )
+                            )
+                        }
                     }
                 ) {
                     //тут можно добавить контент
@@ -158,31 +162,3 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
         }
     }
 }
-
-
-//bottomBar = {
-//    Row(Modifier.fillMaxWidth(), Arrangement.End) {
-//        fabMenu(
-//            listFAB = listOf(
-//                ItemFAB(
-//                    containerColor = ClassJournalTheme.colors.tintColor,
-//                    contentColor = ClassJournalTheme.colors.secondaryBackground,
-//                    icon = painterResource(R.drawable.outline_add_card_24),//R.drawable.pay),
-//                    onClick = {
-//                        viewModel.obtainEvent(SchedulerListEvent.NewClicked)
-//                    }
-//                )),
-//            fabVisible = viewState.showFAB
-//        )
-//        FloatingActionButton(
-//            modifier = Modifier.padding(
-//                bottom = paddingValues + 16.dp,
-//                end = 106.dp
-//            ),
-//            onClick = { viewModel.obtainEvent(SchedulerListEvent.NewClicked) }) {
-//            Icon(
-//                painter = painterResource(R.drawable.outline_add_card_24), ""
-//            )
-//        }
-//    }
-//}

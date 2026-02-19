@@ -19,7 +19,7 @@ sealed class SchedulerListEvent {
     data object ReloadScheduler: SchedulerListEvent()
     //получение данных из диалога времени
     data class SetTime(val time: Int, val duration: Int): SchedulerListEvent()
-    data class CheckTimeLesson( val dayOfWeek: DayOfWeek?,val time: Int, val duration: Int): SchedulerListEvent()
+    data class CheckTimeLesson( val dayOfWeek: DayOfWeek,val time: Int, val duration: Int): SchedulerListEvent()
     data class AddMemberLesson(val dayOfWeek: DayOfWeek,val time: Int, val duration: Int): SchedulerListEvent()
     data class CollapseItem(val index: Int): SchedulerListEvent()
     data class ShowSnackBar(val showSnackBar: Boolean, val message: String? =null): SchedulerListEvent()

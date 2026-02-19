@@ -142,7 +142,7 @@ class SchedulerListViewModel @Inject constructor(
 
             is CheckTimeLesson -> {
                if( schedulerInteract.checkTimeLesson(dayOfWeek = viewEvent.dayOfWeek, startTime =  viewEvent.time, duration = viewEvent.duration)){
-                obtainEvent(SchedulerListEvent.ShowSnackBar(
+                obtainEvent(ShowSnackBar(
                     showSnackBar = true,
                     message = context.getString(R.string.error_lesson_time)
                 ))
@@ -154,8 +154,8 @@ class SchedulerListViewModel @Inject constructor(
                 obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
                 obtainEvent(
                     SchedulerListEvent.SetTime(
-                        time = time.hour * 60 + time.minute,
-                        duration = duration
+                        time = viewEvent.time,
+                        duration = viewEvent.duration
                     )
                 )
 
