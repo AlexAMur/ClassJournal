@@ -13,7 +13,9 @@ sealed class SchedulerListEvent {
     data class NewClicked(val index: Int,val  isNewLesson: Boolean): SchedulerListEvent()
     data class DeleteSwipe(val type: ItemType,
                            val dayOfWeek: DayOfWeek,
-                           val key: String, val scheduler: Scheduler?,val  context: Context): SchedulerListEvent()
+                           val key: String,
+                           val scheduler: Scheduler?
+                           ,val  context: Context): SchedulerListEvent()
     data object NewLesson: SchedulerListEvent()//(val day: DayOfWeek, val time: Int, val duration: Int): SchedulerListEvent()
     data object EditTime: SchedulerListEvent()
     data object ReloadScheduler: SchedulerListEvent()

@@ -49,7 +49,6 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
             LaunchedEffect(viewState.isShowSnackBar) {
 
                 if (viewState.isShowSnackBar && viewState.isCanShowSnackBar) {
-
                     //    keyboardController?.hide()
                     SnackBarAction(
                         message = viewState.messageShackBar ?: "",
