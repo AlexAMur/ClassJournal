@@ -8,8 +8,10 @@ import androidx.room.OnConflictStrategy.Companion.ABORT
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.catshome.classJournal.Group.Models.GroupEntity
 import com.catshome.classJournal.PayList.PayEntity
 import com.catshome.classJournal.PayList.PayScreenEntity
+import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import kotlinx.coroutines.flow.Flow
 import java.time.DayOfWeek
@@ -70,4 +72,16 @@ interface SchedulerDAO{
             " from scheduler where (startLesson between :start and :end or  " +
             "endTime  between :start and :end) and dayOfWeek =:day)")
     fun checkTimeLesson(day: Int, start: Int, end: Int):Int
+
+    //Поиск по названию группы
+    @Query("Select uid , group_name  , isDelete  from 'groups' where group_name LIKE :name " +
+            "and isDelete = 0 and uid not in (select uidGroup from scheduler where dayOfWeek = :day" +
+            " and  uidGroup !='null')")
+    fun getGroupsByNameToScheduler(name: String, day: Int): List<GroupEntity>
+    //Поиск по имени
+    @Query("Select uid, (child_name|' '|child_surname) as fio , child_name as name, " +
+            "child_surname as surname  from child where name LIKE :name or surname Like :name" +
+            " and  isDelete = 0 and uid not in (select uidChild from scheduler where dayOfWeek = :day" +
+            " and startLesson = :lesson  and  uidChild !='null')")
+    fun getChildByNameToScheduler(name: String, day: Int, lesson: Long): List<MiniChild>
 }

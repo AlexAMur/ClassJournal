@@ -23,7 +23,17 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
         (installState = NewSchedulerState()) {
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            viewState = viewState.copy(itemsList = interact.getListClient("%%"))
+            viewState.dayOfWeek?.let { day ->
+                viewState.startTime?.let { timeLesson ->
+                    viewState = viewState.copy(
+                        itemsList = interact.getListClient(
+                            name = "%",
+                            dayOfWeek = day,
+                            startTimeLesson = timeLesson
+                        )
+                    )
+                }
+            }
 
         }
     }
@@ -62,8 +72,18 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
             is Search -> {
                 viewState = viewState.copy(searchText = viewEvent.search)
                 CoroutineScope(Dispatchers.IO).launch {
-                    viewState =
-                        viewState.copy(itemsList = interact.getListClient("%${viewEvent.search}%"))
+                    viewState.dayOfWeek?.let { day ->
+                        viewState.startTime?.let { lesson ->
+                            viewState =
+                                viewState.copy(
+                                    itemsList = interact.getListClient(
+                                        name = "%${viewEvent.search}%",
+                                        dayOfWeek = day,
+                                        startTimeLesson = lesson
+                                    )
+                                )
+                        }
+                    }
                 }
             }
 

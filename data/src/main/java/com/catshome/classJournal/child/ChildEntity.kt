@@ -52,10 +52,10 @@ fun Child.mapToChildEntity(): ChildEntity{
     val t =formatter.parse(this.birthday)?.time?:0
     return ChildEntity(
         uid = this.uid,
-        name = this.name.toString(),
-        surname = this.surname.toString(),
-        phone = this.phone.toString(),
-        note = this.note.toString(),
+        name = this.name,
+        surname = this.surname,
+        phone = this.phone,
+        note = this.note,
         birthday = formatter.parse(this.birthday).time,
         isDelete = this.isDelete,
         saldo = this.saldo

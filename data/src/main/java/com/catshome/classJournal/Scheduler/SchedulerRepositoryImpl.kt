@@ -35,8 +35,8 @@ class SchedulerRepositoryImpl(val storage: SchedulerRoomStorage): SchedulerRepos
       return storage.getClientByLesson(dayOfWeek.ordinal, startTime.toLong())
     }
 
-    override suspend fun getClientList(name:String): List<ClientScheduler>{
-      return  storage.getClients(name)
+    override suspend fun getClientList(name:String, dayOfWeek: DayOfWeek, startTimeLesson: Int): List<ClientScheduler>{
+      return  storage.getClients(name, dayOfWeek, startLesson = startTimeLesson)
     }
 
     override suspend fun deleteSchedule(scheduler: Scheduler): Boolean {
