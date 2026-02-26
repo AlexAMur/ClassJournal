@@ -11,6 +11,9 @@ import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.screens.Scheduler.SchedulerListEvent.*
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,26 +26,59 @@ class SchedulerListViewModel @Inject constructor(
         installState = SchedulerListState()
     ) {
 
+    private val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+        Log.e("CLJR", "Throwable")
+        when (throwable){
+            is IllegalArgumentException -> {
+                viewState.isCanShowSnackBar= true
+                obtainEvent(
+                    ShowSnackBar(
+                        showSnackBar = true,
+                        message = throwable.message
+                    )
+                )
+            }
+
+        }
+
+//        {
+//
+//            viewState = viewState.copy(
+//                isSnackbarShow = true,
+//                errorMessage = context?.getString(R.string.error_unique_child) ?: "Ошибка!!!",
+//                snackbarAction = context.getString(R.string.ok),
+//                onDismissed = { viewState = viewState.copy(isSnackbarShow = false) },
+//                onAction = { viewState = viewState.copy(isSnackbarShow = false) }
+//            )
+//            return@CoroutineExceptionHandler
+//        }
+
+
+    }
+
     override fun obtainEvent(viewEvent: SchedulerListEvent) {
 
         when (viewEvent) {
-            is SchedulerListEvent.AddMemberLesson->{
+            is SchedulerListEvent.AddMemberLesson -> {
                 // Добавление ученика в урок
-               viewState.selectDay = viewEvent.dayOfWeek
-               viewState.timeLesson = viewEvent.time
+                viewState.selectDay = viewEvent.dayOfWeek
+                viewState.timeLesson = viewEvent.time
                 viewState.durationLesson = viewEvent.duration
                 obtainEvent(SchedulerListEvent.NewLesson)
             }
+
             is SchedulerListEvent.DeleteSwipe -> {
                 //Удаление в расписании
                 when (viewEvent.type) {
                     ItemType.lesson -> {//Если смахнули урок
-                       viewEvent.scheduler?.startLesson?.let { startLesson ->
-                           viewModelScope.launch {
-                               schedulerInteract.deleteLesson(dayOfWeek = viewEvent.dayOfWeek,
-                                   time = startLesson)
-                           }
-                       }
+                        viewEvent.scheduler?.startLesson?.let { startLesson ->
+                            viewModelScope.launch {
+                                schedulerInteract.deleteLesson(
+                                    dayOfWeek = viewEvent.dayOfWeek,
+                                    time = startLesson
+                                )
+                            }
+                        }
                     }
 
                     ItemType.client -> {
@@ -141,25 +177,29 @@ class SchedulerListViewModel @Inject constructor(
             }
 
             is CheckTimeLesson -> {
-               if( schedulerInteract.checkTimeLesson(dayOfWeek = viewEvent.dayOfWeek, startTime =  viewEvent.time, duration = viewEvent.duration)){
-                obtainEvent(ShowSnackBar(
-                    showSnackBar = true,
-                    message = context.getString(R.string.error_lesson_time)
-                ))
-               }
+                CoroutineScope(Dispatchers.IO).launch(errorHandler) {
+                    if (schedulerInteract.checkTimeLesson(
+                            dayOfWeek = viewEvent.dayOfWeek,
+                            startTime = viewEvent.time,
+                            duration = viewEvent.duration
+                        )
+                    ) {
+                        throw IllegalArgumentException(context.getString(R.string.error_lesson_time))
+                    } else {
 
-                viewState = viewState
+                        //viewState = viewState
 
-                // закрываем окно выбора времени  и сохраняем новое значение
-                obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
-                obtainEvent(
-                    SchedulerListEvent.SetTime(
-                        time = viewEvent.time,
-                        duration = viewEvent.duration
-                    )
-                )
+                        // закрываем окно выбора времени  и сохраняем новое значение
+                        obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
+                        obtainEvent(
+                            SchedulerListEvent.SetTime(
+                                time = viewEvent.time,
+                                duration = viewEvent.duration
+                            )
+                        )
 
-
+                    }
+                }
             }
         }
     }

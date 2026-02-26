@@ -149,7 +149,6 @@ class ChildListViewModel @Inject constructor(
                 childItem.add(ChildItem(child = it))
             }
 
-
             childInteract.getGroup().collect { listgroup ->
                 listgroup.map { group ->
                     var add = false

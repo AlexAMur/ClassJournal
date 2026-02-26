@@ -21,7 +21,7 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
                     duration = duration)
             })
     }
-    fun checkTimeLesson(dayOfWeek: DayOfWeek, startTime: Int, duration: Int): Boolean {
+    suspend fun checkTimeLesson(dayOfWeek: DayOfWeek, startTime: Int, duration: Int): Boolean {
         return repository.checkTimeLesson(dayOfWeek = dayOfWeek,
             startTime = startTime,
             duration = duration
