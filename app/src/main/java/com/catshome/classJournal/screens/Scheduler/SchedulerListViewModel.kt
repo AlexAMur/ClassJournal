@@ -14,7 +14,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,9 +30,9 @@ class SchedulerListViewModel @Inject constructor(
 
     private val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         Log.e("CLJR", "Throwable")
-        when (throwable){
+        when (throwable) {
             is IllegalArgumentException -> {
-                viewState.isCanShowSnackBar= true
+                viewState.isCanShowSnackBar = true
                 obtainEvent(
                     ShowSnackBar(
                         showSnackBar = true,
@@ -59,6 +61,11 @@ class SchedulerListViewModel @Inject constructor(
     override fun obtainEvent(viewEvent: SchedulerListEvent) {
 
         when (viewEvent) {
+            is ShowDialog->{
+                viewState = viewState.copy(showDialog = viewEvent.isShowDialog,
+                    dialogHandler =  viewEvent.dialogHader,
+                    messageDialog = viewEvent.message )
+            }
             is SchedulerListEvent.AddMemberLesson -> {
                 // Добавление ученика в урок
                 viewState.selectDay = viewEvent.dayOfWeek
@@ -156,7 +163,7 @@ class SchedulerListViewModel @Inject constructor(
                 } else {  //добавляем новое занятие
                     viewState.oldTimeLesson = null
                     viewState.timeLesson = viewEvent.time
-                    obtainEvent(SchedulerListEvent.NewLesson)
+
                 }
             }
 
@@ -177,45 +184,35 @@ class SchedulerListViewModel @Inject constructor(
             }
 
             is CheckTimeLesson -> {
-                CoroutineScope(Dispatchers.IO).launch(errorHandler) {
-                    if (schedulerInteract.checkTimeLesson(
-                            dayOfWeek = viewEvent.dayOfWeek,
-                            startTime = viewEvent.time,
-                            duration = viewEvent.duration
-                        )
-                    ) {
-                        throw IllegalArgumentException(context.getString(R.string.error_lesson_time))
-                    } else {
 
-                        //viewState = viewState
-
-                        // закрываем окно выбора времени  и сохраняем новое значение
-                        obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
-                        obtainEvent(
-                            SchedulerListEvent.SetTime(
-                                time = viewEvent.time,
-                                duration = viewEvent.duration
-                            )
-                        )
-
-                    }
-                }
             }
         }
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
-    fun loadData() {
-        viewModelScope.launch {
-            schedulerInteract.getScheduler(null)?.collect { schedulerList ->
-                viewState = viewState.copy(
-                    items =
-                        schedulerList.sortedBy { it.dayOfWeekInt }.toMutableList().groupBy {
-                            it.dayOfWeek
-                        }.toMutableMap()
-                )
-            }
+    fun checkTime(dayOfWeek: DayOfWeek, time: Int, duration: Int): Boolean {
+        val jod = CoroutineScope(Dispatchers.IO).async {
+            return@async schedulerInteract.checkTimeLesson(
+                dayOfWeek = dayOfWeek,
+                startTime = time,
+                duration = duration
+            )
         }
-        Log.e("CLJR", "LoadData scheduler ${viewState.items}")
+        return runBlocking {  jod.await()}
     }
+
+
+@OptIn(ExperimentalMaterialApi::class)
+fun loadData() {
+    viewModelScope.launch {
+        schedulerInteract.getScheduler(null)?.collect { schedulerList ->
+            viewState = viewState.copy(
+                items =
+                    schedulerList.sortedBy { it.dayOfWeekInt }.toMutableList().groupBy {
+                        it.dayOfWeek
+                    }.toMutableMap()
+            )
+        }
+    }
+    Log.e("CLJR", "LoadData scheduler ${viewState.items}")
+}
 }

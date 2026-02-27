@@ -25,6 +25,9 @@ sealed class SchedulerListEvent {
     data class AddMemberLesson(val dayOfWeek: DayOfWeek,val time: Int, val duration: Int): SchedulerListEvent()
     data class CollapseItem(val index: Int): SchedulerListEvent()
     data class ShowSnackBar(val showSnackBar: Boolean, val message: String? =null): SchedulerListEvent()
+    data class ShowDialog(val isShowDialog: Boolean,
+                          val dialogHader: String = "Заголовок",
+                          val message: String? =null): SchedulerListEvent()
     //запуск и скрытие диалога времени
     data class ShowTimePiker(val show: Boolean,): SchedulerListEvent()
 }

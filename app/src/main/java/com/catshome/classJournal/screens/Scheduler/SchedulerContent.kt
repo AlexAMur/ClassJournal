@@ -10,18 +10,24 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
@@ -136,6 +142,28 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                     }
                 }
             }
+
+            if (viewState.showDialog) {
+                AlertDialog(
+                    onDismissRequest = { viewState.showDialog = false },
+                    title = { Text(viewState.dialogHandler ?: "Заголовок") },
+                    text = { Text(viewState.messageDialog ?: "") },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            viewModel.obtainEvent(SchedulerListEvent.ShowDialog(false))
+                            // закрываем окно выбора времени  и сохраняем новое значение
+                            viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
+                            viewModel.obtainEvent(SchedulerListEvent.NewLesson)
+                        }) { Text("OK") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            viewModel.obtainEvent(SchedulerListEvent.ShowDialog(false))
+
+                        }) { Text("Отмена") }
+                    }
+                )
+            }
             if (viewState.showStartTimePicker) {
                 TimePikerDialog(
                     title = "Начало:",
@@ -144,14 +172,35 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
                     },
                     onConfirm = { time, duration ->
-                        viewState.selectDay?.let {day->
+                        viewState.selectDay?.let { day ->
+                            //сохраняем время в state
                             viewModel.obtainEvent(
-                                SchedulerListEvent.CheckTimeLesson(
-                                    dayOfWeek = day,
+                                SchedulerListEvent.SetTime(
                                     time = time.hour * 60 + time.minute,
-                                    duration
+                                    duration = duration
                                 )
                             )
+                            // проверка времени начала занятия
+                            if (viewModel.checkTime(
+                                    dayOfWeek = day,
+                                    time = time.hour * 60 + time.minute,
+                                    duration = duration
+                                )
+                            ) {
+                                // не прошла проверку по времени занятия
+                                //запускаем диалог с подтверждением создания занятия
+                                viewModel.obtainEvent(
+                                    SchedulerListEvent.ShowDialog(
+                                        true,
+                                        dialogHader = context.getString(R.string.dialog_handler_time_lesson),
+                                        message = context.getString(R.string.error_time_lesson_value)
+                                    )
+                                )
+                            } else {
+                                // закрываем окно выбора времени  и сохраняем новое значение
+                                viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
+                                viewModel.obtainEvent(SchedulerListEvent.NewLesson)
+                            }
                         }
                     }
                 ) {

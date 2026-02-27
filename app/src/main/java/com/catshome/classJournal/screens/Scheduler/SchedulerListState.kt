@@ -6,6 +6,9 @@ import java.util.Collections.emptyMap
 
 data class SchedulerListState(
     var showStartTimePicker: Boolean = false,
+    var showDialog: Boolean =  false,
+    val messageDialog: String?= null,
+    val dialogHandler: String?= null,
     val messageShackBar: String?= null,
     val snackBarAction: String? =null,
     var onDismissed: (()->Unit)? = null,
