@@ -13,16 +13,21 @@ import javax.inject.Inject
 import kotlin.time.Duration
 
 class SchedulerRoomStorage @Inject constructor(
-    private val daoScheduler: SchedulerDAO,
-    private val daoClient: ChildGroupDAO
+    private val daoScheduler: SchedulerDAO
 ) {
-    suspend fun deleteLesson(dayOfWeek: DayOfWeek, time: Long): Boolean{
-       return daoScheduler.deleteLesson(dayOfWeek.ordinal, time)
+    suspend fun deleteLesson(dayOfWeek: DayOfWeek, time: Long): Boolean {
+        return daoScheduler.deleteLesson(dayOfWeek.ordinal, time)
     }
-    suspend fun saveScheduler(dayOfWeek: DayOfWeek, startTime: Long, scheduler: List<SchedulerEntity>) {
-        daoScheduler.saveScheduler(dayOfWeek = dayOfWeek.ordinal,
+    suspend fun saveScheduler(
+        dayOfWeek: DayOfWeek,
+        startTime: Long,
+        scheduler: List<SchedulerEntity>
+    ) {
+        daoScheduler.saveScheduler(
+            dayOfWeek = dayOfWeek.ordinal,
             startLesson = startTime,
-            scheduler)
+            list = scheduler
+        )
     }
 
     suspend fun update(scheduler: SchedulerEntity) {
@@ -30,10 +35,7 @@ class SchedulerRoomStorage @Inject constructor(
     }
 
     suspend fun delete(scheduler: SchedulerEntity): Boolean {
-        if (daoScheduler.delete(scheduler)>0)
-            return true
-        else
-            return false
+        return daoScheduler.delete(scheduler) > 0
     }
 
     suspend fun getSchedulers(): Flow<List<Scheduler>>? {
@@ -41,18 +43,25 @@ class SchedulerRoomStorage @Inject constructor(
             list.map { it.mapToScheduler() }
         }
     }
+
     suspend fun getSchedulersByDay(dayOfWeek: Int): Flow<List<Scheduler>>? {
         return daoScheduler.getSchedulerByDay(dayOfWeek)?.map { list ->
             list.map { it.mapToScheduler() }
         }
     }
+
     suspend fun getClientByLesson(dayOfWeek: Int, startTime: Long): Flow<List<Scheduler>>? {
         return daoScheduler.getClientsSchedulerByLesson(dayOfWeek, startTime)?.map { list ->
             list.map { it.mapToScheduler() }
         }
     }
+
     // отбор клиентов и/или групп по имени
-    suspend fun getClients(name: String, dayOfWeek: DayOfWeek, startLesson: Int): List<ClientScheduler> {
+    suspend fun getClients(
+        name: String,
+        dayOfWeek: DayOfWeek,
+        startLesson: Int
+    ): List<ClientScheduler> {
         val clients = daoScheduler.getGroupsByNameToScheduler(name, dayOfWeek.ordinal).map {
             ClientScheduler(
                 uidChild = null,
@@ -61,22 +70,35 @@ class SchedulerRoomStorage @Inject constructor(
                 isChecked = false
             )
         }.sortedBy { name }.toMutableList()
-        clients.addAll(daoScheduler.getChildByNameToScheduler(name,
-            dayOfWeek.ordinal,
-            lesson = startLesson.toLong()
-        ).map{miniChild->
-                    ClientScheduler(
-                        uidChild = miniChild.uid,
-                        uidGroup = null,
-                        name = miniChild.name,
-                        isChecked = false
-                    )
+        clients.addAll(
+            daoScheduler.getChildByNameToScheduler(
+                name,
+                dayOfWeek.ordinal,
+                lesson = startLesson.toLong()
+            ).map { miniChild ->
+                ClientScheduler(
+                    uidChild = miniChild.uid,
+                    uidGroup = null,
+                    name = miniChild.name,
+                    isChecked = false
+                )
             }.sortedBy { name })
 
         return clients.toList()
     }
+
     //вернет tree если в этот день и время есть урок
-    fun checkLessonTime(dayOfWeek: DayOfWeek, startTime: Int, duration:Int): Boolean{
-        return daoScheduler.checkTimeLesson(dayOfWeek.ordinal, startTime, startTime+duration ) > 0
+    fun checkLessonTime(dayOfWeek: DayOfWeek, startTime: Int, duration: Int): Boolean {
+        return daoScheduler.checkTimeLesson(dayOfWeek.ordinal, startTime, startTime + duration) > 0
+    }
+
+   suspend fun updateTimeLesson(dayOfWeek: DayOfWeek,timeLesson: Int, newTime: Int, duration: Int): Boolean{
+        return true
+//       daoScheduler.updateTimeLesson(
+//            dayOfWeek = dayOfWeek.ordinal,
+//            oldTime = timeLesson,
+//            newTime = newTime,
+//            duration = duration
+//        )
     }
 }

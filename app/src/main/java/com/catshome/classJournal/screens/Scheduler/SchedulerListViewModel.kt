@@ -61,17 +61,20 @@ class SchedulerListViewModel @Inject constructor(
     override fun obtainEvent(viewEvent: SchedulerListEvent) {
 
         when (viewEvent) {
-            is ShowDialog->{
-                viewState = viewState.copy(showDialog = viewEvent.isShowDialog,
-                    dialogHandler =  viewEvent.dialogHader,
-                    messageDialog = viewEvent.message )
+            is ShowDialog -> {
+                viewState = viewState.copy(
+                    showDialog = viewEvent.isShowDialog,
+                    dialogHandler = viewEvent.dialogHader,
+                    messageDialog = viewEvent.message
+                )
             }
+
             is SchedulerListEvent.AddMemberLesson -> {
                 // Добавление ученика в урок
                 viewState.selectDay = viewEvent.dayOfWeek
                 viewState.timeLesson = viewEvent.time
                 viewState.durationLesson = viewEvent.duration
-                obtainEvent(SchedulerListEvent.NewLesson)
+                obtainEvent(NewLesson)
             }
 
             is SchedulerListEvent.DeleteSwipe -> {
@@ -108,7 +111,7 @@ class SchedulerListViewModel @Inject constructor(
                 }
             }
 
-            SchedulerListEvent.ReloadScheduler -> {
+            ReloadScheduler -> {
                 loadData()
             }
 
@@ -189,6 +192,7 @@ class SchedulerListViewModel @Inject constructor(
         }
     }
 
+
     fun checkTime(dayOfWeek: DayOfWeek, time: Int, duration: Int): Boolean {
         val jod = CoroutineScope(Dispatchers.IO).async {
             return@async schedulerInteract.checkTimeLesson(
@@ -197,22 +201,20 @@ class SchedulerListViewModel @Inject constructor(
                 duration = duration
             )
         }
-        return runBlocking {  jod.await()}
+        return runBlocking { jod.await() }
     }
 
 
-@OptIn(ExperimentalMaterialApi::class)
-fun loadData() {
-    viewModelScope.launch {
-        schedulerInteract.getScheduler(null)?.collect { schedulerList ->
-            viewState = viewState.copy(
-                items =
-                    schedulerList.sortedBy { it.dayOfWeekInt }.toMutableList().groupBy {
-                        it.dayOfWeek
-                    }.toMutableMap()
-            )
+    fun loadData() {
+        viewModelScope.launch {
+            schedulerInteract.getScheduler(null)?.collect { schedulerList ->
+                viewState = viewState.copy(
+                    items =
+                        schedulerList.sortedBy { it.dayOfWeekInt }.toMutableList().groupBy {
+                            it.dayOfWeek
+                        }.toMutableMap()
+                )
+            }
         }
     }
-    Log.e("CLJR", "LoadData scheduler ${viewState.items}")
-}
 }

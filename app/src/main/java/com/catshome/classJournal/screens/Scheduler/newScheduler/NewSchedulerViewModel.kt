@@ -1,19 +1,12 @@
 package com.catshome.classJournal.screens.Scheduler.newScheduler
 
 import android.util.Log
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
-import com.catshome.classJournal.domain.Scheduler.mapToScheduler
-import com.catshome.classJournal.screens.PayList.NewPayEvent
 import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerEvent.*
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,17 +18,15 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
         CoroutineScope(Dispatchers.IO).launch {
             Log.e("CLJR", "Start Init Scheduler")
             viewState.dayOfWeek?.let { day ->
-                viewState.startTime?.let { timeLesson ->
-                    viewState = viewState.copy(
-                        itemsList = interact.getListClient(
-                            name = "%",
-                            dayOfWeek = day,
-                            startTimeLesson = timeLesson
-                        )
-                    )
-                }
-            }
 
+                viewState = viewState.copy(
+                    itemsList = interact.getListClient(
+                        name = "%",
+                        dayOfWeek = day,
+                        startTimeLesson = viewState.startTime
+                    )
+                )
+            }
         }
     }
 
@@ -74,16 +65,13 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
                 viewState = viewState.copy(searchText = viewEvent.search)
                 CoroutineScope(Dispatchers.IO).launch {
                     viewState.dayOfWeek?.let { day ->
-                        viewState.startTime?.let { lesson ->
-                            viewState =
-                                viewState.copy(
-                                    itemsList = interact.getListClient(
-                                        name = "%${viewEvent.search}%",
-                                        dayOfWeek = day,
-                                        startTimeLesson = lesson
-                                    )
-                                )
-                        }
+                        viewState = viewState.copy(
+                            itemsList = interact.getListClient(
+                                name = "%${viewEvent.search}%",
+                                dayOfWeek = day,
+                                startTimeLesson = viewState.startTime
+                            )
+                        )
                     }
                 }
             }
@@ -94,13 +82,12 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
 
             is Checked -> {
                 viewState = viewState.copy(
-                    itemsList =
-                        viewState.itemsList?.mapIndexed { index, scheduler ->
-                            if (viewEvent.index == index)
-                                scheduler.copy(isChecked = !scheduler.isChecked)
-                            else
-                                scheduler
-                        }
+                    itemsList = viewState.itemsList?.mapIndexed { index, scheduler ->
+                        if (viewEvent.index == index)
+                            scheduler.copy(isChecked = !scheduler.isChecked)
+                        else
+                            scheduler
+                    }
                 )
             }
 

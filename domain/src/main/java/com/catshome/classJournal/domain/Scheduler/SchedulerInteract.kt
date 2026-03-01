@@ -12,10 +12,7 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
         repository.saveScheduler(dayOfWeek= dayOfWeek,
             startTime = time,
             list.map {
-
-
                 it.mapToScheduler(
-
                     dayOfWeek = dayOfWeek,
                     startLesson = time,
                     duration = duration)
@@ -28,7 +25,12 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
             )
     }
     suspend fun editTime(dayOfWeek: DayOfWeek, oldTime:Int, newTime: Int, duration: Int) {
-            //TODO здесь  будет измение времени занятия
+           repository.updateTimeLesson(
+               dayOfWeek =  dayOfWeek,
+               oldTime = oldTime,
+               newTime = newTime,
+               duration = duration
+           )
     }
     suspend fun deleteLesson(dayOfWeek: DayOfWeek, time: Long){
         repository.deleteLesson(dayOfWeek = dayOfWeek , startTime = time)

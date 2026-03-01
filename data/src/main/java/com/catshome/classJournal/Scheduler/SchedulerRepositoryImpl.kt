@@ -43,6 +43,21 @@ class SchedulerRepositoryImpl(val storage: SchedulerRoomStorage): SchedulerRepos
        return storage.delete(scheduler.mapToSchedulerEntity())
     }
 
+    override suspend fun updateTimeLesson(
+        dayOfWeek: DayOfWeek,
+        oldTime: Int,
+        newTime: Int,
+        duration: Int
+    ): Boolean {
+       return storage.updateTimeLesson(
+           dayOfWeek = dayOfWeek,
+           timeLesson = oldTime,
+           newTime = newTime,
+           duration = duration
+       )
+    }
+
+    //Проверка вренени для нового занятия, что-бы не было пересечения
     override fun checkTimeLesson(
         dayOfWeek: DayOfWeek,
         startTime: Int,

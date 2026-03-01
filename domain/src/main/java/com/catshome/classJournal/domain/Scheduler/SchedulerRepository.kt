@@ -11,5 +11,6 @@ interface SchedulerRepository {
     suspend fun getClientsByLesson(dayOfWeek: DayOfWeek, startTime: Int): Flow<List<Scheduler>>?
     suspend fun getClientList(name: String,dayOfWeek: DayOfWeek, startTimeLesson: Int):List<ClientScheduler>
     suspend fun deleteSchedule(scheduler: Scheduler): Boolean
+    suspend fun updateTimeLesson(dayOfWeek: DayOfWeek, oldTime: Int, newTime: Int, duration: Int): Boolean
     fun  checkTimeLesson(dayOfWeek: DayOfWeek, startTime: Int, duration: Int): Boolean
 }

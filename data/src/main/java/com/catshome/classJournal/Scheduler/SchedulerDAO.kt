@@ -15,9 +15,24 @@ import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import kotlinx.coroutines.flow.Flow
 import java.time.DayOfWeek
+import kotlin.time.Duration
 
 @Dao
 interface SchedulerDAO{
+    @Transaction
+    suspend fun  updateTimeLesson(
+        dayOfWeek: Int,
+        oldTime: Int,
+        newTime: Int,
+        duration: Int
+    ): Boolean{
+       return true
+//        setNewTimeLesson(
+//            dayOfWeek = dayOfWeek,
+//            oldTime = oldTime,
+//            newTime = newTime,
+//            duration = duration) > 0
+    }
     @Transaction
     suspend fun deleteLesson(dayOfWeek: Int,
                              time: Long): Boolean{
@@ -41,7 +56,11 @@ interface SchedulerDAO{
     @Update
     suspend fun update(schedulerEntity:SchedulerEntity)
 
-
+//    @Query(
+//        "Update scheduler set startLesson= :newTime, duration = :duration " +
+//                "where dayOfWeek = :dayOfWeek and startLesson = :oldTime"
+//    )
+//    fun setNewTimeLesson(dayOfWeek: Int, oldTime: Int,  newTime: Int, duration: Int):Int
     @Query(
         "Select s.uid , s.uidChild,s.uidGroup, dayOfWeek,startLesson, duration ," +
                 " c.child_name as name, c.child_surname as Surname ,group_name as groupName" +
@@ -80,8 +99,8 @@ interface SchedulerDAO{
     fun getGroupsByNameToScheduler(name: String, day: Int): List<GroupEntity>
     //Поиск по имени
     @Query("Select uid, (child_name|' '|child_surname) as fio , child_name as name, " +
-            "child_surname as surname  from child where name LIKE :name or surname Like :name" +
-            " and  isDelete = 0 and uid not in (select uidChild from scheduler where dayOfWeek = :day" +
+            "child_surname as surname  from child where fio LIKE :name and  isDelete = 0 and " +
+            "uid not in (select uidChild from scheduler where dayOfWeek = :day" +
             " and startLesson = :lesson  and  uidChild !='null')")
     fun getChildByNameToScheduler(name: String, day: Int, lesson: Long): List<MiniChild>
 }

@@ -7,13 +7,12 @@ import com.catshome.classJournal.communs.SwipeToDeleteContainer
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 
 @Composable
-fun ItemLesson(value: Scheduler,isCollapse: Boolean, onDelete:()->Unit){
+fun ItemLesson(value: Scheduler,isCollapse: Boolean, onDelete:(String)->Unit){
     if (isCollapse) {
         value.name?.let { text ->
             SwipeToDeleteContainer(
                 item = text,
-                onDelete = {
-                }
+                onDelete = { onDelete(value.uid!!) }
             ) { name ->
                 ItemListScheduler(
                     image = if (value.uidChild.isNullOrEmpty())
