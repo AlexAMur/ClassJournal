@@ -1,7 +1,7 @@
 package com.catshome.classJournal.communs.FilterScreen
 
 import androidx.lifecycle.viewModelScope
-import com.catshome.classJournal.R
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.PayList.PayListInteractor

@@ -1,10 +1,11 @@
 package com.catshome.classJournal.screens.viewModels
 
 import android.annotation.SuppressLint
-import com.catshome.classJournal.R
+
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Group.GroupInteractor
 import com.catshome.classJournal.domain.Group.Models.Group
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.group.ComposeAction
 import com.catshome.classJournal.screens.group.NewGroupEvent
 import com.catshome.classJournal.screens.group.NewGroupState

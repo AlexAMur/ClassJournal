@@ -3,7 +3,7 @@ package com.catshome.classJournal.screens.child
 *  Функции скрытия и ребёнка или группы при нажатии на корзину в
 * списке экарана СhildListScreen
 */
-import com.catshome.classJournal.R
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
 
 internal fun hideChild(

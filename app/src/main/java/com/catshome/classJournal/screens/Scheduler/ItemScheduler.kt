@@ -35,7 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
-import com.catshome.classJournal.R
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.SwipeToDeleteContainer
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek

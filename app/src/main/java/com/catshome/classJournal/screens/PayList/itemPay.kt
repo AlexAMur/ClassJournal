@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
-import com.catshome.classJournal.R
+import com.catshome.classJournal.resource.R
 
 @Composable
 fun itemPay(fio: String, date: String, payment: String, onClick: () -> Unit) {

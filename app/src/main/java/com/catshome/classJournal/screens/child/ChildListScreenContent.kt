@@ -43,7 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
-import com.catshome.classJournal.R
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.ActionIcon
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.SwipeableItemWithActions

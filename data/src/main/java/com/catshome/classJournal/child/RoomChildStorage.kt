@@ -2,12 +2,14 @@ package com.catshome.classJournal.child
 
 
 import android.content.Context
-import com.catshome.classJournal.R
+
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildWithGroups
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.communs.toDateStringRU
+import com.catshome.classJournal.resource.R
+
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

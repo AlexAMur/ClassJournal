@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.catshome.classJournal.ClassJournalTheme
-import com.catshome.classJournal.R
+import com.catshome.classJournal.resource.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

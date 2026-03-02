@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
-import com.catshome.classJournal.R
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.DatePickerFieldToModal
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.TextField

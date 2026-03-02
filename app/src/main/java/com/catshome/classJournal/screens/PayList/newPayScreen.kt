@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.catshome.classJournal.LocalSettingsEventBus
-import com.catshome.classJournal.R
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.context
 import com.catshome.classJournal.localNavHost

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="item_bottom_pay">Оплата</string>
+    <string name="item_bottom_visit">Занятие</string>
+    <string name="item_bottom_client">Клиенты</string>
+    <string name="item_bottom_scheduler">Рас-ние</string>
+
+    <string name="no_group_item">Add group</string>
+    <string name="no_pay_item">Add pay</string>
+    <string name="no_child_item">Add child or group</string>
+    <string name="no_visit_item">Add visit</string>
+    <string name="no_scheduler">Добавь урок</string>
+    <string name="add_scheduler_">Добавь ученика или группу</string>
+
+    <string name="paymant_date">Payment date</string>
+
+    <string name="delete_Title">Caution</string>
+    <string name="delete_message">Do you want delete object?</string>
+    <string name="bottom_delete">Delete</string>
+    <string name="bottom_cancel">Cancel</string>
+    <string name="bottom_yes">Да</string>
+    <string name="bottom_no">Нет</string>
+
+
+    <string name="message_cancel">Отменить удаление</string>
+    <string name="no_group">Без группы</string>
+    <string name="ok">Ok</string>
+
+    <string name="error_name_group">Name group cannot by empty! </string>
+    <string name="error_unique_name_group">Имя группы должно быть уникальным! </string>
+    <string name="error_unique_child">Клиент с таким именем, фамилией и датой рождениея уже есть в базе данных! </string>
+    <string name="error_primarykey_group">Нарушение первичного ключа!</string>
+    <string name="error_save">Не удалось записать!</string>
+    <string name="error_invalid_value">Не допустимое значение!</string>
+    <string name="error_zero_value">Время не может быть меньше или равно 0!</string>
+    <string name="error_time_lesson_value">Время совпадает с другогим занятием!\n Продолжить создание занятия?</string>
+    <string name="error_lesson_time">В это время уже есть занятие! </string>
+    <string name="dialog_handler_time_lesson">Продолжить создание? </string>
+    <string name="error_uncou_name_group">Имя группы должно быть уникальным! </string>
+
+    <string name="name_group_label">Enter name group. </string>
+    <string name="new_child_dialog_headline">New child</string>
+    <string name="new_pay_dialog_headline">Новый платеж</string>
+    <string name="new_lesson_headline">Новый урок</string>
+    <string name="new_child_menu_item">New child</string>
+    <string name="new_group_dialog_headline">New group</string>
+    <string name="new_group_menu_item">New group</string>
+    <string name="save_button">Save</string>
+    <string name="save_successful">Данные успешно сохранены!</string>
+
+    <string name="name_child">Enter name child.</string>
+    <string name="surname_child">Enter surname child.</string>
+    <string name="phone_child">Enter phone.</string>
+    <string name="search_label">Искать </string>
+    <string name="paymant">Укажите сумму платежа.</string>
+    <string name="paymant_error">Cуммa платежа не может быть меньше или равна 0</string>
+    <string name="search_child_error">Выберите ученика для внесения отплаты.</string>
+
+    <string name="saldo_child">Введите начальные остатки.</string>
+    <string name="birthday_child">Enter birthday child.</string>
+    <string name="filter_date">Отбор по периоду</string>
+    <string name="filter_child">Отбор по ребенку</string>
+    <string name="begin_date">Дата начала</string>
+    <string name="end_date">Дата окончания</string>
+    <string name="note_label">Note.</string>
+
+    //Набор кнопок для фильтрации
+    <string name="filter_day">День</string>
+    <string name="filter_week">Неделя</string>
+    <string name="filter_month">Месяц</string>
+    <string name="filter_year">Год</string>
+    <string name="filter_period">Период</string>
+    <string name="filter_all">Все</string>
+    <string name="filter_sort">Сортировать по:</string>
+
+
+</resources>

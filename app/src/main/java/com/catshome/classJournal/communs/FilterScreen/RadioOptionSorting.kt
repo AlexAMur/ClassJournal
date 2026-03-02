@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
-import com.catshome.classJournal.R
+import com.catshome.classJournal.resource.R
 
 @Composable
 fun radioOptionSorting(value: String, optionList: List<String>, onOptionSelected:(String)-> Unit){//, onSelected:(String, Int)->Unit) {

@@ -2,7 +2,7 @@ package com.catshome.classJournal.screens.Visit
 
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.viewModelScope
-import com.catshome.classJournal.R
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Visit.VisitInteract
 import com.catshome.classJournal.screens.viewModels.BaseViewModel

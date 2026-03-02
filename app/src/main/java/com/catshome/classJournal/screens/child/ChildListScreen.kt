@@ -31,6 +31,7 @@ import com.catshome.classJournal.screens.child.ChildListEvent
 import com.catshome.classJournal.screens.child.ChildListScreenContent
 import com.catshome.classJournal.screens.child.ChildListViewModel
 import kotlinx.coroutines.delay
+import com.catshome.classJournal.resource.R
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceAsColor", "SuspiciousIndentation")

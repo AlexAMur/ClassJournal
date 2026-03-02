@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import com.catshome.classJournal.ClassJournalTheme
-import com.catshome.classJournal.R
+import com.catshome.classJournal.resource.R
 
 
 @Composable

@@ -3,7 +3,7 @@ package com.catshome.classJournal.screens.child
 import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.viewModelScope
-import com.catshome.classJournal.R
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.child.ChildGroupsRepositoryImpl
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.ChildGroup

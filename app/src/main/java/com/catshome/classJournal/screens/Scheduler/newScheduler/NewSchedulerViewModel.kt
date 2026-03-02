@@ -1,9 +1,11 @@
 package com.catshome.classJournal.screens.Scheduler.newScheduler
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
 import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerEvent.*
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
