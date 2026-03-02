@@ -42,20 +42,6 @@ class SchedulerListViewModel @Inject constructor(
             }
 
         }
-
-//        {
-//
-//            viewState = viewState.copy(
-//                isSnackbarShow = true,
-//                errorMessage = context?.getString(R.string.error_unique_child) ?: "Ошибка!!!",
-//                snackbarAction = context.getString(R.string.ok),
-//                onDismissed = { viewState = viewState.copy(isSnackbarShow = false) },
-//                onAction = { viewState = viewState.copy(isSnackbarShow = false) }
-//            )
-//            return@CoroutineExceptionHandler
-//        }
-
-
     }
 
     override fun obtainEvent(viewEvent: SchedulerListEvent) {

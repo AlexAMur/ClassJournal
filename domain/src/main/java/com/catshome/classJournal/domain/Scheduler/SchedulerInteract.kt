@@ -48,6 +48,6 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
     }
     suspend fun deleteClient(scheduler: Scheduler): Boolean{
        return true
-        //repository.deleteSchedule(scheduler)
+        repository.deleteSchedule(scheduler)
     }
 }

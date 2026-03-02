@@ -93,12 +93,11 @@ class SchedulerRoomStorage @Inject constructor(
     }
 
    suspend fun updateTimeLesson(dayOfWeek: DayOfWeek,timeLesson: Int, newTime: Int, duration: Int): Boolean{
-        return true
-//       daoScheduler.updateTimeLesson(
-//            dayOfWeek = dayOfWeek.ordinal,
-//            oldTime = timeLesson,
-//            newTime = newTime,
-//            duration = duration
-//        )
+        return daoScheduler.updateTimeLesson(
+            dayOfWeek = dayOfWeek.ordinal,
+            oldTime = timeLesson,
+            newTime = newTime,
+            duration = duration
+        )
     }
 }

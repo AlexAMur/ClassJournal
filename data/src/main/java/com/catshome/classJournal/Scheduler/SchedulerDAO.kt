@@ -27,11 +27,11 @@ interface SchedulerDAO{
         duration: Int
     ): Boolean{
        return true
-//        setNewTimeLesson(
-//            dayOfWeek = dayOfWeek,
-//            oldTime = oldTime,
-//            newTime = newTime,
-//            duration = duration) > 0
+        setNewTimeLesson(
+            dayOfWeek = dayOfWeek,
+            oldTime = oldTime,
+            newTime = newTime,
+            duration = duration) > 0
     }
     @Transaction
     suspend fun deleteLesson(dayOfWeek: Int,
@@ -43,7 +43,7 @@ interface SchedulerDAO{
                               startLesson: Long,
                               list: List<SchedulerEntity>)
     {
-        //deleteLesson(dayOfWeek= dayOfWeek, startLesson = startLesson)
+
         insert(list)
 
     }
@@ -56,11 +56,11 @@ interface SchedulerDAO{
     @Update
     suspend fun update(schedulerEntity:SchedulerEntity)
 
-//    @Query(
-//        "Update scheduler set startLesson= :newTime, duration = :duration " +
-//                "where dayOfWeek = :dayOfWeek and startLesson = :oldTime"
-//    )
-//    fun setNewTimeLesson(dayOfWeek: Int, oldTime: Int,  newTime: Int, duration: Int):Int
+    @Query(
+        "Update scheduler set startLesson= :newTime, duration = :duration " +
+                "where dayOfWeek = :dayOfWeek and startLesson = :oldTime"
+    )
+    fun setNewTimeLesson(dayOfWeek: Int, oldTime: Int,  newTime: Int, duration: Int):Int
     @Query(
         "Select s.uid , s.uidChild,s.uidGroup, dayOfWeek,startLesson, duration ," +
                 " c.child_name as name, c.child_surname as Surname ,group_name as groupName" +
