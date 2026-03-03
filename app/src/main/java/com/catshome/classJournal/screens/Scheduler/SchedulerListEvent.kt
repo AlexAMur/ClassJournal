@@ -16,7 +16,7 @@ sealed class SchedulerListEvent {
                            val key: String,
                            val scheduler: Scheduler?
                            ,val  context: Context): SchedulerListEvent()
-    data object NewLesson: SchedulerListEvent()//(val day: DayOfWeek, val time: Int, val duration: Int): SchedulerListEvent()
+    data object NewLessonEvent: SchedulerListEvent()//(val day: DayOfWeek, val time: Int, val duration: Int): SchedulerListEvent()
     data object EditTime: SchedulerListEvent()
     data object ReloadScheduler: SchedulerListEvent()
     //получение данных из диалога времени
@@ -29,5 +29,5 @@ sealed class SchedulerListEvent {
                           val dialogHader: String = "Заголовок",
                           val message: String? =null): SchedulerListEvent()
     //запуск и скрытие диалога времени
-    data class ShowTimePiker(val show: Boolean,): SchedulerListEvent()
+    data class ShowTimePiker(val show: Boolean,val time: Int? = null): SchedulerListEvent()
 }

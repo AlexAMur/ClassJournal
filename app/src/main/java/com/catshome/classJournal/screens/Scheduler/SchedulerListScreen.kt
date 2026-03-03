@@ -50,10 +50,13 @@ fun SchedulerListScreen(
 
     when (viewAction) {
         SchedulerListAction.NewLesson -> {
-            viewModel.clearAction()
+
             with(viewState) {
+                Log.e("CLJR", "Navigate")
                 viewState.selectDay?.let { day ->
-                    timeLesson?.let { timeLesson ->
+                    viewState.timeLesson?.let { timeLesson ->
+                        Log.e("CLJR", "Navigate")
+
                         navController.navigate(
                             NewLesson(
                                 day,
@@ -65,6 +68,30 @@ fun SchedulerListScreen(
                     }
                 }
             }
+            viewModel.clearAction()
+        }
+
+        SchedulerListAction.NewLesson1 -> {
+
+            with(viewState) {
+                Log.e("CLJR", "Navigate")
+                viewState.selectDay?.let { day ->
+                    viewState.timeLesson?.let { timeLesson ->
+                        Log.e("CLJR", "Navigate")
+
+                        navController.navigate(
+                            NewLesson(
+                                day,
+                                startTime = 50,
+                                duration = 40,
+
+                                isEdit = false
+                            )
+                        )
+                    }
+                }
+            }
+            viewModel.clearAction()
         }
         null -> {}
     }

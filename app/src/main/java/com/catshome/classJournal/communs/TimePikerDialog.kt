@@ -44,6 +44,11 @@ import com.catshome.classJournal.resource.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePikerDialog(
+    timePickerState: TimePickerState =  rememberTimePickerState(
+        initialHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+        initialMinute = Calendar.getInstance().get(Calendar.MINUTE),
+        is24Hour = true,
+    ),
     title: String,
     context: Context,
     onDismiss: () -> Unit,
@@ -51,15 +56,11 @@ fun TimePikerDialog(
     toggle: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
-    val currentTime = Calendar.getInstance()
+    //val currentTime = Calendar.getInstance()
     var duration by rememberSaveable { mutableStateOf("40") }
     var support by remember { mutableStateOf("") }
     var error by remember { mutableStateOf(false) }
-    val timePickerState = rememberTimePickerState(
-        initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
-        initialMinute = currentTime.get(Calendar.MINUTE),
-        is24Hour = true,
-    )
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),

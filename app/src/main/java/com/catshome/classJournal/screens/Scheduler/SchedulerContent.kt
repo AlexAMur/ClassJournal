@@ -19,6 +19,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -122,6 +123,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                             },
                             newTime = { index ->
                                 //запускаем диалог выбора времени и передаем данные о дне недели  и признак добавления
+                                viewState.selectDay = day
                                 viewModel.obtainEvent(
                                     SchedulerListEvent.NewClicked(
                                         index,
@@ -129,12 +131,13 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                     )
                                 )
                             },
-                            editTime = { index ->
-                                //запускаем диалог выбора времени изменения
+                            editTime = { timeLesson  ->
+                                //запускаем диалог выбора времени для изменения времени существующего занятия
+                                viewState.selectDay = day
+                                viewState.isNewLesson = false
                                 viewModel.obtainEvent(
-                                    SchedulerListEvent.NewClicked(
-                                        index,
-                                        isNewLesson = false
+                                    SchedulerListEvent.ShowTimePiker(show = true,
+                                        timeLesson
                                     )
                                 )
                             }
@@ -153,7 +156,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                             viewModel.obtainEvent(SchedulerListEvent.ShowDialog(false))
                             // закрываем окно выбора времени  и сохраняем новое значение
                             viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
-                            viewModel.obtainEvent(SchedulerListEvent.NewLesson)
+                            viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
                         }) { Text("OK") }
                     },
                     dismissButton = {
@@ -166,12 +169,18 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
             }
             if (viewState.showStartTimePicker) {
                 TimePikerDialog(
+                    timePickerState = rememberTimePickerState(
+                        viewState.initTimeHour,
+                        initialMinute = viewState.initTimeMin,
+                        is24Hour = true
+                    ),
                     title = "Начало:",
                     context = context,
                     onDismiss = {
                         viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
                     },
                     onConfirm = { time, duration ->
+
                         viewState.selectDay?.let { day ->
                             //сохраняем время в state
                             viewModel.obtainEvent(
@@ -197,9 +206,10 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                     )
                                 )
                             } else {
-                                // закрываем окно выбора времени  и сохраняем новое значение
+                                // закрываем окно выбора времени и сохраняем новое значение
                                 viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
-                                viewModel.obtainEvent(SchedulerListEvent.NewLesson)
+                               // if (!viewState.isNewLesson)
+                                    viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
                             }
                         }
                     }

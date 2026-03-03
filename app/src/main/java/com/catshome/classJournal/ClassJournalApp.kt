@@ -107,6 +107,7 @@ fun classJournalApp(
         composable<NewLesson> { backStackEntry ->
             val newLesson = backStackEntry.toRoute<NewLesson>()
             val viewModel: NewSchedulerViewModel by activity.viewModels()
+            Log.e("CLJR", "Navigate navcont")
             NewSchedulerScreen(
                 navController = navController,
                 viewModel = viewModel,
@@ -114,11 +115,11 @@ fun classJournalApp(
             )
         }
 
-        composable(route = ItemScreen.NewSchedulerScreen.name) {
-            val viewModel: NewSchedulerViewModel by activity.viewModels()      //
-            NewSchedulerScreen(navController = navController, viewModel = viewModel)
-
-        }
+//        composable(route = ItemScreen.NewSchedulerScreen.name) {
+//            val viewModel: NewSchedulerViewModel by activity.viewModels()      //
+//            NewSchedulerScreen(navController = navController, viewModel = viewModel)
+//
+//        }
 
         composable<FilterSetting> { backState ->
             val setting = backState.toRoute<FilterSetting>()

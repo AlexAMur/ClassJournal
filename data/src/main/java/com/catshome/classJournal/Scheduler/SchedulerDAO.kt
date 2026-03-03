@@ -26,8 +26,7 @@ interface SchedulerDAO{
         newTime: Int,
         duration: Int
     ): Boolean{
-       return true
-        setNewTimeLesson(
+         return setNewTimeLesson(
             dayOfWeek = dayOfWeek,
             oldTime = oldTime,
             newTime = newTime,

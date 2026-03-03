@@ -49,7 +49,7 @@ fun itemScheduler(
     viewModel: SchedulerListViewModel,
     collapsItem: (Int) -> Unit,
     newTime: (Int) -> Unit,
-    editTime: (Int) -> Unit,
+    editTime: (timeLesson :Int) -> Unit,
     addMember: (DayOfWeek, Int, Int) -> Unit
 ) {
     val viewState by viewModel.viewState().collectAsState()
@@ -133,7 +133,7 @@ fun itemScheduler(
                                     modifier = Modifier
                                         .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
                                         .weight(1f)
-                                        .clickable(onClick = { editTime(index) }),
+                                        .clickable(onClick = { editTime(timeLessonKey.toInt()) }),
                                     color = ClassJournalTheme.colors.primaryText,
                                     style = ClassJournalTheme.typography.caption,
                                 )
