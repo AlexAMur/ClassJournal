@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -66,17 +67,19 @@ class SchedulerListViewModel @Inject constructor(
             is ShowTimePiker -> {
                 viewState = viewState.copy(
                     showStartTimePicker = viewEvent.show,
-                    timeLesson = viewEvent.time,
-                    initTimeHour = viewEvent.time?.let {it /60 }?:0,
-                    initTimeMin = viewEvent.time?.let {it % 60 }?:0,
+                    initTimeHour = viewEvent.time?.let {it /60 }?: Calendar.getInstance().get(
+                        android.icu.util.Calendar.HOUR_OF_DAY),
+                    initTimeMin = viewEvent.time?.let {it % 60 }?:Calendar.getInstance().get(
+                        android.icu.util.Calendar.MINUTE),
                 )
             }
 
             is NewClicked -> {
                 viewState.selectDay = DayOfWeek.entries[viewEvent.index]
                 viewState.isNewLesson = viewEvent.isNewLesson
+                viewState.oldTimeLesson = null
+                viewState.oldDurationLesson = null
                 obtainEvent(ShowTimePiker(show = true))
-
             }
 
              NewLessonEvent -> {
@@ -115,8 +118,7 @@ class SchedulerListViewModel @Inject constructor(
                     viewState.oldTimeLesson = null
 
                     viewState.timeLesson = viewEvent.time
-                    viewState.durationLesson = viewEvent.duration
-                    viewAction = SchedulerListAction.NewLesson1
+
                 } else {
                     viewState.oldTimeLesson = viewState.timeLesson
                     viewState.timeLesson = viewEvent.time
@@ -184,9 +186,10 @@ class SchedulerListViewModel @Inject constructor(
     }
 
 
-    fun checkTime(dayOfWeek: DayOfWeek, time: Int, duration: Int): Boolean {
+    fun checkTime(dayOfWeek: DayOfWeek, oldTime:Int? =null,time: Int, duration: Int): Boolean {
         val jod = CoroutineScope(Dispatchers.IO).async {
             return@async schedulerInteract.checkTimeLesson(
+                тут добавить проверку на редактирование
                 dayOfWeek = dayOfWeek,
                 startTime = time,
                 duration = duration

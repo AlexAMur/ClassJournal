@@ -8,6 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.R
@@ -23,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun SchedulerListScreen(
@@ -32,6 +34,7 @@ fun SchedulerListScreen(
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
+    val keyboardController = LocalSoftwareKeyboardController.current
     val sbHostState = remember { SnackbarHostState() }
     saveLesson?.let { save ->
 
@@ -53,6 +56,9 @@ fun SchedulerListScreen(
 
             with(viewState) {
                 Log.e("CLJR", "Navigate")
+                Log.e("CLJR", "NewLesson day${viewState.selectDay}, time ${viewState.timeLesson} " )
+
+                keyboardController?.hide()
                 viewState.selectDay?.let { day ->
                     viewState.timeLesson?.let { timeLesson ->
                         Log.e("CLJR", "Navigate")
@@ -62,29 +68,6 @@ fun SchedulerListScreen(
                                 day,
                                 startTime = timeLesson,
                                 duration = durationLesson ?: 0,
-                                isEdit = false
-                            )
-                        )
-                    }
-                }
-            }
-            viewModel.clearAction()
-        }
-
-        SchedulerListAction.NewLesson1 -> {
-
-            with(viewState) {
-                Log.e("CLJR", "Navigate")
-                viewState.selectDay?.let { day ->
-                    viewState.timeLesson?.let { timeLesson ->
-                        Log.e("CLJR", "Navigate")
-
-                        navController.navigate(
-                            NewLesson(
-                                day,
-                                startTime = 50,
-                                duration = 40,
-
                                 isEdit = false
                             )
                         )

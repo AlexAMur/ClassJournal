@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
+import com.catshome.classJournal.communs.DialogScreen
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.TimePikerDialog
@@ -131,12 +132,14 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                     )
                                 )
                             },
-                            editTime = { timeLesson  ->
+                            editTime = { timeLesson ->
                                 //запускаем диалог выбора времени для изменения времени существующего занятия
                                 viewState.selectDay = day
                                 viewState.isNewLesson = false
+
                                 viewModel.obtainEvent(
-                                    SchedulerListEvent.ShowTimePiker(show = true,
+                                    SchedulerListEvent.ShowTimePiker(
+                                        show = true,
                                         timeLesson
                                     )
                                 )
@@ -145,43 +148,65 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                     }
                 }
             }
+        }
+        if (viewState.showDialog) {
+            DialogScreen(
+                title = context.getString(R.string.dialog_handler_time_lesson),
+                text = context.getString(R.string.error_time_lesson_value),
+                onDismiss = {
+                    viewModel.obtainEvent(SchedulerListEvent.ShowDialog(false))
+                },
+                onConfirm = {
+                    viewModel.obtainEvent(SchedulerListEvent.ShowDialog(false))
+                    // закрываем окно выбора времени  и сохраняем новое значение
+                    viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
+                    viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
+                }
+            )
+        }
 
-            if (viewState.showDialog) {
-                AlertDialog(
-                    onDismissRequest = { viewState.showDialog = false },
-                    title = { Text(viewState.dialogHandler ?: "Заголовок") },
-                    text = { Text(viewState.messageDialog ?: "") },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            viewModel.obtainEvent(SchedulerListEvent.ShowDialog(false))
-                            // закрываем окно выбора времени  и сохраняем новое значение
+        if (viewState.showStartTimePicker) {
+            TimePikerDialog(
+                timePickerState = rememberTimePickerState(
+                    viewState.initTimeHour,
+                    initialMinute = viewState.initTimeMin,
+                    is24Hour = true
+                ),
+                title = "Начало:",
+                context = context,
+                onDismiss = {
+                    viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
+                },
+                onConfirm = { time, duration ->
+                    viewState.selectDay?.let { day ->
+                        // проверка времени начала занятия
+                        if (
+                            viewModel.checkTime(
+                                dayOfWeek = day,
+
+                                time = time.hour * 60 + time.minute,
+                                duration = duration
+                            )
+
+                            ) {
+                            // не прошла проверку по времени занятия
+                            //запускаем диалог с подтверждением создания занятия
+
+                            viewModel.obtainEvent(
+                                SchedulerListEvent.SetTime(
+                                    time = time.hour * 60 + time.minute,
+                                    duration = duration
+                                )
+                            )
+                            viewModel.obtainEvent(
+                                SchedulerListEvent.ShowDialog(
+                                    true,
+                                )
+                            )
+//                            viewModel.obtainEvent(SchedulerListEvent.EditTime)
+                        } else {
+                            // закрываем окно выбора времени и сохраняем новое значение
                             viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
-                            viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
-                        }) { Text("OK") }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = {
-                            viewModel.obtainEvent(SchedulerListEvent.ShowDialog(false))
-
-                        }) { Text("Отмена") }
-                    }
-                )
-            }
-            if (viewState.showStartTimePicker) {
-                TimePikerDialog(
-                    timePickerState = rememberTimePickerState(
-                        viewState.initTimeHour,
-                        initialMinute = viewState.initTimeMin,
-                        is24Hour = true
-                    ),
-                    title = "Начало:",
-                    context = context,
-                    onDismiss = {
-                        viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
-                    },
-                    onConfirm = { time, duration ->
-
-                        viewState.selectDay?.let { day ->
                             //сохраняем время в state
                             viewModel.obtainEvent(
                                 SchedulerListEvent.SetTime(
@@ -189,34 +214,12 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                     duration = duration
                                 )
                             )
-                            // проверка времени начала занятия
-                            if (viewModel.checkTime(
-                                    dayOfWeek = day,
-                                    time = time.hour * 60 + time.minute,
-                                    duration = duration
-                                )
-                            ) {
-                                // не прошла проверку по времени занятия
-                                //запускаем диалог с подтверждением создания занятия
-                                viewModel.obtainEvent(
-                                    SchedulerListEvent.ShowDialog(
-                                        true,
-                                        dialogHader = context.getString(R.string.dialog_handler_time_lesson),
-                                        message = context.getString(R.string.error_time_lesson_value)
-                                    )
-                                )
-                            } else {
-                                // закрываем окно выбора времени и сохраняем новое значение
-                                viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
-                               // if (!viewState.isNewLesson)
-                                    viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
-                            }
+                            viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
                         }
                     }
-                ) {
-                    //тут можно добавить контент
                 }
-            }
+            ) {}
         }
     }
 }
+
