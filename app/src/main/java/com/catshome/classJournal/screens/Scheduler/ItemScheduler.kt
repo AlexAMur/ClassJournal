@@ -49,7 +49,7 @@ fun itemScheduler(
     viewModel: SchedulerListViewModel,
     collapsItem: (Int) -> Unit,
     onNewLesson: (Int) -> Unit,
-    editTime: (timeLesson :Int) -> Unit,
+    editTime:  (timeLesson :Int) -> Unit,
     addMember: (DayOfWeek, Int, Int) -> Unit
 ) {
     val viewState by viewModel.viewState().collectAsState()

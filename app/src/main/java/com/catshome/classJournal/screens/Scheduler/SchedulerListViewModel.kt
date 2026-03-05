@@ -82,6 +82,9 @@ class SchedulerListViewModel @Inject constructor(
                 viewState.isNewLesson = viewEvent.isNewLesson
                 viewState.oldTimeLesson = null
                 viewState.oldDurationLesson = null
+                viewState.onConfirm={ time,duration->
+                    viewState.durationLesson = viewEvent.duration
+                }
                 obtainEvent(ShowTimePiker(show = true))
             }
 

@@ -1,10 +1,12 @@
 package com.catshome.classJournal.screens.Scheduler
 
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TimePickerState
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import java.util.Collections.emptyMap
 
-data class SchedulerListState(
+data class SchedulerListState (
     var showStartTimePicker: Boolean = false,
     var initTimeHour: Int =0,
     var initTimeMin: Int =0,
@@ -25,5 +27,6 @@ data class SchedulerListState(
     var durationLesson: Int? = null,
     var oldDurationLesson: Int? = null,
     val items: MutableMap<String, List<Scheduler>?> = emptyMap(),
-    val newScheduler: Scheduler? =null
+    val newScheduler: Scheduler? =null,
+    var onConfirm: (Int, Int)-> Unit= {}
 )

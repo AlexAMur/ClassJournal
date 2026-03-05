@@ -10,25 +10,19 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
@@ -38,10 +32,6 @@ import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.TimePikerDialog
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.communs.DayOfWeek
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -182,60 +172,62 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                 onDismiss = {
                     viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
                 },
-                onConfirm = { time, duration ->
-                    viewState.selectDay?.let { day ->
-                        val jod = CoroutineScope(Dispatchers.IO).async {
-                            // проверка времени начала занятия
-                           return@async viewModel.checkTime(
-                                dayOfWeek = day,
-                                oldTime = if(!viewState.isNewLesson)
-                                    viewState.oldTimeLesson else null,
-                                time = time.hour * 60 + time.minute,
-                                duration = duration
-                            )
-                        }
-                         if ( runBlocking {
-                                  jod.await()
-                            })
-                            {
-                            // не прошла проверку по времени занятия
-                            //запускаем диалог с подтверждением создания занятия
+                onConfirm =viewState.onConfirm,
 
-                            viewModel.obtainEvent(
-                                SchedulerListEvent.SetTime(
-                                    time = time.hour * 60 + time.minute,
-                                    duration = duration
-                                )
-                            )
-
-                            viewModel.obtainEvent(
-                                SchedulerListEvent.ShowDialog(
-                                    true,
-                                )
-                            )
-//                            viewModel.obtainEvent(SchedulerListEvent.EditTime)
-                        } else {
-                            // закрываем окно выбора времени и сохраняем новое значение начала урока
-                            viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
-                            //сохраняем время в state
-                            viewModel.obtainEvent(
-                                SchedulerListEvent.SetTime(
-                                    time = time.hour * 60 + time.minute,
-                                    duration = duration
-                                )
-                            )
-                             if(viewState.isNewLesson){
-                                Log.e("CLJR", "NEWLessonEvent")
-                                viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
-                             }
-                             else{
-                                 viewModel.obtainEvent(SchedulerListEvent.EditTime)
-                             }
-                        }
-                    }
-                }
             ) {}
         }
     }
 }
 
+//{ time, duration ->
+//    viewState.selectDay?.let { day ->
+//        val jod = CoroutineScope(Dispatchers.IO).async {
+//            // проверка времени начала занятия
+//            return@async viewModel.checkTime(
+//                dayOfWeek = day,
+//                oldTime = if(!viewState.isNewLesson)
+//                    viewState.oldTimeLesson else null,
+//                time = time.hour * 60 + time.minute,
+//                duration = duration
+//            )
+//        }
+//        if ( runBlocking {
+//                jod.await()
+//            })
+//        {
+//            // не прошла проверку по времени занятия
+//            //запускаем диалог с подтверждением создания занятия
+//
+//            viewModel.obtainEvent(
+//                SchedulerListEvent.SetTime(
+//                    time = time.hour * 60 + time.minute,
+//                    duration = duration
+//                )
+//            )
+//
+//            viewModel.obtainEvent(
+//                SchedulerListEvent.ShowDialog(
+//                    true,
+//                )
+//            )
+////                            viewModel.obtainEvent(SchedulerListEvent.EditTime)
+//        } else {
+//            // закрываем окно выбора времени и сохраняем новое значение начала урока
+//            viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
+//            //сохраняем время в state
+//            viewModel.obtainEvent(
+//                SchedulerListEvent.SetTime(
+//                    time = time.hour * 60 + time.minute,
+//                    duration = duration
+//                )
+//            )
+//            if(viewState.isNewLesson){
+//                Log.e("CLJR", "NEWLessonEvent")
+//                viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
+//            }
+//            else{
+//                viewModel.obtainEvent(SchedulerListEvent.EditTime)
+//            }
+//        }
+//    }
+//}

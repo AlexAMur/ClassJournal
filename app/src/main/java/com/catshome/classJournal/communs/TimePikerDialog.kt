@@ -2,10 +2,7 @@ package com.catshome.classJournal.communs
 
 import android.content.Context
 import android.icu.util.Calendar
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -40,7 +37,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.resource.R
-import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,11 +50,11 @@ fun TimePikerDialog(
     context: Context,
     duration: Int = 40,
     onDismiss: () -> Unit,
-    onConfirm: (TimePickerState, Int) -> Unit,
-    toggle: @Composable () -> Unit = {},
-    content: @Composable () -> Unit,
+    onConfirm: (Int, Int) -> Unit,
+    toggle: () -> Unit = {},
+    content: () -> Unit,
 
-) {
+    ) {
     //val currentTime = Calendar.getInstance()
     var duration by rememberSaveable { mutableStateOf(duration.toString()) }
     var support by remember { mutableStateOf("") }
@@ -151,7 +147,7 @@ fun TimePikerDialog(
                             try {
                                 if (duration.toInt() < 1)
                                     throw IllegalArgumentException(context.getString(R.string.error_zero_value))
-                                onConfirm(timePickerState, duration.toInt())
+                                 onConfirm(timePickerState.hour*60+timePickerState.minute, duration.toInt())
                             } catch (e: Exception) {
                                 error = true
                                 if (e is NumberFormatException) {
