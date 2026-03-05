@@ -8,7 +8,6 @@ data class SchedulerListState(
     var showStartTimePicker: Boolean = false,
     var initTimeHour: Int =0,
     var initTimeMin: Int =0,
-
     var showDialog: Boolean =  false,
     val messageDialog: String?= null,
     val dialogHandler: String?= null,

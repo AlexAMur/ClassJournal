@@ -48,7 +48,7 @@ fun itemScheduler(
     itemsMap: Map<Long, List<Scheduler>?>?,
     viewModel: SchedulerListViewModel,
     collapsItem: (Int) -> Unit,
-    newTime: (Int) -> Unit,
+    onNewLesson: (Int) -> Unit,
     editTime: (timeLesson :Int) -> Unit,
     addMember: (DayOfWeek, Int, Int) -> Unit
 ) {
@@ -203,7 +203,7 @@ fun itemScheduler(
                             bottom = 16.dp,
                             end = 16.dp
                         ),
-                    onClick = { newTime(index) } //запуск  диалога выбора времени
+                    onClick = { onNewLesson(index) } //запуск  диалога выбора времени
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.outline_add_card_24),

@@ -13,4 +13,5 @@ interface SchedulerRepository {
     suspend fun deleteSchedule(scheduler: Scheduler): Boolean
     suspend fun updateTimeLesson(dayOfWeek: DayOfWeek, oldTime: Int, newTime: Int, duration: Int): Boolean
     fun  checkTimeLesson(dayOfWeek: DayOfWeek, startTime: Int, duration: Int): Boolean
+    fun  checkTimeLessonBeforeEditTime(dayOfWeek: DayOfWeek,oldTime: Int, startTime: Int, duration: Int): Boolean
 }

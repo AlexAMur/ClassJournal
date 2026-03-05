@@ -66,11 +66,14 @@ class SchedulerListViewModel @Inject constructor(
 
             is ShowTimePiker -> {
                 viewState = viewState.copy(
+                   // oldTimeLesson = viewEvent.time,
                     showStartTimePicker = viewEvent.show,
-                    initTimeHour = viewEvent.time?.let {it /60 }?: Calendar.getInstance().get(
-                        android.icu.util.Calendar.HOUR_OF_DAY),
-                    initTimeMin = viewEvent.time?.let {it % 60 }?:Calendar.getInstance().get(
-                        android.icu.util.Calendar.MINUTE),
+                    initTimeHour = viewEvent.time?.let { it / 60 } ?: Calendar.getInstance().get(
+                        android.icu.util.Calendar.HOUR_OF_DAY
+                    ),
+                    initTimeMin = viewEvent.time?.let { it % 60 } ?: Calendar.getInstance().get(
+                        android.icu.util.Calendar.MINUTE
+                    ),
                 )
             }
 
@@ -82,14 +85,17 @@ class SchedulerListViewModel @Inject constructor(
                 obtainEvent(ShowTimePiker(show = true))
             }
 
-             NewLessonEvent -> {
+            NewLessonEvent -> {
                 viewState.isCanShowSnackBar = true
                 viewAction = SchedulerListAction.NewLesson
             }
 
             EditTime -> {
                 //установка нового времени
+
+
                 with(viewState) {
+                    Log.e("CLJR"," Select day= $selectDay, oldTime = $oldTimeLesson,  time= $timeLesson" )
                     selectDay?.let {
                         if (oldTimeLesson != null && timeLesson != null) {
                             viewModelScope.launch {
@@ -109,20 +115,21 @@ class SchedulerListViewModel @Inject constructor(
             is SetTime -> {
 //                if (viewState.durationLesson != viewEvent.duration) { // новое время
 //                    viewState.oldDurationLesson = viewState.durationLesson
-                    viewState.durationLesson = viewEvent.duration
+                viewState.durationLesson = viewEvent.duration
 //                } else
 //                    viewState.oldDurationLesson = null
 
                 if (viewState.isNewLesson) {  //новое занятие
-                    Log.e("CLJR", "time ${viewEvent.time}")
+                    Log.e("CLJR", "time Newlesson ${viewEvent.time}")
                     viewState.oldTimeLesson = null
-
                     viewState.timeLesson = viewEvent.time
 
                 } else {
-                    viewState.oldTimeLesson = viewState.timeLesson
+                    Log.e("CLJR", "time ${viewEvent.time}")
+
+                    //viewState.oldTimeLesson = viewState.timeLesson
                     viewState.timeLesson = viewEvent.time
-                    obtainEvent(SchedulerListEvent.EditTime)
+                    obtainEvent(viewEvent = EditTime)
 
                 }
             }
@@ -146,6 +153,7 @@ class SchedulerListViewModel @Inject constructor(
             is CheckTimeLesson -> {
 
             }
+
             is DeleteSwipe -> {
                 //Удаление в расписании
                 when (viewEvent.type) {
@@ -179,6 +187,7 @@ class SchedulerListViewModel @Inject constructor(
                     }//Если смахнули только одну запись
                 }
             }
+
             ReloadScheduler -> {
                 loadData()
             }
@@ -186,16 +195,14 @@ class SchedulerListViewModel @Inject constructor(
     }
 
 
-    fun checkTime(dayOfWeek: DayOfWeek, oldTime:Int? =null,time: Int, duration: Int): Boolean {
-        val jod = CoroutineScope(Dispatchers.IO).async {
-            return@async schedulerInteract.checkTimeLesson(
-                тут добавить проверку на редактирование
-                dayOfWeek = dayOfWeek,
-                startTime = time,
-                duration = duration
-            )
-        }
-        return runBlocking { jod.await() }
+    suspend fun checkTime(dayOfWeek: DayOfWeek, oldTime: Int?, time: Int, duration: Int): Boolean {
+        return schedulerInteract.checkTimeLesson(
+            dayOfWeek = dayOfWeek,
+            oldTime = oldTime,
+            startTime = time,
+            duration = duration
+        )
+
     }
 
 

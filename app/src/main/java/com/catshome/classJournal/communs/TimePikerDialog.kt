@@ -40,6 +40,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.resource.R
+import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,13 +52,15 @@ fun TimePikerDialog(
     ),
     title: String,
     context: Context,
+    duration: Int = 40,
     onDismiss: () -> Unit,
     onConfirm: (TimePickerState, Int) -> Unit,
     toggle: @Composable () -> Unit = {},
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+
 ) {
     //val currentTime = Calendar.getInstance()
-    var duration by rememberSaveable { mutableStateOf("40") }
+    var duration by rememberSaveable { mutableStateOf(duration.toString()) }
     var support by remember { mutableStateOf("") }
     var error by remember { mutableStateOf(false) }
 

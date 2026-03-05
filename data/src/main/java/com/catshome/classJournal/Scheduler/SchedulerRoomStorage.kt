@@ -89,7 +89,19 @@ class SchedulerRoomStorage @Inject constructor(
 
     //вернет tree если в этот день и время есть урок
     fun checkLessonTime(dayOfWeek: DayOfWeek, startTime: Int, duration: Int): Boolean {
-        return daoScheduler.checkTimeLesson(dayOfWeek.ordinal, startTime, startTime + duration) > 0
+        return daoScheduler.checkTimeLesson(
+           day =  dayOfWeek.ordinal,
+            start = startTime,
+            end = startTime + duration) > 0
+    }
+
+    fun checkLessonTimeBeforeEdit(dayOfWeek: DayOfWeek,oldTime: Int, startTime: Int, duration: Int): Boolean {
+        return daoScheduler.checkTimeLessonBeforeEditTime(
+            day = dayOfWeek.ordinal,
+            oldTime = oldTime,
+            start= startTime,
+            end = startTime + duration
+        ) > 0
     }
 
    suspend fun updateTimeLesson(dayOfWeek: DayOfWeek,timeLesson: Int, newTime: Int, duration: Int): Boolean{

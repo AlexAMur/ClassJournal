@@ -60,9 +60,23 @@ class SchedulerRepositoryImpl(val storage: SchedulerRoomStorage): SchedulerRepos
     //Проверка вренени для нового занятия, что-бы не было пересечения
     override fun checkTimeLesson(
         dayOfWeek: DayOfWeek,
+
         startTime: Int,
         duration: Int
     ): Boolean {
        return storage.checkLessonTime(dayOfWeek, startTime, duration)
+    }
+
+    override fun checkTimeLessonBeforeEditTime(
+        dayOfWeek: DayOfWeek,
+        oldTime: Int,
+        startTime: Int,
+        duration: Int
+    ): Boolean {
+       return storage.checkLessonTimeBeforeEdit(
+           dayOfWeek = dayOfWeek,
+           oldTime = oldTime,
+           startTime = startTime,
+           duration = duration)
     }
 }

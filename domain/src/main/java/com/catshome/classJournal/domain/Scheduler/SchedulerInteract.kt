@@ -1,5 +1,6 @@
 package com.catshome.classJournal.domain.Scheduler
 
+import android.util.Log
 import com.android.identity.util.UUID
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
@@ -18,11 +19,21 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
                     duration = duration)
             })
     }
-    suspend fun checkTimeLesson(dayOfWeek: DayOfWeek, startTime: Int, duration: Int): Boolean {
-        return repository.checkTimeLesson(dayOfWeek = dayOfWeek,
-            startTime = startTime,
-            duration = duration
+    suspend fun checkTimeLesson(dayOfWeek: DayOfWeek,oldTime: Int?,  startTime: Int, duration: Int): Boolean {
+        return if (oldTime != null){
+            Log.e ("ClJR", "time before")
+            repository.checkTimeLessonBeforeEditTime(dayOfWeek = dayOfWeek,
+                oldTime = oldTime,
+                startTime = startTime,
+                duration = duration
             )
+        }else{
+            Log.e ("ClJR", "time check")
+            repository.checkTimeLesson(dayOfWeek = dayOfWeek,
+                startTime = startTime,
+                duration = duration
+            )
+        }
     }
     suspend fun editTime(dayOfWeek: DayOfWeek, oldTime:Int, newTime: Int, duration: Int) {
            repository.updateTimeLesson(

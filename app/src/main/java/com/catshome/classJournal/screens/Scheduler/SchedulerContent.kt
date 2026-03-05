@@ -38,6 +38,10 @@ import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.TimePikerDialog
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.communs.DayOfWeek
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -122,7 +126,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                     )
                                 )
                             },
-                            newTime = { index ->
+                            onNewLesson = { index ->
                                 //запускаем диалог выбора времени и передаем данные о дне недели  и признак добавления
                                 viewState.selectDay = day
                                 viewModel.obtainEvent(
@@ -133,10 +137,11 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                 )
                             },
                             editTime = { timeLesson ->
+                                Log.e("CLJR", "timeLessont ${timeLesson}")
                                 //запускаем диалог выбора времени для изменения времени существующего занятия
                                 viewState.selectDay = day
                                 viewState.isNewLesson = false
-
+                                viewState.oldTimeLesson= timeLesson
                                 viewModel.obtainEvent(
                                     SchedulerListEvent.ShowTimePiker(
                                         show = true,
@@ -179,16 +184,20 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                 },
                 onConfirm = { time, duration ->
                     viewState.selectDay?.let { day ->
-                        // проверка времени начала занятия
-                        if (
-                            viewModel.checkTime(
+                        val jod = CoroutineScope(Dispatchers.IO).async {
+                            // проверка времени начала занятия
+                           return@async viewModel.checkTime(
                                 dayOfWeek = day,
-
+                                oldTime = if(!viewState.isNewLesson)
+                                    viewState.oldTimeLesson else null,
                                 time = time.hour * 60 + time.minute,
                                 duration = duration
                             )
-
-                            ) {
+                        }
+                         if ( runBlocking {
+                                  jod.await()
+                            })
+                            {
                             // не прошла проверку по времени занятия
                             //запускаем диалог с подтверждением создания занятия
 
@@ -198,6 +207,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                     duration = duration
                                 )
                             )
+
                             viewModel.obtainEvent(
                                 SchedulerListEvent.ShowDialog(
                                     true,
@@ -205,7 +215,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                             )
 //                            viewModel.obtainEvent(SchedulerListEvent.EditTime)
                         } else {
-                            // закрываем окно выбора времени и сохраняем новое значение
+                            // закрываем окно выбора времени и сохраняем новое значение начала урока
                             viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
                             //сохраняем время в state
                             viewModel.obtainEvent(
@@ -214,7 +224,13 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                     duration = duration
                                 )
                             )
-                            viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
+                             if(viewState.isNewLesson){
+                                Log.e("CLJR", "NEWLessonEvent")
+                                viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
+                             }
+                             else{
+                                 viewModel.obtainEvent(SchedulerListEvent.EditTime)
+                             }
                         }
                     }
                 }

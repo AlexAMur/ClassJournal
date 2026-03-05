@@ -91,6 +91,11 @@ interface SchedulerDAO{
             "endTime  between :start and :end) and dayOfWeek =:day)")
     fun checkTimeLesson(day: Int, start: Int, end: Int):Int
 
+    @Query("select count(*) from (select UID, startLesson, startLesson + duration as endTime  " +
+            " from scheduler where (startLesson between :start and :end or  " +
+            "endTime  between :start and :end) and dayOfWeek =:day and startLesson != :oldTime)")
+    fun checkTimeLessonBeforeEditTime(day: Int,oldTime: Int, start: Int, end: Int):Int
+
     //Поиск по названию группы
     @Query("Select uid , group_name  , isDelete  from 'groups' where group_name LIKE :name " +
             "and isDelete = 0 and uid not in (select uidGroup from scheduler where dayOfWeek = :day" +
