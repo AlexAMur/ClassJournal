@@ -49,7 +49,7 @@ fun itemScheduler(
     viewModel: SchedulerListViewModel,
     collapsItem: (Int) -> Unit,
     onNewLesson: (Int) -> Unit,
-    editTime:  (timeLesson :Int) -> Unit,
+    onEditTime:  (Int, Int) -> Unit,
     addMember: (DayOfWeek, Int, Int) -> Unit
 ) {
     val viewState by viewModel.viewState().collectAsState()
@@ -68,17 +68,13 @@ fun itemScheduler(
     Column(
         Modifier.fillMaxWidth()
     ) {
-//            val insets = WindowInsets.safeDrawing.asPaddingValues()
-//            Text("Доступная высота (примерно): ${insets.calculateBottomPadding() + insets.calculateTopPadding()}")
         Row(
             Modifier
                 .background(ClassJournalTheme.colors.controlColor)
                 .clickable(
-                    onClick = { collapsItem(index) }
-//                        {
-//                        viewModel.obtainEvent(SchedulerListEvent.CollapseItem(0))
-//                        Log.e("CLJR",viewState.daylist.toString())
-//                    }
+                    onClick = {
+                        collapsItem(index)
+                    }
                 )) {
             Text(
                 day.shortName,
@@ -133,23 +129,15 @@ fun itemScheduler(
                                     modifier = Modifier
                                         .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
                                         .weight(1f)
-                                        .clickable(onClick = { editTime(timeLessonKey.toInt()) }),
+                                        .clickable(onClick = {
+                                            onEditTime(
+                                                 timeLessonKey.toInt(),
+                                                 lists?.first()?.duration?:100
+                                            )
+                                        }),
                                     color = ClassJournalTheme.colors.primaryText,
                                     style = ClassJournalTheme.typography.caption,
                                 )
-
-                                TextButton(
-                                    modifier = Modifier,
-                                    onClick = {
-                                        isCollapse = !isCollapse
-                                    }
-                                ) {
-                                    Icon(
-                                        if (isCollapse) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                                        contentDescription = stringResource(R.string.add_scheduler_),
-                                        tint = ClassJournalTheme.colors.tintColor
-                                    )
-                                }
 
                                 TextButton(
                                     modifier = Modifier,
@@ -164,6 +152,18 @@ fun itemScheduler(
                                 ) {
                                     Icon(
                                         Icons.TwoTone.Add,
+                                        contentDescription = stringResource(R.string.add_scheduler_),
+                                        tint = ClassJournalTheme.colors.tintColor
+                                    )
+                                }
+                                TextButton(
+                                    modifier = Modifier,
+                                    onClick = {
+                                        isCollapse = !isCollapse
+                                    }
+                                ) {
+                                    Icon(
+                                        if (isCollapse) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                                         contentDescription = stringResource(R.string.add_scheduler_),
                                         tint = ClassJournalTheme.colors.tintColor
                                     )

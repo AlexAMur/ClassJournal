@@ -126,18 +126,20 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                     )
                                 )
                             },
-                            editTime = { timeLesson ->
-                                Log.e("CLJR", "timeLessont ${timeLesson}")
+                            onEditTime = { timeLesson, duration ->
+                                Log.e("CLJR", "timeLesson ${timeLesson}")
                                 //запускаем диалог выбора времени для изменения времени существующего занятия
                                 viewState.selectDay = day
-                                viewState.isNewLesson = false
                                 viewState.oldTimeLesson= timeLesson
+                                viewState.durationLesson= duration
                                 viewModel.obtainEvent(
-                                    SchedulerListEvent.ShowTimePiker(
-                                        show = true,
-                                        timeLesson
+                                    SchedulerListEvent.EditTime(
+                                        dayOfWeek = day,
+                                        oldTime = timeLesson,
+                                        duration = duration
                                     )
                                 )
+
                             }
                         )
                     }
@@ -155,12 +157,12 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                     viewModel.obtainEvent(SchedulerListEvent.ShowDialog(false))
                     // закрываем окно выбора времени  и сохраняем новое значение
                     viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
-                    viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
+                   // viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
                 }
             )
         }
-
-        if (viewState.showStartTimePicker) {
+Добавить проверку времени создания  нового урока и при изменение
+        if (viewState.showTimePicker) {
             TimePikerDialog(
                 timePickerState = rememberTimePickerState(
                     viewState.initTimeHour,
@@ -173,7 +175,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                     viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
                 },
                 onConfirm =viewState.onConfirm,
-
+                duration = viewState.durationLesson
             ) {}
         }
     }

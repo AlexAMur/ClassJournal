@@ -151,12 +151,10 @@ fun TimePikerDialog(
                             } catch (e: Exception) {
                                 error = true
                                 if (e is NumberFormatException) {
-
                                     support = context.getString(R.string.error_invalid_value)
                                 } else support = e.message ?: "Ошибка."
                             }
                         },
-
                         ) {
                         Text(
                             stringResource(R.string.ok),

@@ -28,9 +28,7 @@ class SchedulerListViewModel @Inject constructor(
         (
         installState = SchedulerListState()
     ) {
-
     private val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-
         when (throwable) {
             is IllegalArgumentException -> {
                 viewState.isCanShowSnackBar = true
@@ -41,12 +39,10 @@ class SchedulerListViewModel @Inject constructor(
                     )
                 )
             }
-
         }
     }
 
     override fun obtainEvent(viewEvent: SchedulerListEvent) {
-
         when (viewEvent) {
             is ShowDialog -> {
                 viewState = viewState.copy(
@@ -61,13 +57,17 @@ class SchedulerListViewModel @Inject constructor(
                 viewState.selectDay = viewEvent.dayOfWeek
                 viewState.timeLesson = viewEvent.time
                 viewState.durationLesson = viewEvent.duration
-                obtainEvent(NewLessonEvent)
+                viewState.isCanShowSnackBar = true
+                viewAction = SchedulerListAction.NewLesson
             }
 
             is ShowTimePiker -> {
+                Log.e(
+                    "CLJR","Show timePiker"
+                )
                 viewState = viewState.copy(
-                   // oldTimeLesson = viewEvent.time,
-                    showStartTimePicker = viewEvent.show,
+                    // oldTimeLesson = viewEvent.time,
+                    showTimePicker = viewEvent.show,
                     initTimeHour = viewEvent.time?.let { it / 60 } ?: Calendar.getInstance().get(
                         android.icu.util.Calendar.HOUR_OF_DAY
                     ),
@@ -82,68 +82,47 @@ class SchedulerListViewModel @Inject constructor(
                 viewState.isNewLesson = viewEvent.isNewLesson
                 viewState.oldTimeLesson = null
                 viewState.oldDurationLesson = null
-                viewState.onConfirm={ time,duration->
-                    viewState.durationLesson = viewEvent.duration
+                //обработчик нажатия кнопки ок в диалоге выбора времени
+                viewState.onConfirm = { time, duration ->
+                    viewState.timeLesson = time
+                    viewState.durationLesson = duration
+                    viewState.showTimePicker = false
+                    viewState.isCanShowSnackBar = true
+                    viewAction = SchedulerListAction.NewLesson
                 }
                 obtainEvent(ShowTimePiker(show = true))
             }
 
-            NewLessonEvent -> {
-                viewState.isCanShowSnackBar = true
-                viewAction = SchedulerListAction.NewLesson
-            }
-
-            EditTime -> {
+            is EditTime -> {
                 //установка нового времени
 
-
                 with(viewState) {
-                    Log.e("CLJR"," Select day= $selectDay, oldTime = $oldTimeLesson,  time= $timeLesson" )
-                    selectDay?.let {
-                        if (oldTimeLesson != null && timeLesson != null) {
-                            viewModelScope.launch {
-                                schedulerInteract.editTime(
-                                    dayOfWeek = it,
-                                    oldTime = oldTimeLesson ?: 0,
-                                    newTime = timeLesson ?: 0,
-                                    duration = durationLesson ?: 0
-
-                                )
+                    Log.e(
+                        "CLJR",
+                        " Select day= $selectDay, oldTime = $oldTimeLesson,  time= $timeLesson"
+                    )
+                    viewState.onConfirm = { time, duration ->
+                        viewState.showTimePicker =false
+                        selectDay?.let { day ->
+                            oldTimeLesson?.let { oldTime ->
+                                viewModelScope.launch {
+                                    schedulerInteract.editTime(
+                                        dayOfWeek = day,
+                                        oldTime = oldTime,
+                                        newTime = time,
+                                        duration = duration
+                                    )
+                                }
                             }
                         }
                     }
-                }
-            }
-
-            is SetTime -> {
-//                if (viewState.durationLesson != viewEvent.duration) { // новое время
-//                    viewState.oldDurationLesson = viewState.durationLesson
-                viewState.durationLesson = viewEvent.duration
-//                } else
-//                    viewState.oldDurationLesson = null
-
-                if (viewState.isNewLesson) {  //новое занятие
-                    Log.e("CLJR", "time Newlesson ${viewEvent.time}")
-                    viewState.oldTimeLesson = null
-                    viewState.timeLesson = viewEvent.time
-
-                } else {
-                    Log.e("CLJR", "time ${viewEvent.time}")
-
-                    //viewState.oldTimeLesson = viewState.timeLesson
-                    viewState.timeLesson = viewEvent.time
-                    obtainEvent(viewEvent = EditTime)
 
                 }
-            }
-
-            is CollapseItem -> {
-                viewState = viewState.copy(
-                    dayList = viewState.dayList.mapIndexed { index, bool ->
-                        if (index == viewEvent.index) !bool
-                        else bool
-                    }
-                )
+              obtainEvent( ShowTimePiker(
+                    show = true,
+                   time= viewEvent.oldTime,
+                  duration = viewEvent.duration
+                ))
             }
 
             is ShowSnackBar -> {
@@ -153,8 +132,13 @@ class SchedulerListViewModel @Inject constructor(
                 )
             }
 
-            is CheckTimeLesson -> {
-
+            is CollapseItem -> {
+                viewState = viewState.copy(
+                    dayList = viewState.dayList.mapIndexed { index, bool ->
+                        if (index == viewEvent.index) !bool
+                        else bool
+                    }
+                )
             }
 
             is DeleteSwipe -> {
@@ -197,7 +181,6 @@ class SchedulerListViewModel @Inject constructor(
         }
     }
 
-
     suspend fun checkTime(dayOfWeek: DayOfWeek, oldTime: Int?, time: Int, duration: Int): Boolean {
         return schedulerInteract.checkTimeLesson(
             dayOfWeek = dayOfWeek,
@@ -205,7 +188,6 @@ class SchedulerListViewModel @Inject constructor(
             startTime = time,
             duration = duration
         )
-
     }
 
 
@@ -222,3 +204,18 @@ class SchedulerListViewModel @Inject constructor(
         }
     }
 }
+
+
+//is SetTime -> {
+//    viewState.durationLesson = viewEvent.duration
+//    if (viewState.isNewLesson) {  //новое занятие
+//        Log.e("CLJR", "time Newlesson ${viewEvent.time}")
+//        viewState.oldTimeLesson = null
+//        viewState.timeLesson = viewEvent.time
+//
+//    } else {
+//        Log.e("CLJR", "time ${viewEvent.time}")
+//        viewState.timeLesson = viewEvent.time
+//        obtainEvent(viewEvent = EditTime)
+//    }
+//}
