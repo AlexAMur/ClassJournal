@@ -27,11 +27,11 @@ import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.communs.DialogScreen
-import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.TimePikerDialog
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.communs.DayOfWeek
+import com.catshome.classJournal.resource.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +57,7 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         actionLabel = viewState.snackBarAction
                             ?: context.getString(R.string.ok),
                         sbHostState,
-                        onDismissed = viewState.onDismissed ?: {
+                        onDismissed = {
                             viewState.isCanShowSnackBar = false
                             viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(false))
                             //     viewModel.obtainEvent(SchedulerListEvent.ShowSnackBar(DetailsPay(false, "")))
@@ -120,18 +120,15 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                 //запускаем диалог выбора времени и передаем данные о дне недели  и признак добавления
                                 viewState.selectDay = day
                                 viewModel.obtainEvent(
-                                    SchedulerListEvent.NewClicked(
-                                        index,
-                                        isNewLesson = true
-                                    )
+                                    SchedulerListEvent.NewClicked(day)
                                 )
                             },
                             onEditTime = { timeLesson, duration ->
                                 Log.e("CLJR", "timeLesson ${timeLesson}")
                                 //запускаем диалог выбора времени для изменения времени существующего занятия
                                 viewState.selectDay = day
-                                viewState.oldTimeLesson= timeLesson
-                                viewState.durationLesson= duration
+                                viewState.oldTimeLesson = timeLesson
+                                viewState.durationLesson = duration
                                 viewModel.obtainEvent(
                                     SchedulerListEvent.EditTime(
                                         dayOfWeek = day,
@@ -139,7 +136,6 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                         duration = duration
                                     )
                                 )
-
                             }
                         )
                     }
@@ -153,15 +149,9 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                 onDismiss = {
                     viewModel.obtainEvent(SchedulerListEvent.ShowDialog(false))
                 },
-                onConfirm = {
-                    viewModel.obtainEvent(SchedulerListEvent.ShowDialog(false))
-                    // закрываем окно выбора времени  и сохраняем новое значение
-                    viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
-                   // viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
-                }
+                onConfirm = viewState.onDialogConfirm
             )
         }
-Добавить проверку времени создания  нового урока и при изменение
         if (viewState.showTimePicker) {
             TimePikerDialog(
                 timePickerState = rememberTimePickerState(
@@ -174,62 +164,9 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                 onDismiss = {
                     viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(false))
                 },
-                onConfirm =viewState.onConfirm,
+                onConfirm = viewState.onConfirm,
                 duration = viewState.durationLesson
             ) {}
         }
     }
 }
-
-//{ time, duration ->
-//    viewState.selectDay?.let { day ->
-//        val jod = CoroutineScope(Dispatchers.IO).async {
-//            // проверка времени начала занятия
-//            return@async viewModel.checkTime(
-//                dayOfWeek = day,
-//                oldTime = if(!viewState.isNewLesson)
-//                    viewState.oldTimeLesson else null,
-//                time = time.hour * 60 + time.minute,
-//                duration = duration
-//            )
-//        }
-//        if ( runBlocking {
-//                jod.await()
-//            })
-//        {
-//            // не прошла проверку по времени занятия
-//            //запускаем диалог с подтверждением создания занятия
-//
-//            viewModel.obtainEvent(
-//                SchedulerListEvent.SetTime(
-//                    time = time.hour * 60 + time.minute,
-//                    duration = duration
-//                )
-//            )
-//
-//            viewModel.obtainEvent(
-//                SchedulerListEvent.ShowDialog(
-//                    true,
-//                )
-//            )
-////                            viewModel.obtainEvent(SchedulerListEvent.EditTime)
-//        } else {
-//            // закрываем окно выбора времени и сохраняем новое значение начала урока
-//            viewModel.obtainEvent(SchedulerListEvent.ShowTimePiker(show = false))
-//            //сохраняем время в state
-//            viewModel.obtainEvent(
-//                SchedulerListEvent.SetTime(
-//                    time = time.hour * 60 + time.minute,
-//                    duration = duration
-//                )
-//            )
-//            if(viewState.isNewLesson){
-//                Log.e("CLJR", "NEWLessonEvent")
-//                viewModel.obtainEvent(SchedulerListEvent.NewLessonEvent)
-//            }
-//            else{
-//                viewModel.obtainEvent(SchedulerListEvent.EditTime)
-//            }
-//        }
-//    }
-//}

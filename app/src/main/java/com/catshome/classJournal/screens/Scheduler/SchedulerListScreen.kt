@@ -45,7 +45,6 @@ fun SchedulerListScreen(
         )
     }
     LaunchedEffect(Unit) {
-        Log.e("CLJR", "Launch reload scheduler")
         viewModel.obtainEvent(SchedulerListEvent.ReloadScheduler)
     }
 
@@ -53,21 +52,15 @@ fun SchedulerListScreen(
 
     when (viewAction) {
         SchedulerListAction.NewLesson -> {
-
             with(viewState) {
-                Log.e("CLJR", "Navigate")
-                Log.e("CLJR", "NewLesson day${viewState.selectDay}, time ${viewState.timeLesson} " )
-
                 keyboardController?.hide()
                 viewState.selectDay?.let { day ->
                     viewState.timeLesson?.let { timeLesson ->
-                        Log.e("CLJR", "Navigate")
-
                         navController.navigate(
                             NewLesson(
-                                day,
+                                dayOfWeek = day,
                                 startTime = timeLesson,
-                                duration = durationLesson ?: 0,
+                                duration = durationLesson,
                                 isEdit = false
                             )
                         )

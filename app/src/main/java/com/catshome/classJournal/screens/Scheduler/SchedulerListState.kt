@@ -15,18 +15,15 @@ data class SchedulerListState (
     val dialogHandler: String?= null,
     val messageShackBar: String?= null,
     val snackBarAction: String? =null,
-    var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
     val isShowSnackBar: Boolean = false,
     var isCanShowSnackBar: Boolean = false,
     val dayList: List<Boolean> = listOf(false,false,false,false,false,false,false),
     var selectDay: DayOfWeek? = null,
-    var isNewLesson: Boolean = false,
     var oldTimeLesson: Int? = null,
     var timeLesson: Int?  = null,
     var durationLesson: Int = 45,
-    var oldDurationLesson: Int? = null,
     val items: MutableMap<String, List<Scheduler>?> = emptyMap(),
-    val newScheduler: Scheduler? =null,
-    var onConfirm: (Int, Int)-> Unit = {_,_->}
+    var onConfirm: (Int, Int)-> Unit = {_,_->},
+    var onDialogConfirm: ()->Unit = {}
 )

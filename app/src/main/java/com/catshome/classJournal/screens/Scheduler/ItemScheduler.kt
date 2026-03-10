@@ -97,7 +97,7 @@ fun itemScheduler(
                         .heightIn(min = 56.dp, max = 500.dp)
                         .background(ClassJournalTheme.colors.disableColor)
                 ) {
-                    stickyHeader {
+                    stickyHeader(key =  timeLessonKey ) {
                         SwipeToDeleteContainer(
                             item = timeLessonKey.toTimeString(),
                             onDelete = { deleteItem ->
@@ -105,7 +105,7 @@ fun itemScheduler(
                                 viewModel.obtainEvent(
                                     SchedulerListEvent.DeleteSwipe(
                                         type = ItemType.lesson,
-                                        key = day.shortName,
+                                        key = timeLessonKey.toString(),
                                         scheduler = Scheduler(
                                             dayOfWeek = day.shortName,
                                             dayOfWeekInt = day.ordinal,

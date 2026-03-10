@@ -52,7 +52,7 @@ class SchedulerListViewModel @Inject constructor(
                 )
             }
 
-            is SchedulerListEvent.AddMemberLesson -> {
+            is AddMemberLesson -> {
                 // Добавление ученика в урок
                 viewState.selectDay = viewEvent.dayOfWeek
                 viewState.timeLesson = viewEvent.time
@@ -63,7 +63,7 @@ class SchedulerListViewModel @Inject constructor(
 
             is ShowTimePiker -> {
                 Log.e(
-                    "CLJR","Show timePiker"
+                    "CLJR", "Show timePiker"
                 )
                 viewState = viewState.copy(
                     // oldTimeLesson = viewEvent.time,
@@ -78,51 +78,91 @@ class SchedulerListViewModel @Inject constructor(
             }
 
             is NewClicked -> {
-                viewState.selectDay = DayOfWeek.entries[viewEvent.index]
-                viewState.isNewLesson = viewEvent.isNewLesson
                 viewState.oldTimeLesson = null
-                viewState.oldDurationLesson = null
+                //viewState.oldDurationLesson = null
+                obtainEvent(ShowTimePiker(show = true))
                 //обработчик нажатия кнопки ок в диалоге выбора времени
                 viewState.onConfirm = { time, duration ->
                     viewState.timeLesson = time
                     viewState.durationLesson = duration
-                    viewState.showTimePicker = false
                     viewState.isCanShowSnackBar = true
-                    viewAction = SchedulerListAction.NewLesson
+                    if (checkTime(
+                            dayOfWeek = viewEvent.day,
+                            oldTime = null,
+                            time = time,
+                            duration = duration
+                        )
+                    ) {// есть пересечение по времени
+                        viewState = viewState.copy(showDialog = true)
+                        viewState.onDialogConfirm =
+                            { // проигнорировать предупреждение о пересечение нового занятия в расписании
+
+                                viewState = viewState.copy(
+                                    showTimePicker = false,
+                                    showDialog = false
+                                )
+                                viewAction = SchedulerListAction.NewLesson
+                            }
+                    } else{ // нет пересечения нового занятия по времени
+                        viewState = viewState.copy(showTimePicker = false)
+                        viewAction = SchedulerListAction.NewLesson
+                    }
                 }
-                obtainEvent(ShowTimePiker(show = true))
+
             }
 
             is EditTime -> {
                 //установка нового времени
-
                 with(viewState) {
-                    Log.e(
-                        "CLJR",
-                        " Select day= $selectDay, oldTime = $oldTimeLesson,  time= $timeLesson"
-                    )
                     viewState.onConfirm = { time, duration ->
-                        viewState.showTimePicker =false
                         selectDay?.let { day ->
                             oldTimeLesson?.let { oldTime ->
-                                viewModelScope.launch {
-                                    schedulerInteract.editTime(
+                                if (checkTime(
                                         dayOfWeek = day,
                                         oldTime = oldTime,
-                                        newTime = time,
+                                        time = time,
                                         duration = duration
                                     )
+                                ) {// есть пересечение по времени
+                                    viewState = viewState.copy(showDialog =true)
+                                    viewState.onDialogConfirm = { //если да
+                                        // закрываем окно выбора времени и сохраняем новое значение
+                                        viewState = viewState.copy(
+                                            showTimePicker = false,
+                                            showDialog = false
+                                        )
+                                        viewModelScope.launch {
+                                            schedulerInteract.editTime(
+                                                dayOfWeek = day,
+                                                oldTime = oldTime,
+                                                newTime = time,
+                                                duration = duration
+                                            )
+                                        }
+                                    }
+
+                                } else {//нет пересечения по времени просто сохраняем
+                                    viewState = viewState.copy(showTimePicker = false)
+                                    viewModelScope.launch {
+                                        schedulerInteract.editTime(
+                                            dayOfWeek = day,
+                                            oldTime = oldTime,
+                                            newTime = time,
+                                            duration = duration
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-
                 }
-              obtainEvent( ShowTimePiker(
-                    show = true,
-                   time= viewEvent.oldTime,
-                  duration = viewEvent.duration
-                ))
+                obtainEvent(
+                    ShowTimePiker(
+                        show = true,
+                        time = viewEvent.oldTime,
+                        duration = viewEvent.duration
+                    )
+                )
             }
 
             is ShowSnackBar -> {
@@ -166,28 +206,32 @@ class SchedulerListViewModel @Inject constructor(
                                             message = viewEvent.context.getString(R.string.error_save)
                                         )
                                     )
-                                } else
-                                    viewState.items[viewEvent.key] =
-                                        viewState.items[viewEvent.key]?.filter { it != scheduler }
+                                }
                             }
                         }
                     }//Если смахнули только одну запись
                 }
             }
-
             ReloadScheduler -> {
                 loadData()
             }
         }
     }
 
-    suspend fun checkTime(dayOfWeek: DayOfWeek, oldTime: Int?, time: Int, duration: Int): Boolean {
-        return schedulerInteract.checkTimeLesson(
-            dayOfWeek = dayOfWeek,
-            oldTime = oldTime,
-            startTime = time,
-            duration = duration
-        )
+    fun checkTime(dayOfWeek: DayOfWeek, oldTime: Int?, time: Int, duration: Int): Boolean {
+//Проверка на время если oldTime null то это новый урок, иначе проверка без учета времени занятия
+        // которое мы изменяем
+        val Job = CoroutineScope(Dispatchers.IO).async {
+            return@async schedulerInteract.checkTimeLesson(
+                dayOfWeek = dayOfWeek,
+                oldTime = oldTime,
+                startTime = time,
+                duration = duration
+            )
+        }
+        return runBlocking {
+            Job.await()
+        }
     }
 
 
@@ -204,18 +248,3 @@ class SchedulerListViewModel @Inject constructor(
         }
     }
 }
-
-
-//is SetTime -> {
-//    viewState.durationLesson = viewEvent.duration
-//    if (viewState.isNewLesson) {  //новое занятие
-//        Log.e("CLJR", "time Newlesson ${viewEvent.time}")
-//        viewState.oldTimeLesson = null
-//        viewState.timeLesson = viewEvent.time
-//
-//    } else {
-//        Log.e("CLJR", "time ${viewEvent.time}")
-//        viewState.timeLesson = viewEvent.time
-//        obtainEvent(viewEvent = EditTime)
-//    }
-//}

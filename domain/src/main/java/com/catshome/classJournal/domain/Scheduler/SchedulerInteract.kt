@@ -44,7 +44,7 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
            )
     }
     suspend fun deleteLesson(dayOfWeek: DayOfWeek, time: Long){
-        repository.deleteLesson(dayOfWeek = dayOfWeek , startTime = time)
+        repository.deleteLesson(dayOfWeek = dayOfWeek, startTime = time)
     }
 
     //Возвращает список клиентов в расписании весь или за опред. день(DayOfWeek)
@@ -58,7 +58,6 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
         return repository.getClientList(name, dayOfWeek,startTimeLesson)
     }
     suspend fun deleteClient(scheduler: Scheduler): Boolean{
-       return true
-        repository.deleteSchedule(scheduler)
+       return repository.deleteSchedule(scheduler)
     }
 }
