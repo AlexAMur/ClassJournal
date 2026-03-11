@@ -1,9 +1,7 @@
 package com.catshome.classJournal.screens.Visit
 
 import com.catshome.classJournal.domain.Child.MiniChild
-import com.catshome.classJournal.domain.PayList.Pay
 import com.catshome.classJournal.domain.Visit.Visit
-import com.catshome.classJournal.navigate.DetailsPay
 
 data class NewVisitState(
     val searchText: String = "",

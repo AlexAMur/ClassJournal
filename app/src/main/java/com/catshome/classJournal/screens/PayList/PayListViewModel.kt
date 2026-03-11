@@ -2,7 +2,7 @@ package com.catshome.classJournal.screens.PayList
 
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.domain.Child.MiniChild
-import com.catshome.classJournal.domain.PayList.PayListInteractor
+import com.catshome.classJournal.domain.Pay.PayListInteractor
 import com.catshome.classJournal.domain.communs.toDateRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTime
 import com.catshome.classJournal.domain.communs.toLong
@@ -65,10 +65,10 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
 
             is PayListEvent.ShowSnackBar -> {
                 viewState = viewState.copy(
-                    isShowSnackBar = viewEvent.detailsPay.isShowSnackBar,
-                    messageShackBar = viewEvent.detailsPay.Message
+                    isShowSnackBar = viewEvent.detailsPayResult.isShowSnackBar,
+                    messageShackBar = viewEvent.detailsPayResult.Message
                 )
-                if (viewEvent.detailsPay.isShowSnackBar == false)
+                if (viewEvent.detailsPayResult.isShowSnackBar == false)
                     viewState.isCanShowSnackBar =false
             }
 
@@ -109,6 +109,11 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
 
             is PayListEvent.isFilterDataClicked -> {
                 viewState = viewState.copy(isFilterData = !viewState.isFilterData)
+            }
+
+            is PayListEvent.UpdateClicked ->{
+                viewState.isCanShowSnackBar= true
+                viewAction = PayListAction.EditPay(viewEvent.pay)
             }
         }
     }

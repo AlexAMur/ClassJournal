@@ -1,9 +1,7 @@
 package com.catshome.classJournal.screens.PayList
 
-import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.MiniChild
-import com.catshome.classJournal.domain.PayList.Pay
-import org.jetbrains.annotations.Blocking
+import com.catshome.classJournal.domain.Pay.Pay
 
 data class NewPayState(
     val searchText: String = "",
@@ -21,5 +19,6 @@ data class NewPayState(
     var errorMessage: String = "",
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
+    val payment: String,
     val pay: Pay
 )

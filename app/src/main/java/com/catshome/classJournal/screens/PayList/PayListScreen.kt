@@ -8,7 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
-import com.catshome.classJournal.navigate.DetailsPay
+import com.catshome.classJournal.navigate.DetailsPayResult
+import com.catshome.classJournal.navigate.EditPayDetails
 import com.catshome.classJournal.navigate.OptionFilterPaysList
 import com.catshome.classJournal.screens.ItemScreen
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PayListScreen(
     optionFilter: OptionFilterPaysList? = null,
-    detailsPay: DetailsPay? = null,
+    detailsPayResult: DetailsPayResult? = null,
     navController: NavController,
     viewModel: PayListViewModel = viewModel()
 ) {
@@ -31,7 +32,7 @@ fun PayListScreen(
             viewModel.obtainEvent(PayListEvent.SetOption(optionFilter))
 
         }
-        detailsPay?.let {
+        detailsPayResult?.let {
             viewModel.obtainEvent(PayListEvent.ShowSnackBar(it))
         }
         viewModel.obtainEvent(PayListEvent.ReloadScreen)
@@ -81,5 +82,9 @@ fun PayListScreen(
             viewModel.clearAction()
         }
         null -> {}
+        is PayListAction.EditPay ->{
+            navController.navigate(EditPayDetails((viewAction as PayListAction.EditPay).pay))
+            viewModel.clearAction()
+        }
     }
 }

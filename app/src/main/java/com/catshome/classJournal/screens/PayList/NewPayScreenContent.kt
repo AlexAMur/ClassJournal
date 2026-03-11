@@ -201,7 +201,7 @@ fun PayScreenContent(
                     }
                 }
                 TextField(
-                    value = viewState.pay.payment.toString(),
+                    value = viewState.payment.toString(),
                     label = stringResource(R.string.paymant),
                     supportingText = if (viewState.isPayError) viewState.PayError else stringResource(
                         R.string.paymant

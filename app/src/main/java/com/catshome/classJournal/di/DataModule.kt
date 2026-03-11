@@ -22,7 +22,7 @@ import com.catshome.classJournal.domain.Child.ChildGroupRepository
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Group.GroupRepository
 import com.catshome.classJournal.domain.Group.Models.Group
-import com.catshome.classJournal.domain.PayList.PayRepository
+import com.catshome.classJournal.domain.Pay.PayRepository
 import com.catshome.classJournal.domain.Scheduler.SchedulerRepository
 import com.catshome.classJournal.Scheduler.SchedulerRepositoryImpl
 import com.catshome.classJournal.domain.Visit.VisitRepository

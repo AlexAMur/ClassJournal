@@ -1,9 +1,7 @@
 package com.catshome.classJournal.screens.Scheduler
 
-import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,20 +9,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.catshome.classJournal.R
-import com.catshome.classJournal.communs.SnackBarAction
-import com.catshome.classJournal.communs.TimePikerDialog
-import com.catshome.classJournal.context
-import com.catshome.classJournal.navigate.DetailsPay
 import com.catshome.classJournal.navigate.NewLesson
 import com.catshome.classJournal.navigate.SaveLesson
-import com.catshome.classJournal.screens.ItemScreen
-import com.catshome.classJournal.screens.PayList.PayListEvent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @Composable
 fun SchedulerListScreen(

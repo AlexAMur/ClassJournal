@@ -15,7 +15,8 @@ import com.catshome.classJournal.communs.FilterScreen.FilterScreen
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.navigate.DetailsGroup
-import com.catshome.classJournal.navigate.DetailsPay
+import com.catshome.classJournal.navigate.DetailsPayResult
+import com.catshome.classJournal.navigate.EditPayDetails
 import com.catshome.classJournal.navigate.NewLesson
 import com.catshome.classJournal.navigate.OptionFilterPaysList
 import com.catshome.classJournal.navigate.SaveLesson
@@ -24,7 +25,6 @@ import com.catshome.classJournal.screens.PayList.NewPayViewModel
 import com.catshome.classJournal.screens.PayList.PayListScreen
 import com.catshome.classJournal.screens.PayList.PayListViewModel
 import com.catshome.classJournal.screens.PayList.newPayScreen
-import com.catshome.classJournal.screens.Scheduler.SchedulerListEvent
 import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerScreen
 import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerViewModel
 import com.catshome.classJournal.screens.Scheduler.SchedulerListScreen
@@ -52,6 +52,20 @@ fun classJournalApp(
 ) {
 
     NavHost(navController, startDestination = ItemScreen.PayListScreen.name) {
+        composable<EditPayDetails> { backStackEntry ->
+            val editPay = backStackEntry.toRoute<EditPayDetails>()
+            val viewModel: NewPayViewModel by activity.viewModels()
+            newPayScreen(viewModel)
+
+            Log.e("CLJR", "Navigate navcont")
+            newPayScreen(
+                //navController = navController,
+                viewModel = viewModel,
+                editPay = editPay
+            )
+        }
+
+
         composable(route = ItemScreen.NewPayScreen.name) {
             //val viewModel =hiltViewModel<NewPayViewModel>()
             Log.e("CLJR", "NavHost new pay")
@@ -70,13 +84,13 @@ fun classJournalApp(
 
         }
 
-        composable<DetailsPay> { backStackEntry ->
-            val detailsPay = backStackEntry.toRoute<DetailsPay>()
+        composable<DetailsPayResult> { backStackEntry ->
+            val detailsPayResult = backStackEntry.toRoute<DetailsPayResult>()
             val viewModel: PayListViewModel by activity.viewModels()
             PayListScreen(
                 navController = navController,
                 viewModel = viewModel,
-                detailsPay = detailsPay
+                detailsPayResult = detailsPayResult
             )
 
         }

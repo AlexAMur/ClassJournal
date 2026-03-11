@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
-import com.catshome.classJournal.domain.PayList.PayListInteractor
+import com.catshome.classJournal.domain.Pay.PayListInteractor
 import com.catshome.classJournal.domain.communs.SortEnum
 import com.catshome.classJournal.domain.communs.toDateRuString
 import com.catshome.classJournal.domain.communs.toDateTimeRuString

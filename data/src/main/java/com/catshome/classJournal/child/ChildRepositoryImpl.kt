@@ -33,18 +33,6 @@ class ChildRepositoryImpl @Inject constructor(val childStorage: ChildStorage) : 
        childStorage.deleteSet(child)
     }
 
-//
-//    override suspend fun deleteChild(child: Child) {
-//        childStorage.delete(child)
-//    }
-
-//    override fun checkDeleteChild(
-//        child: Child,
-//        isDelete: Boolean
-//    ) {
-//        TODO("Not yet implemented")
-//    }
-
     override fun getChildById(uid: String): Child? {
         return childStorage.getChildById(uid)
     }

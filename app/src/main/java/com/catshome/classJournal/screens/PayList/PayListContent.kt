@@ -27,7 +27,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -38,7 +37,7 @@ import com.catshome.classJournal.communs.ItemFAB
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.fabMenu
 import com.catshome.classJournal.context
-import com.catshome.classJournal.navigate.DetailsPay
+import com.catshome.classJournal.navigate.DetailsPayResult
 
 @Composable
 fun PayListContent(
@@ -62,17 +61,16 @@ fun PayListContent(
                 )
                 LaunchedEffect(viewState.isShowSnackBar) {
                     if (viewState.isShowSnackBar && viewState.isCanShowSnackBar) {
-                        //    keyboardController?.hide()
                         SnackBarAction(
                             message = viewState.messageShackBar?:"",
                             actionLabel = viewState.snackBarAction
                                 ?: context.getString(R.string.ok),
                             sbHostState,
                             onDismissed = viewState.onDismissed ?: {
-                                viewModel.obtainEvent(PayListEvent.ShowSnackBar(DetailsPay(false, "")))
+                                viewModel.obtainEvent(PayListEvent.ShowSnackBar(DetailsPayResult(false, "")))
                             },
                             onActionPerformed = viewState.onAction ?: {
-                                viewModel.obtainEvent(PayListEvent.ShowSnackBar(DetailsPay(false, "")))
+                                viewModel.obtainEvent(PayListEvent.ShowSnackBar(DetailsPayResult(false, "")))
                             }
                         )
                     }
@@ -188,9 +186,9 @@ fun PayListContent(
                             itemPay(
                                 fio = "${viewState.items[index].surName} ${viewState.items[index].name}",
                                 date = viewState.items[index].datePay,
-                                payment = viewState.items[index].payment
+                                payment = viewState.items[index].payment.toString()
                             ) {
-
+                                viewModel.obtainEvent(PayListEvent.UpdateClicked(item))
                             }
                         }
                     }

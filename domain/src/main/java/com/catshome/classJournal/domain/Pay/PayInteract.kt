@@ -1,4 +1,4 @@
-package com.catshome.classJournal.domain.PayList
+package com.catshome.classJournal.domain.Pay
 
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Child.MiniChild
@@ -14,18 +14,26 @@ class PayInteract @Inject constructor(
         return childRepository.getChildByName(searchText)
     }
 
+    suspend fun deletePay(pay: Pay): Boolean
+    {
+        return payRepository.deletePay(pay)
+    }
+    suspend fun updatePay(pay: Pay): Boolean
+    {
+        return payRepository.updatePay(pay)
+    }
+
     suspend fun savePay(uid: String, payment: Pay){
 
         if (uid.isEmpty())
             throw IllegalArgumentException("Не указан UID ребенка")
 
-        if (payment.payment.toInt()<=0)
+        if (payment.payment <= 0)
             throw IllegalArgumentException("Платеж не может быть нулевым или отрицательным.")
 
         payRepository.insetPay(
             pay = Pay(
-                uidPay = if(payment.uidPay.isEmpty())  UUID.randomUUID().toString()
-                                else payment.uidPay,
+                uidPay = payment.uidPay.ifEmpty { UUID.randomUUID().toString() },
                 uidChild = uid,
                 datePay = payment.datePay,
                 payment = payment.payment

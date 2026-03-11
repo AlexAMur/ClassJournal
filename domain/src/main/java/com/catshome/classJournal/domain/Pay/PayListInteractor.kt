@@ -1,4 +1,4 @@
-package com.catshome.classJournal.domain.PayList
+package com.catshome.classJournal.domain.Pay
 
 
 import com.catshome.classJournal.domain.Child.ChildRepository

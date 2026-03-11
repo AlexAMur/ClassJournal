@@ -1,7 +1,6 @@
 package com.catshome.classJournal.screens.PayList
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -21,14 +20,15 @@ import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.context
 import com.catshome.classJournal.localNavHost
-import com.catshome.classJournal.navigate.DetailsPay
-import com.catshome.classJournal.navigate.OptionFilterPaysList
+import com.catshome.classJournal.navigate.DetailsPayResult
+import com.catshome.classJournal.navigate.EditPayDetails
 import com.catshome.classJournal.screens.ItemScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun newPayScreen(
-    viewModel: NewPayViewModel = viewModel()
+    viewModel: NewPayViewModel = viewModel(),
+    editPay: EditPayDetails?= null
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val outerNavigation = localNavHost.current
@@ -74,6 +74,7 @@ fun newPayScreen(
                 viewModel.obtainEvent(NewPayEvent.CancelClicked)
             },
             onSaveClick = {
+
                 keyboardController?.hide()
                 viewModel.obtainEvent(NewPayEvent.SaveClicked)
             }
@@ -83,7 +84,7 @@ fun newPayScreen(
                 keyboardController?.hide()
                 viewModel.clearAction()
                 outerNavigation?.navigate(
-                    DetailsPay(
+                    DetailsPayResult(
                         isShowSnackBar = true,
                         Message = stringResource(R.string.save_successful)
                     )

@@ -20,9 +20,6 @@ class ChildGroupsRepositoryImpl @Inject constructor(val childGroupDAO: ChildGrou
         }
     }
 
-    override fun getEmptyProups(): List<Group> {
-        TODO("Not yet implemented")
-    }
 
 //    override fun deleteGroup(childGroup: ChildGroup) {
 //        CoroutineScope(Dispatchers.IO).launch {

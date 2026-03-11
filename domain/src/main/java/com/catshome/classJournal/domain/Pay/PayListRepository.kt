@@ -1,4 +1,4 @@
-package com.catshome.classJournal.domain.PayList
+package com.catshome.classJournal.domain.Pay
 
 import com.catshome.classJournal.domain.communs.SortEnum
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +18,7 @@ interface PayRepository {
         end: Long,
         sortEnum: SortEnum
     ): Flow<List<Pay>>?
-    suspend fun deletePay(pay: Pay)
-    suspend fun insetPay(pay: Pay)
-    suspend fun updatePay(pay: Pay)
+    suspend fun deletePay(pay: Pay): Boolean
+    suspend fun insetPay(pay: Pay): Boolean
+    suspend fun updatePay(pay: Pay): Boolean
 }

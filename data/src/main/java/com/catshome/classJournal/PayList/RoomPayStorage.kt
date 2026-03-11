@@ -6,16 +6,16 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RoomPayStorage @Inject constructor(private val payDAO: PayDAO) {
-    suspend fun insertPay(payEntity: PayEntity) {
-        payDAO.insert(payEntity)
+    suspend fun insertPay(payEntity: PayEntity): Boolean {
+        return payDAO.insert(payEntity) > 0
     }
 
-    suspend fun updatePay(payEntity: PayEntity) {
-        payDAO.update(payEntity)
+    suspend fun updatePay(payEntity: PayEntity): Boolean {
+        return payDAO.update(payEntity) > 0
     }
 
-    suspend fun deletePay(payEntity: PayEntity) {
-        payDAO.delete(payEntity)
+    suspend fun deletePay(payEntity: PayEntity): Boolean {
+        return payDAO.delete(payEntity) > 0
     }
 
     suspend fun getAllPay(isDelete: Boolean, sortEnum: SortEnum): Flow<List<PayScreenEntity>>? {

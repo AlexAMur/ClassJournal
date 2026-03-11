@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
-import com.catshome.classJournal.domain.PayList.Pay
-import com.catshome.classJournal.domain.PayList.PayInteract
+import com.catshome.classJournal.domain.Pay.Pay
+import com.catshome.classJournal.domain.Pay.PayInteract
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +24,8 @@ class NewPayViewModel @Inject constructor(
         installState = NewPayState(
             pay = Pay(
                 datePay = LocalDateTime.now().toDateTimeRuString()
-            )
+            ),
+            payment = "0"
         )
     ) {
     val TEXT_FILD_COUNT = 3
@@ -100,7 +101,7 @@ class NewPayViewModel @Inject constructor(
                         )
                     }
 
-                    if (viewState.pay.payment.toInt() < 0) {
+                    if (viewState.pay.payment <= 0) {
                         viewState = viewState.copy(
                             isPayError = true,
                             PayError = context.getString(R.string.paymant_error)
@@ -191,8 +192,16 @@ class NewPayViewModel @Inject constructor(
     }
 
     fun paymentChange(newValue: String) {
-        viewState = viewState.copy(pay = viewState.pay.copy(payment = newValue))
-        if (viewState.pay.payment.isNotEmpty())
+        viewState = viewState.copy(payment = newValue)
+        if (newValue.isNotEmpty()) {
+            try {
+                viewState = viewState.copy(pay = viewState.pay.copy(payment = newValue.toInt()))
+            }catch (e: NumberFormatException){
+                viewState = viewState.copy(pay = viewState.pay.copy(payment = 0))
+                viewState = viewState.copy(isPayError = true)
+            }
+        }
+        if (newValue.length == 0)
             viewState = viewState.copy(isPayError = false)
     }
 }

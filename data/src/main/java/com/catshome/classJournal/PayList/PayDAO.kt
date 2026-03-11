@@ -11,14 +11,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PayDAO {
     @Insert(onConflict = ABORT)
-    suspend fun insert(payEntity: PayEntity)
-
+    suspend fun insert(payEntity: PayEntity): Long
     @Delete
-    suspend fun delete(payEntity: PayEntity)
-
+    suspend fun delete(payEntity: PayEntity):Int
     @Update
-    suspend fun update(payEntity: PayEntity)
-
+    suspend fun update(payEntity: PayEntity): Int
     @Query(
         "Select p.uid , p.uid_child , c.child_name as Name, c.child_surname as Surname, p.date_pay " +
                 ",p.pay  from pays p join child c where p.uid_child =c.uid and c.isDelete = :isDelete ORDER BY " +

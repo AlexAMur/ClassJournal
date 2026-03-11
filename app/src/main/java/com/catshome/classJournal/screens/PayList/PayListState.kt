@@ -2,7 +2,7 @@ package com.catshome.classJournal.screens.PayList
 
 import com.catshome.classJournal.domain.communs.SortEnum
 import com.catshome.classJournal.domain.Child.MiniChild
-import com.catshome.classJournal.domain.PayList.Pay
+import com.catshome.classJournal.domain.Pay.Pay
 
 data class PayListState(
     val showFAB: Boolean = false,

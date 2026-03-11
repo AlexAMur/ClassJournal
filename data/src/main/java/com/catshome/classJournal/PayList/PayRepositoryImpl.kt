@@ -1,7 +1,7 @@
 package com.catshome.classJournal.PayList
 
-import com.catshome.classJournal.domain.PayList.Pay
-import com.catshome.classJournal.domain.PayList.PayRepository
+import com.catshome.classJournal.domain.Pay.Pay
+import com.catshome.classJournal.domain.Pay.PayRepository
 import com.catshome.classJournal.domain.communs.SortEnum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -55,15 +55,15 @@ class PayRepositoryImpl @Inject constructor(val storage: RoomPayStorage) : PayRe
         }
     }
 
-    override suspend fun deletePay(pay: Pay) {
-        TODO("Not yet implemented")
+    override suspend fun deletePay(pay: Pay):Boolean {
+        return storage.deletePay(pay.mapToPayEntity())
     }
 
-    override suspend fun insetPay(pay: Pay) {
-        storage.insertPay(pay.mapToPayEntity())
+    override suspend fun insetPay(pay: Pay):Boolean{
+       return storage.insertPay(pay.mapToPayEntity())
     }
 
-    override suspend fun updatePay(pay: Pay) {
-        TODO("Not yet implemented")
+    override suspend fun updatePay(pay: Pay):Boolean {
+        return storage.updatePay(pay.mapToPayEntity())
     }
 }
