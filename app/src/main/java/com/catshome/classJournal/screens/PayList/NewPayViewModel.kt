@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.PayList
 
+import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.resource.R
@@ -22,11 +23,11 @@ class NewPayViewModel @Inject constructor(
     BaseViewModel<NewPayState, NewPayAction, NewPayEvent>
         (
         installState = NewPayState(
-            pay = Pay(
-                datePay = LocalDateTime.now().toDateTimeRuString()
-            ),
-            payment = "0"
-        )
+//            pay = Pay(
+//                datePay = LocalDateTime.now().toDateTimeRuString()
+//            ),
+//            payment = "0"
+       )
     ) {
     val TEXT_FILD_COUNT = 3
     val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
@@ -83,6 +84,29 @@ class NewPayViewModel @Inject constructor(
 
     override fun obtainEvent(viewEvent: NewPayEvent) {
         when (viewEvent) {
+           is NewPayEvent.SetState-> {
+                   viewState = viewState.copy(
+                       selectChild = MiniChild(
+                           uid = viewEvent.pay.uidPay,
+                           fio = "${viewEvent.pay.name} ${viewEvent.pay.surName}",
+                           name = viewEvent.pay.name,
+                           surname = viewEvent.pay.surName
+                       ),
+                       searchText = "${viewEvent.pay.name} ${viewEvent.pay.surName}",
+                       pay = viewEvent.pay,
+                       payment = viewEvent.pay.payment.toString(),
+                       isChildError = false,
+                       ChildErrorMessage = null,
+                       indexFocus = -1,
+                       isSurnameError = false,
+                       isSnackbarShow = false,
+                       snackbarAction = "",
+                       isPayError = false,
+                       PayError = "",
+                       errorMessage = ""
+                   )
+               }
+
             NewPayEvent.ResetState -> {
                 resetState()
                 viewState.isResetState = false
@@ -169,6 +193,7 @@ class NewPayViewModel @Inject constructor(
     }
 
     private fun resetState() {
+
         viewState = viewState.copy(
             selectChild = null,
             searchText = "",

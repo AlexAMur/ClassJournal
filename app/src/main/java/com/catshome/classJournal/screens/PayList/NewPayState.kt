@@ -19,6 +19,6 @@ data class NewPayState(
     var errorMessage: String = "",
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
-    val payment: String,
-    val pay: Pay
+    val payment: String ="1110",
+    val pay: Pay = Pay()
 )

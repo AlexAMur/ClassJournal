@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.PayList
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -184,24 +185,23 @@ fun PayScreenContent(
                 }
                 DatePickerFieldToModal(
                     modifier = if (viewState.isChildError) modifier.padding(top = 16.dp) else modifier,
-                    if (viewState.pay.datePay.isNullOrEmpty()) {
-                        LocalDateTime.now()
-                            .format(DateTimeFormatter.ofPattern(DATETIME_FORMAT_RU))
-                    }
-                    else {
-                        viewState.pay.datePay
-                    },
+                    viewState.pay.datePay,
+//                    ifEmpty {
+//                        LocalDateTime.now()
+//                            .format(DateTimeFormatter.ofPattern(DATETIME_FORMAT_RU))
+//                    },
                     stringResource(R.string.birthday_child)
                 ) {
                     it?.let {
-                        //viewModel.datePayChange(it.toLocalDateTimeRu().toRuString())
+
                         val dateTime =  "${it.toDateStringRU()} ${LocalTime.now().format(
                             DateTimeFormatter.ofPattern(TIME_FORMAT))}"
+                        Log.e("CLJR", "Date time ${dateTime}")
                        viewModel.datePayChange(dateTime)
                     }
                 }
                 TextField(
-                    value = viewState.payment.toString(),
+                    value = viewState.payment,
                     label = stringResource(R.string.paymant),
                     supportingText = if (viewState.isPayError) viewState.PayError else stringResource(
                         R.string.paymant

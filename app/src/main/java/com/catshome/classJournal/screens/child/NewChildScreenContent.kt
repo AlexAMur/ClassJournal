@@ -43,7 +43,7 @@ import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.DatePickerFieldToModal
 import com.catshome.classJournal.communs.TextField
-import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
+import com.catshome.classJournal.domain.communs.DATETIME_FORMAT_RU
 import com.catshome.classJournal.domain.communs.toDateStringRU
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -150,7 +150,7 @@ fun ScreenContent(
                     modifier = modifier,
                     if (viewState.child.birthday.isNullOrEmpty())
                         LocalDate.now().minusYears(5)
-                            .format(DateTimeFormatter.ofPattern(DATE_FORMAT_RU))
+                            .format(DateTimeFormatter.ofPattern(DATETIME_FORMAT_RU))
                     else {
 
                         viewState.child.birthday

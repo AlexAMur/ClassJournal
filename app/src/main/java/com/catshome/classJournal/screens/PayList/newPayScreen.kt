@@ -1,6 +1,7 @@
 package com.catshome.classJournal.screens.PayList
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -30,16 +31,16 @@ import com.catshome.classJournal.screens.ItemScreen
 fun newPayScreen(
     navController: NavController,
     viewModel: NewPayViewModel = viewModel(),
-    editPay: Pay?= null
+    editPay: Pay? = null
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val outerNavigation = localNavHost.current
     val viewAction by viewModel.viewActions().collectAsState(null)
     val keyboardController = LocalSoftwareKeyboardController.current
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
-                                .value.innerPadding.calculateBottomPadding()
+        .value.innerPadding.calculateBottomPadding()
     val sbHostState = remember { SnackbarHostState() }
-    if (viewState.isResetState){
+    if (viewState.isResetState) {
         viewModel.obtainEvent(NewPayEvent.ResetState)
     }
     Scaffold(
@@ -69,6 +70,12 @@ fun newPayScreen(
                     viewModel.obtainEvent(NewPayEvent.ResetState)
             }
         }
+        editPay?.let {pay->
+            LaunchedEffect(editPay) {
+                viewModel.obtainEvent(NewPayEvent.SetState(pay))
+            }
+        }
+
         PayScreenContent(
             viewState,
             viewModel,
@@ -102,14 +109,15 @@ fun newPayScreen(
                 keyboardController?.hide()
                 viewModel.clearAction()
                 //outerNavigation.clearBackStack(ItemScreen.NewPayScreen.name)
-                outerNavigation.navigate(ItemScreen.PayListScreen.name){
-                   // не удаляет последние посещения
-                    popUpTo(ItemScreen.PayListScreen.name){
+                outerNavigation.navigate(ItemScreen.PayListScreen.name) {
+                    // не удаляет последние посещения
+                    popUpTo(ItemScreen.PayListScreen.name) {
                         inclusive = true
                     }
                 }
                 viewState.isResetState = true
             }
+
             null -> {}
         }
     }
