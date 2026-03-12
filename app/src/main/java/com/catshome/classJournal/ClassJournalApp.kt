@@ -13,10 +13,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.catshome.classJournal.communs.FilterScreen.FilterScreen
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
+import com.catshome.classJournal.domain.Pay.Pay
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.navigate.DetailsPayResult
-import com.catshome.classJournal.navigate.EditPayDetails
 import com.catshome.classJournal.navigate.NewLesson
 import com.catshome.classJournal.navigate.OptionFilterPaysList
 import com.catshome.classJournal.navigate.SaveLesson
@@ -52,14 +52,13 @@ fun classJournalApp(
 ) {
 
     NavHost(navController, startDestination = ItemScreen.PayListScreen.name) {
-        composable<EditPayDetails> { backStackEntry ->
-            val editPay = backStackEntry.toRoute<EditPayDetails>()
+        composable<Pay> { backStackEntry ->
+            val editPay = backStackEntry.toRoute<Pay>()
             val viewModel: NewPayViewModel by activity.viewModels()
-            newPayScreen(viewModel)
-
-            Log.e("CLJR", "Navigate navcont")
+            //newPayScreen(viewModel)
+            //Log.e("CLJR", "Navigate navcont")
             newPayScreen(
-                //navController = navController,
+                navController = navController,
                 viewModel = viewModel,
                 editPay = editPay
             )
@@ -70,7 +69,7 @@ fun classJournalApp(
             //val viewModel =hiltViewModel<NewPayViewModel>()
             Log.e("CLJR", "NavHost new pay")
             val viewModel: NewPayViewModel by activity.viewModels()
-            newPayScreen(viewModel)
+            newPayScreen(navController, viewModel)
         }
 
         composable<OptionFilterPaysList> { backStackEntry ->

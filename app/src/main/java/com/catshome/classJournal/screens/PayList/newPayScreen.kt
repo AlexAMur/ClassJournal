@@ -15,20 +15,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.context
+import com.catshome.classJournal.domain.Pay.Pay
 import com.catshome.classJournal.localNavHost
 import com.catshome.classJournal.navigate.DetailsPayResult
-import com.catshome.classJournal.navigate.EditPayDetails
 import com.catshome.classJournal.screens.ItemScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun newPayScreen(
+    navController: NavController,
     viewModel: NewPayViewModel = viewModel(),
-    editPay: EditPayDetails?= null
+    editPay: Pay?= null
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val outerNavigation = localNavHost.current

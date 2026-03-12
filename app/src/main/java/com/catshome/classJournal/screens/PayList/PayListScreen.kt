@@ -9,7 +9,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
 import com.catshome.classJournal.navigate.DetailsPayResult
-import com.catshome.classJournal.navigate.EditPayDetails
 import com.catshome.classJournal.navigate.OptionFilterPaysList
 import com.catshome.classJournal.screens.ItemScreen
 import kotlinx.coroutines.CoroutineScope
@@ -83,7 +82,7 @@ fun PayListScreen(
         }
         null -> {}
         is PayListAction.EditPay ->{
-            navController.navigate(EditPayDetails((viewAction as PayListAction.EditPay).pay))
+            navController.navigate((viewAction as PayListAction.EditPay).pay)
             viewModel.clearAction()
         }
     }
