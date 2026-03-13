@@ -11,9 +11,19 @@ import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalDateTime
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.ZoneOffset
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
+
 import javax.inject.Inject
+import kotlin.time.Clock
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.Instant
 
 @HiltViewModel
 class FilterViewModel @Inject constructor(
@@ -154,53 +164,55 @@ class FilterViewModel @Inject constructor(
     }
 
     private fun setDateFilter() {
-        when (viewState.selectedOption) {
-            0 -> {
-                viewState = viewState.copy(
-                    beginDate = LocalDate.now().atStartOfDay().toDateTimeRuString(),
-                    endDate = LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1)
-                        .toDateTimeRuString()
-                )
-            }
-
-            1 -> {
-                viewState = viewState.copy(
-                    beginDate = "01.${if(LocalDateTime.now().month.value.toString().length==1)
-                        "0${LocalDateTime.now().month.value}"
-                    else
-                        "${LocalDateTime.now().month.value}"
-                    }.${LocalDateTime.now().year} 00:00",
-                    endDate = "${LocalDateTime.now().toDateRuString()} 23:59"
-                )
-            }
-
-            2 -> {
-                viewState = viewState.copy(
-                    beginDate = "01.01.${LocalDate.now().year} 00:00",
-                    endDate = LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1)
-                        .toDateTimeRuString()
-                )
-            }
-
-            3 -> {//тут выбор переода стоит
-
-                if(viewState.beginDate.isEmpty() || viewState.endDate.isEmpty())
-                viewState = viewState.copy(
-                    beginDate = "01.${if(LocalDateTime.now().month.value.toString().length==1)
-                        "0${LocalDateTime.now().month.value}"
-                    else
-                        "${LocalDateTime.now().month.value}"
-                    }.${LocalDateTime.now().year} 00:00",
-                    endDate = "${LocalDateTime.now().toDateRuString()} 23:59"
-                )
-
-                 }
-
-            4 -> {
-                viewState = viewState.copy(beginDate = "", endDate = "")
-            }
-
-            else -> {}
-        }
+//        when (viewState.selectedOption) {
+//            0 -> {
+//
+//                viewState = viewState.copy(
+//                    beginDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).toDateTimeRuString().toString(),
+//                    endDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+//                        //.plusDays(1).atStartOfDay().minusSeconds(1)
+//                        .toDateTimeRuString().toString()
+//                )
+//            }
+//
+//            1 -> {
+//                viewState = viewState.copy(
+//                    beginDate = "01.${if(LocalDateTime.now().month.value.toString().length==1)
+//                        "0${LocalDateTime.now().month.value}"
+//                    else
+//                        "${LocalDateTime.now().month.value}"
+//                    }.${LocalDateTime.now().year} 00:00",
+//                    endDate = "${LocalDateTime.now().toDateRuString()} 23:59"
+//                )
+//            }
+//
+//            2 -> {
+//                viewState = viewState.copy(
+//                    beginDate = "01.01.${LocalDate.now().year} 00:00",
+//                    endDate = LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1)
+//                        .toDateTimeRuString()
+//                )
+//            }
+//
+//            3 -> {//тут выбор переода стоит
+//
+//                if(viewState.beginDate.isEmpty() || viewState.endDate.isEmpty())
+//                viewState = viewState.copy(
+//                    beginDate = "01.${if(LocalDateTime.now().month.value.toString().length==1)
+//                        "0${LocalDateTime.now().month.value}"
+//                    else
+//                        "${LocalDateTime.now().month.value}"
+//                    }.${LocalDateTime.now().year} 00:00",
+//                    endDate = "${LocalDateTime.now().toDateRuString()} 23:59"
+//                )
+//
+//                 }
+//
+//            4 -> {
+//                viewState = viewState.copy(beginDate = "", endDate = "")
+//            }
+//
+//            else -> {}
+//        }
     }
 }

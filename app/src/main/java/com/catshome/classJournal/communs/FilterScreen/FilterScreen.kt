@@ -53,7 +53,8 @@ import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.DatePickerFieldToModal
 import com.catshome.classJournal.communs.GroupButton
 import com.catshome.classJournal.communs.SearchField
-import com.catshome.classJournal.domain.communs.toDateStringRU
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.navigate.OptionFilterPaysList
 import com.catshome.classJournal.screens.ItemScreen
 import java.time.format.DateTimeParseException
@@ -208,7 +209,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                             value = viewState.beginDate,
                             label = stringResource(R.string.begin_date)
                         ) {
-                            viewModel.beginDateChange("${it?.toDateStringRU()} 00:00")
+                            viewModel.beginDateChange("${it?.toLocalDateTimeRu()?.toDateTimeRuString().toString()} 00:00")
                         }
                         DatePickerFieldToModal(
                             modifier = Modifier
@@ -216,7 +217,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                             value = viewState.endDate,
                             label = stringResource(R.string.end_date)
                         ) {
-                            viewModel.endDateChange("${it?.toDateStringRU()} 23:59")
+                            viewModel.endDateChange("${it?.toLocalDateTimeRu()?.toDateTimeRuString().toString()} 23:59")
                         }
                     }
                 }

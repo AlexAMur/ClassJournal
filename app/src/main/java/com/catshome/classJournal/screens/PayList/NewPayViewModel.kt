@@ -1,20 +1,22 @@
 package com.catshome.classJournal.screens.PayList
 
-import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.viewModelScope
-import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.Pay
 import com.catshome.classJournal.domain.Pay.PayInteract
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
+import kotlin.time.Clock
+import kotlin.time.Clock.System.now
 
 @HiltViewModel
 class NewPayViewModel @Inject constructor(
@@ -197,7 +199,7 @@ class NewPayViewModel @Inject constructor(
         viewState = viewState.copy(
             selectChild = null,
             searchText = "",
-            pay = Pay(datePay = LocalDateTime.now().toDateTimeRuString()),
+            pay = Pay(datePay =  now().toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toDateTimeRuString()),
             isChildError = false,
             ChildErrorMessage = null,
             indexFocus = -1,

@@ -7,7 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.catshome.classJournal.child.ChildEntity
 import com.catshome.classJournal.domain.Visit.Visit
-import com.catshome.classJournal.domain.communs.toLocalDateTime
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
 
 @Entity(
@@ -44,7 +44,7 @@ data class VisitScreenEntity(
 fun Visit.mapToVisitEntity(): VisitEntity{
     return VisitEntity(uid = this.uid,
         uidChild = this.uidChild,
-        dateVisit = this.data.toLocalDateTime()?.toLong()?:0,
+        dateVisit = this.data.toLocalDateTimeRu()?.toLong()?:0,
         priceVisit = this.price)
 }
 //class VisitScreenEntity{

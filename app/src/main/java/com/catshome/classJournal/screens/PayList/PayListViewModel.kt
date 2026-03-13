@@ -4,14 +4,17 @@ import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.PayListInteractor
 import com.catshome.classJournal.domain.communs.toDateRuString
-import com.catshome.classJournal.domain.communs.toLocalDateTime
-import com.catshome.classJournal.domain.communs.toLong
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.toLong
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.time.LocalDateTime
 import javax.inject.Inject
+import kotlin.time.Clock.System.now
 
 @HiltViewModel
 class PayListViewModel @Inject constructor(private val payListInteractor: PayListInteractor) :
@@ -22,7 +25,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             else
                 "${LocalDateTime.now().month.value}"
             }.${LocalDateTime.now().year} 00:00",
-            endDate = "${LocalDateTime.now().toDateRuString()} 23:59"
+            endDate = "${now().toLocalDateTime(TimeZone.currentSystemDefault()).toDateRuString()} 23:59"
         )
     ) {
 
@@ -33,8 +36,8 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 with(viewEvent.option) {
                     viewState = viewState.copy(
                         selectedOption = selectOption,
-                        beginDate = beginDate ?: LocalDateTime.now().toDateTimeRuString(),
-                        endDate = endDate ?:LocalDateTime.now().toDateTimeRuString(),
+                        beginDate = beginDate.toString(),
+                        endDate = endDate.toString(),
                         sortValue = sort,
                         selectChild = MiniChild(uid = childId ?: "", fio = childFIO ?: "")
                     )
@@ -122,8 +125,8 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
         viewModelScope.launch {
             payListInteractor.getPays(
                 viewState.selectChild?.uid,
-                viewState.beginDate.toLocalDateTime()?.toLong(),
-                viewState.endDate.toLocalDateTime()?.toLong(),
+                viewState.beginDate.toLocalDateTimeRu()?.toLong(),
+                viewState.endDate.toLocalDateTimeRu()?.toLong(),
                 viewState.sortValue
             )?.collect { listPay ->
                 viewState = viewState.copy(items = listPay)

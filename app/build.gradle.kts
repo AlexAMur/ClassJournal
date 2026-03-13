@@ -3,6 +3,8 @@ import org.gradle.kotlin.dsl.androidTest
 import org.gradle.kotlin.dsl.kotlinOptions
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -55,6 +57,24 @@ android {
 }
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
+
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.kotlinx.datetime)
+
+    implementation(libs.hilt)
+    implementation(libs.room.runtime)
+    ksp(libs.hilt.compiler)
+    ksp(libs.room)
+
+
+
+
+
+
+    implementation(libs.kotlinx.datetime)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -68,6 +88,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+
+
 
 
 

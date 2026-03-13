@@ -6,7 +6,7 @@ import androidx.annotation.RequiresApi
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.communs.SortEnum
-import com.catshome.classJournal.domain.communs.toLocalDateTime
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -27,7 +27,7 @@ class VisitInteract @Inject constructor(
                 throw kotlin.IllegalArgumentException("Не указан UID")
             if (visit.uidChild.isEmpty())
                 throw kotlin.IllegalArgumentException("Не указан UID ребенка")
-            if (visit.data.isEmpty() || (visit.data.toLocalDateTime()?.toLong() ?: 0) > 0)
+            if (visit.data.isEmpty() || (visit.data.toLocalDateTimeRu()?.toLong() ?: 0) > 0)
                 throw kotlin.IllegalArgumentException("Нет или не корректная дата.")
             if (visit.price <= 0)
                 throw IllegalArgumentException("Платеж не может быть нулевым или отрицательным.")

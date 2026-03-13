@@ -35,7 +35,9 @@ android {
 dependencies {
     implementation(libs.identity.jvm)
     implementation(libs.hilt)
+    implementation(libs.androidx.media3.common.ktx)
     ksp(libs.hilt.compiler)
     implementation(libs.serialisation)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.kotlinx.datetime)
 }

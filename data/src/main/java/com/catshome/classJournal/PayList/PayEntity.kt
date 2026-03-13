@@ -7,8 +7,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.catshome.classJournal.child.ChildEntity
 import com.catshome.classJournal.domain.Pay.Pay
-import com.catshome.classJournal.domain.communs.toDateStringRU
-import com.catshome.classJournal.domain.communs.toLocalDateTime
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
@@ -51,7 +49,7 @@ fun PayEntity.mapToPay(): Pay {
         uidChild = this.uid_child,
 //       Name =  this.Name,
 //       Surname = this.Surname,
-        datePay = this.date_pay.toDateStringRU(),
+        datePay = this.date_pay.toLocalDateTimeRu()?.toDateTimeRuString().toString(),
         payment = pay
     )
 }
@@ -62,7 +60,7 @@ fun PayScreenEntity.mapToPay(): Pay {
         uidChild = this.uid_child,
         name = this.Name,
         surName = this.Surname,
-        datePay = this.date_pay.toLocalDateTimeRu().toDateTimeRuString(),
+        datePay = this.date_pay.toLocalDateTimeRu()?.toDateTimeRuString().toString(),
         payment = pay
     )
 }
@@ -71,7 +69,7 @@ fun Pay.mapToPayEntity(): PayEntity {
     return PayEntity(
         uid = this.uidPay,
         uid_child = this.uidChild,
-        date_pay = this.datePay.toLocalDateTime()?.toLong()?:0,
+        date_pay = this.datePay.toLocalDateTimeRu()?.toLong()?:0,
         pay = this.payment,
     )
 }

@@ -5,11 +5,13 @@ import com.catshome.classJournal.domain.Pay.PayRepository
 import com.catshome.classJournal.domain.communs.SortEnum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+
 import javax.inject.Inject
 
 class PayRepositoryImpl @Inject constructor(val storage: RoomPayStorage) : PayRepository {
 
     override suspend fun getAllPays(isDelete: Boolean,  sortEnum: SortEnum): Flow<List<Pay>>? {
+
         return storage.getAllPay(isDelete, sortEnum)?.map {
             listPayEntity-> listPayEntity.map {
                 it.mapToPay()

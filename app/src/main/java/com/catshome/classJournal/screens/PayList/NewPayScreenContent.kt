@@ -47,7 +47,8 @@ import com.catshome.classJournal.communs.SearchField
 import com.catshome.classJournal.communs.TextField
 import com.catshome.classJournal.domain.communs.DATETIME_FORMAT_RU
 import com.catshome.classJournal.domain.communs.TIME_FORMAT
-import com.catshome.classJournal.domain.communs.toDateStringRU
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+//import com.catshome.classJournal.domain.communs.toDateStringRU
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -194,7 +195,7 @@ fun PayScreenContent(
                 ) {
                     it?.let {
 
-                        val dateTime =  "${it.toDateStringRU()} ${LocalTime.now().format(
+                        val dateTime =  "${it.toLocalDateTimeRu()} ${LocalTime.now().format(
                             DateTimeFormatter.ofPattern(TIME_FORMAT))}"
                         Log.e("CLJR", "Date time ${dateTime}")
                        viewModel.datePayChange(dateTime)

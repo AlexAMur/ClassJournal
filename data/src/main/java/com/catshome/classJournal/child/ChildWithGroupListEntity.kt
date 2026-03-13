@@ -1,7 +1,9 @@
 package com.catshome.classJournal.child
 
 import com.catshome.classJournal.domain.Child.ChildWithGroups
-import com.catshome.classJournal.domain.communs.toDateStringRU
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+
 
 data class ChildWithGroupListEntity(
     val childUid : String,
@@ -16,7 +18,7 @@ fun ChildWithGroupListEntity.mapToChildWithGroups(): ChildWithGroups{
        childUid = this.childUid,
      childName = this.childName,
      childSurname = this.childSurname,
-     childBirthDay = this.childBirthday.toLong().toDateStringRU(),
+     childBirthDay = this.childBirthday.toLong().toLocalDateTimeRu()?.toDateTimeRuString().toString(),
      groupUid = this.groupUid?:"",
      groupName = this.groupName?:"Без группы"
    )

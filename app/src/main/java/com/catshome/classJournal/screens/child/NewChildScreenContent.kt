@@ -44,7 +44,9 @@ import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.DatePickerFieldToModal
 import com.catshome.classJournal.communs.TextField
 import com.catshome.classJournal.domain.communs.DATETIME_FORMAT_RU
-import com.catshome.classJournal.domain.communs.toDateStringRU
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -158,7 +160,7 @@ fun ScreenContent(
 
                     stringResource(R.string.birthday_child)
                 ) {
-                    viewModel.birthdayChange(it?.toDateStringRU().toString())
+                    viewModel.birthdayChange(it?.toLocalDateTimeRu()?.toDateTimeRuString().toString())
                 }
 
                 TextField(

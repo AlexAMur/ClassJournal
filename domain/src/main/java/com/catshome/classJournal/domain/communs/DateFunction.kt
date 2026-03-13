@@ -4,25 +4,20 @@ package com.catshome.classJournal.domain.communs
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
-import kotlin.time.toJavaInstant
+import kotlinx.datetime.*
 
-//const val DATE_FORMAT_RU = "dd.MM.yyyy"
+import kotlin.time.Instant
+
+
+const val DATE_FORMAT_RU = "dd.MM.yyyy"
 const val DATETIME_FORMAT_RU = "dd.MM.yyyy HH:mm"
 const val TIME_FORMAT = "HH:mm"
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun String.toLocalDateTime(): LocalDateTime? {
+fun String.toLocalDateTimeRu(): LocalDateTime? {
+
     try {
-        val formatter = DateTimeFormatter.ofPattern(DATETIME_FORMAT_RU)
+        val formatter = LocalDateTime.Format { DATETIME_FORMAT_RU }
         return LocalDateTime.parse(this, formatter)
     } catch (e: RuntimeException) {
         Log.e("CLJR", "Ошибка форматирование ${e.message}")
@@ -32,33 +27,44 @@ fun String.toLocalDateTime(): LocalDateTime? {
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime.toDateTimeRuString(): String {
-    val formatter = DateTimeFormatter.ofPattern(DATETIME_FORMAT_RU)
-    return this.format(formatter)
+    try {
+        val formatter = LocalDateTime.Format { DATETIME_FORMAT_RU }
+        return this.format(formatter)
+    } catch (_: IllegalArgumentException) {
+        return "IllegalArgumentException"
+    }
+//   catch (_: DateTimeException){
+//     return null
+//   }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime.toDateRuString(): String {
-    val formatter = DateTimeFormatter.ofPattern(DATETIME_FORMAT_RU)
+    val formatter = LocalDateTime.Format { DATETIME_FORMAT_RU }
     return this.format(formatter)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime.toLong(): Long {
-    return this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    return this.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalTime::class)
-fun Long.toLocalDateTimeRu(): LocalDateTime {
-    val instant = Instant.fromEpochMilliseconds(this)
-    return LocalDateTime.ofInstant(instant.toJavaInstant(), ZoneId.systemDefault())
+fun Long.toLocalDateTimeRu(): LocalDateTime? {
+    try {
+        val instant = Instant.fromEpochMilliseconds(this)
+        return instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    } catch (_: DateTimeArithmeticException) {
+        Log.e("CLJR","DateTimeArithmeticException of Long.toLocalDateTimeRu(): LocalDateTime?")
+       return null
+    }
 }
 
-fun Long.toDateStringRU(): String {
-    return convertMillisToDate(this)
-}
-
-fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat(DATETIME_FORMAT_RU, Locale.getDefault())
-    return formatter.format(Date(millis))
-}
+//fun Long.toDateStringRU(): String {
+//    return convertMillisToDate(this)
+//}
+//
+//fun convertMillisToDate(millis: Long): String {
+//    val formatter = SimpleDateFormat(DATETIME_FORMAT_RU, Locale.getDefault())
+//    return formatter.format(Date(millis))
+//}

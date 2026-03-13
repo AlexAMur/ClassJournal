@@ -3,14 +3,13 @@ package com.catshome.classJournal.child
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.MiniChild
-import com.catshome.classJournal.domain.communs.toDateStringRU
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.toLong
 
 @Entity(tableName = "child", indices = [Index(value = ["child_name", "child_surname", "child_birthday"], unique = true)])
 data class ChildEntity(
@@ -29,7 +28,7 @@ fun ChildEntity.mapToChild(): Child{
        uid = this.uid,
        name = this.name,
        surname = this.surname,
-       birthday = this.birthday.toDateStringRU(),
+       birthday = this.birthday.toLocalDateTimeRu()?.toDateTimeRuString().toString(),
        phone = this.phone,
        note = this.note,
        saldo = this.saldo,
@@ -48,15 +47,15 @@ fun ChildEntity.mapTominiChild(): MiniChild{
 
 
 fun Child.mapToChildEntity(): ChildEntity{
-    val formatter =    SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-    val t =formatter.parse(this.birthday)?.time?:0
+//    val formatter =    SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+//    val t =formatter.parse(this.birthday)?.time?:0
     return ChildEntity(
         uid = this.uid,
         name = this.name,
         surname = this.surname,
         phone = this.phone,
         note = this.note,
-        birthday = formatter.parse(this.birthday).time,
+        birthday = this.birthday.toLocalDateTimeRu()?.toLong()?:0, // formatter.parse(this.birthday).time,
         isDelete = this.isDelete,
         saldo = this.saldo
     )

@@ -7,7 +7,8 @@ import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildWithGroups
 import com.catshome.classJournal.domain.Child.MiniChild
-import com.catshome.classJournal.domain.communs.toDateStringRU
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.resource.R
 
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -102,8 +103,7 @@ class RoomChildStorage @Inject constructor(
                     childSurname = it.childSurname,
                     groupUid = it.groupUid ?: "",
                     groupName = it.groupName ?: context.getString(R.string.no_group),
-                    childBirthDay = it.childBirthday.toLong().toDateStringRU()
-
+                    childBirthDay = it.childBirthday.toLocalDateTimeRu()?.toDateTimeRuString().toString()
                 )
             }
         }
