@@ -199,7 +199,7 @@ class NewPayViewModel @Inject constructor(
         viewState = viewState.copy(
             selectChild = null,
             searchText = "",
-            pay = Pay(datePay =  now().toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toDateTimeRuString()),
+            pay = Pay(datePay =  now().toString()),//.toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toDateTimeRuString()),
             isChildError = false,
             ChildErrorMessage = null,
             indexFocus = -1,

@@ -3,6 +3,7 @@ package com.catshome.classJournal
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -35,6 +36,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.screens.ItemBottomBar
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.PayListScreen
@@ -42,6 +45,9 @@ import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.theme.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.catshome.classJournal.resource.R
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock.System.now
 
 lateinit var context: Context
 
@@ -52,6 +58,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         //LocalActivity.provides(this)
         context = application.applicationContext
+
+        Log.e("CLJR", "toDateTime - ${now().toLocalDateTime(TimeZone.currentSystemDefault())}")
+        Log.e("CLJR", "toDateTimeRuString - ${now().toDateTimeRuString(TimeZone.currentSystemDefault())}")
+        Log.e("CLJR", "String to date - ${"01.03.2026 10:11".toLocalDateTimeRu()}")
+        Log.e("CLJR", "String to date - ${"2026-03-15T14:49:32.805".toLocalDateTimeRu()}")
+        Log.e("CLJR", "String to date1 - ${"01.03.2026".toLocalDateTimeRu()}")
 
         enableEdgeToEdge()
         setContent {

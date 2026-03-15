@@ -129,7 +129,6 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 viewState.endDate.toLocalDateTimeRu()?.toLong(),
                 viewState.sortValue
             )?.collect { listPay ->
-                Li
                 viewState = viewState.copy(items = listPay)
             }
         }
