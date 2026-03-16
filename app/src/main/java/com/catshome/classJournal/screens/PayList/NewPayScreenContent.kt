@@ -195,9 +195,10 @@ fun PayScreenContent(
                 ) {
                     it?.let {
 
-                        val dateTime =  "${it.toLocalDateTimeRu()} ${LocalTime.now().format(
-                            DateTimeFormatter.ofPattern(TIME_FORMAT))}"
-                        Log.e("CLJR", "Date time ${dateTime}")
+                        val dateTime =  "${it.toLocalDateTimeRu()}"
+//                                "${LocalTime.now().format(
+//                            DateTimeFormatter.ofPattern(TIME_FORMAT))}"
+//                        Log.e("CLJR", "Date time ${dateTime}")
                        viewModel.datePayChange(dateTime)
                     }
                 }

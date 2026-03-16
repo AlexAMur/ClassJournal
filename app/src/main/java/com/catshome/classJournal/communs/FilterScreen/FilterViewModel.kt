@@ -1,29 +1,15 @@
 package com.catshome.classJournal.communs.FilterScreen
 
 import androidx.lifecycle.viewModelScope
-import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.PayListInteractor
 import com.catshome.classJournal.domain.communs.SortEnum
-import com.catshome.classJournal.domain.communs.toDateRuString
-import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.ZoneOffset
-import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDateTime
-
 import javax.inject.Inject
-import kotlin.time.Clock
-import kotlin.time.Duration
-import kotlin.time.DurationUnit
-import kotlin.time.Instant
 
 @HiltViewModel
 class FilterViewModel @Inject constructor(

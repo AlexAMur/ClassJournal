@@ -3,7 +3,7 @@ package com.catshome.classJournal.screens.PayList
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.PayListInteractor
-import com.catshome.classJournal.domain.communs.toDateRuString
+import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
@@ -25,7 +25,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             else
                 "${LocalDateTime.now().month.value}"
             }.${LocalDateTime.now().year} 00:00",
-            endDate = "${now().toLocalDateTime(TimeZone.currentSystemDefault()).toDateRuString()} 23:59"
+            endDate = "${now().toDateTimeRuString()?.substring(0,DATE_FORMAT_RU.length)} 23:59"
         )
     ) {
 

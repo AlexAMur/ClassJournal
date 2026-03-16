@@ -10,19 +10,23 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
+import kotlinx.datetime.offsetAt
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toJavaZoneId
 import kotlinx.datetime.toLocalDateTime
+import java.time.format.DateTimeParseException
 import kotlin.time.Instant
 
 const val DATE_FORMAT_RU = "dd.MM.yyyy"
 const val DATETIME_FORMAT_RU = "dd.MM.yyyy HH:mm"
 const val TIME_FORMAT = "HH:mm"
+enum class FormatDate{DateTime,Date, Time}
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun String.toLocalDateTimeRu(): LocalDateTime? {
-    var stringData =this
-    if (this.length == DATE_FORMAT_RU.length)
-        stringData = "$stringData 00:00"
+    var stringData = this
+      if (this.length == DATE_FORMAT_RU.length)
+        stringData = "$stringData"
     try {
         val formatter = LocalDateTime.Format {
             this@Format.day(padding = Padding.ZERO)
@@ -35,7 +39,6 @@ fun String.toLocalDateTimeRu(): LocalDateTime? {
             char(':')
             minute()
         }
-
         return LocalDateTime.parse(stringData, formatter)
     } catch (e: RuntimeException) {
         Log.e("CLJR", "Ошибка форматирование ${e.message}")
@@ -44,7 +47,7 @@ fun String.toLocalDateTimeRu(): LocalDateTime? {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun LocalDateTime.toDateTimeRuString(): String {
+fun LocalDateTime.toDateTimeRuString(formatDate: FormatDate = FormatDate.DateTime): String? {
     try {
         val formatter = LocalDateTime.Format {
             this@Format.day(padding = Padding.ZERO)
@@ -57,18 +60,28 @@ fun LocalDateTime.toDateTimeRuString(): String {
             char(':')
             minute()
             char(' ')
-            }
-        return this.format(formatter)
-    } catch (_: IllegalArgumentException) {
-        return "IllegalArgumentException"
+        }
+        val date  = this.format(formatter)
+        when(formatDate){
+            FormatDate.DateTime -> return date
+            FormatDate.Date ->return date.substring(0 , DATE_FORMAT_RU.length)
+            FormatDate.Time ->return date.substring(DATE_FORMAT_RU.length,date.length)
+        }
+    } catch (e: IllegalArgumentException) {
+        Log.e("CLJR", "From toDateTimeRuString ${e.message}")
+        return null
+    } catch (e: Exception) {
+        Log.e("CLJR", "From toDateTimeRuString ${e.message}")
+        return null
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-fun LocalDateTime.toDateRuString(): String {
-    val formatter = LocalDateTime.Format { DATETIME_FORMAT_RU }
-    return this.format(formatter)
-}
+//
+//@RequiresApi(Build.VERSION_CODES.O)
+//fun LocalDateTime.toDateRuString(): String {
+//    val formatter = LocalDateTime.Format { DATETIME_FORMAT_RU }
+//    return this.format(formatter)
+//}
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime.toLong(): Long {
@@ -80,26 +93,18 @@ fun Long.toLocalDateTimeRu(timeZone: TimeZone = TimeZone.currentSystemDefault())
     try {
         val instant = Instant.fromEpochMilliseconds(this)
         return instant.toLocalDateTime(TimeZone.currentSystemDefault())
-    } catch (_: DateTimeArithmeticException) {
-        Log.e("CLJR","DateTimeArithmeticException of Long.toLocalDateTimeRu(): LocalDateTime?")
-       return null
+    } catch (e: DateTimeArithmeticException) {
+        Log.e("CLJR", "From Long.toLocalDateTimeRu() ${e.message}")
+        return null
     }
 }
+
 @RequiresApi(Build.VERSION_CODES.O)
-fun  Long.toLocalDateTimeRuString(timeZone: TimeZone = TimeZone.currentSystemDefault()):String?{
-    return this.toLocalDateTimeRu(timeZone)?.toDateTimeRuString()
+fun Long.toLocalDateTimeRuString(timeZone: TimeZone = TimeZone.currentSystemDefault(),formatDate: FormatDate = FormatDate.DateTime): String? {
+    return this.toLocalDateTimeRu(timeZone)?.toDateTimeRuString(formatDate)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun Instant.toDateTimeRuString(timeZone: TimeZone): String{
-  return this.toLocalDateTime(timeZone).toDateTimeRuString()
+fun Instant.toDateTimeRuString(timeZone: TimeZone = TimeZone.currentSystemDefault(),formatDate: FormatDate = FormatDate.DateTime): String? {
+    return this.toLocalDateTime(timeZone).toDateTimeRuString(formatDate)
 }
-
-//fun Long.toDateStringRU(): String {
-//    return convertMillisToDate(this)
-//}
-//
-//fun convertMillisToDate(millis: Long): String {
-//    val formatter = SimpleDateFormat(DATETIME_FORMAT_RU, Locale.getDefault())
-//    return formatter.format(Date(millis))
-//}

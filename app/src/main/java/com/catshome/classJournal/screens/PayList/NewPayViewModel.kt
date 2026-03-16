@@ -6,6 +6,7 @@ import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.Pay
 import com.catshome.classJournal.domain.Pay.PayInteract
+import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
@@ -25,10 +26,10 @@ class NewPayViewModel @Inject constructor(
     BaseViewModel<NewPayState, NewPayAction, NewPayEvent>
         (
         installState = NewPayState(
-//            pay = Pay(
-//                datePay = LocalDateTime.now().toDateTimeRuString()
-//            ),
-//            payment = "0"
+            pay = Pay(
+                datePay = now().toDateTimeRuString(formatDate=FormatDate.Date).toString()
+            ),
+            payment = "0"
        )
     ) {
     val TEXT_FILD_COUNT = 3
@@ -199,7 +200,7 @@ class NewPayViewModel @Inject constructor(
         viewState = viewState.copy(
             selectChild = null,
             searchText = "",
-            pay = Pay(datePay =  now().toString()),//.toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toDateTimeRuString()),
+            pay = Pay(datePay =  now().toDateTimeRuString(formatDate = FormatDate.Date)?:""),//.toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toDateTimeRuString()),
             isChildError = false,
             ChildErrorMessage = null,
             indexFocus = -1,

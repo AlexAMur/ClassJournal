@@ -38,6 +38,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.toLong
 import com.catshome.classJournal.screens.ItemBottomBar
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.PayListScreen
@@ -45,25 +46,31 @@ import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.theme.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.catshome.classJournal.resource.R
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
+import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock.System.now
+import kotlin.time.toJavaInstant
 
 lateinit var context: Context
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    var isShowExitDialog = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //LocalActivity.provides(this)
         context = application.applicationContext
 
-        Log.e("CLJR", "toDateTime - ${now().toLocalDateTime(TimeZone.currentSystemDefault())}")
-        Log.e("CLJR", "toDateTimeRuString - ${now().toDateTimeRuString(TimeZone.currentSystemDefault())}")
-        Log.e("CLJR", "String to date - ${"01.03.2026 10:11".toLocalDateTimeRu()}")
-        Log.e("CLJR", "String to date - ${"2026-03-15T14:49:32.805".toLocalDateTimeRu()}")
-        Log.e("CLJR", "String to date1 - ${"01.03.2026".toLocalDateTimeRu()}")
+        Log.e("CLJR", "toDateTime - ${now().toLocalDateTime(TimeZone.currentSystemDefault()).toLong()}")
+        Log.e("CLJR", "toDateTime - ${now().toLocalDateTime(TimeZone.UTC).toLong()}")
+//        Log.e("CLJR", "toDateTime - ${now().toDateTimeRuString(TimeZone.currentSystemDefault())}")
+//        Log.e("CLJR", "toDateTime - ${now().toDateTimeRuString()}")
+//////        Log.e("CLJR", "toDateTimeRuString - ${now().toDateTimeRuString(TimeZone.currentSystemDefault())}")
+//        Log.e("CLJR", "String to date - ${"01.03.2026 10:11".toLocalDateTimeRu()}")
+//        Log.e("CLJR", "String to date - ${"01.03.2026 10:30".toLocalDateTimeRu()?.toLong()}")
+//        Log.e("CLJR", "String to date1 - ${"01.03.2026".toLocalDateTimeRu()}")
 
         enableEdgeToEdge()
         setContent {

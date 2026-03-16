@@ -1,5 +1,7 @@
 package com.catshome.classJournal.communs
 
+import android.R
+import android.util.Log
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -11,6 +13,7 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
@@ -26,8 +29,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLong
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import java.time.ZoneOffset
 import java.util.Date
+import kotlin.time.toJavaInstant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,39 +46,54 @@ fun DatePickerFieldToModal(
     supportText: String? = null,
     onDateSelected: (Long?) -> Unit
 ) {
-    var date by remember {
-        mutableStateOf(Date(value.toLocalDateTimeRu()?.toLong()?:0))
+    var  stringDate by remember{
+        mutableStateOf(value)
     }
+    Log.e("CLJR", "Value $value" )
+    var date by remember {
+        mutableStateOf(Date(value.toLocalDateTimeRu()?.toLong() ?: 0L))
+    }
+    Log.e("CLJR", "Date ${date}" )
     var showModal by rememberSaveable { mutableStateOf(false) }
+    var isError by rememberSaveable { mutableStateOf(value.toLocalDateTimeRu()?.toLong() == null) }
     //val datePickerState = rememberDatePickerState()
     //var t =  convertMillisToDate(selectedDate?:0)?:""
 
     TextField(
-        value = date.time.toLocalDateTimeRu()?.toDateTimeRuString().toString(),
+        value = stringDate,
         label = label,
-        supportingText = supportText,
+        supportingText = if (value.toLocalDateTimeRu()
+                ?.toLong() != null
+        ) supportText else "Error input date: $value",
         modifier = modifier,
         onValueChange = {},
         readOnly = true,
-        trailingIcon = {
-            IconButton(onClick = { showModal = !showModal }) {
-                Icon(
-                    imageVector = Icons.Default.DateRange,
-                    contentDescription = "Select date",
-                    tint = ClassJournalTheme.colors.controlColor
-                )
-            }
-        },
-        keyboardOptions = KeyboardOptions.Default.merge(
-            KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
+        errorState =isError,
+
+    trailingIcon = {
+        IconButton(onClick = { showModal = !showModal }) {
+            Icon(
+                imageVector = Icons.Default.DateRange,
+                contentDescription = "Select date",
+                tint = ClassJournalTheme.colors.controlColor
+            )
+        }
+    },
+    keyboardOptions = KeyboardOptions.Default.merge(
+        KeyboardOptions(keyboardType = KeyboardType.Number)
     )
+    )
+    Log.e("CLJR", "D ${Date.from(value.toLocalDateTimeRu()?.toInstant(TimeZone.currentSystemDefault())?.toJavaInstant())}" )
     if (showModal) {
         DatePickerModal(
-            inicialDate = date,
-            // Date.from(date?.toLocalDateTimeRu()?.toInstant(ZoneOffset.UTC))
+            inicialDate =  Date.from(value.toLocalDateTimeRu()?.toInstant(TimeZone.currentSystemDefault())?.toJavaInstant()),
             //    ?: Date(),//Date.from(date.toLocalDateTime()?.toInstant(ZoneOffset.UTC))?: Date(),
-            onDateSelected = onDateSelected,
+            onDateSelected = {
+                stringDate = it?.toLocalDateTimeRuString().toString()
+                isError = false
+
+                onDateSelected(it)
+                             },
             onDismiss = { showModal = false }
         )
     }
@@ -157,7 +180,9 @@ fun DatePickerModal(
 
 
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = inicialDate.time)
-
+    Log.e("CLJR", "iniD ${inicialDate}" )
+    Log.e("CLJR", "iniD long ${inicialDate.time}" )
+    Log.e("CLJR", "iniD long ${inicialDate.time.toLocalDateTimeRu()}" )
     DatePickerDialog(
         onDismissRequest = onDismiss,
         modifier = Modifier.verticalScroll(state = rememberScrollState()),
