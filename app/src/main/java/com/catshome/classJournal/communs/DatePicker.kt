@@ -32,9 +32,12 @@ import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLong
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import java.time.ZoneOffset
 import java.util.Date
+import kotlin.time.Clock.System.now
 import kotlin.time.toJavaInstant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,10 +86,11 @@ fun DatePickerFieldToModal(
         KeyboardOptions(keyboardType = KeyboardType.Number)
     )
     )
-    Log.e("CLJR", "D ${Date.from(value.toLocalDateTimeRu()?.toInstant(TimeZone.currentSystemDefault())?.toJavaInstant())}" )
+    //Log.e("CLJR", "D ${Date.from(value.toLocalDateTimeRu()?.toInstant(TimeZone.currentSystemDefault())?.toJavaInstant())}" )
     if (showModal) {
         DatePickerModal(
-            inicialDate =  Date.from(value.toLocalDateTimeRu()?.toInstant(TimeZone.currentSystemDefault())?.toJavaInstant()),
+            inicialDate =Date(now().toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toLong()),
+                //Date.from(value.toLocalDateTimeRu()?.toInstant(TimeZone.currentSystemDefault())?.toJavaInstant()),
             //    ?: Date(),//Date.from(date.toLocalDateTime()?.toInstant(ZoneOffset.UTC))?: Date(),
             onDateSelected = {
                 stringDate = it?.toLocalDateTimeRuString().toString()
