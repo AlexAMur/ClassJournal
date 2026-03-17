@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import com.catshome.classJournal.ClassJournalTheme
+import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
@@ -66,11 +67,9 @@ fun DatePickerFieldToModal(
     //var t =  convertMillisToDate(selectedDate?:0)?:""
 
     TextField(
-        value =dateStr,
+        value =dateStr.substring(0, DATE_FORMAT_RU.length),
         label = label,
-        supportingText = if (value.toLocalDateTimeRu()
-                ?.toLong() != null
-        ) supportText else "Error input date: $value",
+        supportingText = "",
         modifier = modifier,
         onValueChange = {},
         readOnly = true,
@@ -94,7 +93,8 @@ fun DatePickerFieldToModal(
         DatePickerModal(
             inicialDate =date,
             onDateSelected = {
-                dateStr = it?.minus(java.util.TimeZone.getDefault().getOffset(Date().time))?.toLocalDateTimeRuString().toString()
+                dateStr = it?.toLocalDateTimeRuString().toString()
+                    //it?.minus(java.util.TimeZone.getDefault().getOffset(Date().time))?.toLocalDateTimeRuString().toString()
                 onDateSelected(it)
                              },
             onDismiss = { showModal = false }

@@ -46,6 +46,8 @@ import com.catshome.classJournal.communs.DatePickerFieldToModal
 import com.catshome.classJournal.communs.SearchField
 import com.catshome.classJournal.communs.TextField
 import com.catshome.classJournal.domain.communs.DATETIME_FORMAT_RU
+import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
+import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.TIME_FORMAT
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
@@ -195,7 +197,8 @@ fun PayScreenContent(
                     stringResource(R.string.birthday_child)
                 ) {
                     it?.let {
-                        viewModel.datePayChange(it.toLocalDateTimeRuString())
+                        Log.e("CLJR", "OnDatePickerSelect ${it.toLocalDateTimeRuString(formatDate = FormatDate.Date)}")
+                        viewModel.datePayChange(it.toLocalDateTimeRuString(formatDate = FormatDate.Date))
                     }
                 }
                 TextField(
