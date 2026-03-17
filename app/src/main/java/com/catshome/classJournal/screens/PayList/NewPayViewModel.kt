@@ -27,7 +27,7 @@ class NewPayViewModel @Inject constructor(
         (
         installState = NewPayState(
             pay = Pay(
-                datePay = now().toDateTimeRuString(formatDate=FormatDate.Date).toString()
+                datePay = "${now().toDateTimeRuString(formatDate=FormatDate.Date).toString()} 23:00"
             ),
             payment = "0"
        )
@@ -200,7 +200,7 @@ class NewPayViewModel @Inject constructor(
         viewState = viewState.copy(
             selectChild = null,
             searchText = "",
-            pay = Pay(datePay =  now().toDateTimeRuString(formatDate = FormatDate.Date)?:""),//.toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toDateTimeRuString()),
+            pay = Pay(datePay =  now().toDateTimeRuString(formatDate = FormatDate.Date)?:"00:00"),//.toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toDateTimeRuString()),
             isChildError = false,
             ChildErrorMessage = null,
             indexFocus = -1,

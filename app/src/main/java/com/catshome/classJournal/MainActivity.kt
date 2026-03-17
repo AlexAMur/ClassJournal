@@ -49,6 +49,7 @@ import com.catshome.classJournal.resource.R
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import java.util.Date
@@ -64,9 +65,10 @@ class MainActivity : ComponentActivity() {
         //LocalActivity.provides(this)
         context = application.applicationContext
 
-        Log.e("CLJR", "toDateTime - ${Date(now().toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toLong())}")
-        Log.e("CLJR", "toDateTime - ${now().toLocalDateTime(TimeZone.UTC).toDateTimeRuString()}")
-        Log.e("CLJR", "toDateTime - ${now().toLocalDateTime(TimeZone.UTC).toDateTimeRuString()}")
+//        Log.e("CLJR", "toDateTime - ${Date(now().toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toLong())}")
+//        Log.e("CLJR", "toDateTime - ${now().toLocalDateTime(TimeZone.UTC).toDateTimeRuString()}")
+//        Log.e("CLJR", "TimeZone - ${java.util.TimeZone.getDefault().getOffset(Date().time)}")
+//
 //        Log.e("CLJR", "toDateTime - ${now().toDateTimeRuString(TimeZone.currentSystemDefault())}")
 //        Log.e("CLJR", "toDateTime - ${now().toDateTimeRuString()}")
 //////        Log.e("CLJR", "toDateTimeRuString - ${now().toDateTimeRuString(TimeZone.currentSystemDefault())}")

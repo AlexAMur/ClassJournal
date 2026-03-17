@@ -14,6 +14,7 @@ import kotlinx.datetime.offsetAt
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaZoneId
 import kotlinx.datetime.toLocalDateTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeParseException
 import kotlin.time.Instant
 
@@ -26,7 +27,7 @@ enum class FormatDate{DateTime,Date, Time}
 fun String.toLocalDateTimeRu(): LocalDateTime? {
     var stringData = this
       if (this.length == DATE_FORMAT_RU.length)
-        stringData = "$stringData"
+        stringData = "$stringData "
     try {
         val formatter = LocalDateTime.Format {
             this@Format.day(padding = Padding.ZERO)
@@ -39,6 +40,7 @@ fun String.toLocalDateTimeRu(): LocalDateTime? {
             char(':')
             minute()
         }
+
         return LocalDateTime.parse(stringData, formatter)
     } catch (e: RuntimeException) {
         Log.e("CLJR", "Ошибка форматирование ${e.message}")
@@ -58,8 +60,7 @@ fun LocalDateTime.toDateTimeRuString(formatDate: FormatDate = FormatDate.DateTim
             char(' ')
             hour(padding = Padding.ZERO)
             char(':')
-            minute()
-            char(' ')
+            minute(padding = Padding.ZERO)
         }
         val date  = this.format(formatter)
         when(formatDate){

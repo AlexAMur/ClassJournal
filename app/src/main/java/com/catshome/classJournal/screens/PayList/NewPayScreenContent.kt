@@ -48,6 +48,7 @@ import com.catshome.classJournal.communs.TextField
 import com.catshome.classJournal.domain.communs.DATETIME_FORMAT_RU
 import com.catshome.classJournal.domain.communs.TIME_FORMAT
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
 //import com.catshome.classJournal.domain.communs.toDateStringRU
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -194,12 +195,7 @@ fun PayScreenContent(
                     stringResource(R.string.birthday_child)
                 ) {
                     it?.let {
-
-                        val dateTime =  "${it.toLocalDateTimeRu()}"
-//                                "${LocalTime.now().format(
-//                            DateTimeFormatter.ofPattern(TIME_FORMAT))}"
-//                        Log.e("CLJR", "Date time ${dateTime}")
-                       viewModel.datePayChange(dateTime)
+                        viewModel.datePayChange(it.toLocalDateTimeRuString())
                     }
                 }
                 TextField(
