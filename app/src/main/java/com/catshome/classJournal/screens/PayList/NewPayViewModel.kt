@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.PayList
 
+import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.context
@@ -108,6 +109,7 @@ class NewPayViewModel @Inject constructor(
                        PayError = "",
                        errorMessage = ""
                    )
+               Log.e("CLJR", "Datepay After set ${viewState.pay.datePay}")
                }
 
             NewPayEvent.ResetState -> {
@@ -196,7 +198,7 @@ class NewPayViewModel @Inject constructor(
     }
 
     private fun resetState() {
-
+        Log.e("CLJR", "Reset before ${viewState.pay.datePay}")
         viewState = viewState.copy(
             selectChild = null,
             searchText = "",
@@ -211,6 +213,7 @@ class NewPayViewModel @Inject constructor(
             PayError = "",
             errorMessage = ""
         )
+        Log.e("CLJR", "Reset after ${viewState.pay.datePay}")
     }
 
     fun datePayChange(newDate: String?) {

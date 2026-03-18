@@ -70,11 +70,7 @@ fun newPayScreen(
                     viewModel.obtainEvent(NewPayEvent.ResetState)
             }
         }
-        editPay?.let {pay->
-            LaunchedEffect(editPay) {
-                viewModel.obtainEvent(NewPayEvent.SetState(pay))
-            }
-        }
+
 
         PayScreenContent(
             viewState,
@@ -88,6 +84,11 @@ fun newPayScreen(
                 viewModel.obtainEvent(NewPayEvent.SaveClicked)
             }
         )
+        editPay?.let {pay->
+            LaunchedEffect(editPay) {
+                viewModel.obtainEvent(NewPayEvent.SetState(pay))
+            }
+        }
         when (viewAction) {
             NewPayAction.Successful -> {
                 keyboardController?.hide()

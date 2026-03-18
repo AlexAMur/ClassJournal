@@ -57,7 +57,12 @@ import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.navigate.OptionFilterPaysList
 import com.catshome.classJournal.screens.ItemScreen
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toLocalDateTime
+import java.time.OffsetDateTime
 import java.time.format.DateTimeParseException
+import java.util.Date
+import kotlin.time.Instant
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -206,7 +211,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                             modifier = Modifier
                                 .padding(start = 8.dp, end = 8.dp, top = 16.dp)
                                 .fillMaxWidth(0.5f),
-                            value = viewState.beginDate,
+                            inicialDate = viewState.beginDate.toLocalDateTimeRu(),
                             label = stringResource(R.string.begin_date)
                         ) {
                             viewModel.beginDateChange("${it?.toLocalDateTimeRu()?.toDateTimeRuString().toString()} 00:00")
@@ -214,7 +219,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                         DatePickerFieldToModal(
                             modifier = Modifier
                                 .padding(start = 8.dp, end = 8.dp, top = 16.dp),
-                            value = viewState.endDate,
+                             inicialDate = viewState.endDate.toLocalDateTimeRu(),
                             label = stringResource(R.string.end_date)
                         ) {
                             viewModel.endDateChange("${it?.toLocalDateTimeRu()?.toDateTimeRuString().toString()} 23:59")

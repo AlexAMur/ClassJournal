@@ -189,7 +189,7 @@ fun PayScreenContent(
                 }
                 DatePickerFieldToModal(
                     modifier = if (viewState.isChildError) modifier.padding(top = 16.dp) else modifier,
-                    viewState.pay.datePay,
+                    viewState.pay.datePay.toLocalDateTimeRu(),
 //                    ifEmpty {
 //                        LocalDateTime.now()
 //                            .format(DateTimeFormatter.ofPattern(DATETIME_FORMAT_RU))
@@ -197,7 +197,7 @@ fun PayScreenContent(
                     stringResource(R.string.birthday_child)
                 ) {
                     it?.let {
-                        Log.e("CLJR", "OnDatePickerSelect ${it.toLocalDateTimeRuString(formatDate = FormatDate.Date)}")
+                        Log.e("CLJR", "OnDatePickerSelect ${it.toLocalDateTimeRuString(formatDate = FormatDate.Date)}A")
                         viewModel.datePayChange(it.toLocalDateTimeRuString(formatDate = FormatDate.Date))
                     }
                 }

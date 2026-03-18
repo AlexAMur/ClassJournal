@@ -28,10 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
+import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLong
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toInstant
@@ -45,29 +47,18 @@ import kotlin.time.toJavaInstant
 @Composable
 fun DatePickerFieldToModal(
     modifier: Modifier = Modifier,
-    value: String,
+    inicialDate: LocalDateTime? = null,
     label: String,
     supportText: String? = null,
     onDateSelected: (Long?) -> Unit
 ) {
-    var dateStr by remember { mutableStateOf(value) }
-    Log.e("CLJR", "Value $value" )
-    var date by remember {
-        mutableStateOf(Date(
-            (value.toLocalDateTimeRu()?.toLong() ?:0L)
-                    + java.util.TimeZone.getDefault().getOffset(Date().time)
-            )
-        )
-    }
+    //var dateStr by remember { mutableStateOf(inicialDate?.toDateTimeRuString(FormatDate.Date)) }
 
-    Log.e("CLJR", "Date ${date}" )
+
     var showModal by rememberSaveable { mutableStateOf(false) }
-    //var isError by rememberSaveable { mutableStateOf(value.toLocalDateTimeRu()?.toLong() == null) }
-    //val datePickerState = rememberDatePickerState()
-    //var t =  convertMillisToDate(selectedDate?:0)?:""
 
     TextField(
-        value =dateStr.substring(0, DATE_FORMAT_RU.length),
+        value = inicialDate?.toDateTimeRuString(FormatDate.Date).toString(),//dateStr?.substring(0, DATE_FORMAT_RU.length).toString(),
         label = label,
         supportingText = "",
         modifier = modifier,
@@ -91,10 +82,10 @@ fun DatePickerFieldToModal(
     //Log.e("CLJR", "D ${Date.from(value.toLocalDateTimeRu()?.toInstant(TimeZone.currentSystemDefault())?.toJavaInstant())}" )
     if (showModal) {
         DatePickerModal(
-            inicialDate =date,
+            inicialDate = Date((inicialDate?.toLong()?:0)+ java.util.TimeZone.getDefault().getOffset(Date().time)),
             onDateSelected = {
-                dateStr = it?.toLocalDateTimeRuString().toString()
-                    //it?.minus(java.util.TimeZone.getDefault().getOffset(Date().time))?.toLocalDateTimeRuString().toString()
+             //   dateStr = it?.toLocalDateTimeRuString(formatDate = FormatDate.Date).toString()
+             //it?.minus(java.util.TimeZone.getDefault().getOffset(Date().time))?.toLocalDateTimeRuString().toString()
                 onDateSelected(it)
                              },
             onDismiss = { showModal = false }

@@ -46,9 +46,13 @@ import com.catshome.classJournal.communs.TextField
 import com.catshome.classJournal.domain.communs.DATETIME_FORMAT_RU
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.time.Clock.System.now
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -151,16 +155,16 @@ fun ScreenContent(
                 DatePickerFieldToModal(
                     modifier = modifier,
                     if (viewState.child.birthday.isNullOrEmpty())
-                        LocalDate.now().minusYears(5)
-                            .format(DateTimeFormatter.ofPattern(DATETIME_FORMAT_RU))
+                        now().toLocalDateTime(TimeZone.currentSystemDefault())
                     else {
-
-                        viewState.child.birthday
+                        viewState.child.birthday.toLocalDateTimeRu()
                     },
 
                     stringResource(R.string.birthday_child)
                 ) {
-                    viewModel.birthdayChange(it?.toLocalDateTimeRu()?.toDateTimeRuString().toString())
+                    it?.let {
+                        viewModel.birthdayChange(it.toLocalDateTimeRuString().toString())
+                    }
                 }
 
                 TextField(

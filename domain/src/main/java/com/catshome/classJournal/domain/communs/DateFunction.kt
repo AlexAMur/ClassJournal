@@ -27,7 +27,7 @@ enum class FormatDate{DateTime,Date, Time}
 fun String.toLocalDateTimeRu(): LocalDateTime? {
     var stringData = this
       if (this.length == DATE_FORMAT_RU.length)
-        stringData = "$stringData "
+        stringData = "$stringData 00:00"
     try {
         val formatter = LocalDateTime.Format {
             this@Format.day(padding = Padding.ZERO)
@@ -38,9 +38,8 @@ fun String.toLocalDateTimeRu(): LocalDateTime? {
             char(' ')
             hour(padding = Padding.ZERO)
             char(':')
-            minute()
+            minute(padding = Padding.ZERO)
         }
-
         return LocalDateTime.parse(stringData, formatter)
     } catch (e: RuntimeException) {
         Log.e("CLJR", "Ошибка форматирование ${e.message}")

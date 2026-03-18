@@ -89,7 +89,6 @@ fun ChildListScreenContent(
                     else
                         viewModel.obtainEvent(ChildListEvent.showFAB(true))
                 }
-
                     LazyColumn(
                     modifier = Modifier
 
@@ -99,8 +98,6 @@ fun ChildListScreenContent(
                            ,
                     state = listState
                 ) {
-
-
                     viewState.item.forEach { key, group ->
                         stickyHeader {
                             if (!key.contains(context.getString(R.string.no_group))) {// Без группы
@@ -110,7 +107,6 @@ fun ChildListScreenContent(
                                         top = 8.dp)
 
                                 ) {
-
                                     SwipeableItemWithActions(
                                         isRevealed = group.filter {
                                             it.child.groupName == key && it.child.childUid == ""
