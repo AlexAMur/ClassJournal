@@ -4,6 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DetailsPayResult(
-    var isShowSnackBar: Boolean =false,
-    val Message: String? = null
+    val message: String? = null,
 )

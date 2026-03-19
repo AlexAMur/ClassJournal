@@ -18,7 +18,7 @@ data class PayListState(
     val endDate: String = "",
     val allRange: Boolean= true,
     val index: Int =-1,
-    val items: List<Pay> = emptyList<Pay>(),
+    val items: List<PayScreen> = emptyList(),
     val isShowSnackBar: Boolean = false,
     var isCanShowSnackBar: Boolean = false,
     val showFilter: Boolean = false,
@@ -26,4 +26,42 @@ data class PayListState(
     val snackBarAction: String? =null,
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
+ тут настройка  отмены удаления
+    var isShowSnackBar: Boolean = false,
+    val message: String? = null,
+    val action: String = "",
+    var onAccept: () -> Unit = {},
+    var onDismissed: () -> Unit = {}
+
     )
+data class PayScreen(
+    val uidPay: String= "",
+    val uidChild: String= "",
+    val fio: String= "",
+    val datePay: String= "",
+    val payment: Int = 0,
+    val isOptionsRevealed: Boolean = false
+)
+
+fun Pay.toPayScreen(): PayScreen{
+    return PayScreen(
+        uidPay = this.uidPay,
+        uidChild = this.uidChild,
+        fio = "${this.name} ${this.surName}",
+        datePay = this.datePay ,
+        payment = this.payment,
+        isOptionsRevealed = false
+    )
+}
+
+fun PayScreen.toPay(): Pay{
+    return Pay(
+        uidPay = this.uidPay,
+        uidChild = this.uidChild,
+        name = this.fio.substring(0,this.fio.indexOf(' ')),
+        surName = this.fio.substring(this.fio.indexOf(' ')+1),
+        datePay = this.datePay ,
+        payment = this.payment
+    )
+}
+

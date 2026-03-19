@@ -5,13 +5,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -25,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -32,12 +38,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
+import com.catshome.classJournal.communs.ActionIcon
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.ItemFAB
 import com.catshome.classJournal.communs.SnackBarAction
+import com.catshome.classJournal.communs.SwipeableItemWithActions
 import com.catshome.classJournal.communs.fabMenu
 import com.catshome.classJournal.context
 import com.catshome.classJournal.navigate.DetailsPayResult
+import com.catshome.classJournal.screens.child.ChildListEvent
+import kotlinx.coroutines.launch
 
 @Composable
 fun PayListContent(
@@ -45,6 +55,7 @@ fun PayListContent(
     viewModel: PayListViewModel,
 ) {
     val sbHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     val paddingValues = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
     Surface(
@@ -62,15 +73,29 @@ fun PayListContent(
                 LaunchedEffect(viewState.isShowSnackBar) {
                     if (viewState.isShowSnackBar && viewState.isCanShowSnackBar) {
                         SnackBarAction(
-                            message = viewState.messageShackBar?:"",
+                            message = viewState.messageShackBar ?: "",
                             actionLabel = viewState.snackBarAction
                                 ?: context.getString(R.string.ok),
                             sbHostState,
                             onDismissed = viewState.onDismissed ?: {
-                                viewModel.obtainEvent(PayListEvent.ShowSnackBar(DetailsPayResult(false, "")))
+                                viewModel.obtainEvent(
+                                    PayListEvent.ShowSnackBar(
+                                        DetailsPayResult(
+                                            false,
+                                            ""
+                                        )
+                                    )
+                                )
                             },
                             onActionPerformed = viewState.onAction ?: {
-                                viewModel.obtainEvent(PayListEvent.ShowSnackBar(DetailsPayResult(false, "")))
+                                viewModel.obtainEvent(
+                                    PayListEvent.ShowSnackBar(
+                                        DetailsPayResult(
+                                            false,
+                                            ""
+                                        )
+                                    )
+                                )
                             }
                         )
                     }
@@ -107,6 +132,8 @@ fun PayListContent(
                 Modifier
                     .background(ClassJournalTheme.colors.primaryBackground)
             ) {
+
+
                 Card(
                     Modifier.statusBarsPadding(),
                     colors = CardDefaults.cardColors(
@@ -122,12 +149,12 @@ fun PayListContent(
                     {
                         viewState.selectChild?.let {
                             if (viewState.selectChild.fio.isNotEmpty())
-                            Text(
-                                modifier = Modifier
-                                    .padding(start = 16.dp, top = 8.dp),
-                                color = ClassJournalTheme.colors.tintColor,
-                                text = viewState.selectChild.fio
-                            )
+                                Text(
+                                    modifier = Modifier
+                                        .padding(start = 16.dp, top = 8.dp),
+                                    color = ClassJournalTheme.colors.tintColor,
+                                    text = viewState.selectChild.fio
+                                )
                         }
                         Row(
                             Modifier
@@ -183,12 +210,80 @@ fun PayListContent(
                         state = rememberLazyListState()
                     ) {
                         itemsIndexed(viewState.items) { index, item ->
-                            itemPay(
-                                fio = "${viewState.items[index].surName} ${viewState.items[index].name}",
-                                date = viewState.items[index].datePay,
-                                payment = viewState.items[index].payment.toString()
-                            ) {
-                                viewModel.obtainEvent(PayListEvent.UpdateClicked(item))
+
+
+                            SwipeableItemWithActions(
+                                isRevealed = item.isOptionsRevealed,
+                                onExpanded = {
+                                    viewModel.obtainEvent(
+                                        PayListEvent.ChangeRevealed(
+                                            index = index,
+                                            isOptionsRevealed = true
+                                        )
+                                    )
+                                },
+                                onCollapsed = {
+                                    viewModel.obtainEvent(
+                                        PayListEvent.ChangeRevealed(
+                                            index = index,
+                                            isOptionsRevealed = false
+                                        )
+                                    )
+
+                                },
+                                actions = {
+                                    //действие для удаления группы
+                                    ActionIcon(
+                                        onClick = {
+                                            scope.launch {
+                                                viewModel.obtainEvent(
+                                                    PayListEvent.DeleteClicked(
+                                                        pay = item
+                                                    )
+                                                )
+                                                viewModel.obtainEvent(
+                                                    PayListEvent.ShowSnackBar(
+                                                        DetailsPayResult(
+                                                            message = "${context.getString(R.string.message_cancel)} ${item.fio} ?",
+                                                            action = context.getString(R.string.bottom_cancel),
+                                                            onDismissed = {
+
+//                                                            viewModel.obtainEvent(
+//                                                                PayListEvent.deleteGroup(
+//                                                                    viewState.uidDelete
+//                                                                )
+//                                                            )
+                                                            },
+                                                            onAccept = {
+                                                                //Сброс удаления
+                                                                viewModel.obtainEvent(
+                                                                    PayListEvent.UndoDeleteClicked(
+                                                                        uidPay = item.uidPay,
+                                                                        index
+                                                                    )
+                                                                )
+                                                            }
+                                                        ))
+                                                )
+
+                                            }
+                                        },
+                                        icon = Icons.Default.Delete,
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .width(120.dp)
+                                    )
+                                },
+                            ) { offset ->
+
+
+                                itemPay(
+                                    fio = viewState.items[index].fio,
+                                    date = viewState.items[index].datePay,
+                                    payment = viewState.items[index].payment.toString()
+                                ) {
+                                    viewModel.obtainEvent(PayListEvent.UpdateClicked(item))
+                                }
                             }
                         }
                     }

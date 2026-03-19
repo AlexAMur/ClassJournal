@@ -1,7 +1,6 @@
 package com.catshome.classJournal.screens.PayList
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -96,7 +95,7 @@ fun newPayScreen(
                 outerNavigation?.navigate(
                     DetailsPayResult(
                         isShowSnackBar = true,
-                        Message = stringResource(R.string.save_successful)
+                        message = stringResource(R.string.save_successful)
                     )
                 ) {
                     popUpTo(ItemScreen.PayListScreen.name) {

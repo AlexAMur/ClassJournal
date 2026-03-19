@@ -7,11 +7,10 @@ import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
+import com.catshome.classJournal.screens.PayList.PayListAction.*
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.time.Clock.System.now
@@ -20,12 +19,13 @@ import kotlin.time.Clock.System.now
 class PayListViewModel @Inject constructor(private val payListInteractor: PayListInteractor) :
     BaseViewModel<PayListState, PayListAction, PayListEvent>(
         installState = PayListState(
-            beginDate = "01.${if(LocalDateTime.now().month.value.toString().length==1)
-                "0${LocalDateTime.now().month.value}"
-            else
-                "${LocalDateTime.now().month.value}"
+            beginDate = "01.${
+                if (LocalDateTime.now().month.value.toString().length == 1)
+                    "0${LocalDateTime.now().month.value}"
+                else
+                    "${LocalDateTime.now().month.value}"
             }.${LocalDateTime.now().year} 00:00",
-            endDate = "${now().toDateTimeRuString()?.substring(0,DATE_FORMAT_RU.length)} 23:59"
+            endDate = "${now().toDateTimeRuString()?.substring(0, DATE_FORMAT_RU.length)} 23:59"
         )
     ) {
 
@@ -46,7 +46,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             }
 
             is PayListEvent.DeleteClicked -> {
-                payListInteractor.deletePay(viewState.items[viewEvent.index])
+                payListInteractor.deletePay(pay = viewEvent.pay.toPay())
             }
 
             is PayListEvent.NewClicked -> {
@@ -69,10 +69,10 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             is PayListEvent.ShowSnackBar -> {
                 viewState = viewState.copy(
                     isShowSnackBar = viewEvent.detailsPayResult.isShowSnackBar,
-                    messageShackBar = viewEvent.detailsPayResult.Message
+                    messageShackBar = viewEvent.detailsPayResult.message
                 )
                 if (viewEvent.detailsPayResult.isShowSnackBar == false)
-                    viewState.isCanShowSnackBar =false
+                    viewState.isCanShowSnackBar = false
             }
 
             is PayListEvent.onCollapse -> {
@@ -114,9 +114,19 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 viewState = viewState.copy(isFilterData = !viewState.isFilterData)
             }
 
-            is PayListEvent.UpdateClicked ->{
-                viewState.isCanShowSnackBar= true
-                viewAction = PayListAction.EditPay(viewEvent.pay)
+            is PayListEvent.UpdateClicked -> {
+                viewState.isCanShowSnackBar = true
+                viewAction = EditPay(viewEvent.pay.toPay())
+            }
+
+            is PayListEvent.ChangeRevealed -> {
+               viewState = viewState.copy(items = viewState.items.mapIndexed { index, pay ->
+                    if (index == viewEvent.index)
+                        pay.copy(isOptionsRevealed = viewEvent.isOptionsRevealed)
+                    else
+                        pay
+                }
+                )
             }
         }
     }
@@ -129,7 +139,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 viewState.endDate.toLocalDateTimeRu()?.toLong(),
                 viewState.sortValue
             )?.collect { listPay ->
-                viewState = viewState.copy(items = listPay)
+                viewState = viewState.copy(items = listPay.map { it.toPayScreen() })
             }
         }
     }
