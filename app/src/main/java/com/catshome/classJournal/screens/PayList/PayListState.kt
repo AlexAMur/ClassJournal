@@ -23,16 +23,9 @@ data class PayListState(
     var isCanShowSnackBar: Boolean = false,
     val showFilter: Boolean = false,
     val messageShackBar:String? = null,
-    val snackBarAction: String? =null,
+    var snackBarAction: String? =null,
     var onDismissed: (()->Unit)? = null,
-    var onAction: (()->Unit)? = null,
- тут настройка  отмены удаления
-    var isShowSnackBar: Boolean = false,
-    val message: String? = null,
-    val action: String = "",
-    var onAccept: () -> Unit = {},
-    var onDismissed: () -> Unit = {}
-
+    var onAction: (()->Unit)? = null
     )
 data class PayScreen(
     val uidPay: String= "",
@@ -40,7 +33,8 @@ data class PayScreen(
     val fio: String= "",
     val datePay: String= "",
     val payment: Int = 0,
-    val isOptionsRevealed: Boolean = false
+    val isOptionsRevealed: Boolean = false,
+    val isDelete: Boolean = false
 )
 
 fun Pay.toPayScreen(): PayScreen{

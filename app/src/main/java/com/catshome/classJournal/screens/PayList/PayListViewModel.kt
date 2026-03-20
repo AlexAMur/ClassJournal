@@ -46,7 +46,8 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             }
 
             is PayListEvent.DeleteClicked -> {
-                payListInteractor.deletePay(pay = viewEvent.pay.toPay())
+                viewState = viewState.copy(items =
+               // payListInteractor.deletePay(pay = viewEvent.pay.toPay())
             }
 
             is PayListEvent.NewClicked -> {
