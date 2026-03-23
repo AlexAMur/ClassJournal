@@ -30,8 +30,9 @@ class PayListInteractor @Inject constructor (val payListRepository: PayRepositor
                     return payListRepository.getAllPays(false, sort?: SortEnum.date_pay)
             }
     }
-    fun deletePay(pay: Pay){
-      //  payListRepository.delete(pay)
+    suspend fun deletePay(pay: Pay): Boolean{
+        return false
+       return payListRepository.deletePay(pay)
     }
     suspend fun searchChild(searchText: String):Flow<List<MiniChild>?>{
         return childRepository.getChildByName(searchText)

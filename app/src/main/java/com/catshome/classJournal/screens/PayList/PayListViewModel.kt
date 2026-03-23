@@ -1,16 +1,23 @@
 package com.catshome.classJournal.screens.PayList
 
+
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.PayListInteractor
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
+import com.catshome.classJournal.navigate.DetailsPayResult
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.PayList.PayListAction.*
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.time.Clock.System.now
@@ -46,8 +53,53 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             }
 
             is PayListEvent.DeleteClicked -> {
-                viewState = viewState.copy(items =
-               // payListInteractor.deletePay(pay = viewEvent.pay.toPay())
+                viewState.deletePayUid = viewEvent.pay.uidPay
+                viewState.isCanShowSnackBar = true
+                viewState = viewState.copy(items = viewState.items.map {
+                    if (viewEvent.pay.uidPay == it.uidPay)
+                        it.copy(isDelete = true)
+                    else
+                        it
+                })
+                viewState.onAction = {
+                    Log.e("CLJR", "Delete Clicked 1")
+                    viewState.isCanShowSnackBar  = false
+                    viewState.isShowSnackBar  = false
+                    obtainEvent(
+                        PayListEvent.UndoDeleteClicked(
+                            viewState.deletePayUid
+                        )
+                    )
+                }
+                viewState.onDismissed = {
+                    Log.e("CLJR", "On Dismissed")
+                    viewState.isCanShowSnackBar  = false
+                    viewState.isShowSnackBar  = false
+                    val job = viewModelScope.async {
+                        return@async payListInteractor.deletePay(pay = viewEvent.pay.toPay())
+                    }
+                    runBlocking {
+                        нет бара
+                        if (!job.await()){
+                            Log.e("CLJR", "Error save!!!")
+                            viewState.isCanShowSnackBar =true
+                            viewState.isShowSnackBar = false
+                            obtainEvent(
+                                PayListEvent.ShowSnackBar(
+                                    DetailsPayResult(
+                                        message = context.getString(R.string.error_save),
+                                        isShowSnackBar = true
+                                    )
+                                )
+                            )
+                        }
+                    }
+//                    obtainEvent(
+//                        PayListEvent.DeleteClicked(
+//                            pay = viewEvent.pay
+//                        )
+//                    )
+                }
             }
 
             is PayListEvent.NewClicked -> {
@@ -64,15 +116,27 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             }
 
             is PayListEvent.UndoDeleteClicked -> {
-                //TODO emplemention undelete pay
+                Log.e("CLJR", "UnDelete")
+                viewState = viewState.copy(
+                    items = viewState.items.map {
+                        if (viewEvent.uidPay == it.uidPay) {
+                            Log.e("CLJR", "isDelete is false")
+                            it.copy(isDelete = false, isOptionsRevealed = false)
+                        } else
+                            it
+                    })
+
             }
 
             is PayListEvent.ShowSnackBar -> {
+                Log.e("CLJR", "Show SnackBar is ${viewEvent.detailsPayResult} ")
+
                 viewState = viewState.copy(
                     isShowSnackBar = viewEvent.detailsPayResult.isShowSnackBar,
                     messageShackBar = viewEvent.detailsPayResult.message
                 )
-                if (viewEvent.detailsPayResult.isShowSnackBar == false)
+                Log.e("CLJR", "After isShowSB ${viewState.isShowSnackBar} ")
+                if (!viewEvent.detailsPayResult.isShowSnackBar)
                     viewState.isCanShowSnackBar = false
             }
 
@@ -121,7 +185,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             }
 
             is PayListEvent.ChangeRevealed -> {
-               viewState = viewState.copy(items = viewState.items.mapIndexed { index, pay ->
+                viewState = viewState.copy(items = viewState.items.mapIndexed { index, pay ->
                     if (index == viewEvent.index)
                         pay.copy(isOptionsRevealed = viewEvent.isOptionsRevealed)
                     else

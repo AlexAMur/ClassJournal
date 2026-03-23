@@ -11,7 +11,6 @@ import javax.inject.Inject
 class PayRepositoryImpl @Inject constructor(val storage: RoomPayStorage) : PayRepository {
 
     override suspend fun getAllPays(isDelete: Boolean,  sortEnum: SortEnum): Flow<List<Pay>>? {
-
         return storage.getAllPay(isDelete, sortEnum)?.map {
             listPayEntity-> listPayEntity.map {
                 it.mapToPay()

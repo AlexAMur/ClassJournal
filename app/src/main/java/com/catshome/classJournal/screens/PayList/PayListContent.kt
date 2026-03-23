@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.PayList
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -72,6 +73,7 @@ fun PayListContent(
                     modifier = Modifier.padding(bottom = paddingValues)
                 )
                 LaunchedEffect(viewState.isShowSnackBar) {
+                    Log.e("CLJR", "show Snack isShow ${viewState.isShowSnackBar}  iscanShow ${viewState.isCanShowSnackBar}")
                     if (viewState.isShowSnackBar && viewState.isCanShowSnackBar) {
                         SnackBarAction(
                             message = viewState.messageShackBar ?: "",
@@ -79,6 +81,7 @@ fun PayListContent(
                                 ?: context.getString(R.string.ok),
                             sbHostState,
                             onDismissed = viewState.onDismissed ?: {
+                                Log.e("CLJR", "On dismissed Performed")
                                 viewModel.obtainEvent(
                                     PayListEvent.ShowSnackBar(
                                         DetailsPayResult(
@@ -89,6 +92,7 @@ fun PayListContent(
                                 )
                             },
                             onActionPerformed = viewState.onAction ?: {
+                                Log.e("CLJR", "On Action Performed")
                                 viewModel.obtainEvent(
                                     PayListEvent.ShowSnackBar(
                                         DetailsPayResult(
@@ -180,7 +184,7 @@ fun PayListContent(
                                     )
                                 }
                             }
-                            viewState.endDate?.let {
+                            viewState.endDate.let {
                                 Text(
                                     modifier = Modifier
                                         .padding(start = 8.dp)
@@ -253,36 +257,40 @@ fun PayListContent(
                                             //действие для удаления
                                             ActionIcon(
                                                 onClick = {
-                                                    ришем удаление строки
+                                                    Log.e("CLJR", "ACTION Icon")
+                                                    //пишем удаление строки
+                                                    viewState.snackBarAction ="OK"
                                                     viewModel.obtainEvent(
                                                         viewEvent = PayListEvent.DeleteClicked(item)
                                                     )
-                                                    viewState.snackBarAction =
-                                                        context.getString(R.string.bottom_cancel)
-
-                                                    viewState.onDismissed
-                                                    scope.launch {
-                                                        viewModel.obtainEvent(
-                                                            PayListEvent.DeleteClicked(
-                                                                pay = item
-                                                            )
-                                                        )
-                                                    }
+                                                    viewState.isCanShowSnackBar =true
                                                     viewModel.obtainEvent(
                                                         PayListEvent.ShowSnackBar(
                                                             DetailsPayResult(
                                                                 message = "${context.getString(R.string.message_cancel)} ${item.fio} ?",
-
+                                                                isShowSnackBar = true
                                                                 ),
-                                                            onAction = {  //Сброс удаления
-                                                                viewModel.obtainEvent(
-                                                                    PayListEvent.UndoDeleteClicked(
-                                                                        uidPay = item.uidPay,
-                                                                        index
-                                                                    )
-                                                                )
+                                                            onAction = { //Сброс удаления
+                                                               // viewState.isCanShowSnackBar = false
+                                                                Log.e("CLJR", "OnaCTION s ss")
+//                                                                viewModel.obtainEvent(
+//                                                                    PayListEvent.UndoDeleteClicked(
+//                                                                       viewState.deletePayUid
+//                                                                    )
+//                                                                )
+
                                                             },
                                                             onDissmited = {
+                                                                viewState.isCanShowSnackBar = false
+                                                                Log.e("CLJR", "OnDiss s ss")
+//                                                                viewState.onAction = {
+//                                                                    viewModel.obtainEvent(
+//                                                                        PayListEvent.UndoDeleteClicked(
+//                                                                            viewState.deletePayUid
+//                                                                        )
+//                                                                    )
+//                                                                }
+
 //                                                            viewModel.obtainEvent(
 //                                                                PayListEvent.deleteGroup(
 //                                                                    viewState.uidDelete
