@@ -1,10 +1,13 @@
 package com.catshome.classJournal.screens.PayList
 
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.remember
 import com.catshome.classJournal.domain.communs.SortEnum
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.Pay
 
 data class PayListState(
+
     val showFAB: Boolean = false,
     val filterCollapse: Boolean = false,
     val isFilterData: Boolean =true,

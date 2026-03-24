@@ -13,9 +13,9 @@ sealed class PayListEvent {
     data class ShowFAB(val isShowFAB: Boolean): PayListEvent()
     data class onCollapse(val isCollapse: Boolean): PayListEvent()
     data class ShowSnackBar(val detailsPayResult: DetailsPayResult,
-                            val onAction: ()->Unit = {},
-                            val onDissmited: ()->Unit = {}
-        ): PayListEvent()
+                            val onAction: (()->Unit)? = null,
+                            val onDissmited: (()->Unit)? = null
+    ): PayListEvent()
     data class ChangeRevealed(val index: Int, val isOptionsRevealed: Boolean): PayListEvent()
     data class Search(val  searchText: String): PayListEvent()
     data class DeleteClicked(val pay: PayScreen) : PayListEvent()

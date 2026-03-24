@@ -49,6 +49,9 @@ import com.catshome.classJournal.communs.fabMenu
 import com.catshome.classJournal.context
 import com.catshome.classJournal.navigate.DetailsPayResult
 import com.catshome.classJournal.screens.child.ChildListEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -72,36 +75,30 @@ fun PayListContent(
                     hostState = sbHostState,
                     modifier = Modifier.padding(bottom = paddingValues)
                 )
+                if (viewState.isShowSnackBar)
                 LaunchedEffect(viewState.isShowSnackBar) {
-                    Log.e("CLJR", "show Snack isShow ${viewState.isShowSnackBar}  iscanShow ${viewState.isCanShowSnackBar}")
+                    Log.e(
+                        "CLJR",
+                        "show Snack isShow ${viewState.isShowSnackBar}  iscanShow ${viewState.isCanShowSnackBar}"
+                    )
                     if (viewState.isShowSnackBar && viewState.isCanShowSnackBar) {
-                        SnackBarAction(
-                            message = viewState.messageShackBar ?: "",
-                            actionLabel = viewState.snackBarAction
-                                ?: context.getString(R.string.ok),
-                            sbHostState,
-                            onDismissed = viewState.onDismissed ?: {
-                                Log.e("CLJR", "On dismissed Performed")
-                                viewModel.obtainEvent(
-                                    PayListEvent.ShowSnackBar(
-                                        DetailsPayResult(
-                                            isShowSnackBar = false,
-                                            message = ""
-                                        )
-                                    )
+                        CoroutineScope(Dispatchers.Main).launch {
+                            SnackBarAction(
+                                message = viewState.messageShackBar ?: "",
+                                actionLabel = viewState.snackBarAction
+                                    ?: context.getString(R.string.ok),
+                                sbHostState,
+                                onDismissed = viewState.onDismissed ?: {},
+                                onActionPerformed = viewState.onAction ?: {}
+                            )
+                        }
+                        viewModel.obtainEvent(
+                            PayListEvent.ShowSnackBar(
+                                DetailsPayResult(
+                                    isShowSnackBar = false,
+                                    message = ""
                                 )
-                            },
-                            onActionPerformed = viewState.onAction ?: {
-                                Log.e("CLJR", "On Action Performed")
-                                viewModel.obtainEvent(
-                                    PayListEvent.ShowSnackBar(
-                                        DetailsPayResult(
-                                            isShowSnackBar = false,
-                                            message = ""
-                                        )
-                                    )
-                                )
-                            }
+                            )
                         )
                     }
                 }
@@ -226,7 +223,8 @@ fun PayListContent(
                                         .fillMaxWidth()
                                         .padding(start = 16.dp, bottom = 8.dp, end = 16.dp),
                                     colors = CardDefaults.cardColors(
-                                        ClassJournalTheme.colors.secondaryBackground),
+                                        ClassJournalTheme.colors.secondaryBackground
+                                    ),
                                     shape = ClassJournalTheme.shapes.cornersStyle
                                 )
 
@@ -258,26 +256,20 @@ fun PayListContent(
                                             ActionIcon(
                                                 onClick = {
                                                     Log.e("CLJR", "ACTION Icon")
-                                                    //пишем удаление строки
-                                                    viewState.snackBarAction ="OK"
+
+                                                    viewState.snackBarAction = "OK"
                                                     viewModel.obtainEvent(
                                                         viewEvent = PayListEvent.DeleteClicked(item)
                                                     )
-                                                    viewState.isCanShowSnackBar =true
+                                                    viewState.isCanShowSnackBar = true
                                                     viewModel.obtainEvent(
                                                         PayListEvent.ShowSnackBar(
                                                             DetailsPayResult(
                                                                 message = "${context.getString(R.string.message_cancel)} ${item.fio} ?",
                                                                 isShowSnackBar = true
-                                                                ),
-                                                            onAction = { //Сброс удаления
-                                                               // viewState.isCanShowSnackBar = false
-                                                                Log.e("CLJR", "OnaCTION s ss")
-//                                                                viewModel.obtainEvent(
-//                                                                    PayListEvent.UndoDeleteClicked(
-//                                                                       viewState.deletePayUid
-//                                                                    )
-//                                                                )
+                                                            ),
+                                                            onAction = {
+                                                                viewState.isCanShowSnackBar = false
 
                                                             },
                                                             onDissmited = {
@@ -290,12 +282,6 @@ fun PayListContent(
 //                                                                        )
 //                                                                    )
 //                                                                }
-
-//                                                            viewModel.obtainEvent(
-//                                                                PayListEvent.deleteGroup(
-//                                                                    viewState.uidDelete
-//                                                                )
-//                                                            )
                                                             }
                                                         )
                                                     )
@@ -314,7 +300,11 @@ fun PayListContent(
                                             payment = viewState.items[index].payment.toString()
                                         ) {
 
-                                           viewModel.obtainEvent( viewEvent = PayListEvent.UpdateClicked(item))
+                                            viewModel.obtainEvent(
+                                                viewEvent = PayListEvent.UpdateClicked(
+                                                    item
+                                                )
+                                            )
 
                                         }
                                     }

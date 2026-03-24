@@ -2,6 +2,7 @@ package com.catshome.classJournal.screens.PayList
 
 
 import android.util.Log
+import androidx.compose.material.SnackbarHostState
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
@@ -15,7 +16,11 @@ import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.PayList.PayListAction.*
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
@@ -62,43 +67,52 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                         it
                 })
                 viewState.onAction = {
-                    Log.e("CLJR", "Delete Clicked 1")
-                    viewState.isCanShowSnackBar  = false
-                    viewState.isShowSnackBar  = false
+                    viewState.isCanShowSnackBar = false
+                    viewState.isShowSnackBar = false
                     obtainEvent(
                         PayListEvent.UndoDeleteClicked(
                             viewState.deletePayUid
                         )
                     )
+                    viewState.onAction =null
                 }
                 viewState.onDismissed = {
-                    Log.e("CLJR", "On Dismissed")
-                    viewState.isCanShowSnackBar  = false
-                    viewState.isShowSnackBar  = false
-                    val job = viewModelScope.async {
-                        return@async payListInteractor.deletePay(pay = viewEvent.pay.toPay())
-                    }
-                    runBlocking {
-                        нет бара
-                        if (!job.await()){
-                            Log.e("CLJR", "Error save!!!")
-                            viewState.isCanShowSnackBar =true
-                            viewState.isShowSnackBar = false
-                            obtainEvent(
-                                PayListEvent.ShowSnackBar(
-                                    DetailsPayResult(
-                                        message = context.getString(R.string.error_save),
-                                        isShowSnackBar = true
+                    var result = false
+                    obtainEvent(
+                        PayListEvent.ShowSnackBar(
+                            DetailsPayResult(
+                                isShowSnackBar = false,
+                                message = ""
+                            ),
+                        ))
+                        val jobDef =  CoroutineScope(Dispatchers.Default).launch {
+                            val job = CoroutineScope(Dispatchers.IO).async {
+                                Log.e("CLJR", "Async!!!!")
+                                return@async payListInteractor.deletePay(pay = viewEvent.pay.toPay())
+                            }
+
+                            if (!job.await()) {
+                                Log.e("CLJR", "Error save!!!")
+
+                                viewState.isCanShowSnackBar = true
+                                obtainEvent(
+                                    PayListEvent.ShowSnackBar(
+                                        DetailsPayResult(
+                                            message = context.getString(R.string.error_save),
+                                            isShowSnackBar = true
+                                            ),
+                                        onDissmited = {
+                                            viewState.isCanShowSnackBar = false
+                                            viewState.isShowSnackBar = false
+                                            job.cancel()
+
+                                        }
                                     )
                                 )
-                            )
+                            }
                         }
-                    }
-//                    obtainEvent(
-//                        PayListEvent.DeleteClicked(
-//                            pay = viewEvent.pay
-//                        )
-//                    )
+                    viewState.onAction =null
+                    viewState.onDismissed = null
                 }
             }
 
@@ -130,14 +144,16 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
 
             is PayListEvent.ShowSnackBar -> {
                 Log.e("CLJR", "Show SnackBar is ${viewEvent.detailsPayResult} ")
+                Log.e("CLJR", "Show isShowSnackBar is ${viewState.isShowSnackBar} ")
 
                 viewState = viewState.copy(
                     isShowSnackBar = viewEvent.detailsPayResult.isShowSnackBar,
                     messageShackBar = viewEvent.detailsPayResult.message
                 )
-                Log.e("CLJR", "After isShowSB ${viewState.isShowSnackBar} ")
-                if (!viewEvent.detailsPayResult.isShowSnackBar)
-                    viewState.isCanShowSnackBar = false
+                if (viewEvent.onAction == null)
+                    viewState.onAction = {viewState.isShowSnackBar =false}
+                if (viewEvent.onDissmited == null)
+                    viewState.onDismissed = {viewState.isShowSnackBar =false}
             }
 
             is PayListEvent.onCollapse -> {

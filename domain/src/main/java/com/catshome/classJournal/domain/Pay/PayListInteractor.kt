@@ -4,6 +4,8 @@ package com.catshome.classJournal.domain.Pay
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.communs.SortEnum
+import kotlinx.coroutines.Delay
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -31,6 +33,7 @@ class PayListInteractor @Inject constructor (val payListRepository: PayRepositor
             }
     }
     suspend fun deletePay(pay: Pay): Boolean{
+        delay(1000L)
         return false
        return payListRepository.deletePay(pay)
     }
