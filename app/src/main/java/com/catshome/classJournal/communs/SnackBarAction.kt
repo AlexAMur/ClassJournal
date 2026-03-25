@@ -7,13 +7,14 @@ import androidx.compose.material3.SnackbarResult
 suspend fun SnackBarAction(
     message: String, actionLabel: String,
     snackBarState: SnackbarHostState,
+    withDismissAction: Boolean =true,
     onDismissed: () -> Unit,
     onActionPerformed: () -> Unit
 ) {
     when (snackBarState.showSnackbar(
         message = message,
         actionLabel = actionLabel,
-        withDismissAction = true,
+        withDismissAction = withDismissAction,
         duration = SnackbarDuration.Short
     )) {
         SnackbarResult.Dismissed -> onDismissed()

@@ -33,8 +33,6 @@ class PayListInteractor @Inject constructor (val payListRepository: PayRepositor
             }
     }
     suspend fun deletePay(pay: Pay): Boolean{
-        delay(1000L)
-        return false
        return payListRepository.deletePay(pay)
     }
     suspend fun searchChild(searchText: String):Flow<List<MiniChild>?>{

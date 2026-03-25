@@ -31,8 +31,16 @@ fun PayListScreen(
             viewModel.obtainEvent(PayListEvent.SetOption(optionFilter))
 
         }
-        detailsPayResult?.let {
-            viewModel.obtainEvent(PayListEvent.ShowSnackBar(it))
+        if (viewState.isCanShowSnackBar) {
+            detailsPayResult?.let {
+               viewState.onDismissed =  {
+                   viewState.isCanShowSnackBar =false
+               }
+                viewState.onAction =  {
+                    viewState.isCanShowSnackBar =false
+                }
+                viewModel.obtainEvent(PayListEvent.ShowSnackBar(it))
+            }
         }
         viewModel.obtainEvent(PayListEvent.ReloadScreen)
 
@@ -61,12 +69,14 @@ fun PayListScreen(
         PayListAction.CloseScreen -> {
             viewModel.clearAction()
         }
+
         PayListAction.NewPay -> {
             if (viewModel.viewActions().replayCache.last().toString() == "NewPay") {
                 navController.navigate(ItemScreen.NewPayScreen.name)
                 viewModel.clearAction()
             }
         }
+
         PayListAction.OpenFilter -> {
             navController.navigate(
                 FilterSetting(
@@ -80,8 +90,9 @@ fun PayListScreen(
             )
             viewModel.clearAction()
         }
+
         null -> {}
-        is PayListAction.EditPay ->{
+        is PayListAction.EditPay -> {
             navController.navigate((viewAction as PayListAction.EditPay).pay)
             viewModel.clearAction()
         }

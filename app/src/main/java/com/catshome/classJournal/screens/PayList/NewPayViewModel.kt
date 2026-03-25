@@ -31,7 +31,7 @@ class NewPayViewModel @Inject constructor(
                 datePay = now().toDateTimeRuString().toString()
             ),
             payment = "0"
-       )
+        )
     ) {
     val TEXT_FILD_COUNT = 3
     val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
@@ -88,29 +88,29 @@ class NewPayViewModel @Inject constructor(
 
     override fun obtainEvent(viewEvent: NewPayEvent) {
         when (viewEvent) {
-           is NewPayEvent.SetState-> {
-                   viewState = viewState.copy(
-                       selectChild = MiniChild(
-                           uid = viewEvent.pay.uidPay,
-                           fio = "${viewEvent.pay.name} ${viewEvent.pay.surName}",
-                           name = viewEvent.pay.name,
-                           surname = viewEvent.pay.surName
-                       ),
-                       searchText = "${viewEvent.pay.name} ${viewEvent.pay.surName}",
-                       pay = viewEvent.pay,
-                       payment = viewEvent.pay.payment.toString(),
-                       isChildError = false,
-                       ChildErrorMessage = null,
-                       indexFocus = -1,
-                       isSurnameError = false,
-                       isSnackbarShow = false,
-                       snackbarAction = "",
-                       isPayError = false,
-                       PayError = "",
-                       errorMessage = ""
-                   )
-               Log.e("CLJR", "Datepay After set ${viewState.pay.datePay}")
-               }
+            is NewPayEvent.SetState -> {
+                viewState = viewState.copy(
+                    selectChild = MiniChild(
+                        uid = viewEvent.pay.uidPay,
+                        fio = "${viewEvent.pay.name} ${viewEvent.pay.surName}",
+                        name = viewEvent.pay.name,
+                        surname = viewEvent.pay.surName
+                    ),
+                    searchText = "${viewEvent.pay.name} ${viewEvent.pay.surName}",
+                    pay = viewEvent.pay,
+                    payment = viewEvent.pay.payment.toString(),
+                    isChildError = false,
+                    ChildErrorMessage = null,
+                    indexFocus = -1,
+                    isSurnameError = false,
+                    isSnackbarShow = false,
+                    snackbarAction = "",
+                    isPayError = false,
+                    PayError = "",
+                    errorMessage = ""
+                )
+                Log.e("CLJR", "Datepay After set ${viewState.pay.datePay}")
+            }
 
             NewPayEvent.ResetState -> {
                 resetState()
@@ -129,6 +129,24 @@ class NewPayViewModel @Inject constructor(
                             ChildErrorMessage = context.getString(R.string.search_child_error)
                         )
                     }
+
+
+                    try {
+                        viewState =
+                            viewState.copy(pay = viewState.pay.copy(payment = viewState.payment.toInt()))
+                    } catch (e: NumberFormatException) {
+                        //viewState = viewState.copy(pay = viewState.pay.copy(payment = 0))
+                        viewState = viewState.copy(
+                            isPayError = true,
+                            PayError = context.getString(R.string.error_invalid_value) )
+                        return
+                    }
+
+
+
+
+
+
 
                     if (viewState.pay.payment <= 0) {
                         viewState = viewState.copy(
@@ -202,7 +220,9 @@ class NewPayViewModel @Inject constructor(
         viewState = viewState.copy(
             selectChild = null,
             searchText = "",
-            pay = Pay(datePay =  now().toDateTimeRuString().toString()),//.toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toDateTimeRuString()),
+            pay = Pay(
+                datePay = now().toDateTimeRuString().toString()
+            ),//.toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toDateTimeRuString()),
             isChildError = false,
             ChildErrorMessage = null,
             indexFocus = -1,
@@ -224,15 +244,6 @@ class NewPayViewModel @Inject constructor(
 
     fun paymentChange(newValue: String) {
         viewState = viewState.copy(payment = newValue)
-        if (newValue.isNotEmpty()) {
-            try {
-                viewState = viewState.copy(pay = viewState.pay.copy(payment = newValue.toInt()))
-            }catch (e: NumberFormatException){
-                viewState = viewState.copy(pay = viewState.pay.copy(payment = 0))
-                viewState = viewState.copy(isPayError = true)
-            }
-        }
-        if (newValue.length == 0)
-            viewState = viewState.copy(isPayError = false)
+        viewState = viewState.copy(isPayError = false)
     }
 }

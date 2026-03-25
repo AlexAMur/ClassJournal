@@ -7,7 +7,6 @@ import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.Pay
 
 data class PayListState(
-
     val showFAB: Boolean = false,
     val filterCollapse: Boolean = false,
     val isFilterData: Boolean =true,
@@ -23,10 +22,9 @@ data class PayListState(
     val index: Int =-1,
     val items: List<PayScreen> = emptyList(),
     var deletePayUid: String? = null,
-    var isShowSnackBar: Boolean = false,
     var isCanShowSnackBar: Boolean = false,
     val showFilter: Boolean = false,
-    val messageShackBar:String? = null,
+    var messageShackBar:String? = null,
     var snackBarAction: String? =null,
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null

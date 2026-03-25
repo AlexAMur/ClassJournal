@@ -1,5 +1,6 @@
 package com.catshome.classJournal.PayList
 
+import android.util.Log
 import com.catshome.classJournal.domain.Pay.Pay
 import com.catshome.classJournal.domain.Pay.PayRepository
 import com.catshome.classJournal.domain.communs.SortEnum
