@@ -78,26 +78,13 @@ fun PayListContent(
                 )
 
                 LaunchedEffect(viewState.messageShackBar) {
-//                    Log.e(
-//                        "CLJR",
-//                        "LaunchedEffect isCanShowSnackBar ${viewState.isCanShowSnackBar}"
-//                    )
-//                    Log.e(
-//                        "CLJR",
-//                        "LaunchedEffect message ${viewState.messageShackBar}"
-//                    )
                     if (!viewState.messageShackBar.isNullOrEmpty() && viewState.isCanShowSnackBar) {
-//                    Log.e(
-//                        "CLJR",
-//                        "LaunchedEffect!!!!!!!!!!!!!!!!!!"
-//                    )
-                        //  if (viewState.isShowSnackBar && viewState.isCanShowSnackBar) {
                         CoroutineScope(Dispatchers.IO).launch {
                             SnackBarAction(
                                 message = viewState.messageShackBar.toString(),
-                                actionLabel = viewState.snackBarAction
-                                    ?: context.getString(R.string.ok),
+                                actionLabel = viewState.snackBarAction,
                                 snackBarState = sbHostState,
+                                withDismissAction = viewState.withDismissAction,
                                 onDismissed = {
                                     viewState.onDismissed?.let { it() }
                                     viewState.isCanShowSnackBar = false
@@ -110,12 +97,13 @@ fun PayListContent(
 
                                 }
                             )
-                            delay(300L)
+//                            delay(500L)
+ //                           viewModel.obtainEvent(PayListEvent.resetSnackBar)
 
-                            viewState.onAction = null
-                            viewState.onDismissed = null
-                            viewState.isCanShowSnackBar = false
-                            viewState.messageShackBar = null
+//                            viewState.onAction = null
+//                            viewState.onDismissed = null
+//                            viewState.isCanShowSnackBar = false
+//                            viewState.messageShackBar = null
 
                         }
                     }
@@ -275,6 +263,7 @@ fun PayListContent(
                                                 onClick = {
                                                     Log.e("CLJR", "ACTION Icon")
                                                     viewState.snackBarAction = context.getString(R.string.bottom_yes)
+                                                    viewState.withDismissAction = false
                                                     viewModel.obtainEvent(
                                                         viewEvent = PayListEvent.DeleteClicked(item)
                                                     )

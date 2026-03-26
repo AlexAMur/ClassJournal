@@ -39,9 +39,9 @@ fun newPayScreen(
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
     val sbHostState = remember { SnackbarHostState() }
-    if (viewState.isResetState) {
+    //if (viewState.isResetState) {
         viewModel.obtainEvent(NewPayEvent.ResetState)
-    }
+   // }
     Scaffold(
         snackbarHost = {
             SnackbarHost(

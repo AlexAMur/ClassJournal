@@ -19,7 +19,7 @@ data class PayListState(
     val beginDate: String = "",
     val endDate: String = "",
     val allRange: Boolean= true,
-    val index: Int =-1,
+    var indexDelete: Int =-1,
     val items: List<PayScreen> = emptyList(),
     var deletePayUid: String? = null,
     var isCanShowSnackBar: Boolean = false,
@@ -27,7 +27,8 @@ data class PayListState(
     var messageShackBar:String? = null,
     var snackBarAction: String? =null,
     var onDismissed: (()->Unit)? = null,
-    var onAction: (()->Unit)? = null
+    var onAction: (()->Unit)? = null,
+    var withDismissAction: Boolean = false
     )
 data class PayScreen(
     val uidPay: String= "",

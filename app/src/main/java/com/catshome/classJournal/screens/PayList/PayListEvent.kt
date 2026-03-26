@@ -5,6 +5,7 @@ import com.catshome.classJournal.navigate.DetailsPayResult
 import com.catshome.classJournal.navigate.OptionFilterPaysList
 
 sealed class PayListEvent {
+    data object  resetSnackBar: PayListEvent()
     data class UpdateClicked(val pay: PayScreen): PayListEvent()
     data object NewClicked : PayListEvent()
     data object isFilterDataClicked : PayListEvent()
@@ -13,6 +14,7 @@ sealed class PayListEvent {
     data class ShowFAB(val isShowFAB: Boolean): PayListEvent()
     data class onCollapse(val isCollapse: Boolean): PayListEvent()
     data class ShowSnackBar(val detailsPayResult: DetailsPayResult,
+
                             val onAction: (()->Unit)? = null,
                             val onDissmited: (()->Unit)? = null
     ): PayListEvent()

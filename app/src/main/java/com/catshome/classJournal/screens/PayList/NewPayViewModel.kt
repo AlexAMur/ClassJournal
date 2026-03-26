@@ -221,7 +221,8 @@ class NewPayViewModel @Inject constructor(
             selectChild = null,
             searchText = "",
             pay = Pay(
-                datePay = now().toDateTimeRuString().toString()
+                datePay = now().toDateTimeRuString().toString(),
+                payment = 0,
             ),//.toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toDateTimeRuString()),
             isChildError = false,
             ChildErrorMessage = null,
@@ -231,6 +232,7 @@ class NewPayViewModel @Inject constructor(
             snackbarAction = "",
             isPayError = false,
             PayError = "",
+            payment = "0",
             errorMessage = ""
         )
         Log.e("CLJR", "Reset after ${viewState.pay.datePay}")

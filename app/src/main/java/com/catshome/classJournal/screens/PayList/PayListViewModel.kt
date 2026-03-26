@@ -55,56 +55,74 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
 
             is PayListEvent.DeleteClicked -> {
                 viewState.deletePayUid = viewEvent.pay.uidPay
-                viewState.isCanShowSnackBar = true
-
-                viewState = viewState.copy(items = viewState.items.map {
-                    if (viewEvent.pay.uidPay == it.uidPay)
-                        it.copy(isDelete = true)
+                var indexDelete =-1
+                viewState = viewState.copy(items = viewState.items.mapIndexed { index, pay ->
+                    if (viewEvent.pay.uidPay ==  pay.uidPay) {
+                        indexDelete = index
+                        pay.copy(isDelete = true)
+                    }
                     else
-                        it
+                        pay
                 })
+                viewState.indexDelete = indexDelete
                 viewState.onAction = {
                     //viewState.isCanShowSnackBar = false
+
                     obtainEvent(
                         PayListEvent.UndoDeleteClicked(
                             viewState.deletePayUid
                         )
                     )
-                    viewState.isCanShowSnackBar = false
-                    viewState.messageShackBar = null
+//                    resetStatusSnackBar()
                     viewState.onDismissed = null
                     viewState.onAction = null
+                    viewState.isCanShowSnackBar = false
+                    viewState.messageShackBar = null
                 }
                 viewState.onDismissed = {
                     var result = false
                     Log.e("CLJR", "Before corutine")
-                    val jobDef = CoroutineScope(Dispatchers.Default).launch {
-                        val job = CoroutineScope(Dispatchers.IO).async {
-                            result = payListInteractor.deletePay(pay = viewEvent.pay.toPay())
-                            Log.e("CLJR", "Async!!!! $result")
-                            Log.e("CLJR", "Async viewEvent ${viewEvent.pay}")
-                            return@async result
-                        }
-                        if (!job.await()) {
-                            viewState.isCanShowSnackBar = true
-                            viewState.messageShackBar = context.getString(R.string.error_save)
-//                            delay(300L)
-                            viewState.isCanShowSnackBar = false
-                            viewState.messageShackBar = null
-                            viewState.onDismissed = null
-                            viewState.onAction = null
+                    if (viewState.items[viewState.indexDelete].isDelete) {
+                        val jobDef = CoroutineScope(Dispatchers.Default).launch {
+                            val job = CoroutineScope(Dispatchers.IO).async {
+                                result = payListInteractor.deletePay(pay = viewEvent.pay.toPay())
+                                Log.e("CLJR", "Async!!!! $result")
+                                Log.e("CLJR", "Async viewEvent ${viewEvent.pay}")
+                                return@async result
+                            }
+                            if (!job.await()) {
+                                viewState.isCanShowSnackBar = true
+                                viewState.messageShackBar = context.getString(R.string.error_save)
+                                viewState.isCanShowSnackBar = false
+                                viewState.withDismissAction =false
+
+                                viewState.messageShackBar = null
+                                viewState.onDismissed = null
+                                viewState.onAction = null
+                                //resetStatusSnackBar()
+                            }
                         }
                     }
-                    viewState.isCanShowSnackBar = false
-                    viewState.messageShackBar = null
-                    viewState.onDismissed = null
-                    viewState.onAction = null
+//                        viewState.onDismissed = null
+//                        viewState.onAction = null
+
+//                        viewState.isCanShowSnackBar = false
+//                        viewState.messageShackBar = null
+                        // resetStatusSnackBar()
+
                 }
-                viewState.messageShackBar = "Отменить удаление ${viewEvent.pay.fio}?"
+                viewState.isCanShowSnackBar = true
+                viewState = viewState.copy(messageShackBar = "Отменить удаление ${viewEvent.pay.fio}?")
+                Log.e("CLJR", "ViewModel DeleteClicked ${viewState.messageShackBar}")
+            }
+
+            PayListEvent.resetSnackBar -> {
+                resetStatusSnackBar()
             }
 
             is PayListEvent.NewClicked -> {
                 viewState.isCanShowSnackBar = true
+                viewState.messageShackBar = null
                 viewAction = PayListAction.NewPay
             }
 
@@ -202,5 +220,31 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 viewState = viewState.copy(items = listPay.map { it.toPayScreen() })
             }
         }
+    }
+
+    fun setStatusSnackBar(
+        isCanShowSnackBar: Boolean?,
+        withDismissAction: Boolean = true,
+        actionLabel:String? = null,
+        messageSnackBar: String?,
+        onAction: (() -> Unit)?,
+        onDismissed: (() -> Unit)?,
+    ) {
+        isCanShowSnackBar?.let { isCan -> viewState = viewState.copy(isCanShowSnackBar = isCan) }
+        viewState = viewState.copy(
+            withDismissAction = withDismissAction,
+            messageShackBar = messageSnackBar,
+            snackBarAction = actionLabel
+        )
+        onAction?.let { viewState.onAction = it }
+        onDismissed?.let { viewState.onDismissed = it }
+    }
+
+    private fun resetStatusSnackBar() {
+        viewState.onAction = null
+        viewState.onDismissed = null
+        viewState.isCanShowSnackBar = false
+        //viewState.withDismissAction = true
+        viewState.messageShackBar = null
     }
 }

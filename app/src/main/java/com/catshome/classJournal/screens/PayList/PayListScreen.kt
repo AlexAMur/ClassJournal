@@ -33,13 +33,24 @@ fun PayListScreen(
         }
         if (viewState.isCanShowSnackBar) {
             detailsPayResult?.let {
-               viewState.onDismissed =  {
-                   viewState.isCanShowSnackBar =false
-               }
-                viewState.onAction =  {
-                    viewState.isCanShowSnackBar =false
-                }
-                viewModel.obtainEvent(PayListEvent.ShowSnackBar(it))
+                viewModel.setStatusSnackBar(
+                    isCanShowSnackBar = null,
+                    withDismissAction = false,
+                    messageSnackBar = it.message,
+
+                    onAction = {
+                        viewState.isCanShowSnackBar =false
+                    },
+                    onDismissed = {viewState.isCanShowSnackBar =false}
+                )
+//               viewState.onDismissed =  {
+//                   viewState.isCanShowSnackBar =false
+//               }
+//                viewState.onAction =  {
+//                    viewState.isCanShowSnackBar =false
+//                }
+//                viewState.withDismissAction =false
+//                viewModel.obtainEvent(PayListEvent.ShowSnackBar(it))
             }
         }
         viewModel.obtainEvent(PayListEvent.ReloadScreen)
