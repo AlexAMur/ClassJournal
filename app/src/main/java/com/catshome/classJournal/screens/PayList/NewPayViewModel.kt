@@ -129,8 +129,6 @@ class NewPayViewModel @Inject constructor(
                             ChildErrorMessage = context.getString(R.string.search_child_error)
                         )
                     }
-
-
                     try {
                         viewState =
                             viewState.copy(pay = viewState.pay.copy(payment = viewState.payment.toInt()))
@@ -141,13 +139,6 @@ class NewPayViewModel @Inject constructor(
                             PayError = context.getString(R.string.error_invalid_value) )
                         return
                     }
-
-
-
-
-
-
-
                     if (viewState.pay.payment <= 0) {
                         viewState = viewState.copy(
                             isPayError = true,

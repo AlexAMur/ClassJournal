@@ -261,7 +261,6 @@ fun PayListContent(
                                             //действие для удаления
                                             ActionIcon(
                                                 onClick = {
-                                                    Log.e("CLJR", "ACTION Icon")
                                                     viewState.snackBarAction = context.getString(R.string.bottom_yes)
                                                     viewState.withDismissAction = false
                                                     viewModel.obtainEvent(

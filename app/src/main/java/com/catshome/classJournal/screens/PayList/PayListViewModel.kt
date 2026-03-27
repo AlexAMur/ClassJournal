@@ -193,7 +193,9 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             }
 
             is PayListEvent.UpdateClicked -> {
+                viewState.messageShackBar = null
                 viewState.isCanShowSnackBar = true
+
                 viewAction = EditPay(viewEvent.pay.toPay())
             }
 
@@ -243,6 +245,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
     private fun resetStatusSnackBar() {
         viewState.onAction = null
         viewState.onDismissed = null
+     //   viewState = viewState.copy(isCanShowSnackBar = false, messageShackBar = null)
         viewState.isCanShowSnackBar = false
         //viewState.withDismissAction = true
         viewState.messageShackBar = null
