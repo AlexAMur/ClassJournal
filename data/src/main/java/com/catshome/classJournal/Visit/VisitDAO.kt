@@ -13,11 +13,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface VisitDAO {
     @Insert(onConflict = ABORT)
-    suspend fun insert(visitEntity: List<VisitEntity>)
+    suspend fun insert(visitEntity: List<VisitEntity>): List<Long>
     @Delete
-    suspend fun delete(visitEntity: VisitEntity)
+    suspend fun delete(visitEntity: VisitEntity): Int
     @Update
-    suspend fun update(visitEntity: VisitEntity)
+    suspend fun update(visitEntity: VisitEntity): Int
     @Query(
         "Select v.uid , v.uidChild , c.child_name as Name, c.child_surname as Surname, v.dateVisit " +
                 ", v.priceVisit  from visits v join child c where v.uidChild =c.uid and c.isDelete = :isDelete ORDER BY " +

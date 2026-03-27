@@ -45,17 +45,15 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
     }
 
     override suspend fun deleteVisit(visit: Visit) {
-        TODO("Not yet implemented")
+        visitStorage.delete(visit.mapToVisitEntity())
     }
 
     override suspend fun insetVisit(visit: List<Visit>) {
-
-            visitStorage.saveVisit(visit.map { it.mapToVisitEntity()})
-
+            visitStorage.save(visit.map { it.mapToVisitEntity()})
     }
 
     override suspend fun updateVisit(visit: Visit) {
-        TODO("Not yet implemented")
+        TODO(" Not yet implemented")
     }
 
 }

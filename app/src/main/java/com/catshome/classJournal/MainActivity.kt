@@ -158,7 +158,7 @@ class MainActivity : ComponentActivity() {
                             PayListScreen(navController = navController)//,currentSettings)
                         ), ItemBottomBar(
                             stringResource(R.string.item_bottom_visit),
-                            ItemScreen.GroupScreen.name,
+                            ItemScreen.VisitListScreen.name,
                             Icons.Sharp.DateRange,
                             Icons.Outlined.DateRange,
                             GroupScreen(navController)

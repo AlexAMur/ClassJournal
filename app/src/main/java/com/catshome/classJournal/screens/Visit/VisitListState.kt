@@ -5,5 +5,6 @@ import com.catshome.classJournal.domain.Visit.Visit
 
 data class VisitListState(
     val index: Int =-1,
-    val itemVisit: List<Visit> =emptyList()
+    val itemVisit: List<Visit> =emptyList(),
+    val isShowFAB: Boolean =  false
 )

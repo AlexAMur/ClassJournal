@@ -14,6 +14,10 @@ class VisitListViewModel @Inject constructor(private val groupInteractor: GroupI
                VisitListEvent.NewVisit -> {
                    viewAction = VisitListAction.NewVisit
                }
+
+               is VisitListEvent.ShowFAB -> {
+                   viewState = viewState.copy(isShowFAB = viewEvent.isShowFAB)
+               }
            }
         }
     }

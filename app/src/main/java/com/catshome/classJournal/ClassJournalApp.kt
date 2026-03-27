@@ -20,6 +20,7 @@ import com.catshome.classJournal.navigate.DetailsPayResult
 import com.catshome.classJournal.navigate.NewLesson
 import com.catshome.classJournal.navigate.OptionFilterPaysList
 import com.catshome.classJournal.navigate.SaveLesson
+import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.NewPayViewModel
 import com.catshome.classJournal.screens.PayList.PayListScreen
@@ -29,6 +30,7 @@ import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerScre
 import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerViewModel
 import com.catshome.classJournal.screens.Scheduler.SchedulerListScreen
 import com.catshome.classJournal.screens.Scheduler.SchedulerListViewModel
+import com.catshome.classJournal.screens.Visit.NewVisitViewModel
 import com.catshome.classJournal.screens.Visit.VisitListViewModel
 import com.catshome.classJournal.screens.Visit.visitListScreen
 import com.catshome.classJournal.screens.child.ChildListViewModel
@@ -38,6 +40,7 @@ import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.screens.group.NewGroupScreen
 import com.catshome.classJournal.screens.viewModels.GroupViewModel
 import com.catshome.classJournal.screens.viewModels.NewGroupViewModel
+import kotlin.getValue
 
 internal val localNavHost =
     staticCompositionLocalOf<NavHostController> { error("No default implementation") }
@@ -55,8 +58,6 @@ fun classJournalApp(
         composable<Pay> { backStackEntry ->
             val editPay = backStackEntry.toRoute<Pay>()
             val viewModel: NewPayViewModel by activity.viewModels()
-            //newPayScreen(viewModel)
-            //Log.e("CLJR", "Navigate navcont")
             newPayScreen(
                 navController = navController,
                 viewModel = viewModel,
@@ -95,7 +96,6 @@ fun classJournalApp(
         }
 
         composable(route = ItemScreen.PayListScreen.name) {
-
             val viewModel: PayListViewModel by activity.viewModels()      //
             PayListScreen(navController = navController, viewModel = viewModel)
         }
@@ -120,18 +120,15 @@ fun classJournalApp(
         composable<NewLesson> { backStackEntry ->
             val newLesson = backStackEntry.toRoute<NewLesson>()
             val viewModel: NewSchedulerViewModel by activity.viewModels()
-            Log.e("CLJR", "Navigate navcont")
             NewSchedulerScreen(
                 navController = navController,
                 viewModel = viewModel,
                 newLesson = newLesson
             )
         }
-
 //        composable(route = ItemScreen.NewSchedulerScreen.name) {
 //            val viewModel: NewSchedulerViewModel by activity.viewModels()      //
 //            NewSchedulerScreen(navController = navController, viewModel = viewModel)
-//
 //        }
 
         composable<FilterSetting> { backState ->
@@ -179,7 +176,12 @@ fun classJournalApp(
             val viewModel = hiltViewModel<NewChildViewModel>()
             NewChildScreen(viewModel = viewModel)
         }
-        composable(route = ItemScreen.NewVisitScreen.name) { NewVisitScreen() }
+
+        composable<VisitDetails> { backStackEntry ->
+             val viewModel: NewVisitViewModel by activity.viewModels()
+            val visit = backStackEntry.toRoute<VisitDetails>()
+            NewVisitScreen(viewModel, visit)
+        }
     }
 }
 

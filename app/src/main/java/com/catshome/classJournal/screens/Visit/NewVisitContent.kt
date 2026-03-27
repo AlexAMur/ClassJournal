@@ -1,6 +1,7 @@
 package com.catshome.classJournal.screens.Visit
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
@@ -30,15 +31,17 @@ import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.SearchField
+import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.screens.PayList.ItemChildInSearch
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun NewVisitContent(viewModel: NewVisitViewModel){
+fun NewVisitContent(viewModel: NewVisitViewModel,
+                    ){
     val viewState by viewModel.viewState().collectAsState()
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
-    Card {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -112,7 +115,6 @@ fun NewVisitContent(viewModel: NewVisitViewModel){
                     }
                 }
             }
-
         }
-    }
+
 }

@@ -43,14 +43,6 @@ fun PayListScreen(
                     },
                     onDismissed = {viewState.isCanShowSnackBar =false}
                 )
-//               viewState.onDismissed =  {
-//                   viewState.isCanShowSnackBar =false
-//               }
-//                viewState.onAction =  {
-//                    viewState.isCanShowSnackBar =false
-//                }
-//                viewState.withDismissAction =false
-//                viewModel.obtainEvent(PayListEvent.ShowSnackBar(it))
             }
         }
         viewModel.obtainEvent(PayListEvent.ReloadScreen)
