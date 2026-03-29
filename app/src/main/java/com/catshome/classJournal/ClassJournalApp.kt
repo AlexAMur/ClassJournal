@@ -180,7 +180,11 @@ fun classJournalApp(
         composable<VisitDetails> { backStackEntry ->
              val viewModel: NewVisitViewModel by activity.viewModels()
             val visit = backStackEntry.toRoute<VisitDetails>()
-            NewVisitScreen(viewModel, visit)
+            NewVisitScreen(
+                viewModel, visit,
+                onCancelClick = {},
+                onSaveClick = { }
+            )
         }
     }
 }

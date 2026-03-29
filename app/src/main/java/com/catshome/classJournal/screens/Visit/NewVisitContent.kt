@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +35,7 @@ import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.SearchField
 import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.screens.PayList.ItemChildInSearch
+import kotlinx.datetime.DayOfWeek
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -86,6 +89,12 @@ fun NewVisitContent(viewModel: NewVisitViewModel,
                         shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
                     )
                     {
+                        Row() {
+                            Text(
+                                text =
+
+                            )
+                        }
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxWidth()

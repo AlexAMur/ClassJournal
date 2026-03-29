@@ -52,7 +52,9 @@ import com.catshome.classJournal.screens.Visit.NewVisitState
 @Composable
 fun NewVisitScreen(
     viewModel: NewVisitViewModel = viewModel(),
-    details: VisitDetails? = null
+    details: VisitDetails? = null,
+    onCancelClick: (() -> Unit)?,
+    onSaveClick: (() -> Unit)?
 ) {
     val viewAction by viewModel.viewActions().collectAsState(null)
     Surface(
@@ -81,7 +83,12 @@ fun NewVisitScreen(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TextButton(onClick = onCancelClick) {
+                    TextButton(
+                        onClick =
+                            {
+                                onCancelClick?.invoke()
+                            }
+                    ) {
                         Icon(
                             Icons.Default.Close, "", tint = ClassJournalTheme.colors.tintColor
                         )
@@ -91,18 +98,22 @@ fun NewVisitScreen(
                         color = ClassJournalTheme.colors.primaryText,
                         style = ClassJournalTheme.typography.caption
                     )
-                    TextButton(onClick = onSaveClick) {
+                    TextButton(onClick = {
+                        onSaveClick?.invoke()
+                    }
+                    ) {
                         Text(
                             stringResource(R.string.save_button),
                             color = ClassJournalTheme.colors.tintColor
                         )
                     }
                 }
-            NewVisitContent(viewModel)
+                NewVisitContent(viewModel)
+            }
         }
-    }
-    when (viewAction) {
-        NewVisitAction.CloseScreen -> TODO("TODO Close window implemented create")
-        null -> {}
+        when (viewAction) {
+            NewVisitAction.CloseScreen -> TODO("TODO Close window implemented create")
+            null -> {}
+        }
     }
 }
