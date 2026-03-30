@@ -1,29 +1,34 @@
 package com.catshome.classJournal.screens.Visit
 
-import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,18 +36,15 @@ import androidx.navigation.NavController
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.communs.ItemFAB
-import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.fabMenu
-import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.resource.R
-import com.catshome.classJournal.screens.PayList.PayListEvent
+import com.catshome.classJournal.domain.communs.DayOfWeek
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.UUID
-import kotlin.uuid.Uuid
 
 
 @Composable
@@ -118,7 +120,7 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                             end = 16.dp
                         ),
                         onClick = {
-                        viewModel.obtainEvent(VisitListEvent.NewVisit)
+                            viewModel.obtainEvent(VisitListEvent.NewVisit)
                         }) {
                         Icon(
                             painter = painterResource(R.drawable.calendar), ""
@@ -132,50 +134,89 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                     .fillMaxSize()
                     .background(ClassJournalTheme.colors.primaryBackground)
             ) {
-                LazyColumn(
-                    Modifier
-                        .fillMaxSize()
-                        .systemBarsPadding()
-                        .padding(bottom = paddingValues)
-                    //.background(ClassJournalTheme.colors.)
+                val items = DayOfWeek.entries
+                // Для эффекта бесконечности используем очень большое число
+                val initialPage = Int.MAX_VALUE / 2
+                val pagerState = rememberPagerState(
+                    initialPage = initialPage,
+                    pageCount = { Int.MAX_VALUE } // "Бесконечное" количество страниц
+                )
+                Row(Modifier.fillMaxWidth()) {
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(0.dp), // Элемент на весь экран
+                        pageSpacing = 0.dp
+                    ) { page ->
+                        // Вычисляем индекс реального элемента через остаток от деления
+                        val actualIndex = page % items.size
+                        Log.e("CLJR", "PageSize ${items.size}")
 
-                ) {
-                    items(0) {
-                        ItemVisitContent()
+                        // Сам элемент (карточка на весь экран)
+                        Box(
+                            modifier = Modifier
+                                .systemBarsPadding()
+                                .fillMaxWidth()
+                                .background(ClassJournalTheme.colors.secondaryBackground),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                modifier = Modifier .padding(top = 16.dp, bottom = 16.dp),
+                                text = items[actualIndex].name,
+                                style = ClassJournalTheme.typography.body,
+                                color = ClassJournalTheme.colors.tintColor
+                            )
+                        }
                     }
-
                 }
+
+//                LazyColumn(
+//                    Modifier
+//                        .fillMaxSize()
+//                        .systemBarsPadding()
+//                        .padding(bottom = paddingValues)
+//                    //.background(ClassJournalTheme.colors.)
+//
+//                ) {
+//                    items(0) {
+//                       // ItemVisitContent()
+//                    }
+//
+//                }
 
             }
         }
-    }
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModel.obtainEvent(VisitListEvent.ShowFAB(false))
         }
-    }
+        DisposableEffect(Unit) {
+            onDispose {
+                viewModel.obtainEvent(VisitListEvent.ShowFAB(false))
+            }
+        }
 
-    when (viewAction) {
-        VisitListAction.NewVisit -> {
-            navController.navigate(
-                VisitDetails(
-                    uid = UUID.randomUUID().toString()
-                )
-            )
-        }
-        is VisitListAction.EditVisit -> {
-            (viewAction as VisitListAction.EditVisit).visit.let { visit ->
+        when (viewAction) {
+            VisitListAction.NewVisit -> {
                 navController.navigate(
                     VisitDetails(
-                        uid = visit.uid,
-                        uidChild = visit.uidChild,
-                        fio = visit.fio,
-                        date = visit.data,
-                        price = visit.price
+                        uid = UUID.randomUUID().toString()
                     )
                 )
             }
-        }
+
+            is VisitListAction.EditVisit -> {
+                (viewAction as VisitListAction.EditVisit).visit.let { visit ->
+                    navController.navigate(
+                        VisitDetails(
+                            uid = visit.uid,
+                            uidChild = visit.uidChild,
+                            fio = visit.fio,
+                            date = visit.data,
+                            price = visit.price
+                        )
+                    )
+                }
+            }
+
             null -> {}
         }
-    }
+
+}

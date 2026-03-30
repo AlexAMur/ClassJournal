@@ -1,6 +1,5 @@
 package com.catshome.classJournal.PayList
 
-import android.util.Log
 import com.catshome.classJournal.domain.communs.SortEnum
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -19,7 +18,6 @@ class RoomPayStorage @Inject constructor(private val payDAO: PayDAO) {
     }
 
     suspend fun getAllPay(isDelete: Boolean, sortEnum: SortEnum): Flow<List<PayScreenEntity>>? {
-
         return payDAO.getFull(isDelete = isDelete,
             sortDate = if(getSortString(sortEnum)== PayScreenEntity::date_pay.name)
                 PayScreenEntity::date_pay.name else "" ,

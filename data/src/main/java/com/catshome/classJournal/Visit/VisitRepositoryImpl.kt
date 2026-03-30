@@ -17,7 +17,7 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
         isDelete: Boolean,
         sortEnum: SortEnum
     ): Flow<List<Visit>>? {
-        TODO("Not yet implemented")
+       return visitStorage.getVisitAll(sortEnum = sortEnum)
     }
 
     override suspend fun getPayByChild(

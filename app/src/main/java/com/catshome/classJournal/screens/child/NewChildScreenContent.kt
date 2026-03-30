@@ -177,15 +177,14 @@ fun ScreenContent(
                             if (it.isFocused)
                                 viewState.indexFocus = 2
                         },
-
                     keyboardOptions = KeyboardOptions.Default.merge(KeyboardOptions(keyboardType = KeyboardType.Phone)),
                     onValueChange = { phone -> viewModel.phoneChange(phone) },
                 )
-                if(viewState.isNewChild) {
+                if (viewState.isNewChild) {
                     TextField(
                         value = viewState.startSaldo.toString(),
                         label = stringResource(R.string.saldo_child),
-                        supportingText = if (viewState.isSaldoError)stringResource(R.string.error_invalid_value)
+                        supportingText = if (viewState.isSaldoError) stringResource(R.string.error_invalid_value)
                         else stringResource(R.string.saldo_child),
                         errorState = viewState.isSaldoError,
                         modifier = modifier
@@ -199,8 +198,6 @@ fun ScreenContent(
                         onValueChange = { saldo -> viewModel.saldoChange(saldo) },
                     )
                 }
-
-
                 TextField(
                     value = viewState.child.note,
                     label = stringResource(R.string.note_label),
@@ -277,7 +274,6 @@ fun ScreenContent(
                                             tint = ClassJournalTheme.colors.primaryText
                                         )
                                     }
-
                                 }
                             }
                         }

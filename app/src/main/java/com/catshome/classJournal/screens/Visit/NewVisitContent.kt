@@ -39,91 +39,94 @@ import kotlinx.datetime.DayOfWeek
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun NewVisitContent(viewModel: NewVisitViewModel,
-                    ){
+fun NewVisitContent(
+    viewModel: NewVisitViewModel,
+) {
     val viewState by viewModel.viewState().collectAsState()
-    val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
-        .value.innerPadding.calculateBottomPadding()
+    val bottomPadding =
+        LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding.
+                                    calculateBottomPadding()
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    bottom = if (WindowInsets.Companion.isImeVisible) 0.dp
-                    else bottomPadding
-                )
-                .imePadding()
-                .verticalScroll(state = rememberScrollState())
-        ) {
-            val modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-            SearchField(
-                text = viewState.searchText,
-                label = stringResource(R.string.search_label),
-                isError = viewState.isChildError,
-                errorMessage = viewState.ChildErrorMessage,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 0.dp)
-                    .focusRequester(viewModel.listTextField[0])
-                    .onFocusChanged {
-                        if (it.isFocused)
-                            viewState.indexFocus = 0
-                    },
-            ) { searchText ->
-                viewModel.obtainEvent(NewVisitEvent.Search(searchText = searchText))
-            }
-            viewState.listChild?.let { listChild ->
-                if (listChild.isNotEmpty()) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp)
-                            .offset(y = (-19).dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = ClassJournalTheme.colors.secondaryBackground,
-                            contentColor = ClassJournalTheme.colors.primaryText
-                        ),
-                        border = BorderStroke(2.dp, color = ClassJournalTheme.colors.tintColor),
-                        shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
-                    )
-                    {
-                        Row() {
-                            Text(
-                                text =
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                bottom = if (WindowInsets.Companion.isImeVisible) 0.dp
+                else bottomPadding
+            )
+            .imePadding()
+            .verticalScroll(state = rememberScrollState())
+    ) {
+//        val modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+//        SearchField(
+//            text = viewState.searchText,
+//            label = stringResource(R.string.search_label),
+//            isError = viewState.isChildError,
+//            errorMessage = viewState.ChildErrorMessage,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(start = 16.dp, end = 16.dp, bottom = 0.dp)
+//                .focusRequester(viewModel.listTextField[0])
+//                .onFocusChanged {
+//                    if (it.isFocused)
+//                        viewState.indexFocus = 0
+//                },
+//        ) { searchText ->
+//            viewModel.obtainEvent(NewVisitEvent.Search(searchText = searchText))
+//        }
+//        viewState.listChild?.let { listChild ->
+//            if (listChild.isNotEmpty()) {
+//                Card(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(start = 16.dp, end = 16.dp)
+//                        .offset(y = (-19).dp),
+//                    colors = CardDefaults.cardColors(
+//                        containerColor = ClassJournalTheme.colors.secondaryBackground,
+//                        contentColor = ClassJournalTheme.colors.primaryText
+//                    ),
+//                    border = BorderStroke(2.dp, color = ClassJournalTheme.colors.tintColor),
+//                    shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+//                )
+//                {
+//                    Row() {
+//                        Text(
+//                            text ="fdsa"
+//
+//                        )
+//                    }
+//                    LazyColumn(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(top = 12.dp, bottom = 8.dp)
+//                            .heightIn(min = 0.dp, max = 300.dp)
+//                    ) {
+//                        itemsIndexed(listChild) { index, child ->
+//                            ItemChildInSearch(
+//                                name = child.name,
+//                                surname = child.surname,
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(
+//                                        start = 16.dp,
+//                                        top = 4.dp,
+//                                        end = 16.dp,
+//                                        bottom = 8.dp
+//                                    ),
+//                                style = ClassJournalTheme.typography.body,
+//                                contentColor = ClassJournalTheme.colors.tintColor,
+//                                onClicked = {
+//
+//                                },
+//                            )
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
-                            )
-                        }
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 12.dp, bottom = 8.dp)
-                                .heightIn(min = 0.dp, max = 300.dp)
-                        ) {
-                            itemsIndexed(listChild) { index, child ->
-                                ItemChildInSearch(
-                                    name = child.name,
-                                    surname = child.surname,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(
-                                            start = 16.dp,
-                                            top = 4.dp,
-                                            end = 16.dp,
-                                            bottom = 8.dp
-                                        ),
-                                    style = ClassJournalTheme.typography.body,
-                                    contentColor = ClassJournalTheme.colors.tintColor,
-                                    onClicked = {
-
-                                    },
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    }
 
 }

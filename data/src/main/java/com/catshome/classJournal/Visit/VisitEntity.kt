@@ -31,7 +31,6 @@ data class VisitEntity(
     val dateVisit: Long,
     val priceVisit: Int
 )
-
 data class VisitScreenEntity(
     val uid: String,
     val uidChild: String,
@@ -47,12 +46,12 @@ fun Visit.mapToVisitEntity(): VisitEntity{
         dateVisit = this.data.toLocalDateTimeRu()?.toLong()?:0,
         priceVisit = this.price)
 }
-//class VisitScreenEntity{
-//    @Embedded
-//    var child: MiniChild? =null
-//    @Relation
-//        (parentColumn = "uid",
-//                entityColumn = "uidChild")
-//    var visit: List<VisitEntity> = ArrayList()
-//}
+fun VisitScreenEntity.mapToVisit(): Visit{
+    return Visit(
+        uid = this.uid,
+        uidChild = this.uidChild,
+        fio = "${this.Surname} ${this.Name}",
+        price = this.priceVisit
+    )
+}
 
