@@ -47,16 +47,17 @@ fun NewVisitContent(
         LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding.
                                     calculateBottomPadding()
 
-    Column(
+    Card(
         modifier = Modifier
             .fillMaxSize()
-            .padding(
-                bottom = if (WindowInsets.Companion.isImeVisible) 0.dp
-                else bottomPadding
-            )
-            .imePadding()
-            .verticalScroll(state = rememberScrollState())
+            .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = bottomPadding + 8.dp)
+            .verticalScroll(state = rememberScrollState()),
+        colors = CardDefaults.cardColors(ClassJournalTheme.colors.primaryBackground)
     ) {
+        Text(
+            text =  "Ввод расписания по одному",
+            color = ClassJournalTheme.colors.primaryText
+        )
 //        val modifier = Modifier
 //            .fillMaxWidth()
 //            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)

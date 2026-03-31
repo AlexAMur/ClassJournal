@@ -46,6 +46,7 @@ import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.theme.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.catshome.classJournal.resource.R
+import com.catshome.classJournal.screens.Visit.visitListScreen
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
@@ -161,7 +162,7 @@ class MainActivity : ComponentActivity() {
                             ItemScreen.VisitListScreen.name,
                             Icons.Sharp.DateRange,
                             Icons.Outlined.DateRange,
-                            GroupScreen(navController)
+                            visitListScreen(navController)
                         ), ItemBottomBar(
                             stringResource(R.string.item_bottom_client),
                             ItemScreen.MainScreen.name,

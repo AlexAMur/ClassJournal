@@ -134,41 +134,6 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                     .fillMaxSize()
                     .background(ClassJournalTheme.colors.primaryBackground)
             ) {
-                val items = DayOfWeek.entries
-                // Для эффекта бесконечности используем очень большое число
-                val initialPage = Int.MAX_VALUE / 2
-                val pagerState = rememberPagerState(
-                    initialPage = initialPage,
-                    pageCount = { Int.MAX_VALUE } // "Бесконечное" количество страниц
-                )
-                Row(Modifier.fillMaxWidth()) {
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier.fillMaxWidth(),
-                        contentPadding = PaddingValues(0.dp), // Элемент на весь экран
-                        pageSpacing = 0.dp
-                    ) { page ->
-                        // Вычисляем индекс реального элемента через остаток от деления
-                        val actualIndex = page % items.size
-                        Log.e("CLJR", "PageSize ${items.size}")
-
-                        // Сам элемент (карточка на весь экран)
-                        Box(
-                            modifier = Modifier
-                                .systemBarsPadding()
-                                .fillMaxWidth()
-                                .background(ClassJournalTheme.colors.secondaryBackground),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                modifier = Modifier .padding(top = 16.dp, bottom = 16.dp),
-                                text = items[actualIndex].name,
-                                style = ClassJournalTheme.typography.body,
-                                color = ClassJournalTheme.colors.tintColor
-                            )
-                        }
-                    }
-                }
 
 //                LazyColumn(
 //                    Modifier
@@ -183,40 +148,38 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
 //                    }
 //
 //                }
-
             }
         }
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.obtainEvent(VisitListEvent.ShowFAB(false))
         }
-        DisposableEffect(Unit) {
-            onDispose {
-                viewModel.obtainEvent(VisitListEvent.ShowFAB(false))
-            }
+    }
+    when (viewAction) {
+        VisitListAction.NewVisit -> {
+            viewModel.clearAction()
+            navController.navigate(
+                VisitDetails(
+                    uid = UUID.randomUUID().toString()
+                )
+            )
         }
 
-        when (viewAction) {
-            VisitListAction.NewVisit -> {
+        is VisitListAction.EditVisit -> {
+            (viewAction as VisitListAction.EditVisit).visit.let { visit ->
                 navController.navigate(
                     VisitDetails(
-                        uid = UUID.randomUUID().toString()
+                        uid = visit.uid,
+                        uidChild = visit.uidChild,
+                        fio = visit.fio,
+                        date = visit.data,
+                        price = visit.price
                     )
                 )
             }
-
-            is VisitListAction.EditVisit -> {
-                (viewAction as VisitListAction.EditVisit).visit.let { visit ->
-                    navController.navigate(
-                        VisitDetails(
-                            uid = visit.uid,
-                            uidChild = visit.uidChild,
-                            fio = visit.fio,
-                            date = visit.data,
-                            price = visit.price
-                        )
-                    )
-                }
-            }
-
-            null -> {}
         }
 
+        null -> {}
+    }
 }

@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -141,7 +142,7 @@ fun classJournalApp(
 //        }
 
         composable(route = ItemScreen.VisitListScreen.name) {
-            val viewModel = hiltViewModel<VisitListViewModel>()
+            val viewModel: VisitListViewModel by activity.viewModels()
             visitListScreen(navController, viewModel)
         }
 
@@ -182,8 +183,7 @@ fun classJournalApp(
             val visit = backStackEntry.toRoute<VisitDetails>()
             NewVisitScreen(
                 viewModel, visit,
-                onCancelClick = {},
-                onSaveClick = { }
+
             )
         }
     }

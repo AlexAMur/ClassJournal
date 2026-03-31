@@ -24,52 +24,54 @@ import com.catshome.classJournal.screens.ItemBottomBar
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun navigationScaffold(navController: NavHostController, bottomItems: List<ItemBottomBar>, context: Context, settingsBundle: SettingsBundle){
+fun navigationScaffold(
+    navController: NavHostController, bottomItems: List<ItemBottomBar>,
+    context: Context, settingsBundle: SettingsBundle
+) {
 
-Scaffold(
-bottomBar = {
-    FloatingActionButton(
-        modifier = Modifier
-            .padding(end = 16.dp)
-        //     .align(alignment = Alignment.End)
-        ,
+    Scaffold(
+        bottomBar = {
+            FloatingActionButton(
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                //     .align(alignment = Alignment.End)
+                ,
 
-        onClick = {  }) {
-        Icon(Icons.Sharp.Add, "")
-    }
-    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
-    NavigationBar(containerColor = ClassJournalTheme.colors.tintColor) {
-        bottomItems.forEachIndexed { index, screen ->
-            NavigationBarItem(
+                onClick = { }) {
+                Icon(Icons.Sharp.Add, "")
+            }
+            var selectedItem by rememberSaveable { mutableIntStateOf(0) }
+            NavigationBar(containerColor = ClassJournalTheme.colors.tintColor) {
+                bottomItems.forEachIndexed { index, screen ->
+                    NavigationBarItem(
 
-                label = { Text(screen.label) },
-                selected = selectedItem == index,
-                onClick = {
-                    selectedItem = index
-                    navController.navigate(screen.route)
-                },
-                icon = {
-                    if (selectedItem == index) Icon(
-                        screen.icon, "",
-                        tint = ClassJournalTheme.colors.primaryBackground
-                    )
-                    else Icon(
-                        screen.iconUnselect,
-                        "",
-                        tint = ClassJournalTheme.colors.secondaryBackground
+                        label = { Text(screen.label) },
+                        selected = selectedItem == index,
+                        onClick = {
+                            selectedItem = index
+                            navController.navigate(screen.route)
+                        },
+                        icon = {
+                            if (selectedItem == index) Icon(
+                                screen.icon, "",
+                                tint = ClassJournalTheme.colors.primaryBackground
+                            )
+                            else Icon(
+                                screen.iconUnselect,
+                                "",
+                                tint = ClassJournalTheme.colors.secondaryBackground
+                            )
+                        }
                     )
                 }
-            )
-        }
+            }
+
+        }) {// innerPadding ->
+        classJournalApp(
+            context as ComponentActivity,
+            navController,
+            settingsBundle
+        )    //Text(, Modifier.padding(innerPadding))
+
     }
-
-}) {// innerPadding ->
-
-    classJournalApp(
-        context as ComponentActivity,
-        navController,
-        settingsBundle
-    )    //Text(, Modifier.padding(innerPadding))
-
-}
 }

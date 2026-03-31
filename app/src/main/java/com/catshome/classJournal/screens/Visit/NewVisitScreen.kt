@@ -3,8 +3,10 @@ package com.catshome.classJournal
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -41,9 +45,13 @@ import com.catshome.classJournal.screens.PayList.ItemChildInSearch
 import com.catshome.classJournal.screens.Visit.NewVisitViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.resource.R
+import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.Visit.NewVisitAction
+import com.catshome.classJournal.screens.Visit.NewVisitByScheduler
 import com.catshome.classJournal.screens.Visit.NewVisitContent
 import com.catshome.classJournal.screens.Visit.NewVisitEvent
 import com.catshome.classJournal.screens.Visit.NewVisitState
@@ -53,66 +61,111 @@ import com.catshome.classJournal.screens.Visit.NewVisitState
 fun NewVisitScreen(
     viewModel: NewVisitViewModel = viewModel(),
     details: VisitDetails? = null,
-    onCancelClick: (() -> Unit)?,
-    onSaveClick: (() -> Unit)?
 ) {
+    val outerNavigation = localNavHost.current
     val viewAction by viewModel.viewActions().collectAsState(null)
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val pageName = listOf("По расписанию", "Свободное")
+    val initialPage = 0
+    val pagerState = rememberPagerState(
+        initialPage = initialPage,
+        pageCount = { pageName.size }
+    )
+
     Surface(
         Modifier
             .fillMaxSize(),
         color = ClassJournalTheme.colors.primaryBackground
     ) {
-        Card(
-            Modifier
-                .fillMaxWidth()
-                .systemBarsPadding(),
-            colors = CardDefaults.cardColors(
-                ClassJournalTheme.colors.secondaryBackground
-            )
-        ) {
-            Column(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(ClassJournalTheme.colors.primaryBackground),
+            verticalArrangement = Arrangement.Top
+        )
+        {
+            Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(ClassJournalTheme.colors.primaryBackground)
-            )
-            {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextButton(
+                    onClick =
+                        {
+                            viewModel.obtainEvent(NewVisitEvent.CancelClicked)
+                        }
                 ) {
-                    TextButton(
-                        onClick =
-                            {
-                                onCancelClick?.invoke()
-                            }
-                    ) {
-                        Icon(
-                            Icons.Default.Close, "", tint = ClassJournalTheme.colors.tintColor
-                        )
-                    }
-                    Text(
-                        stringResource(R.string.new_visit_dialog_headline),
-                        color = ClassJournalTheme.colors.primaryText,
-                        style = ClassJournalTheme.typography.caption
+                    Icon(
+                        Icons.Default.Close, "", tint = ClassJournalTheme.colors.tintColor
                     )
-                    TextButton(onClick = {
-                        onSaveClick?.invoke()
-                    }
+                }
+                Text(
+                    stringResource(R.string.new_visit_dialog_headline),
+                    color = ClassJournalTheme.colors.primaryText,
+                    style = ClassJournalTheme.typography.caption
+                )
+                TextButton(onClick = {
+                    viewModel.obtainEvent(NewVisitEvent.SaveClicked)
+                }
+                ) {
+                    Text(
+                        stringResource(R.string.save_button),
+                        color = ClassJournalTheme.colors.tintColor
+                    )
+                }
+            }
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(all = 0.dp),
+                pageSpacing = 0.dp,
+                verticalAlignment = Alignment.Top,
+
+                ) { page ->
+                // Вычисляем индекс реального элемента через остаток от деления
+                // Сам элемент (карточка на весь экран)
+                Card(
+                    modifier = Modifier
+                        //.padding( 16.dp)
+                        .fillMaxWidth()
+                        .background(ClassJournalTheme.colors.secondaryBackground),
+                    shape = ClassJournalTheme.shapes.cornersStyle,
+                    colors = CardDefaults.cardColors(ClassJournalTheme.colors.tintColor)
+
+                ) {
+                    Column(
+                        Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
-                            stringResource(R.string.save_button),
+                            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+                            text = pageName[page],
+                            style = ClassJournalTheme.typography.body,
                             color = ClassJournalTheme.colors.tintColor
                         )
+                        if (page == 1)
+                            NewVisitContent(viewModel)
+                        else
+                            NewVisitByScheduler(viewModel)
                     }
                 }
-                NewVisitContent(viewModel)
+                // }
             }
         }
         when (viewAction) {
-            NewVisitAction.CloseScreen -> TODO("TODO Close window implemented create")
+            NewVisitAction.CloseScreen -> {
+                keyboardController?.hide()
+                viewModel.clearAction()
+                outerNavigation.navigate(route = ItemScreen.VisitListScreen.name)
+                {
+                    popUpTo(ItemScreen.VisitListScreen.name) {
+                        inclusive = true
+                    }
+                }
+            }
             null -> {}
         }
     }
