@@ -52,12 +52,25 @@ fun NewVisitContent(
             .fillMaxSize()
             .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = bottomPadding + 8.dp)
             .verticalScroll(state = rememberScrollState()),
-        colors = CardDefaults.cardColors(ClassJournalTheme.colors.primaryBackground)
+        colors = CardDefaults.cardColors(ClassJournalTheme.colors.primaryBackground),
+        border = BorderStroke(width = 2.dp, ClassJournalTheme.colors.tintColor )
+
     ) {
-        Text(
-            text =  "Ввод расписания по одному",
-            color = ClassJournalTheme.colors.primaryText
-        )
+        Column(Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .background(ClassJournalTheme.colors.primaryBackground)
+        ) {
+            ItemVisitContent(
+                fio = "FIO",
+                price = "0",
+                onValueChange = {},
+                errorState = false,
+                isChecked = false
+            ) {
+
+            }
+        }
 //        val modifier = Modifier
 //            .fillMaxWidth()
 //            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)

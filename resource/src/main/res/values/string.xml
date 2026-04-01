@@ -64,6 +64,7 @@
     <string name="begin_date">Дата начала</string>
     <string name="end_date">Дата окончания</string>
     <string name="note_label">Note.</string>
+    <string name="visit_price">Цена</string>
 
     //Набор кнопок для фильтрации
     <string name="filter_day">День</string>

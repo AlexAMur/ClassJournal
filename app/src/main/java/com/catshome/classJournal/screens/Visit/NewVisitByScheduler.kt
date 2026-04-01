@@ -1,6 +1,8 @@
 package com.catshome.classJournal.screens.Visit
 
+import android.R
 import android.net.TetheringManager
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -12,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -22,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.room.IMultiInstanceInvalidationCallback
@@ -49,10 +54,11 @@ fun NewVisitByScheduler(
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = bottomPadding + 8.dp)
-            .verticalScroll(state = rememberScrollState()),
-        colors = CardDefaults.cardColors(ClassJournalTheme.colors.primaryBackground)
+            .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = bottomPadding + 8.dp),
+            //.verticalScroll(state = rememberScrollState()),
+        colors = CardDefaults.cardColors(ClassJournalTheme.colors.disableContentColor)
     ) {
+
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxWidth(),
@@ -60,23 +66,60 @@ fun NewVisitByScheduler(
             pageSpacing = 0.dp
         ) { index ->
             val pageIndex = index % items.size
-            Row(
-                Modifier.fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 16.dp),
-                horizontalArrangement = Arrangement.Center
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .background(ClassJournalTheme.colors.controlColor)
+                    .padding(  4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(ClassJournalTheme.colors.tintColor)
+                        .padding(start = 16.dp, bottom = 16.dp, end = 16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
 
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = items[pageIndex].nameRu,
-                    color = ClassJournalTheme.colors.primaryText,
-                    fontSize = ClassJournalTheme.typography.caption.fontSize,
-                )
+                ) {
+                    Text(
+                        // modifier = Modifier.fillMaxWidth(),
+                        text = items[pageIndex].nameRu,
+                        color = ClassJournalTheme.colors.primaryText,
+                        fontSize = ClassJournalTheme.typography.toolbar.fontSize,
+                    )
+                }
+                val lesson = listOf("item 1", "item 2", "item 3")
+                LazyColumn(
+                    Modifier
+                        .fillMaxSize()
+                        .background(ClassJournalTheme.colors.primaryBackground)
+                        .padding(8.dp)
+                ) {
+                    items(lesson) {
+                        Card(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            colors = CardDefaults.cardColors(
+                                ClassJournalTheme.colors.secondaryBackground
+                            )
+                            )
+                        {
+                            Text(
+                                modifier = Modifier.padding(8.dp),
+                                text =  it,
+                                color = ClassJournalTheme.colors.primaryText
+                                )
+                        }
+                    }
+                }
+//                Text(
+//                    "Ввод посещения по расписанию.",
+//                    color = ClassJournalTheme.colors.primaryText
+//                )
             }
-            Text(
-                "Ввод посещения по расписанию.",
-                color = ClassJournalTheme.colors.primaryText
-            )
         }
     }
 }

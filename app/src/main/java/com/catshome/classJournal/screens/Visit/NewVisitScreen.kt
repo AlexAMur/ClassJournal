@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -71,7 +72,6 @@ fun NewVisitScreen(
         initialPage = initialPage,
         pageCount = { pageName.size }
     )
-
     Surface(
         Modifier
             .fillMaxSize(),
@@ -126,26 +126,43 @@ fun NewVisitScreen(
                 ) { page ->
                 // Вычисляем индекс реального элемента через остаток от деления
                 // Сам элемент (карточка на весь экран)
+
                 Card(
                     modifier = Modifier
                         //.padding( 16.dp)
                         .fillMaxWidth()
                         .background(ClassJournalTheme.colors.secondaryBackground),
                     shape = ClassJournalTheme.shapes.cornersStyle,
-                    colors = CardDefaults.cardColors(ClassJournalTheme.colors.tintColor)
+                    colors = CardDefaults.cardColors(ClassJournalTheme.colors.secondaryBackground)
 
                 ) {
+
                     Column(
                         Modifier
                             .fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text(
-                            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
-                            text = pageName[page],
-                            style = ClassJournalTheme.typography.body,
-                            color = ClassJournalTheme.colors.tintColor
-                        )
+                        Card(
+                            Modifier
+                                .fillMaxWidth(0.7f)
+                            ,
+                            shape = ClassJournalTheme.shapes.cornersStyle,
+                            colors = CardDefaults.cardColors(
+                                ClassJournalTheme.colors.controlColor
+                            )
+                        ) {
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+                                    text = pageName[page],
+                                    style = ClassJournalTheme.typography.body,
+                                    color = ClassJournalTheme.colors.tintColor
+                                )
+                            }
+                        }
                         if (page == 1)
                             NewVisitContent(viewModel)
                         else
@@ -166,6 +183,7 @@ fun NewVisitScreen(
                     }
                 }
             }
+
             null -> {}
         }
     }

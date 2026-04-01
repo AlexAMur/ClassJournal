@@ -69,8 +69,6 @@ fun newPayScreen(
                     viewModel.obtainEvent(NewPayEvent.ResetState)
             }
         }
-
-
         PayScreenContent(
             viewState,
             viewModel,
