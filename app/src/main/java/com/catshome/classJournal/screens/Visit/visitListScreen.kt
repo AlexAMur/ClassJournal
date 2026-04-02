@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -30,12 +31,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.communs.ItemFAB
+import com.catshome.classJournal.communs.TextField
 import com.catshome.classJournal.communs.fabMenu
 import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.resource.R
@@ -107,25 +111,13 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                             ItemFAB(
                                 containerColor = ClassJournalTheme.colors.tintColor,
                                 contentColor = ClassJournalTheme.colors.secondaryBackground,
-                                icon = painterResource(R.drawable.rusrub_48),//R.drawable.pay),
+                                icon =   painterResource(R.drawable.calendar_today_24),
                                 onClick = {
                                     viewModel.obtainEvent(VisitListEvent.NewVisit)
                                 }
                             )),
                         fabVisible = viewState.isShowFAB
                     )
-                    FloatingActionButton(
-                        modifier = Modifier.padding(
-                            bottom = paddingValues + 16.dp,
-                            end = 16.dp
-                        ),
-                        onClick = {
-                            viewModel.obtainEvent(VisitListEvent.NewVisit)
-                        }) {
-                        Icon(
-                            painter = painterResource(R.drawable.calendar), ""
-                        )
-                    }
                 }
             }
         ) { padValues ->
@@ -134,7 +126,21 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                     .fillMaxSize()
                     .background(ClassJournalTheme.colors.primaryBackground)
             ) {
-
+                TextField(
+                    modifier = Modifier,
+                    value = "",
+                    label = stringResource(R.string.visit_price),
+                    supportingText = null,
+                    onValueChange = {},
+                    trailingIcon = null,
+                    minLines = 1,
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.merge(
+                        KeyboardOptions(keyboardType = KeyboardType.Number)
+                    ),
+                    errorState = true,
+                    readOnly = false
+                )
 //                LazyColumn(
 //                    Modifier
 //                        .fillMaxSize()

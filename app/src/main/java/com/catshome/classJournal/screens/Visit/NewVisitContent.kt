@@ -2,40 +2,29 @@ package com.catshome.classJournal.screens.Visit
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.isImeVisible
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.resource.R
-import com.catshome.classJournal.communs.SearchField
-import com.catshome.classJournal.navigate.VisitDetails
-import com.catshome.classJournal.screens.PayList.ItemChildInSearch
-import kotlinx.datetime.DayOfWeek
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -44,33 +33,50 @@ fun NewVisitContent(
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val bottomPadding =
-        LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding.
-                                    calculateBottomPadding()
+        LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding.calculateBottomPadding()
 
-    Card(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = bottomPadding + 8.dp)
-            .verticalScroll(state = rememberScrollState()),
-        colors = CardDefaults.cardColors(ClassJournalTheme.colors.primaryBackground),
-        border = BorderStroke(width = 2.dp, ClassJournalTheme.colors.tintColor )
-
-    ) {
-        Column(Modifier
+//    Card(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = bottomPadding + 8.dp)
+//            .verticalScroll(state = rememberScrollState()),
+//        colors = CardDefaults.cardColors(ClassJournalTheme.colors.primaryBackground),
+//        border = BorderStroke(width = 2.dp, ClassJournalTheme.colors.tintColor )
+//
+//    ) {
+    Column(
+        Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .background(ClassJournalTheme.colors.primaryBackground)
+    ) {
+        ItemVisitContent(
+            fio = "FIO",
+            price = "0",
+            onValueChange = {},
+            errorState = false,
+            isChecked = false
         ) {
-            ItemVisitContent(
-                fio = "FIO",
-                price = "0",
-                onValueChange = {},
-                errorState = false,
-                isChecked = false
-            ) {
 
-            }
         }
+    }
+    Row(
+        Modifier.padding( end =16.dp)
+        .fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ) {
+    FloatingActionButton(
+        modifier = Modifier,
+        containerColor = ClassJournalTheme.colors.tintColor,
+        onClick = {
+            // viewModel.obtainEvent(VisitListEvent.NewVisit)
+        }) {
+        Icon(
+            painter = painterResource(R.drawable.add_24), "",
+        )
+    }
+
+    }
 //        val modifier = Modifier
 //            .fillMaxWidth()
 //            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
@@ -141,6 +147,6 @@ fun NewVisitContent(
 //            }
 //        }
 
-    }
+//}
 
 }

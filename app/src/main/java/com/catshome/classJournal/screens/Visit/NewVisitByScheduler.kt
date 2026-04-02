@@ -2,6 +2,7 @@ package com.catshome.classJournal.screens.Visit
 
 import android.R
 import android.net.TetheringManager
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -54,9 +55,14 @@ fun NewVisitByScheduler(
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = bottomPadding + 8.dp),
-            //.verticalScroll(state = rememberScrollState()),
-        colors = CardDefaults.cardColors(ClassJournalTheme.colors.disableContentColor)
+            .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 8.dp),
+        border = BorderStroke
+            (
+            width = 2.dp,
+            color = ClassJournalTheme.colors.disableColor
+        )
+        //.verticalScroll(state = rememberScrollState()),
+        //colors = CardDefaults.cardColors(ClassJournalTheme.colors.disableContentColor)
     ) {
 
         HorizontalPager(
@@ -69,8 +75,8 @@ fun NewVisitByScheduler(
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .background(ClassJournalTheme.colors.controlColor)
-                    .padding(  4.dp),
+                    //.background(ClassJournalTheme.colors.controlColor)
+                    .padding(4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -105,16 +111,17 @@ fun NewVisitByScheduler(
                             colors = CardDefaults.cardColors(
                                 ClassJournalTheme.colors.secondaryBackground
                             )
-                            )
+                        )
                         {
                             Text(
                                 modifier = Modifier.padding(8.dp),
-                                text =  it,
+                                text = it,
                                 color = ClassJournalTheme.colors.primaryText
-                                )
+                            )
                         }
                     }
                 }
+
 //                Text(
 //                    "Ввод посещения по расписанию.",
 //                    color = ClassJournalTheme.colors.primaryText
