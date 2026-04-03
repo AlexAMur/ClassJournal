@@ -1,9 +1,12 @@
 package com.catshome.classJournal.domain.Visit
 
+import com.catshome.classJournal.domain.Scheduler.Scheduler
+import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.SortEnum
 import kotlinx.coroutines.flow.Flow
 
 interface VisitRepository {
+    suspend fun getSchedulerByDay(dayOfWeek: DayOfWeek): Flow<List<Scheduler>>?
     suspend fun getAllVisit(isDelete: Boolean, sortEnum: SortEnum): Flow<List<Visit>>?
     suspend fun getPayByChild(uidChild: String, sortEnum: SortEnum): Flow<List<Visit>>?
     suspend fun getPayByChildWithPeriod(

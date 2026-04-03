@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -25,6 +26,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -72,6 +74,11 @@ fun NewVisitByScheduler(
             pageSpacing = 0.dp
         ) { index ->
             val pageIndex = index % items.size
+            LaunchedEffect(pageIndex) {
+                viewModel.obtainEvent(
+                    NewVisitEvent.getScheduler(dayOfWeek = DayOfWeek.entries[pageIndex])
+                )
+            }
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -96,36 +103,33 @@ fun NewVisitByScheduler(
                         fontSize = ClassJournalTheme.typography.toolbar.fontSize,
                     )
                 }
-                val lesson = listOf("item 1", "item 2", "item 3")
+//                val lesson = listOf("item 1", "item 2", "item 3")
                 LazyColumn(
                     Modifier
                         .fillMaxSize()
                         .background(ClassJournalTheme.colors.primaryBackground)
                         .padding(8.dp)
                 ) {
-                    items(lesson) {
-                        Card(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            colors = CardDefaults.cardColors(
-                                ClassJournalTheme.colors.secondaryBackground
+                    viewState.scheduler?.let { listScheduler ->
+                        itemsIndexed(listScheduler) { index, scheduler ->
+                            Card(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                colors = CardDefaults.cardColors(
+                                    ClassJournalTheme.colors.secondaryBackground
+                                )
                             )
-                        )
-                        {
-                            Text(
-                                modifier = Modifier.padding(8.dp),
-                                text = it,
-                                color = ClassJournalTheme.colors.primaryText
-                            )
+                            {
+                                Text(
+                                    modifier = Modifier.padding(8.dp),
+                                    text = scheduler.name.toString(),
+                                    color = ClassJournalTheme.colors.primaryText
+                                )
+                            }
                         }
                     }
                 }
-
-//                Text(
-//                    "Ввод посещения по расписанию.",
-//                    color = ClassJournalTheme.colors.primaryText
-//                )
             }
         }
     }

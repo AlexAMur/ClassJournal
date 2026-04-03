@@ -140,8 +140,6 @@ fun PayListContent(
                 Modifier
                     .background(ClassJournalTheme.colors.primaryBackground)
             ) {
-
-
                 Card(
                     Modifier
                         .background(ClassJournalTheme.colors.primaryBackground)

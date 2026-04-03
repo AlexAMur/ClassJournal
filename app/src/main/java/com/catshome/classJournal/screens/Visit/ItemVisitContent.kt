@@ -50,9 +50,6 @@ fun ItemVisitContent(
                     trailingIcon = null,
                     minLines = 1,
                     singleLine = true,
-//                    keyboardOptions = KeyboardOptions.Default.merge(
-//                        KeyboardOptions(keyboardType = KeyboardType.Number)
-//                    ),
                     errorState = errorState,
                     readOnly = false
                 )

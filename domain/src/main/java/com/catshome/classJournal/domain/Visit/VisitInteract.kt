@@ -5,6 +5,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Child.MiniChild
+import com.catshome.classJournal.domain.Scheduler.Scheduler
+import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.SortEnum
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
@@ -14,11 +16,12 @@ import javax.inject.Inject
 
 class VisitInteract @Inject constructor(
     private val childRepository: ChildRepository,
-    private val visitRepository: VisitRepository
+    private val visitRepository: VisitRepository,
 ) {
     fun searchChild(searchText: String): Flow<List<MiniChild>?> {
         return childRepository.getChildByName(searchText)
     }
+
 
  @RequiresApi(Build.VERSION_CODES.O)
  suspend fun saveVisit(listVisit: List<Visit>) {
@@ -37,5 +40,8 @@ class VisitInteract @Inject constructor(
 
     suspend fun getVisitAll(): Flow<List<Visit>>?{
        return visitRepository.getAllVisit(isDelete = false, SortEnum.Surname)
+    }
+    suspend fun getScheduler(dayOfWeek: DayOfWeek): Flow<List<Scheduler>>?{
+       return visitRepository.getSchedulerByDay(dayOfWeek)
     }
 }

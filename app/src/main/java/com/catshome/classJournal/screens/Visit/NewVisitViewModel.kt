@@ -8,6 +8,9 @@ import com.catshome.classJournal.domain.Visit.VisitInteract
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,7 +36,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
         }
         if (throwable.message?.contains("нулевым или отрицательным.") == true) {
             viewState = viewState.copy(
-                isPriceError =  true,
+                isPriceError = true,
                 errorMessage = throwable.message ?: "Error!!!"
             )
             return@CoroutineExceptionHandler
@@ -82,7 +85,15 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                     visitInteract.saveVisit(viewState.listVisit)
                 }
             }
+
             is NewVisitEvent.Search -> {}
+            is NewVisitEvent.getScheduler -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    visitInteract.getScheduler(viewEvent.dayOfWeek)?.collect{
+                  viewState = viewState.copy( scheduler =  it)
+                    }
+                }
+            }
         }
     }
 }
