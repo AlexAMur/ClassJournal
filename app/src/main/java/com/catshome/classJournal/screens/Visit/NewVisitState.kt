@@ -1,7 +1,7 @@
 package com.catshome.classJournal.screens.Visit
 
+import android.R
 import com.catshome.classJournal.domain.Child.MiniChild
-import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.Visit.Visit
 
 data class NewVisitState(
@@ -19,7 +19,7 @@ data class NewVisitState(
     var errorMessage: String = "",
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
-    val scheduler: List<Scheduler>? = null,
-    val listVisit: List<Visit>
+    val scheduler: Map<Int, List<Visit>>? = null,
+//    val listVisit: List<Visit>
 
 )

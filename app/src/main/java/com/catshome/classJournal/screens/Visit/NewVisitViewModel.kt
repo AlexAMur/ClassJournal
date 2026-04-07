@@ -1,6 +1,8 @@
 package com.catshome.classJournal.screens.Visit
 
+import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
@@ -13,13 +15,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.map
 
 
 @HiltViewModel
 class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInteract) :
     BaseViewModel<NewVisitState, NewVisitAction, NewVisitEvent>(
         installState = NewVisitState(
-            listVisit = emptyList()
+            //listVisit = emptyList()
         )
     ) {
     private val exceptionHandlerVisit = CoroutineExceptionHandler { coroutineContext, throwable ->
@@ -78,19 +81,23 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
         when (viewEvent) {
             NewVisitEvent.CancelClicked -> viewAction = NewVisitAction.CloseScreen
             NewVisitEvent.SaveClicked -> {
-                if (viewState.listVisit.isEmpty()) {
+                if (viewState.scheduler.isNullOrEmpty()) {
+                    Log.e("CLJR", "Нет данных для сохранения ${viewState.scheduler}")
                     return
                 }
                 viewModelScope.launch(context = exceptionHandlerVisit) {
-                    visitInteract.saveVisit(viewState.listVisit)
+                    viewState.scheduler?.let {scheduler->
+                      //  visitInteract.saveVisit(scheduler)
+                    }
                 }
             }
 
             is NewVisitEvent.Search -> {}
             is NewVisitEvent.getScheduler -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    visitInteract.getScheduler(viewEvent.dayOfWeek)?.collect{
-                  viewState = viewState.copy( scheduler =  it)
+                    visitInteract.getScheduler(viewEvent.dayOfWeek)?.collect {listVisit->
+                        Log.e("CLJR","Lisit visit  $listVisit")
+                        viewState = viewState.copy(scheduler =listVisit.groupBy { it.startLesson})
                     }
                 }
             }

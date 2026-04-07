@@ -27,14 +27,12 @@ class SchedulerRepositoryImpl(val storage: SchedulerRoomStorage): SchedulerRepos
         }
         return storage.getSchedulers()
     }
-
     override suspend fun getClientsByLesson(
         dayOfWeek: DayOfWeek,
         startTime: Int
     ): Flow<List<Scheduler>>? {
       return storage.getClientByLesson(dayOfWeek.ordinal, startTime.toLong())
     }
-
     override suspend fun getClientList(name:String, dayOfWeek: DayOfWeek, startTimeLesson: Int): List<ClientScheduler>{
       return  storage.getClients(name, dayOfWeek, startLesson = startTimeLesson)
     }
@@ -56,11 +54,9 @@ class SchedulerRepositoryImpl(val storage: SchedulerRoomStorage): SchedulerRepos
            duration = duration
        )
     }
-
     //Проверка вренени для нового занятия, что-бы не было пересечения
     override fun checkTimeLesson(
         dayOfWeek: DayOfWeek,
-
         startTime: Int,
         duration: Int
     ): Boolean {

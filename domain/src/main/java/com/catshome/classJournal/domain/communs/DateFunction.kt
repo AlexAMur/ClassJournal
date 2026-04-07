@@ -108,3 +108,6 @@ fun Long.toLocalDateTimeRuString(timeZone: TimeZone = TimeZone.currentSystemDefa
 fun Instant.toDateTimeRuString(timeZone: TimeZone = TimeZone.currentSystemDefault(),formatDate: FormatDate = FormatDate.DateTime): String? {
     return this.toLocalDateTime(timeZone).toDateTimeRuString(formatDate)
 }
+//fun Int.toTimeRu():String?{
+//   if (this.th)
+//}

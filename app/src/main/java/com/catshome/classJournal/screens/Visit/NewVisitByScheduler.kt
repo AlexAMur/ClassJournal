@@ -36,6 +36,8 @@ import androidx.room.IMultiInstanceInvalidationCallback
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.domain.communs.DayOfWeek
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.toTimeString
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -111,21 +113,37 @@ fun NewVisitByScheduler(
                         .padding(8.dp)
                 ) {
                     viewState.scheduler?.let { listScheduler ->
-                        itemsIndexed(listScheduler) { index, scheduler ->
-                            Card(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                colors = CardDefaults.cardColors(
-                                    ClassJournalTheme.colors.secondaryBackground
+                        listScheduler.forEach { keyVisit, listVisit ->
+                            stickyHeader {
+                                ItemVisitHeader(
+                                        keyVisit.toTimeString()
                                 )
-                            )
-                            {
-                                Text(
-                                    modifier = Modifier.padding(8.dp),
-                                    text = scheduler.name.toString(),
-                                    color = ClassJournalTheme.colors.primaryText
+                            }
+                            listVisit.groupBy { it.groupName }.forEach { key, visits ->
+                                stickyHeader {
+                                    Text(
+                                        text =  key?:"Без группы",
+                                        modifier = Modifier,
+                                        color= ClassJournalTheme.colors.primaryText,
+                                    )
+                                }
+                            itemsIndexed(listVisit) { index, scheduler ->
+                                Card(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    colors = CardDefaults.cardColors(
+                                        ClassJournalTheme.colors.secondaryBackground
+                                    )
                                 )
+                                {
+                                    Text(
+                                        modifier = Modifier.padding(8.dp),
+                                        text = scheduler.fio.toString(),
+                                        color = ClassJournalTheme.colors.primaryText
+                                    )
+                                }
+                            }
                             }
                         }
                     }

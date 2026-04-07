@@ -8,7 +8,10 @@ import androidx.room.PrimaryKey
 import com.catshome.classJournal.child.ChildEntity
 import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLong
+import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Entity(
         tableName = "visits",
@@ -41,17 +44,24 @@ data class VisitScreenEntity(
 )
 
 fun Visit.mapToVisitEntity(): VisitEntity{
-    return VisitEntity(uid = this.uid,
-        uidChild = this.uidChild,
-        dateVisit = this.data.toLocalDateTimeRu()?.toLong()?:0,
-        priceVisit = this.price)
+    if (this.data== null)
+        throw IllegalArgumentException("Не допустимое значение visit date ${ this.data}")
+    if (this.price == null)
+        throw IllegalArgumentException("Не допустимое значение visit.price ${ this.price}")
+    return VisitEntity(uid = this.uid?: UUID.randomUUID().toString(),
+        uidChild = this.uidChild.toString(),
+        dateVisit = this.data?.toLocalDateTimeRu()?.toLong()?:0,
+        priceVisit = this.price?:0)
 }
-fun VisitScreenEntity.mapToVisit(): Visit{
+fun VisitScreenEntity.mapToVisit(): Visit {
     return Visit(
         uid = this.uid,
         uidChild = this.uidChild,
         fio = "${this.Surname} ${this.Name}",
-        price = this.priceVisit
+        price = this.priceVisit,
+        startLesson = 0,
+        data = this.dateVisit.toLocalDateTimeRuString().toString(),
+        check = false
     )
 }
 

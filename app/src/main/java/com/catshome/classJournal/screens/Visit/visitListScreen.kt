@@ -176,7 +176,7 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
             (viewAction as VisitListAction.EditVisit).visit.let { visit ->
                 navController.navigate(
                     VisitDetails(
-                        uid = visit.uid,
+                        uid = visit.uid!!,
                         uidChild = visit.uidChild,
                         fio = visit.fio,
                         date = visit.data,
@@ -185,7 +185,6 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                 )
             }
         }
-
         null -> {}
     }
 }

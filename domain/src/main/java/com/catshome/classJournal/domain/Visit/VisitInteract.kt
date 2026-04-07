@@ -5,7 +5,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Child.MiniChild
-import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.SortEnum
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
@@ -22,26 +21,26 @@ class VisitInteract @Inject constructor(
         return childRepository.getChildByName(searchText)
     }
 
-
- @RequiresApi(Build.VERSION_CODES.O)
- suspend fun saveVisit(listVisit: List<Visit>) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun saveVisit(listVisit: List<Visit>) {
         listVisit.forEach { visit ->
-            if (visit.uid.isEmpty())
+            if (visit.uid.isNullOrEmpty())
                 throw kotlin.IllegalArgumentException("Не указан UID")
-            if (visit.uidChild.isEmpty())
+            if (visit.uidChild.isNullOrEmpty())
                 throw kotlin.IllegalArgumentException("Не указан UID ребенка")
-            if (visit.data.isEmpty() || (visit.data.toLocalDateTimeRu()?.toLong() ?: 0) > 0)
+            if (visit.data.isNullOrEmpty() || (visit.data.toLocalDateTimeRu()?.toLong() ?: 0) > 0)
                 throw kotlin.IllegalArgumentException("Нет или не корректная дата.")
-            if (visit.price <= 0)
+            if (visit.price == null || visit.price <= 0)
                 throw IllegalArgumentException("Платеж не может быть нулевым или отрицательным.")
         }
-     visitRepository.insetVisit(listVisit)
+        visitRepository.insetVisit(listVisit)
     }
 
-    suspend fun getVisitAll(): Flow<List<Visit>>?{
-       return visitRepository.getAllVisit(isDelete = false, SortEnum.Surname)
+    suspend fun getVisitAll(): Flow<List<Visit>>? {
+        return visitRepository.getAllVisit(isDelete = false, SortEnum.Surname)
     }
-    suspend fun getScheduler(dayOfWeek: DayOfWeek): Flow<List<Scheduler>>?{
-       return visitRepository.getSchedulerByDay(dayOfWeek)
+
+    fun getScheduler(dayOfWeek: DayOfWeek): Flow<List<Visit>>? {
+        return visitRepository.getSchedulerByDay(dayOfWeek)
     }
 }

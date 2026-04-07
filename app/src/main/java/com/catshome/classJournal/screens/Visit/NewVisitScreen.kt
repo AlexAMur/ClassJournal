@@ -85,9 +85,6 @@ fun NewVisitScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         )
         {
-//            LaunchedEffect(pageOffset) {
-//
-//            }
             Card(
                 modifier = Modifier
                     .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = bottomPadding + 8.dp)

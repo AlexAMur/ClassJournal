@@ -8,6 +8,5 @@ data class VisitDetails(
     val uidChild: String?= null,
     val fio: String? =null,
     val date: String? = null,
-    val price: Int=0
-
+    val price: Int? = null
 )

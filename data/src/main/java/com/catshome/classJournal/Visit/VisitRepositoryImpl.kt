@@ -1,21 +1,15 @@
 package com.catshome.classJournal.Visit
 
-import androidx.lifecycle.LifecycleCoroutineScope
-import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitRepository
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.SortEnum
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-
 class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage): VisitRepository {
-    override suspend fun getSchedulerByDay(dayOfWeek: DayOfWeek): Flow<List<Scheduler>>? {
+    override  fun getSchedulerByDay(dayOfWeek: DayOfWeek): Flow<List<Visit>>? {
         return visitStorage.getScheduler(dayOfWeek = dayOfWeek)
     }
 
@@ -26,14 +20,14 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
        return visitStorage.getVisitAll(sortEnum = sortEnum)
     }
 
-    override suspend fun getPayByChild(
+    override suspend fun getVisitByChild(
         uidChild: String,
         sortEnum: SortEnum
     ): Flow<List<Visit>>? {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPayByChildWithPeriod(
+    override suspend fun getVisitByChildWithPeriod(
         uidChild: String,
         begin: Long,
         end: Long,
@@ -42,7 +36,7 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPayByPeriod(
+    override suspend fun getVisitByPeriod(
         begin: Long,
         end: Long,
         sortEnum: SortEnum

@@ -42,9 +42,7 @@ interface SchedulerDAO{
                               startLesson: Long,
                               list: List<SchedulerEntity>)
     {
-
         insert(list)
-
     }
     @Insert(onConflict = ABORT)
     suspend fun insert(schedulerEntity: List<SchedulerEntity>)
@@ -67,18 +65,22 @@ interface SchedulerDAO{
                 " on  uidGroup = g.uid group by s.uid ORDER BY dayOfWeek ASC, 'Surname', 'Name' ASC"
     )
     fun getFull(): Flow<List<SchedulerScreenEntity>>?
-    @Query(
-        "Select s.uid , s.uidChild,s.uidGroup, dayOfWeek,startLesson, duration ," +
-                " c.child_name as name, c.child_surname as Surname ,group_name as groupName from scheduler s join child c , 'groups' g" +
-                " where uidChild =c.uid and uidGroup = g.uid and dayOfWeek = :dayOfWeek  ORDER BY dayOfWeek ASC, 'Surname', 'Name' ASC"
-    )
-    fun getSchedulerByDay(dayOfWeek: Int): Flow<List<SchedulerScreenEntity>>?
+    //не работает вроде
     @Query(
         "Select s.uid , s.uidChild,s.uidGroup, dayOfWeek,startLesson, duration ," +
                 " c.child_name as name, c.child_surname as Surname ,group_name as groupName " +
-                "from scheduler s join child c , 'groups' g" +
-                " where uidChild =c.uid and uidGroup = g.uid" +
-                " and dayOfWeek = :dayOfWeek  and startLesson = :startTime ORDER BY dayOfWeek ASC, 'Surname', 'Name' ASC"
+                "from scheduler s join child c , 'groups' g where uidChild =c.uid and " +
+                "uidGroup = g.uid and dayOfWeek = :dayOfWeek " +
+                " ORDER BY dayOfWeek ASC, 'Surname', 'Name' ASC"
+    )
+    fun getSchedulerByDay(dayOfWeek: Int): Flow<List<SchedulerScreenEntity>>?
+
+    @Query(
+        "Select s.uid , s.uidChild,s.uidGroup, dayOfWeek,startLesson, duration ," +
+                " c.child_name as name, c.child_surname as Surname ,group_name as groupName " +
+                "from scheduler s join child c , 'groups' g where uidChild =c.uid and " +
+                "uidGroup = g.uid and dayOfWeek = :dayOfWeek  and startLesson = :startTime " +
+                "ORDER BY dayOfWeek ASC, 'Surname', 'Name' ASC"
     )
     fun getClientsSchedulerByLesson (dayOfWeek: Int, startTime: Long): Flow<List<SchedulerScreenEntity>>?
     @Query(
