@@ -2,20 +2,19 @@ package com.catshome.classJournal.screens.Visit
 
 import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Visit.VisitInteract
+import com.catshome.classJournal.domain.communs.DayOfWeek
+import com.catshome.classJournal.domain.communs.toTimeString
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.collections.map
 
 
 @HiltViewModel
@@ -79,7 +78,9 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
     val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
     override fun obtainEvent(viewEvent: NewVisitEvent) {
         when (viewEvent) {
-            NewVisitEvent.CancelClicked -> viewAction = NewVisitAction.CloseScreen
+            NewVisitEvent.CancelClicked -> {
+                viewAction = NewVisitAction.CloseScreen
+            }
             NewVisitEvent.SaveClicked -> {
                 if (viewState.scheduler.isNullOrEmpty()) {
                     Log.e("CLJR", "Нет данных для сохранения ${viewState.scheduler}")
@@ -97,9 +98,23 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                 CoroutineScope(Dispatchers.IO).launch {
                     visitInteract.getScheduler(viewEvent.dayOfWeek)?.collect {listVisit->
                         Log.e("CLJR","Lisit visit  $listVisit")
-                        viewState = viewState.copy(scheduler =listVisit.groupBy { it.startLesson})
+                        viewState = viewState.copy(scheduler =listVisit.groupBy { visit ->
+                            "${visit.startLesson.toTimeString()} ${
+                                if(!visit.groupName.isNullOrEmpty())visit.groupName else ""}"
+
+                        })
                     }
                 }
+            }
+
+            NewVisitEvent.LessonClicked -> {
+                viewState = viewState.copy()
+            }
+
+            is NewVisitEvent.ChangePageIndex -> {
+                viewState = viewState.copy(pageIndex = viewEvent.index)
+                Log.e("CLJR","Page ${viewState.pageIndex}")
+
             }
         }
     }

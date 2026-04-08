@@ -3,6 +3,7 @@ package com.catshome.classJournal.screens.Visit
 import android.R
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Visit.Visit
+import java.util.Collections.emptyList
 
 data class NewVisitState(
     val searchText: String = "",
@@ -11,7 +12,9 @@ data class NewVisitState(
     val listChild: List<MiniChild>? =null,
     val selectChild: MiniChild? = null,
     var indexFocus:Int = -1,
-    var isResetState: Boolean = false,
+    val pageIndex: Int = 0,
+    //var isResetState: Boolean = false,
+    var lessonChecked: MutableList<Boolean> = emptyList(),
     var isSurnameError: Boolean= false,
     var isSnackbarShow: Boolean= false,
     var snackbarAction: String = "",
@@ -19,7 +22,7 @@ data class NewVisitState(
     var errorMessage: String = "",
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
-    val scheduler: Map<Int, List<Visit>>? = null,
+    val scheduler: Map<String,List<Visit>>? = null,
 //    val listVisit: List<Visit>
 
 )
