@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface VisitRepository {
  fun getSchedulerByDay(dayOfWeek: DayOfWeek):Flow<List<Visit>>?
+ fun getScheduler():Flow<List<Visit>>?
     suspend fun getAllVisit(isDelete: Boolean, sortEnum: SortEnum): Flow<List<Visit>>?
     suspend fun getVisitByChild(uidChild: String, sortEnum: SortEnum): Flow<List<Visit>>?
     suspend fun getVisitByChildWithPeriod(

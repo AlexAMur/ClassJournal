@@ -39,4 +39,7 @@ class VisitRoomStorage @Inject constructor(val visitDAO: VisitDAO, val scheduler
     fun getScheduler(dayOfWeek: DayOfWeek): Flow<List<Visit>>? {
         return visitDAO.getListClientScheduler(dayOfWeek = dayOfWeek.ordinal)
     }
+    fun getScheduler(): Flow<List<Visit>>? {
+        return visitDAO.getListClientScheduler()
+    }
 }

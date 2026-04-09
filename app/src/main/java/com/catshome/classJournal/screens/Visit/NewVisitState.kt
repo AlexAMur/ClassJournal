@@ -22,7 +22,11 @@ data class NewVisitState(
     var errorMessage: String = "",
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
-    val scheduler: Map<String,List<Visit>>? = null,
+    val scheduler: List<Map<String,List<Visit>>?> = emptyList()
 //    val listVisit: List<Visit>
 
 )
+//data class visitScjedulerPage(
+//
+//    val scheduler: Map<String,List<Visit>>? = null,
+//)

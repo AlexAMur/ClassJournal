@@ -19,6 +19,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,12 +38,11 @@ fun NewVisitByScheduler(
     val bottomPadding =
         LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding
             .calculateBottomPadding()
-
     // Для эффекта бесконечности используем очень большое число
-    val initialPage = Int.MAX_VALUE / 2
+    val initialPage = Int.MAX_VALUE / 1024
     val pagerState = rememberPagerState(
         initialPage = initialPage,
-        pageCount = { Int.MAX_VALUE } // "Бесконечное" количество страниц
+        pageCount = { Int.MAX_VALUE/512} // "Бесконечное" количество страниц
     )
 
     Card(
@@ -64,16 +64,16 @@ fun NewVisitByScheduler(
             contentPadding = PaddingValues(0.dp), // Элемент на весь экран
             pageSpacing = 0.dp
         ) { index ->
-            Log.e("CLJR", "Index page ${index % DayOfWeek.entries.size}")
-            Log.e("CLJR", "CurPage ${pagerState.currentPage % DayOfWeek.entries.size}")
+//            Log.e("CLJR", "Index page ${index % DayOfWeek.entries.size}")
+//            Log.e("CLJR", "CurPage ${pagerState.currentPage % DayOfWeek.entries.size}")
             val page = index % DayOfWeek.entries.size
             //if (pagerState.currentPage- index!=0)
               //  viewModel.obtainEvent(NewVisitEvent.ChangePageIndex())
 
-            if((pagerState.currentPage- index)+pagerState.currentPageOffsetFraction ==0.0f) {
-                Log.e("CLJR", "Page Launched ${viewState.pageIndex}")
-                viewModel.obtainEvent(NewVisitEvent.getScheduler(DayOfWeek.entries[index % DayOfWeek.entries.size]))
-            }
+//            if((pagerState.currentPage- index)+pagerState.currentPageOffsetFraction ==0.0f) {
+//                Log.e("CLJR", "Page Launched ${viewState.pageIndex}")
+//                viewModel.obtainEvent(NewVisitEvent.getScheduler(DayOfWeek.entries[index % DayOfWeek.entries.size]))
+//            }
 //            LaunchedEffect(viewState.pageIndex) {
 //                Log.e("CLJR", "page index ${viewState.pageIndex}")
 //                viewModel.obtainEvent(
@@ -104,24 +104,24 @@ fun NewVisitByScheduler(
                         fontSize = ClassJournalTheme.typography.toolbar.fontSize,
                     )
                 }
-//                val lesson = listOf("item 1", "item 2", "item 3")
                 LazyColumn(
                     Modifier
                         .fillMaxSize()
                         .background(ClassJournalTheme.colors.primaryBackground)
                         //.padding(8.dp)
                 ) {
+                    if (!viewState.scheduler.isNullOrEmpty())
                     viewState.scheduler?.let { listScheduler ->
-                        listScheduler.forEach { keyVisit, listVisit ->
+                        listScheduler[page]?.entries?.forEach{listScheduler->
                             stickyHeader {
                                 ItemVisitHeader(
-                                    header = keyVisit
+                                    header = listScheduler.key
                                 ){
                                     viewModel.obtainEvent(NewVisitEvent.LessonClicked)
                                 }
                             }
 
-                            itemsIndexed(listVisit) { index, scheduler ->
+                            itemsIndexed(listScheduler.value) { index, scheduler ->
                                 Card(
                                     Modifier
                                         .fillMaxWidth()

@@ -13,6 +13,10 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
         return visitStorage.getScheduler(dayOfWeek = dayOfWeek)
     }
 
+    override fun getScheduler(): Flow<List<Visit>>? {
+        return visitStorage.getScheduler()
+    }
+
     override suspend fun getAllVisit(
         isDelete: Boolean,
         sortEnum: SortEnum

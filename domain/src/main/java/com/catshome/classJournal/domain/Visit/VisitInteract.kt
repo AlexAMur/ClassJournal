@@ -40,7 +40,10 @@ class VisitInteract @Inject constructor(
         return visitRepository.getAllVisit(isDelete = false, SortEnum.Surname)
     }
 
-    fun getScheduler(dayOfWeek: DayOfWeek): Flow<List<Visit>>? {
+    fun getSchedulerByDay(dayOfWeek: DayOfWeek): Flow<List<Visit>>? {
         return visitRepository.getSchedulerByDay(dayOfWeek)
+    }
+    fun getScheduler(): Flow<List<Visit>>? {
+        return visitRepository.getScheduler()
     }
 }

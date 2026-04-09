@@ -1,5 +1,8 @@
 package com.catshome.classJournal
 
+import android.util.Log
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
@@ -23,7 +27,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,10 +64,10 @@ fun NewVisitScreen(
     val bottomPadding =
         LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding.calculateBottomPadding()
     val pageName = listOf("По расписанию", "Свободное")
-    val initialPage = 0
+
     val pagerState = rememberPagerState(
-        initialPage = initialPage,
-        pageCount = { pageName.size }
+        initialPage =  Int.MAX_VALUE / 1024 -1,
+        pageCount = { Int.MAX_VALUE / 512 }
     )
     HorizontalPager(
         state = pagerState,
@@ -71,12 +77,35 @@ fun NewVisitScreen(
         verticalAlignment = Alignment.Top,
 
         ) { index ->
-        val pageOffset = (pagerState.currentPage- index)+pagerState.currentPageOffsetFraction
-
-        val pageSize by animateFloatAsState(
-            targetValue = if (pageOffset !=0.0f) 0.8f else 1f,
-            animationSpec = tween(delayMillis =  300)
+        val pageIndex = index % pageName.size
+        val pageOffset by remember {
+            derivedStateOf {
+                (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
+            }
+        }
+        val shapeAnime by animateDpAsState(
+            if (pageOffset != 0.0f)
+                16.dp
+            else
+                0.dp,
+            animationSpec = tween(delayMillis = 300)
         )
+        val colorAnime by animateColorAsState(
+            if (pageOffset != 0.0f)
+                ClassJournalTheme.colors.primaryBackground
+            else
+                ClassJournalTheme.colors.secondaryBackground,
+            animationSpec = tween(delayMillis = 200)
+        )
+        val pageSize by animateFloatAsState(
+            targetValue = if (pageOffset != 0.0f) 0.8f else 1f,
+            animationSpec = tween(delayMillis = 300)
+        )
+        LaunchedEffect(pageIndex == 0) {
+            Log.e("CLJR", "Launcher!!!!!!!!!!!!!")
+            if (pageOffset == 0.0f)
+             viewModel.obtainEvent(NewVisitEvent.getScheduler)
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -87,21 +116,19 @@ fun NewVisitScreen(
         {
             Card(
                 modifier = Modifier
-                    .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = bottomPadding + 8.dp)
+                    .padding(bottom = bottomPadding)
                     .fillMaxSize()
-                    .graphicsLayer{
+                    .graphicsLayer {
                         scaleX = pageSize
                         scaleY = pageSize
                         cardEnabled = pageOffset == 0.0f
                     },
-                shape = ClassJournalTheme.shapes.cornersStyle,
+                shape = RoundedCornerShape(size = shapeAnime),
                 colors = CardDefaults.cardColors(
-                    if(cardEnabled)ClassJournalTheme.colors.secondaryBackground
-                    else
-                        ClassJournalTheme.colors.disableColor
+                    colorAnime
                 ),
 
-            ) {
+                ) {
                 Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
@@ -109,7 +136,7 @@ fun NewVisitScreen(
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 16.dp),
-                        text = pageName[index],
+                        text = pageName[pageIndex],
                         style = ClassJournalTheme.typography.caption,
                         color = ClassJournalTheme.colors.primaryText
                     )
@@ -158,7 +185,7 @@ fun NewVisitScreen(
                     }
                 }
 
-                if (index == 1)
+                if (pageIndex == 1)
                     NewVisitContent(viewModel)
                 else
                     NewVisitByScheduler(viewModel)

@@ -1,10 +1,12 @@
 package com.catshome.classJournal.screens.Visit
 
 import android.util.Log
+import androidx.compose.runtime.key
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
+import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitInteract
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.toTimeString
@@ -13,7 +15,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.util.Collections.emptyList
 import javax.inject.Inject
 
 
@@ -24,6 +29,10 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
             //listVisit = emptyList()
         )
     ) {
+//    init {
+//        obtainEvent(NewVisitEvent.getScheduler)
+//    }
+
     private val exceptionHandlerVisit = CoroutineExceptionHandler { coroutineContext, throwable ->
         if (throwable.message?.contains("UID ребенка") == true) {
             viewState = viewState.copy(
@@ -81,29 +90,49 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
             NewVisitEvent.CancelClicked -> {
                 viewAction = NewVisitAction.CloseScreen
             }
+
             NewVisitEvent.SaveClicked -> {
                 if (viewState.scheduler.isNullOrEmpty()) {
                     Log.e("CLJR", "Нет данных для сохранения ${viewState.scheduler}")
                     return
                 }
                 viewModelScope.launch(context = exceptionHandlerVisit) {
-                    viewState.scheduler?.let {scheduler->
-                      //  visitInteract.saveVisit(scheduler)
+                    viewState.scheduler?.let { scheduler ->
+                        //  visitInteract.saveVisit(scheduler)
                     }
                 }
             }
 
             is NewVisitEvent.Search -> {}
-            is NewVisitEvent.getScheduler -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    visitInteract.getScheduler(viewEvent.dayOfWeek)?.collect {listVisit->
-                        Log.e("CLJR","Lisit visit  $listVisit")
-                        viewState = viewState.copy(scheduler =listVisit.groupBy { visit ->
-                            "${visit.startLesson.toTimeString()} ${
-                                if(!visit.groupName.isNullOrEmpty())visit.groupName else ""}"
+            NewVisitEvent.getScheduler -> {
+                val scheduler= MutableList<Map<String, List<Visit>>>(0){mapOf(Pair("", listOf()))}
+                Log.e("CLJR", "Get scheduler")
+                CoroutineScope(Dispatchers.Main).launch {
+                    val t = visitInteract.getScheduler()?.collect { listVisit ->
+                val jod = CoroutineScope(Dispatchers.IO).async {
 
-                        })
+                        DayOfWeek.entries.forEachIndexed { index, _ ->
+                             scheduler.add(index = index,listVisit.filter { it.dayOfWeek == index }
+                                .groupBy { visit ->
+                                    "${visit.startLesson.toTimeString()} ${
+                                        if (!visit.groupName.isNullOrEmpty()) visit.groupName else ""
+                                    }"
+                                }
+                             )
+                        }
+//                        scheduler.forEachIndexed { index1, map ->
+//                            Log.e("CLJR", " index,, ${index1}S= $map")
+//                        }
+                    Log.e("CLJR", " ,,  $scheduler")
+
+                    return@async scheduler
                     }
+                        val s = jod.await()
+                        //Log.e("CLJR","Lisit schrduler  $s")
+                        viewState = viewState.copy(scheduler = scheduler)
+
+                }
+
                 }
             }
 
@@ -113,7 +142,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
 
             is NewVisitEvent.ChangePageIndex -> {
                 viewState = viewState.copy(pageIndex = viewEvent.index)
-                Log.e("CLJR","Page ${viewState.pageIndex}")
+                Log.e("CLJR", "Page ${viewState.pageIndex}")
 
             }
         }

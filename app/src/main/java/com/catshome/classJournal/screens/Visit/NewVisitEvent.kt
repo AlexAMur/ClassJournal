@@ -8,5 +8,6 @@ sealed class NewVisitEvent {
     data object LessonClicked :NewVisitEvent()
     data class Search(val searchText: String): NewVisitEvent()
     data class ChangePageIndex(val index: Int): NewVisitEvent()
-    data class getScheduler(val dayOfWeek: DayOfWeek): NewVisitEvent()
+   // data class getScheduler(val dayOfWeek: DayOfWeek): NewVisitEvent()
+    data object getScheduler: NewVisitEvent()
 }
