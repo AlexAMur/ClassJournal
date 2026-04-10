@@ -24,7 +24,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.toLong
 import com.catshome.classJournal.resource.R
+import kotlinx.datetime.TimeZone
+import java.util.Date
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -55,28 +59,14 @@ fun NewVisitContent(
             price = "0",
             onValueChange = {},
             errorState = false,
-            isChecked = false
+            date = "10.04.2026 00:00".toLocalDateTimeRu(TimeZone.currentSystemDefault())?:Date(0),
+            isShowDateDialog = false,
+            showDateDialog = {},
         ) {
 
         }
     }
-    Row(
-        Modifier.padding( end =16.dp)
-        .fillMaxWidth(),
-        horizontalArrangement = Arrangement.End
-    ) {
-    FloatingActionButton(
-        modifier = Modifier,
-        containerColor = ClassJournalTheme.colors.tintColor,
-        onClick = {
-            // viewModel.obtainEvent(VisitListEvent.NewVisit)
-        }) {
-        Icon(
-            painter = painterResource(R.drawable.add_24), "",
-        )
-    }
 
-    }
 //        val modifier = Modifier
 //            .fillMaxWidth()
 //            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)

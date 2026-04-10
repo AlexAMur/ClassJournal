@@ -16,17 +16,28 @@ import kotlinx.datetime.toJavaZoneId
 import kotlinx.datetime.toLocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeParseException
+import java.util.Date
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 const val DATE_FORMAT_RU = "dd.MM.yyyy"
 const val DATETIME_FORMAT_RU = "dd.MM.yyyy HH:mm"
 const val TIME_FORMAT = "HH:mm"
-enum class FormatDate{DateTime,Date, Time}
+
+enum class FormatDate { DateTime, Date, Time }
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun String.toLocalDateTimeRu(timeZone: TimeZone): Date? {
+    this.toLocalDateTimeRu()?.toLong()?.let {
+        return Date(it+timeZone.offsetAt(Clock.System.now()).totalSeconds*1000)
+    }
+    return null
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun String.toLocalDateTimeRu(): LocalDateTime? {
     var stringData = this
-      if (this.length == DATE_FORMAT_RU.length)
+    if (this.length == DATE_FORMAT_RU.length)
         stringData = "$stringData 00:00"
     try {
         val formatter = LocalDateTime.Format {
@@ -61,11 +72,11 @@ fun LocalDateTime.toDateTimeRuString(formatDate: FormatDate = FormatDate.DateTim
             char(':')
             minute(padding = Padding.ZERO)
         }
-        val date  = this.format(formatter)
-        when(formatDate){
+        val date = this.format(formatter)
+        when (formatDate) {
             FormatDate.DateTime -> return date
-            FormatDate.Date ->return date.substring(0 , DATE_FORMAT_RU.length)
-            FormatDate.Time ->return date.substring(DATE_FORMAT_RU.length,date.length)
+            FormatDate.Date -> return date.substring(0, DATE_FORMAT_RU.length)
+            FormatDate.Time -> return date.substring(DATE_FORMAT_RU.length, date.length)
         }
     } catch (e: IllegalArgumentException) {
         Log.e("CLJR", "From toDateTimeRuString ${e.message}")
@@ -100,12 +111,18 @@ fun Long.toLocalDateTimeRu(timeZone: TimeZone = TimeZone.currentSystemDefault())
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun Long.toLocalDateTimeRuString(timeZone: TimeZone = TimeZone.currentSystemDefault(),formatDate: FormatDate = FormatDate.DateTime): String? {
+fun Long.toLocalDateTimeRuString(
+    timeZone: TimeZone = TimeZone.currentSystemDefault(),
+    formatDate: FormatDate = FormatDate.DateTime
+): String? {
     return this.toLocalDateTimeRu(timeZone = timeZone)?.toDateTimeRuString(formatDate)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun Instant.toDateTimeRuString(timeZone: TimeZone = TimeZone.currentSystemDefault(),formatDate: FormatDate = FormatDate.DateTime): String? {
+fun Instant.toDateTimeRuString(
+    timeZone: TimeZone = TimeZone.currentSystemDefault(),
+    formatDate: FormatDate = FormatDate.DateTime
+): String? {
     return this.toLocalDateTime(timeZone).toDateTimeRuString(formatDate)
 }
 //fun Int.toTimeRu():String?{
