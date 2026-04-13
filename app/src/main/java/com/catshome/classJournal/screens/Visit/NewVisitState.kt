@@ -1,29 +1,31 @@
 package com.catshome.classJournal.screens.Visit
 
-import android.R
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Visit.Visit
 import java.util.Collections.emptyList
 
 data class NewVisitState(
     val searchText: String = "",
-    val isChildError: Boolean = false,
-    val ChildErrorMessage: String = "",
+    val isSearchError: Boolean = false,
+    val isShowDateDialog: Boolean = false,
+    val searchErrorMessage: String = "",
+    val priceErrorMessage: String = "",
     val listChild: List<MiniChild>? =null,
     val selectChild: MiniChild? = null,
+    val selectDate: Long? = null,
     var indexFocus:Int = -1,
     val pageIndex: Int = 0,
-    //var isResetState: Boolean = false,
     var lessonChecked: MutableList<Boolean> = emptyList(),
     var isSurnameError: Boolean= false,
-    var isSnackbarShow: Boolean= false,
-    var snackbarAction: String = "",
+    var isSnackBarShow: Boolean= false,
+    var snackBarAction: String = "",
     var isPriceError: Boolean= false,
     var errorMessage: String = "",
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
-    val scheduler: List<Map<String,List<Visit>>?> = emptyList()
-//    val listVisit: List<Visit>
+    val scheduler: List<Map<String,List<Visit>>?> = emptyList(),
+    val priceScreen: String = "0",
+    val visit: Visit? = null
 
 )
 //data class visitScjedulerPage(

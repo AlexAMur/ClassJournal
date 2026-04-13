@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.Visit
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import com.catshome.classJournal.domain.communs.toLong
 import com.catshome.classJournal.resource.R
 import kotlinx.datetime.TimeZone
 import java.util.Date
+import kotlin.time.Clock
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -55,15 +57,32 @@ fun NewVisitContent(
             .background(ClassJournalTheme.colors.primaryBackground)
     ) {
         ItemVisitContent(
-            fio = "FIO",
-            price = "0",
-            onValueChange = {},
-            errorState = false,
-            date = "10.04.2026 00:00".toLocalDateTimeRu(TimeZone.currentSystemDefault())?:Date(0),
-            isShowDateDialog = false,
-            showDateDialog = {},
-        ) {
+            fio = viewState.searchText,
+            price =viewState.priceScreen,
+            onValueChange = { inputText ->
+                viewModel.obtainEvent(NewVisitEvent.Search(inputText))
+            },
+            isSearchError = viewState.isSearchError,
+            isPriceError = viewState.isPriceError,
+            date = viewState.visit?.data?.toLocalDateTimeRu()?.toLong()?.let { data ->
+                Date(data)
+            } ?: Date(Clock.System.now().toEpochMilliseconds()),
+            isShowDateDialog = viewState.isShowDateDialog,
+            showDateDialog = {
+                viewModel.obtainEvent(NewVisitEvent.ShowDateDialog(it))
+            },
+            listChild = viewState.listChild,
+            errorSearchMessage = viewState.searchErrorMessage,
+            onPriceChange = { price ->
+                viewModel.obtainEvent(NewVisitEvent.ChangePrice(price))
+            },
+            onClearSelect = { viewModel.obtainEvent(NewVisitEvent.ClearSelect) },
+            onDateSelect = { date ->
 
+                viewModel.obtainEvent(NewVisitEvent.SelectDate(date))
+            },
+        ) { child ->
+            viewModel.obtainEvent(NewVisitEvent.SelectChild(child))
         }
     }
 

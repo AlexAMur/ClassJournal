@@ -13,7 +13,8 @@
     <string name="no_scheduler">Добавь урок</string>
     <string name="add_scheduler_">Добавь ученика или группу</string>
 
-    <string name="payment_date">Payment date</string>
+    <string name="payment_date">Дата платежа:</string>
+    <string name="visit_date">Дата посещения:</string>
 
     <string name="delete_Title">Caution</string>
     <string name="delete_message">Do you want delete object?</string>
