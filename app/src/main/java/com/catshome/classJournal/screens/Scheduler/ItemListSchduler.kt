@@ -17,20 +17,6 @@ import com.catshome.classJournal.ClassJournalTheme
 
 @Composable
 fun ItemListScheduler(image: Painter, text: String, onClick: () -> Unit = {}) {
-
-//  Row
-//    (
-//        Modifier
-//            //.weight(0.8f)
-//            //.fillMaxWidth()
-//            .fillMaxWidth()
-//            .height(32.dp)
-//
-//            //.padding(bottom = 4.dp)
-//            .background(ClassJournalTheme.colors.secondaryBackground),
-//        verticalAlignment = Alignment.CenterVertically,
-//        horizontalArrangement = Arrangement.Start
-//    )
     Row(modifier = Modifier.background(ClassJournalTheme.colors.primaryBackground),
         verticalAlignment = Alignment.CenterVertically) {
                 IconButton(modifier = Modifier.background(ClassJournalTheme.colors.primaryBackground),

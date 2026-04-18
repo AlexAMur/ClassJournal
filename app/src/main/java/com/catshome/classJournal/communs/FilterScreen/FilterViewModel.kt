@@ -1,5 +1,6 @@
 package com.catshome.classJournal.communs.FilterScreen
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
@@ -48,7 +49,7 @@ class FilterViewModel @Inject constructor(
                 viewState = viewState.copy(
                     selectChild = viewEvent.child,
                     searchList = null,
-                    searchText = viewEvent.child.fio,
+                    searchText = TextFieldValue(viewEvent.child.fio),
                     isShowList = false
                 )
                 obtainEvent(FilterEvent.NewStatus)
@@ -74,7 +75,7 @@ class FilterViewModel @Inject constructor(
                             if (it.isNullOrEmpty()) {
                                 viewState =
                                     viewState.copy(
-                                        searchText = viewEvent.value,
+                                        searchText = TextFieldValue(viewEvent.value),
                                         searchList = listOf(
                                             MiniChild(
                                                 uid = "",
@@ -87,7 +88,7 @@ class FilterViewModel @Inject constructor(
                             }
                             it.let {
                                 viewState = viewState.copy(
-                                    searchText = viewEvent.value,
+                                    searchText = TextFieldValue(viewEvent.value),
                                     searchList = it,
                                     isShowList = true
                                 )
@@ -96,7 +97,7 @@ class FilterViewModel @Inject constructor(
                     }
                 } else {
                     viewState = viewState.copy(
-                        searchText = viewEvent.value,
+                        searchText = TextFieldValue(viewEvent.value),
                         searchList = null,
                         isShowList = false
                     )
@@ -105,7 +106,7 @@ class FilterViewModel @Inject constructor(
 
             FilterEvent.ClearSearch -> {
                 viewState = viewState.copy(
-                    searchText = "",
+                    searchText = TextFieldValue(""),
                     searchList = null,
                     isShowList = false,
                     selectChild = null

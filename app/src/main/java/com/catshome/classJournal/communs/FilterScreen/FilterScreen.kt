@@ -127,7 +127,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                     viewModel.obtainEvent(FilterEvent.ClearSearch)
                 }
             ) { searchText ->
-                viewModel.obtainEvent(FilterEvent.Search(value = searchText))
+                viewModel.obtainEvent(FilterEvent.Search(value = searchText.text))
             }
             AnimatedVisibility(viewState.isShowList) {
                 viewState.searchList?.let { listChild ->

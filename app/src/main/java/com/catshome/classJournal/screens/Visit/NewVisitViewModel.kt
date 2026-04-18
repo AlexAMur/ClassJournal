@@ -2,12 +2,16 @@ package com.catshome.classJournal.screens.Visit
 
 import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
+import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitInteract
 import com.catshome.classJournal.domain.communs.DayOfWeek
+import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
 import com.catshome.classJournal.domain.communs.toTimeString
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
@@ -17,13 +21,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.util.UUID
 import javax.inject.Inject
+import kotlin.time.Clock
 
 
 @HiltViewModel
 class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInteract) :
     BaseViewModel<NewVisitState, NewVisitAction, NewVisitEvent>(
-        installState = NewVisitState()
+        installState = NewVisitState(
+            selectDate = Clock.System.now().toEpochMilliseconds()
+        )
     ) {
     private val exceptionHandlerVisit = CoroutineExceptionHandler { coroutineContext, throwable ->
         if (throwable.message?.contains("UID ребенка") == true) {
@@ -81,56 +90,100 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
         when (viewEvent) {
             NewVisitEvent.ClearSelect -> {
                 viewState = viewState.copy(
-                    searchText = "",
-                    selectChild = null,
-                    visit = viewState.visit?.copy(
-                        uidChild = null,
+                    searchText = viewState.searchText.copy(""),
+                    selectChild = MiniChild(
+                        uid = "",
                         fio = ""
-                    )
+                    ),
+                    isSelectChild = false,
+                    listChild = null
                 )
             }
 
             is NewVisitEvent.SelectDate -> {
-                viewState = viewState.copy(selectDate = viewEvent.date,
-                    visit = viewState.visit?.copy(data = viewEvent.date?.toLocalDateTimeRuString())
+                viewState = viewState.copy(
+                    selectDate = viewEvent.date
                 )
-                Log.e("CLJR", " Data change ${viewSta te.visit?.data} select date ${viewState.selectDate?.toLocalDateTimeRuString()}")
             }
 
             is NewVisitEvent.SelectChild -> {
+                Log.e("CLJR", "Select Child")
                 viewState = viewState.copy(
-                    visit = viewState.visit?.copy(
-                        uidChild = viewEvent.selectChild.uid,
-                        fio = viewEvent.selectChild.fio
+                    selectChild = viewEvent.selectChild,
+
+                    searchText = viewState.searchText.copy(
+                        text = viewEvent.selectChild.fio,
+                        selection = TextRange(viewEvent.selectChild.fio.length)
                     ),
-                    searchText = viewEvent.selectChild.fio,
+                    isSelectChild = true,
                     listChild = null
                 )
+                Log.e("CLJR", "List ${viewState.listChild}")
             }
 
             NewVisitEvent.CancelClicked -> {
                 viewAction = NewVisitAction.CloseScreen
             }
 
-            NewVisitEvent.SaveClicked -> {
-                if (viewState.scheduler.isEmpty()) {
-                    Log.e("CLJR", "Нет данных для сохранения ${viewState.scheduler}")
-                    return
-                }
-                viewModelScope.launch(context = exceptionHandlerVisit) {
-                    viewState.scheduler?.let { scheduler ->
-                        //  visitInteract.saveVisit(scheduler)
+            is NewVisitEvent.SaveClicked -> {
+                if (viewEvent.openPage == 0) {
+                    if (viewState.scheduler.isEmpty()) {
+                        Log.e("CLJR", "Нет данных для сохранения ${viewState.scheduler}")
+                        return
+                    }
+                    viewModelScope.launch(context = exceptionHandlerVisit) {
+                        viewState.scheduler.let { scheduler ->
+                            //  visitInteract.saveVisit(scheduler)
+                        }
                     }
                 }
+
+                if (viewEvent.openPage == 1) {
+                    Log.e("CLJR", "даta ${viewState.selectDate?.toLocalDateTimeRuString()}")
+                    if (viewState.selectChild == null) {
+                        viewState = viewState.copy(
+                            isSearchError = true,
+                            searchErrorMessage = context.getString(R.string.error_empty_child)
+                        )
+                        return
+                    }
+                    try {
+                        if (viewState.priceScreen.toInt() <= 0)
+                            throw NumberFormatException()
+
+                    } catch (e: NumberFormatException) {
+                        viewState = viewState.copy(
+                            isPriceError = true,
+                            priceErrorMessage = context.getString(R.string.error_invalid_value)
+                        )
+                        return
+                    }
+
+                    viewModelScope.launch(exceptionHandlerVisit) {
+                        visitInteract.saveVisit(
+                            listOf(
+                                Visit(
+                                    uid = if (viewState.visit?.uid.isNullOrEmpty())
+                                        UUID.randomUUID().toString()
+                                    else viewState.visit?.uid,
+                                    uidChild = viewState.selectChild?.uid,
+                                    data = viewState.selectDate?.toLocalDateTimeRuString(
+                                        formatDate = FormatDate.Date),
+                                    price = viewState.priceScreen.toInt()
+                                )
+                            )
+                        )
+                    }
+                }
+                viewAction = NewVisitAction.SaveAndCloseScreen
             }
 
             is NewVisitEvent.ChangePrice -> {
                 viewState = viewState.copy(priceScreen = viewEvent.price)
-                try {
-                    viewState =
-                        viewState.copy(visit = viewState.visit?.copy(price = viewEvent.price.toInt()))
+                viewState = try {
+                    viewState.copy(priceScreen = viewEvent.price)
                 } catch (e: NumberFormatException) {
-                    viewState = viewState.copy(
+                    viewState.copy(
                         isPriceError = true,
                         priceErrorMessage = "${context.getString(R.string.error_invalid_value)} \r\n" +
                                 "${e.message}"
@@ -139,8 +192,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
             }
 
             is NewVisitEvent.Search -> {
-                viewState = viewState.copy(searchText = viewEvent.searchText)
-                if (viewState.searchText.isEmpty()) {
+                if (viewState.searchText.text.isEmpty()) {
                     viewState = viewState.copy(listChild = null, isSearchError = false)
                     return
                 } else {
@@ -149,11 +201,21 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                             isSearchError = false,
                             searchErrorMessage = ""
                         )
-                    viewModelScope.launch {
-                        visitInteract.searchChild(viewEvent.searchText).collect {
-                            viewState = viewState.copy(listChild = it)
-                            Log.e("CLJR", "List child ${viewState.listChild}")
-                            Log.e("CLJR", "IT ${it}")
+
+                    CoroutineScope(Dispatchers.Main).launch {
+                        visitInteract.searchChild(viewState.searchText.text).collect {
+                            val j = CoroutineScope(Dispatchers.IO).async {
+                                if (it.isNullOrEmpty()) {
+                                    listOf(
+                                        MiniChild(
+                                            uid = "",
+                                            fio = "пусто"
+                                        )
+                                    )
+                                }
+                                return@async it
+                            }
+                            viewState = viewState.copy(listChild = j.await())
                         }
                     }
                 }
@@ -162,7 +224,6 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
             NewVisitEvent.getScheduler -> {
                 val scheduler =
                     MutableList<Map<String, List<Visit>>>(0) { mapOf(Pair("", listOf())) }
-                Log.e("CLJR", "Get scheduler")
                 CoroutineScope(Dispatchers.Main).launch {
                     visitInteract.getScheduler()?.collect { listVisit ->
                         val jod = CoroutineScope(Dispatchers.IO).async {
@@ -177,15 +238,8 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                                         }
                                 )
                             }
-//                        scheduler.forEachIndexed { index1, map ->
-//                            Log.e("CLJR", " index,, ${index1}S= $map")
-//                        }
-                            //    Log.e("CLJR", " ,,  $scheduler")
-
                             return@async scheduler
                         }
-                     //   val s = jod.await()
-                        //Log.e("CLJR","Lisit schrduler  $s")
                         viewState = viewState.copy(scheduler = jod.await())
                     }
                 }
@@ -201,7 +255,6 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
 
             is NewVisitEvent.ChangePageIndex -> {
                 viewState = viewState.copy(pageIndex = viewEvent.index)
-                Log.e("CLJR", "Page ${viewState.pageIndex}")
             }
         }
     }

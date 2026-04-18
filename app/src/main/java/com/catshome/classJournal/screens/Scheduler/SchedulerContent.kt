@@ -84,7 +84,6 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                     contentColor = ClassJournalTheme.colors.primaryText
                 )
             ) {
-
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -95,7 +94,6 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                         .background(ClassJournalTheme.colors.primaryBackground),
                     state = rememberLazyListState()
                 ) {
-
                     items(DayOfWeek.entries.toTypedArray()) { day ->
                         itemScheduler(
                             day = day,

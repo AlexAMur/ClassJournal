@@ -1,11 +1,13 @@
 package com.catshome.classJournal.screens.Scheduler
 
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.SwipeToDeleteContainer
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ItemLesson(value: Scheduler,isCollapse: Boolean, onDelete:(String)->Unit){
     if (isCollapse) {

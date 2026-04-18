@@ -2,6 +2,7 @@ package com.catshome.classJournal.screens.PayList
 
 import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
@@ -96,7 +97,7 @@ class NewPayViewModel @Inject constructor(
                         name = viewEvent.pay.name,
                         surname = viewEvent.pay.surName
                     ),
-                    searchText = "${viewEvent.pay.name} ${viewEvent.pay.surName}",
+                    searchText = TextFieldValue("${viewEvent.pay.name} ${viewEvent.pay.surName}"),
                     pay = viewEvent.pay,
                     payment = viewEvent.pay.payment.toString(),
                     isChildError = false,
@@ -166,8 +167,8 @@ class NewPayViewModel @Inject constructor(
             }
 
             is NewPayEvent.Search -> {
-                viewState = viewState.copy(searchText = viewEvent.searchText)
-                if (viewState.searchText.isEmpty()) {
+                viewState = viewState.copy(searchText = TextFieldValue( viewEvent.searchText))
+                if (viewState.searchText.text.isEmpty()) {
                     viewState = viewState.copy(listChild = null)
                     return
                 } else {
@@ -198,7 +199,7 @@ class NewPayViewModel @Inject constructor(
 
             is NewPayEvent.SelectedChild -> {
                 viewState = viewState.copy(
-                    searchText = viewEvent.child.fio,
+                    searchText = TextFieldValue(viewEvent.child.fio),
                     selectChild = viewEvent.child,
                     listChild = null
                 )
@@ -210,7 +211,7 @@ class NewPayViewModel @Inject constructor(
         Log.e("CLJR", "Reset before ${viewState.pay.datePay}")
         viewState = viewState.copy(
             selectChild = null,
-            searchText = "",
+            searchText = TextFieldValue(),
             pay = Pay(
                 datePay = now().toDateTimeRuString().toString(),
                 payment = 0,

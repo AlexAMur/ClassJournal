@@ -13,6 +13,10 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
         return visitStorage.getScheduler(dayOfWeek = dayOfWeek)
     }
 
+    override suspend fun getVisitByUid(uid: String): Visit? {
+        return visitStorage.getVisitByUid(uid)
+    }
+
     override fun getScheduler(): Flow<List<Visit>>? {
         return visitStorage.getScheduler()
     }
@@ -48,8 +52,8 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteVisit(visit: Visit) {
-        visitStorage.delete(visit.mapToVisitEntity())
+    override suspend fun deleteVisit(visit: Visit): Boolean {
+        return visitStorage.delete(visit.mapToVisitEntity())
     }
 
     override suspend fun insetVisit(visit: List<Visit>) {

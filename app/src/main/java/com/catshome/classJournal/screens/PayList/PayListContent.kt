@@ -1,6 +1,5 @@
 package com.catshome.classJournal.screens.PayList
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
@@ -31,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -41,18 +38,14 @@ import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.communs.ActionIcon
-import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.ItemFAB
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.SwipeableItemWithActions
 import com.catshome.classJournal.communs.fabMenu
 import com.catshome.classJournal.context
-import com.catshome.classJournal.navigate.DetailsPayResult
-import com.catshome.classJournal.screens.child.ChildListEvent
+import com.catshome.classJournal.resource.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,7 +54,6 @@ fun PayListContent(
     viewModel: PayListViewModel,
 ) {
     val sbHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
     val paddingValues = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
     Surface(
@@ -76,7 +68,6 @@ fun PayListContent(
                     hostState = sbHostState,
                     modifier = Modifier.padding(bottom = paddingValues)
                 )
-
                 LaunchedEffect(viewState.messageShackBar) {
                     if (!viewState.messageShackBar.isNullOrEmpty() && viewState.isCanShowSnackBar) {
                         CoroutineScope(Dispatchers.IO).launch {

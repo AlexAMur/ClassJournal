@@ -1,14 +1,15 @@
 package com.catshome.classJournal.screens.Visit
 
+import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.communs.DayOfWeek
 
 sealed class NewVisitEvent {
-    data object SaveClicked : NewVisitEvent()
+    data class SaveClicked(val openPage: Int) : NewVisitEvent()
     data object CancelClicked :NewVisitEvent()
     data object ClearSelect :NewVisitEvent()
     data object LessonClicked :NewVisitEvent()
-    data class Search(val searchText: String): NewVisitEvent()
+    data class Search(val searchText: TextFieldValue): NewVisitEvent()
     data class ChangePrice(val price: String): NewVisitEvent()
     data class SelectDate(val date: Long?): NewVisitEvent()
     data class ShowDateDialog(val isShow: Boolean): NewVisitEvent()

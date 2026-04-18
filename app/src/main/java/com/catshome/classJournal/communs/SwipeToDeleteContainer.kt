@@ -1,7 +1,6 @@
 package com.catshome.classJournal.communs
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateOffsetAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
@@ -30,8 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.SwipeableState
 import com.catshome.classJournal.ClassJournalTheme
+import com.catshome.classJournal.screens.Visit.VisitListEvent
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -42,31 +41,30 @@ fun <T> SwipeToDeleteContainer(
     animationDuration: Int = 500,
     content: @Composable (T) -> Unit
 ) {
-    val density = LocalDensity.current.density
     var isRemoved by remember {
         mutableStateOf(false)
     }
     val state = rememberDismissState(
-
         confirmStateChange = { value ->
             if (value == DismissValue.DismissedToStart) {
-                isRemoved = true
+                    isRemoved =true
                 true
             } else {
+                    isRemoved= false
+
                 false
             }
         }
     )
-
-
     LaunchedEffect(key1 = isRemoved) {
         if (isRemoved) {
             delay(animationDuration.toLong())
             onDelete(item)
         }
+        else
+            state.reset()
 
     }
-
     AnimatedVisibility(
         visible = !isRemoved,
         exit = shrinkVertically(
@@ -74,8 +72,6 @@ fun <T> SwipeToDeleteContainer(
             shrinkTowards = Alignment.Top
         ) + fadeOut()
     ) {
-
-
         if (state != null) {
             SwipeToDismiss(
                 state = state,
@@ -86,7 +82,6 @@ fun <T> SwipeToDeleteContainer(
                 directions = setOf(DismissDirection.EndToStart)
             )
         }
-
     }
 }
 

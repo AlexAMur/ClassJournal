@@ -1,6 +1,7 @@
 package com.catshome.classJournal.screens.Scheduler.newScheduler
 
 import android.util.Log
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
 import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerEvent.*
@@ -35,7 +36,7 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
     override fun obtainEvent(viewEvent: NewSchedulerEvent) {
         when (viewEvent) {
             ReloadClient -> {
-                obtainEvent(NewSchedulerEvent.Search(viewState.searchText))
+                obtainEvent(NewSchedulerEvent.Search(viewState.searchText.text))
             }
 
             CloseEvent -> viewAction = NewSchedulerAction.CloseScreen
@@ -64,7 +65,7 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
             }
 
             is Search -> {
-                viewState = viewState.copy(searchText = viewEvent.search)
+                viewState = viewState.copy(searchText = TextFieldValue(viewEvent.search))
                 CoroutineScope(Dispatchers.IO).launch {
                     viewState.dayOfWeek?.let { day ->
                         viewState = viewState.copy(
@@ -99,7 +100,7 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
                     dayOfWeek = null,
                     startTime = 0,
                     duration = 0,
-                    searchText = ""
+                    searchText = TextFieldValue()
                 )
             }
         }

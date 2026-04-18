@@ -1,5 +1,6 @@
 package com.catshome.classJournal.communs.FilterScreen
 
+import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
@@ -24,7 +25,7 @@ data class FilterState(
     val isShowPeriod: Boolean = false,
     val isFilterChild : Boolean =false,
     val isFilterData : Boolean =false,
-    val searchText: String = "",
+    val searchText: TextFieldValue = TextFieldValue(""),
     val statusText: String = "",
     val beginDate: String = "",
     val endDate: String = "",

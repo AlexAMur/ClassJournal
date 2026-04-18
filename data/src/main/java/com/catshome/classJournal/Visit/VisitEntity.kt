@@ -11,22 +11,23 @@ import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLong
 import java.util.UUID
+import kotlin.String
 import kotlin.uuid.Uuid
 
 @Entity(
-        tableName = "visits",
-        indices = [Index(
-            value = ["dateVisit"],
-            name = "indexVisit",
-            unique = false
-        )],
-        foreignKeys = [ForeignKey(
-            entity = ChildEntity::class,
-            parentColumns = arrayOf("uid"),
-            childColumns = arrayOf("uidChild"),
-            onDelete = CASCADE,
-            deferred = true
-        )]
+    tableName = "visits",
+    indices = [Index(
+        value = ["dateVisit"],
+        name = "indexVisit",
+        unique = false
+    )],
+    foreignKeys = [ForeignKey(
+        entity = ChildEntity::class,
+        parentColumns = arrayOf("uid"),
+        childColumns = arrayOf("uidChild"),
+        onDelete = CASCADE,
+        deferred = true
+    )]
 )
 data class VisitEntity(
     @PrimaryKey val uid: String,
@@ -34,6 +35,7 @@ data class VisitEntity(
     val dateVisit: Long,
     val priceVisit: Int
 )
+
 data class VisitScreenEntity(
     val uid: String,
     val uidChild: String,
@@ -43,16 +45,19 @@ data class VisitScreenEntity(
     val priceVisit: Int
 )
 
-fun Visit.mapToVisitEntity(): VisitEntity{
-    if (this.data== null)
-        throw IllegalArgumentException("Не допустимое значение visit date ${ this.data}")
+fun Visit.mapToVisitEntity(): VisitEntity {
+    if (this.data == null)
+        throw IllegalArgumentException("Не допустимое значение visit date ${this.data}")
     if (this.price == null)
-        throw IllegalArgumentException("Не допустимое значение visit.price ${ this.price}")
-    return VisitEntity(uid = this.uid?: UUID.randomUUID().toString(),
+        throw IllegalArgumentException("Не допустимое значение visit.price ${this.price}")
+    return VisitEntity(
+        uid = this.uid ?: UUID.randomUUID().toString(),
         uidChild = this.uidChild.toString(),
-        dateVisit = this.data?.toLocalDateTimeRu()?.toLong()?:0,
-        priceVisit = this.price?:0)
+        dateVisit = this.data?.toLocalDateTimeRu()?.toLong() ?: 0,
+        priceVisit = this.price ?: 0
+    )
 }
+
 fun VisitScreenEntity.mapToVisit(): Visit {
     return Visit(
         uid = this.uid,
@@ -62,6 +67,15 @@ fun VisitScreenEntity.mapToVisit(): Visit {
         startLesson = 0,
         data = this.dateVisit.toLocalDateTimeRuString().toString(),
         check = false
+    )
+}
+
+fun VisitEntity.mapToVisit(): Visit {
+    return Visit(
+        uid = this.uid,
+        uidChild = this.uidChild,
+        data = this.dateVisit.toLocalDateTimeRuString(),
+        price = this.priceVisit,
     )
 }
 

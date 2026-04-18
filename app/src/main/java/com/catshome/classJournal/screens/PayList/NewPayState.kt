@@ -1,10 +1,11 @@
 package com.catshome.classJournal.screens.PayList
 
+import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.Pay
 
 data class NewPayState(
-    val searchText: String = "",
+    val searchText: TextFieldValue = TextFieldValue(""),
     val listChild: List<MiniChild>? =null,
     val selectChild: MiniChild? = null,
     val isChildError: Boolean =false,

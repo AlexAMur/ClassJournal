@@ -10,15 +10,20 @@ suspend fun SnackBarAction(
     snackBarState: SnackbarHostState,
     withDismissAction: Boolean =true,
     onDismissed: () -> Unit,
-    onActionPerformed: () -> Unit
+    onActionPerformed: () -> Unit,
+    duration: SnackbarDuration = SnackbarDuration.Short
 ) {
     when (snackBarState.showSnackbar(
         message = message,
         actionLabel = actionLabel,
         withDismissAction = withDismissAction,
-        duration = SnackbarDuration.Short
+        duration = duration
     )) {
-        SnackbarResult.Dismissed -> onDismissed()
-        SnackbarResult.ActionPerformed -> onActionPerformed()
+        SnackbarResult.Dismissed -> {
+            onDismissed()
+        }
+        SnackbarResult.ActionPerformed -> {
+            onActionPerformed()
+        }
     }
 }

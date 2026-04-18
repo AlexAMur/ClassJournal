@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,52 +22,49 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.communs.DatePickerModal
 import com.catshome.classJournal.communs.SearchField
-import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.TextField
-import com.catshome.classJournal.communs.TimePikerDialog
 import com.catshome.classJournal.domain.Child.MiniChild
-import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
-import com.catshome.classJournal.domain.communs.toLong
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.PayList.ItemChildInSearch
-import com.catshome.classJournal.screens.PayList.NewPayEvent
-import java.time.ZonedDateTime
 import java.util.Date
-import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ItemVisitContent(
-    fio: String,
+fun SingleVisitContent(
+    fio: TextFieldValue,
     date: Date,
     price: String,
     listChild: List<MiniChild>? = null,
     isShowDateDialog: Boolean,
-    onValueChange: (String) -> Unit,
+    onValueChange: (TextFieldValue) -> Unit,
     onPriceChange: (String) -> Unit,
     isSearchError: Boolean = false,
     isPriceError: Boolean = false,
     errorSearchMessage: String = "",
+    errorPriceMessage: String = "",
+    isShowList: Boolean = false,
     showDateDialog: (Boolean) -> Unit,
     onDateSelect: (Long?) -> Unit,
     onClearSelect: () -> Unit,
     onSelectChild: (MiniChild) -> Unit
 ) {
     Column(
-        Modifier
+        Modifier.Companion
             .fillMaxSize()
             .padding(start = 16.dp, end = 16.dp),
     ) {
         SearchField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.Companion.fillMaxWidth(),
             text = fio,
             label = stringResource(R.string.FIO),
             isError = isSearchError,
@@ -76,14 +72,12 @@ fun ItemVisitContent(
             onClickCancel = onClearSelect,
             onSearch = onValueChange
         )
-
         listChild?.let { listChild ->
-            if (listChild.isNotEmpty()) {
+            if (!isShowList) {
                 Card(
-                    modifier = Modifier
+                    modifier = Modifier.Companion
                         .fillMaxWidth()
-                        //.padding(start = 16.dp, end = 16.dp)
-                        .offset(y = (-19).dp),
+                        .offset(y = (-22).dp),
                     colors = CardDefaults.cardColors(
                         containerColor = ClassJournalTheme.colors.secondaryBackground,
                         contentColor = ClassJournalTheme.colors.primaryText
@@ -93,7 +87,7 @@ fun ItemVisitContent(
                 )
                 {
                     LazyColumn(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .fillMaxWidth()
                             .padding(top = 12.dp, bottom = 8.dp)
                             .heightIn(min = 0.dp, max = 300.dp)
@@ -102,19 +96,17 @@ fun ItemVisitContent(
                             ItemChildInSearch(
                                 name = child.name,
                                 surname = child.surname,
-                                modifier = Modifier
+                                modifier = Modifier.Companion
                                     .fillMaxWidth()
                                     .padding(
-                                        start = 16.dp,
-                                        top = 4.dp,
-                                        end = 16.dp,
-                                        bottom = 8.dp
+                                        start = 16.dp, top = 4.dp, end = 16.dp, bottom = 8.dp
                                     ),
                                 style = ClassJournalTheme.typography.body,
                                 contentColor = ClassJournalTheme.colors.tintColor,
                                 onClicked = {
-                                    if (child.uid.isNotEmpty())
+                                    if (child.uid.isNotEmpty()) {
                                         onSelectChild(child)
+                                    }
                                 },
                             )
                         }
@@ -123,32 +115,32 @@ fun ItemVisitContent(
             }
         }
         Row(
-            Modifier
+            Modifier.Companion
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                 .clickable(onClick = {
                     showDateDialog(true)
                 }
                 ),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Companion.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
                 text = stringResource(R.string.visit_date),
                 color = ClassJournalTheme.colors.primaryText,
                 fontStyle = ClassJournalTheme.typography.toolbar.fontStyle,
-                modifier = Modifier.padding(end = 16.dp)
+                modifier = Modifier.Companion.padding(end = 16.dp)
             )
-            date.time.toLocalDateTimeRuString()?.let {
+            date.time.toLocalDateTimeRuString(formatDate = FormatDate.Date)?.let {
                 Text(
                     fontStyle = ClassJournalTheme.typography.toolbar.fontStyle,
                     text = it,
                     color = ClassJournalTheme.colors.primaryText,
-                    modifier = Modifier,
+                    modifier = Modifier.Companion,
                 )
             }
             Icon(
-                modifier = Modifier
+                modifier = Modifier.Companion
                     .padding(start = 24.dp),
                 painter = painterResource(R.drawable.calendar_month_24),
                 contentDescription = null,
@@ -157,16 +149,16 @@ fun ItemVisitContent(
         }
 
         TextField(
-            modifier = Modifier,
+            modifier = Modifier.Companion,
             value = price,
             label = stringResource(R.string.visit_price),
-            supportingText = null,
+            supportingText = if (isPriceError) errorPriceMessage else "",
             onValueChange = onPriceChange,
             trailingIcon = null,
             minLines = 1,
             singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.merge(
-                KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions.Companion.Default.merge(
+                KeyboardOptions(keyboardType = KeyboardType.Companion.Number)
             ),
             errorState = isPriceError,
             readOnly = false

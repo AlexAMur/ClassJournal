@@ -131,7 +131,7 @@ fun NewSchedulerScreen(
                         viewModel.obtainEvent(NewSchedulerEvent.ClearSearch)
                     }
                 ) { searchText ->
-                    viewModel.obtainEvent(NewSchedulerEvent.Search(search = searchText))
+                    viewModel.obtainEvent(NewSchedulerEvent.Search(search = searchText.text))
                 }
 //----------------------------------------------
             }

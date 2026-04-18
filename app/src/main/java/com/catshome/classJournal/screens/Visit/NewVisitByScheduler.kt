@@ -1,6 +1,5 @@
 package com.catshome.classJournal.screens.Visit
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +18,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -114,7 +112,7 @@ fun NewVisitByScheduler(
                     viewState.scheduler?.let { listScheduler ->
                         listScheduler[page]?.entries?.forEach{listScheduler->
                             stickyHeader {
-                                ItemVisitHeader(
+                                ItemNewVisitHeader(
                                     header = listScheduler.key
                                 ){
                                     viewModel.obtainEvent(NewVisitEvent.LessonClicked)

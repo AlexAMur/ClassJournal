@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -116,6 +117,7 @@ fun NewVisitScreen(
         {
             Card(
                 modifier = Modifier
+                    .systemBarsPadding()
                     .padding(bottom = bottomPadding)
                     .fillMaxSize()
                     .graphicsLayer {
@@ -175,7 +177,7 @@ fun NewVisitScreen(
                         style = ClassJournalTheme.typography.caption
                     )
                     TextButton(onClick = {
-                        viewModel.obtainEvent(NewVisitEvent.SaveClicked)
+                        viewModel.obtainEvent(NewVisitEvent.SaveClicked(pageIndex))
                     }
                     ) {
                         Text(
@@ -193,6 +195,16 @@ fun NewVisitScreen(
         }
     }
     when (viewAction) {
+        NewVisitAction.SaveAndCloseScreen -> {
+            keyboardController?.hide()
+            viewModel.clearAction()
+            outerNavigation.navigate(route = ItemScreen.VisitListScreen.name)
+            {
+                popUpTo(ItemScreen.VisitListScreen.name) {
+                    inclusive = true
+                }
+            }
+        }
         NewVisitAction.CloseScreen -> {
             keyboardController?.hide()
             viewModel.clearAction()
@@ -205,5 +217,6 @@ fun NewVisitScreen(
         }
 
         null -> {}
+
     }
 }

@@ -136,7 +136,7 @@ fun PayScreenContent(
                                 viewState.indexFocus = 0
                         },
                 ) { searchText ->
-                    viewModel.obtainEvent(NewPayEvent.Search(searchText = searchText))
+                    viewModel.obtainEvent(NewPayEvent.Search(searchText = searchText.text))
                 }
                 viewState.listChild?.let { listChild ->
                     if (listChild.isNotEmpty()) {

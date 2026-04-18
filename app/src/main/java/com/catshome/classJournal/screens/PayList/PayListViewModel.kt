@@ -10,7 +10,6 @@ import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
-import com.catshome.classJournal.navigate.DetailsPayResult
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.PayList.PayListAction.EditPay
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
@@ -18,7 +17,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -66,14 +64,11 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 })
                 viewState.indexDelete = indexDelete
                 viewState.onAction = {
-                    //viewState.isCanShowSnackBar = false
-
                     obtainEvent(
                         PayListEvent.UndoDeleteClicked(
                             viewState.deletePayUid
                         )
                     )
-//                    resetStatusSnackBar()
                     viewState.onDismissed = null
                     viewState.onAction = null
                     viewState.isCanShowSnackBar = false
@@ -103,13 +98,6 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                             }
                         }
                     }
-//                        viewState.onDismissed = null
-//                        viewState.onAction = null
-
-//                        viewState.isCanShowSnackBar = false
-//                        viewState.messageShackBar = null
-                        // resetStatusSnackBar()
-
                 }
                 viewState.isCanShowSnackBar = true
                 viewState = viewState.copy(messageShackBar = "Отменить удаление ${viewEvent.pay.fio}?")
@@ -147,7 +135,6 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
 
             is PayListEvent.ShowSnackBar -> {
                 Log.e("CLJR", "ShowSnackBar in viewModel ${viewEvent.detailsPayResult} ")
-                //viewState.isCanShowSnackBar = true
                 viewState = viewState.copy(
                     messageShackBar = viewEvent.detailsPayResult.message
                 )

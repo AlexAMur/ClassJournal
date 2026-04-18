@@ -1,21 +1,21 @@
 package com.catshome.classJournal.screens.Visit
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -27,39 +27,33 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.communs.ItemFAB
-import com.catshome.classJournal.communs.TextField
+import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.fabMenu
 import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.resource.R
-import com.catshome.classJournal.domain.communs.DayOfWeek
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-
+@OptIn(ExperimentalMaterialApi::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun visitListScreen(navController: NavController, viewModel: VisitListViewModel = viewModel()) {
     val viewAction by viewModel.viewActions().collectAsState(null)
     val viewState by viewModel.viewState().collectAsState()
     val sbHostState = remember { SnackbarHostState() }
-
     val paddingValues = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
-
     LaunchedEffect(Unit) {
         CoroutineScope(Dispatchers.Default).launch {
             viewModel.obtainEvent(VisitListEvent.ShowFAB(false))
@@ -71,6 +65,10 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
         Modifier
             .fillMaxWidth(),
     ) {
+        LaunchedEffect(Unit) {
+            Log.e("CLJR", "Launched Effect!")
+            viewModel.obtainEvent(VisitListEvent.Reload)
+        }
         Scaffold(
             Modifier
                 .fillMaxWidth(),
@@ -79,30 +77,24 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                     hostState = sbHostState,
                     modifier = Modifier.padding(bottom = paddingValues)
                 )
-
-//            LaunchedEffect(viewState.messageShackBar) {
-//                if (!viewState.messageShackBar.isNullOrEmpty() && viewState.isCanShowSnackBar) {
-//                    CoroutineScope(Dispatchers.IO).launch {
-//                        SnackBarAction(
-//                            message = viewState.messageShackBar.toString(),
-//                            actionLabel = viewState.snackBarAction,
-//                            snackBarState = sbHostState,
+                LaunchedEffect(viewState.messageSnackBar) {
+                    if (!viewState.messageSnackBar.isNullOrEmpty()) {// && viewState.isCanShowSnackBar) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            SnackBarAction(
+                                message = viewState.messageSnackBar.toString(),
+                                actionLabel = viewState.snackBarLabel,
+                                snackBarState = sbHostState,
 //                            withDismissAction = viewState.withDismissAction,
-//                            onDismissed = {
-//                                viewState.onDismissed?.let { it() }
-//                                viewState.isCanShowSnackBar = false
-//                                viewState.messageShackBar = null
-//                            },
-//                            onActionPerformed = {
-//                                viewState.onAction?.let { it() }
-//                                viewState.isCanShowSnackBar = false
-//                                viewState.messageShackBar = null
-//
-//                            }
-//                        )
-//                    }
-//                }
-//            }
+                                onDismissed = {
+                                    viewState.onDismissed?.let { it() }
+                                },
+                                onActionPerformed = {
+                                    viewState.onAction?.let { it() }
+                                }
+                            )
+                        }
+                    }
+                }
             },
             bottomBar = {
                 Row(Modifier.fillMaxWidth(), Arrangement.End) {
@@ -111,7 +103,7 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                             ItemFAB(
                                 containerColor = ClassJournalTheme.colors.tintColor,
                                 contentColor = ClassJournalTheme.colors.secondaryBackground,
-                                icon =   painterResource(R.drawable.calendar_today_24),
+                                icon = painterResource(R.drawable.calendar_today_24),
                                 onClick = {
                                     viewModel.obtainEvent(VisitListEvent.NewVisit)
                                 }
@@ -121,39 +113,67 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                 }
             }
         ) { padValues ->
-            Column(
+            Surface(
                 Modifier
                     .fillMaxSize()
-                    .background(ClassJournalTheme.colors.primaryBackground)
+                    .background(ClassJournalTheme.colors.primaryBackground),
+                color = ClassJournalTheme.colors.primaryBackground
             ) {
-                TextField(
-                    modifier = Modifier,
-                    value = "",
-                    label = stringResource(R.string.visit_price),
-                    supportingText = null,
-                    onValueChange = {},
-                    trailingIcon = null,
-                    minLines = 1,
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.merge(
-                        KeyboardOptions(keyboardType = KeyboardType.Number)
-                    ),
-                    errorState = true,
-                    readOnly = false
-                )
-//                LazyColumn(
-//                    Modifier
-//                        .fillMaxSize()
-//                        .systemBarsPadding()
-//                        .padding(bottom = paddingValues)
-//                    //.background(ClassJournalTheme.colors.)
-//
-//                ) {
-//                    items(0) {
-//                       // ItemVisitContent()
-//                    }
-//
-//                }
+                LazyColumn(
+                    Modifier
+                        .fillMaxSize()
+                        .systemBarsPadding()
+                        .padding(bottom = paddingValues),
+                    state = rememberLazyListState()
+                ) {
+                    viewState.listVisit?.forEach { key, visits ->
+//                        Log.e("CLJR", "List visits ${visits.hashCode()}")
+                        stickyHeader {
+                            Card(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp, bottom = 16.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = ClassJournalTheme.colors.disableColor,
+                                    contentColor = ClassJournalTheme.colors.primaryText
+                                )
+                            ) {
+                                key?.let { text ->
+                                    Text(
+                                        text = text,
+                                        Modifier.padding(
+                                            start = 16.dp,
+                                            top = 16.dp,
+                                            bottom = 16.dp
+                                        ),
+                                        color = ClassJournalTheme.colors.primaryText,
+                                        fontStyle = ClassJournalTheme.typography.caption.fontStyle
+                                    )
+                                }
+                            }
+                        }
+                        visits?.forEachIndexed { index, visit ->
+                            item(
+                                //  key =  visit?.uid?:"пусто" ,
+                            ) {
+                                visit?.let {
+                                    ItemListVisits(
+                                        visit = visit,
+
+                                        ) { visit ->
+                                        viewModel.obtainEvent(
+                                            viewEvent = VisitListEvent.DeleteVisit
+                                                (
+                                                key = key,
+                                                uidVisit = visit.uid?.let{it}?:""
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -185,6 +205,7 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                 )
             }
         }
+
         null -> {}
     }
 }

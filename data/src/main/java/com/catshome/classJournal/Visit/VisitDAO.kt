@@ -19,6 +19,8 @@ interface VisitDAO {
 
     @Update
     suspend fun update(visitEntity: VisitEntity): Int
+    @Query("Select * from visits where uid = :uidVisit")
+    fun getVisitByUid(uidVisit: String): VisitEntity?
 
     @Query(
         "Select v.uid , v.uidChild , c.child_name as Name, c.child_surname as Surname, v.dateVisit " +

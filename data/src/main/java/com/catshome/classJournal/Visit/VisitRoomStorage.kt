@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class VisitRoomStorage @Inject constructor(val visitDAO: VisitDAO, val schedulerDAO: SchedulerDAO) {
+    suspend fun getVisitByUid(uid: String): Visit? {
+        return visitDAO.getVisitByUid(uid)?.mapToVisit()
+    }
     suspend fun save(visit: List<VisitEntity>): Boolean {
         visitDAO.insert(visit).forEach {
             if (it <= 0) return false

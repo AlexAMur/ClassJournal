@@ -8,17 +8,18 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.ClassJournalTheme
 
 @Composable
 fun SearchField(
     label: String = "",
-    text: String,
+    text: TextFieldValue,
     isError: Boolean = false,
     errorMessage: String? = null,
     modifier: Modifier = Modifier,
     onClickCancel: ()->Unit = {},
-    onSearch: (String) -> Unit
+    onSearch: (TextFieldValue) -> Unit
 ) {
 
 
@@ -31,7 +32,7 @@ fun SearchField(
             onSearch(it)
         },
         trailingIcon = {
-            if (text.length == 0) {
+            if (text.text.isEmpty()) {
                 Icon(
                     Icons.Default.Search,
                     contentDescription = null,
