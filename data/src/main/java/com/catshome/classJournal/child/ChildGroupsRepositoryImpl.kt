@@ -21,18 +21,6 @@ class ChildGroupsRepositoryImpl @Inject constructor(val childGroupDAO: ChildGrou
     }
 
 
-//    override fun deleteGroup(childGroup: ChildGroup) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            childGroupDAO.delete(
-//                ChildGroupEntity(
-//                    uid = childGroup.uid,
-//                    childId = childGroup.childId,
-//                    groupId = childGroup.groupId
-//                )
-//            )
-//        }
-//    }
-
     override fun insertChildGroup(childGroup: ChildGroup) {
         CoroutineScope(Dispatchers.IO).launch {
             childGroupDAO.insert(

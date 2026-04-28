@@ -34,7 +34,6 @@ fun itemChild(offset: Float,name: String, surname: String, birthday: String, onC
         Modifier
             .fillMaxWidth()
             .background(ClassJournalTheme.colors.primaryBackground)
-
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(ClassJournalTheme.colors.secondaryBackground),
         shape = ClassJournalTheme.shapes.cornersStyle

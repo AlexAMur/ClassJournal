@@ -23,6 +23,9 @@ class VisitInteract @Inject constructor(
     private val childRepository: ChildRepository,
     private val visitRepository: VisitRepository,
 ) {
+   suspend fun getVisitByUid(uidVisit: String): Visit?{
+        return  visitRepository.getVisitByUid(uidVisit)
+    }
     fun searchChild(searchText: String): Flow<List<MiniChild>?> {
         return childRepository.getChildByName(searchText)
     }
@@ -56,7 +59,6 @@ class VisitInteract @Inject constructor(
     }
 
     suspend fun deleteVisit(uidVisit: String): Boolean {
-
         val job = CoroutineScope(Dispatchers.IO).async {
             return@async visitRepository.getVisitByUid(uidVisit)?.let {
                 visitRepository.deleteVisit(it)

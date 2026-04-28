@@ -1,19 +1,24 @@
 package com.catshome.classJournal.screens.Visit
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.compose.runtime.key
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
-import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitInteract
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.FormatDate
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
+import com.catshome.classJournal.domain.communs.toLong
 import com.catshome.classJournal.domain.communs.toTimeString
+import com.catshome.classJournal.navigate.mapToVisit
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -21,7 +26,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.UUID
 import javax.inject.Inject
 import kotlin.time.Clock
@@ -86,8 +90,64 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
     }
     val TEXT_FILD_COUNT = 3
     val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
+
     override fun obtainEvent(viewEvent: NewVisitEvent) {
         when (viewEvent) {
+            is NewVisitEvent.ChangePriceOnScheduler->{
+                val i = viewState.scheduler[viewEvent.dayInt]?.get(viewEvent.key)
+                    ?.mapIndexed { index, visit ->
+                        if (index == viewEvent.index) {
+                            visit.copy(priceScreen = viewEvent.text)
+                        } else
+                            visit
+
+                    }
+                val y = viewState.scheduler[viewEvent.dayInt]?.toMutableMap()
+                    ?.plus(Pair(viewEvent.key, i))
+                viewState = viewState.copy(
+                    scheduler = viewState.scheduler.toMutableList().mapIndexed { index, map ->
+                        if (index == viewEvent.dayInt)
+                            y
+                        else
+                            map
+                    }
+                )
+            }
+            is NewVisitEvent.ItemCheckClicked -> {
+                val i = viewState.scheduler[viewEvent.dayInt]?.get(viewEvent.key)
+                    ?.mapIndexed { index, visit ->
+                        if (index == viewEvent.indexItem) {
+                            visit.copy(check = viewEvent.isCheck)
+                        } else
+                            visit
+                    }
+                val y = viewState.scheduler[viewEvent.dayInt]?.toMutableMap()
+                    ?.plus(Pair(viewEvent.key, i))
+                viewState = viewState.copy(
+                    scheduler = viewState.scheduler.toMutableList().mapIndexed { index, map ->
+                        if (index == viewEvent.dayInt)
+                            y
+                        else
+                            map
+                    }
+                )
+            }
+
+            is NewVisitEvent.EditVisit -> {
+                viewState = viewState.copy(
+                    visit = viewEvent.details.mapToVisit(),
+                    selectChild = MiniChild(
+                        uid = viewEvent.details.uidChild ?: "",
+                        fio = viewEvent.details.fio.toString()
+                    ),
+                    selectDate = viewEvent.details.date?.toLocalDateTimeRu()?.toLong(),
+                    isSelectChild = true,
+                    searchText = viewState.searchText.copy(viewEvent.details.fio.toString()),
+                    priceScreen = viewEvent.details.price.toString()
+                )
+//                Log.e("CLJR", "Search text ${viewState.searchText}")
+            }
+
             NewVisitEvent.ClearSelect -> {
                 viewState = viewState.copy(
                     searchText = viewState.searchText.copy(""),
@@ -107,10 +167,8 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
             }
 
             is NewVisitEvent.SelectChild -> {
-                Log.e("CLJR", "Select Child")
                 viewState = viewState.copy(
                     selectChild = viewEvent.selectChild,
-
                     searchText = viewState.searchText.copy(
                         text = viewEvent.selectChild.fio,
                         selection = TextRange(viewEvent.selectChild.fio.length)
@@ -118,7 +176,6 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                     isSelectChild = true,
                     listChild = null
                 )
-                Log.e("CLJR", "List ${viewState.listChild}")
             }
 
             NewVisitEvent.CancelClicked -> {
@@ -126,20 +183,23 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
             }
 
             is NewVisitEvent.SaveClicked -> {
+//                Log.e("CLJR", "Save visit = ${viewState.visit}")
                 if (viewEvent.openPage == 0) {
                     if (viewState.scheduler.isEmpty()) {
                         Log.e("CLJR", "Нет данных для сохранения ${viewState.scheduler}")
                         return
                     }
+
                     viewModelScope.launch(context = exceptionHandlerVisit) {
                         viewState.scheduler.let { scheduler ->
+
                             //  visitInteract.saveVisit(scheduler)
                         }
                     }
                 }
-
                 if (viewEvent.openPage == 1) {
-                    Log.e("CLJR", "даta ${viewState.selectDate?.toLocalDateTimeRuString()}")
+
+//                    Log.e("CLJR", "даta ${viewState.selectDate?.toLocalDateTimeRuString()}")
                     if (viewState.selectChild == null) {
                         viewState = viewState.copy(
                             isSearchError = true,
@@ -159,7 +219,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                         return
                     }
 
-                    viewModelScope.launch(exceptionHandlerVisit) {
+                    viewModelScope.launch() {
                         visitInteract.saveVisit(
                             listOf(
                                 Visit(
@@ -168,7 +228,8 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                                     else viewState.visit?.uid,
                                     uidChild = viewState.selectChild?.uid,
                                     data = viewState.selectDate?.toLocalDateTimeRuString(
-                                        formatDate = FormatDate.Date),
+                                        formatDate = FormatDate.Date
+                                    ),
                                     price = viewState.priceScreen.toInt()
                                 )
                             )
@@ -179,9 +240,9 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
             }
 
             is NewVisitEvent.ChangePrice -> {
-                viewState = viewState.copy(priceScreen = viewEvent.price)
-                viewState = try {
-                    viewState.copy(priceScreen = viewEvent.price)
+                try {
+                    viewState = viewState.copy(priceScreen = viewEvent.price)
+                    //iewState.copy(priceScreen = viewEvent.price)
                 } catch (e: NumberFormatException) {
                     viewState.copy(
                         isPriceError = true,
@@ -222,31 +283,53 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
             }
 
             NewVisitEvent.getScheduler -> {
-                val scheduler =
+                val schedulerTmp =
                     MutableList<Map<String, List<Visit>>>(0) { mapOf(Pair("", listOf())) }
                 CoroutineScope(Dispatchers.Main).launch {
                     visitInteract.getScheduler()?.collect { listVisit ->
                         val jod = CoroutineScope(Dispatchers.IO).async {
                             DayOfWeek.entries.forEachIndexed { index, _ ->
-                                scheduler.add(
+                                viewState.lessonChecked[index].clear()
+                                schedulerTmp.add(
                                     index = index,
                                     listVisit.filter { it.dayOfWeek == index }
                                         .groupBy { visit ->
+                                            viewState.lessonChecked[index] =  viewState.lessonChecked[index].plus(false).toMutableList()
                                             "${visit.startLesson.toTimeString()} ${
                                                 if (!visit.groupName.isNullOrEmpty()) visit.groupName else ""
                                             }"
                                         }
                                 )
                             }
-                            return@async scheduler
+                            return@async schedulerTmp
                         }
                         viewState = viewState.copy(scheduler = jod.await())
+                        Log.e("CLJR","listCheck ${viewState.lessonChecked}")
+                        //Log.e("CLJR", "Scheduler ${viewState.scheduler}")
                     }
                 }
             }
 
-            NewVisitEvent.LessonClicked -> {
-                //viewState = viewState.copy()
+            is NewVisitEvent.LessonClicked -> {
+                val a = viewState.scheduler[viewEvent.dayInt].let { it?.keys?.indexOf(viewEvent.key)?.let {
+                    viewState.lessonChecked[viewEvent.dayInt][it]=viewEvent.isCheck
+                 }
+                }
+
+                val i = viewState.scheduler[viewEvent.dayInt]?.get(viewEvent.key)
+                    ?.mapIndexed { index, visit ->
+                            visit.copy(check = viewEvent.isCheck)
+                    }
+                val y = viewState.scheduler[viewEvent.dayInt]?.toMutableMap()
+                    ?.plus(Pair(viewEvent.key, i))
+                viewState = viewState.copy(
+                    scheduler = viewState.scheduler.toMutableList().mapIndexed { index, map ->
+                        if (index == viewEvent.dayInt)
+                            y
+                        else
+                            map
+                    }
+                )
             }
 
             is NewVisitEvent.ShowDateDialog -> {
@@ -259,3 +342,4 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
         }
     }
 }
+

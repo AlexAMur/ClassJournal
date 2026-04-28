@@ -26,7 +26,7 @@ fun ItemNewVisitHeader(
     cardColor: CardColors = CardDefaults.cardColors(ClassJournalTheme.colors.controlColor),
     textColor: Color = ClassJournalTheme.colors.primaryText,
     header: String,
-    isChecked: Boolean = false,
+    isChecked: Boolean ,
     onClick:()->Unit
 ) {
     Card(
@@ -38,7 +38,7 @@ fun ItemNewVisitHeader(
     {
         Row(
             Modifier.fillMaxWidth()
-                .padding(start = 16.dp , end = 16.dp),
+                .padding(start = 16.dp , end = 32.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {

@@ -1,16 +1,11 @@
 package com.catshome.classJournal.Scheduler
 
-import com.catshome.classJournal.child.ChildGroupDAO
 import com.catshome.classJournal.domain.Scheduler.ClientScheduler
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.zip
 import javax.inject.Inject
-import kotlin.time.Duration
 
 class SchedulerRoomStorage @Inject constructor(
     private val daoScheduler: SchedulerDAO

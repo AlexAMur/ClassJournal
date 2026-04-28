@@ -65,8 +65,6 @@ fun ChildListScreenContent(
     val context = LocalContext.current
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
-
-
     Surface(
         modifier = Modifier.background(
             ClassJournalTheme.colors.primaryBackground

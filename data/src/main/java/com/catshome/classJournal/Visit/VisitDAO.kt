@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.ABORT
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Update
 import com.catshome.classJournal.domain.Visit.Visit
@@ -11,16 +12,18 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface VisitDAO {
-    @Insert(onConflict = ABORT)
+    @Insert(onConflict = REPLACE)
     suspend fun insert(visitEntity: List<VisitEntity>): List<Long>
 
     @Delete
     suspend fun delete(visitEntity: VisitEntity): Int
 
-    @Update
+    @Update  (onConflict = REPLACE)
     suspend fun update(visitEntity: VisitEntity): Int
-    @Query("Select * from visits where uid = :uidVisit")
-    fun getVisitByUid(uidVisit: String): VisitEntity?
+    @Query("Select v.uid , v.uidChild , c.child_name as Name, c.child_surname as Surname," +
+            " v.dateVisit, v.priceVisit  from visits v join child c where v.uidChild =c.uid and" +
+            " v.uid = :uidVisit")
+    fun getVisitByUid(uidVisit: String): VisitScreenEntity?
 
     @Query(
         "Select v.uid , v.uidChild , c.child_name as Name, c.child_surname as Surname, v.dateVisit " +
@@ -85,10 +88,10 @@ interface VisitDAO {
 
 //получаем список детей на определенный день в расписании
     @Query("select c.uid as uidChild, s.startlesson, null as groupName, " +
-            "(c.child_name||' '||c.child_surname) as fio from child c Join scheduler s where " +
+            "(c.child_name||' '||c.child_surname) as fio, 0 as 'check'  from child c Join scheduler s where " +
             "c.uid = s.uidChild and dayOfWeek = :dayOfWeek and uidChild !='null' union " +
-            "select c.uid as uidChild," +
-            "s.startlesson, g.group_name as groupName,(c.child_name||' '||c.child_surname) as fio " +
+            "select c.uid as uidChild, s.startlesson, g.group_name as groupName," +
+            "(c.child_name||' '||c.child_surname) as fio, 0 as 'check' " +
             "from child c Join child_group cg Join `groups` g join scheduler s where " +
             "c.uid = cg.childId and g.uid = cg.groupId  and cg.groupId in (select uidGroup from " +
             "scheduler where dayOfWeek = :dayOfWeek and uidGroup !='null') and s.uidGroup = g.uid " +
@@ -98,11 +101,11 @@ fun getListClientScheduler(dayOfWeek: Int): Flow<List<Visit>>?
 
     //получаем список детей расписании
     @Query("select c.uid as uidChild,s.dayOfWeek, s.startlesson, null as groupName, " +
-            "(c.child_name||' '||c.child_surname) as fio from child c Join scheduler s where " +
+            "(c.child_name||' '||c.child_surname) as fio, 0 as 'check'  from child c Join scheduler s where " +
             "c.uid = s.uidChild and uidChild !='null' union " +
             "select c.uid as uidChild, s.dayOfWeek, " +
-            "s.startlesson, g.group_name as groupName,(c.child_name||' '||c.child_surname) as fio " +
-            "from child c Join child_group cg Join `groups` g join scheduler s where " +
+            "s.startlesson, g.group_name as groupName,(c.child_name||' '||c.child_surname) as fio, " +
+            "0 as 'check' from child c Join child_group cg Join `groups` g join scheduler s where " +
             "c.uid = cg.childId and g.uid = cg.groupId  and cg.groupId in (select uidGroup from " +
             "scheduler where uidGroup !='null') and s.uidGroup = g.uid " +
             "order by dayOfWeek,startLesson")

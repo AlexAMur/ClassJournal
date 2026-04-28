@@ -138,35 +138,40 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                                     contentColor = ClassJournalTheme.colors.primaryText
                                 )
                             ) {
-                                key?.let { text ->
-                                    Text(
-                                        text = text,
-                                        Modifier.padding(
-                                            start = 16.dp,
-                                            top = 16.dp,
-                                            bottom = 16.dp
-                                        ),
-                                        color = ClassJournalTheme.colors.primaryText,
-                                        fontStyle = ClassJournalTheme.typography.caption.fontStyle
-                                    )
-                                }
+                                Text(
+                                    text = key,
+                                    Modifier.padding(
+                                        start = 16.dp,
+                                        top = 16.dp,
+                                        bottom = 16.dp
+                                    ),
+                                    color = ClassJournalTheme.colors.primaryText,
+                                    fontStyle = ClassJournalTheme.typography.caption.fontStyle
+                                )
                             }
                         }
                         visits?.forEachIndexed { index, visit ->
-                            item(
-                                //  key =  visit?.uid?:"пусто" ,
-                            ) {
-                                visit?.let {
-                                    ItemListVisits(
-                                        visit = visit,
-
-                                        ) { visit ->
-                                        viewModel.obtainEvent(
-                                            viewEvent = VisitListEvent.DeleteVisit
-                                                (
-                                                key = key,
-                                                uidVisit = visit.uid?.let{it}?:""
-                                            )
+                            item {
+                                visit?.let { visit ->
+                                    visit.uid?.let { uid ->
+                                        ItemListVisits(
+                                            visit = visit,
+                                            onClick = {
+                                                viewModel.obtainEvent(
+                                                    VisitListEvent.EditVisit(
+                                                        uidVisit = uid
+                                                    )
+                                                )
+                                            },
+                                            onDeleteItem = { visit ->
+                                                viewModel.obtainEvent(
+                                                    viewEvent = VisitListEvent.DeleteVisit
+                                                        (
+                                                        key = key,
+                                                        uidVisit = visit.uid?.let { it } ?: ""
+                                                    )
+                                                )
+                                            }
                                         )
                                     }
                                 }
@@ -194,6 +199,7 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
 
         is VisitListAction.EditVisit -> {
             (viewAction as VisitListAction.EditVisit).visit.let { visit ->
+                Log.e("CLJR", "Visit to navigate ${visit}")
                 navController.navigate(
                     VisitDetails(
                         uid = visit.uid!!,
@@ -203,6 +209,7 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                         price = visit.price
                     )
                 )
+                viewModel.clearAction()
             }
         }
 

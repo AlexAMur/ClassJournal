@@ -35,7 +35,6 @@ class ChildInteractor @Inject constructor(
         //Если все проверки пройдены сохраняем данные
 // перед измененим или добавление ребенкка проверить на наличие удаленных записей и затем сохранять
         val childtmp = childRepository.childDeleteExists(child)
-        //childRepository.childDuble(Child(name = "Avto4281" , surname = "avto", birthday = (1729468800000L).toDateStrungRU()))
         if (isNull(childtmp)) {
             childRepository.saveChild(child, childGroup)
         } else //есть удаленный ребенок с той же фамилией именем и датой рождения
@@ -53,12 +52,10 @@ class ChildInteractor @Inject constructor(
     fun getGroupByChildID(uid: String): Flow<List<ChildGroup>>? {
         return childGroupRepository.getChildGroups(uid)
     }
-
     //Пометить на удаление
     suspend fun deleteChildUseCase(child: Child) {
         childRepository.deleteSet(child.copy(isDelete = true))
     }
-
     //Вызывается для возврата списка групп
     fun getGroup(): Flow<List<Group>> {
         return groupRepository.getGroups()

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -19,10 +20,10 @@ interface GroupsDAO {
     }
 
 
-    @Insert
+    @Insert(onConflict = REPLACE)
    suspend fun insert(group: GroupEntity)
 
-    @Update
+    @Update (onConflict = REPLACE)
     suspend fun update(group: GroupEntity)
 
     @Delete

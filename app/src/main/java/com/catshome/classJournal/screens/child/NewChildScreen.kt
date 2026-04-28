@@ -17,12 +17,18 @@ import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.communs.DATETIME_FORMAT_RU
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.localNavHost
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.group.ComposeAction
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.time.Clock
+import kotlin.time.Duration
 
 
 @SuppressLint("SuspiciousIndentation", "UnusedMaterial3ScaffoldPaddingParameter")
@@ -42,8 +48,8 @@ fun NewChildScreen(
         if (idChild.childID != "")
             viewModel.obtainEvent(NewChildEvent.OpenChild(idChild.childID))
         else {
-            viewState.child.birthday = LocalDate.now().minusYears(5)
-                .format(DateTimeFormatter.ofPattern(DATETIME_FORMAT_RU))
+            viewState.child.birthday = Clock.System.now().minus(
+                4, DateTimeUnit.YEAR, TimeZone.currentSystemDefault()).toDateTimeRuString().toString()
             viewModel.obtainEvent(NewChildEvent.newChild)
         }
     }

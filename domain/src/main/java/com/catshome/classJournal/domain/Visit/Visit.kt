@@ -9,7 +9,8 @@ data class Visit(
     val groupName: String? =null,
     val data: String? = "",
     val price: Int? =0,
-    val check: Boolean? = false,
+    val priceScreen: String? = null,
+    val check: Boolean = false,
     var isDelete: Boolean? = false,
 )
 

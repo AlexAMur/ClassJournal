@@ -1,7 +1,11 @@
 package com.catshome.classJournal.screens.Visit
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -14,18 +18,34 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
+import com.catshome.classJournal.communs.TextField
 import com.catshome.classJournal.domain.communs.DayOfWeek
+import com.catshome.classJournal.domain.communs.FormatDate
+import com.catshome.classJournal.domain.communs.getNow
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.resource.R
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlin.concurrent.timer
+import kotlin.time.Clock
+
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -37,12 +57,11 @@ fun NewVisitByScheduler(
         LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding
             .calculateBottomPadding()
     // Для эффекта бесконечности используем очень большое число
-    val initialPage = Int.MAX_VALUE / 1024
+    val initialPage = Int.MAX_VALUE / 2
     val pagerState = rememberPagerState(
-        initialPage = initialPage,
-        pageCount = { Int.MAX_VALUE/512} // "Бесконечное" количество страниц
+        initialPage = initialPage + getNow().dayOfWeek.ordinal,
+        pageCount = { Int.MAX_VALUE } // "Бесконечное" количество страниц
     )
-
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -55,18 +74,20 @@ fun NewVisitByScheduler(
         //.verticalScroll(state = rememberScrollState()),
         //colors = CardDefaults.cardColors(ClassJournalTheme.colors.disableContentColor)
     ) {
-
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(0.dp), // Элемент на весь экран
             pageSpacing = 0.dp
         ) { index ->
-//            Log.e("CLJR", "Index page ${index % DayOfWeek.entries.size}")
-//            Log.e("CLJR", "CurPage ${pagerState.currentPage % DayOfWeek.entries.size}")
             val page = index % DayOfWeek.entries.size
+            viewState.dateOnPage = Clock.System.now().minus(
+                value = viewState.pageDayOfWeekOffset - index + getNow().dayOfWeek.ordinal,
+                unit = DateTimeUnit.DAY,
+                timeZone = TimeZone.currentSystemDefault()
+            ).toDateTimeRuString(formatDate = FormatDate.Date)
             //if (pagerState.currentPage- index!=0)
-              //  viewModel.obtainEvent(NewVisitEvent.ChangePageIndex())
+            //  viewModel.obtainEvent(NewVisitEvent.ChangePageIndex())
 
 //            if((pagerState.currentPage- index)+pagerState.currentPageOffsetFraction ==0.0f) {
 //                Log.e("CLJR", "Page Launched ${viewState.pageIndex}")
@@ -96,8 +117,7 @@ fun NewVisitByScheduler(
 
                 ) {
                     Text(
-                        // modifier = Modifier.fillMaxWidth(),
-                        text = DayOfWeek.entries[page].nameRu,
+                        text = "${DayOfWeek.entries[page].nameRu} ${viewState.dateOnPage} ",
                         color = ClassJournalTheme.colors.primaryText,
                         fontSize = ClassJournalTheme.typography.toolbar.fontSize,
                     )
@@ -106,34 +126,107 @@ fun NewVisitByScheduler(
                     Modifier
                         .fillMaxSize()
                         .background(ClassJournalTheme.colors.primaryBackground)
-                        //.padding(8.dp)
+                    //.padding(8.dp)
                 ) {
-                    if (!viewState.scheduler.isNullOrEmpty())
-                    viewState.scheduler?.let { listScheduler ->
-                        listScheduler[page]?.entries?.forEach{listScheduler->
-                            stickyHeader {
-                                ItemNewVisitHeader(
-                                    header = listScheduler.key
-                                ){
-                                    viewModel.obtainEvent(NewVisitEvent.LessonClicked)
-                                }
-                            }
+                    if (viewState.scheduler.isNotEmpty()) {
+                        viewState.scheduler.let { listScheduler ->
+                            listScheduler[page]?.entries?.forEachIndexed { indexKey, mapScheduler ->
 
-                            itemsIndexed(listScheduler.value) { index, scheduler ->
-                                Card(
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                    colors = CardDefaults.cardColors(
-                                        ClassJournalTheme.colors.secondaryBackground
-                                    )
-                                )
-                                {
-                                    Text(
-                                        modifier = Modifier.padding(8.dp),
-                                        text = scheduler.fio.toString(),
-                                        color = ClassJournalTheme.colors.primaryText
-                                    )
+                                stickyHeader {
+                                    ItemNewVisitHeader(
+                                        header = mapScheduler.key,
+                                        isChecked = if (viewState.lessonChecked[page].isNotEmpty())
+                                            viewState.lessonChecked[page][indexKey]
+                                        else
+                                            false
+                                    ) {
+                                        viewModel.obtainEvent(
+                                            viewEvent = NewVisitEvent.LessonClicked(
+                                                dayInt = page,
+                                                key = mapScheduler.key,
+                                                isCheck = ! viewState.lessonChecked[page][indexKey]
+                                            )
+                                        )
+                                    }
+                                }
+                                mapScheduler.value?.let { listvisit ->
+                                    itemsIndexed(listvisit) { itemIndex, scheduler ->
+                                        Card(
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(8.dp),
+                                            colors = CardDefaults.cardColors(
+                                                ClassJournalTheme.colors.secondaryBackground
+                                            )
+                                        )
+                                        {
+                                            Column(
+                                                Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(start = 16.dp)
+                                            ) {
+                                                Row(
+                                                    Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(end = 24.dp),
+                                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Text(
+                                                        modifier = Modifier.padding(8.dp),
+                                                        text = scheduler.fio,
+                                                        color = ClassJournalTheme.colors.primaryText
+                                                    )
+                                                    Icon(
+                                                        painter =
+                                                            painterResource(
+                                                                if (scheduler.check == true)
+                                                                    R.drawable.box_ckeck
+                                                                else
+                                                                    R.drawable.box_out
+                                                            ),
+                                                        modifier = Modifier
+                                                            .clickable(onClick = {
+                                                                viewModel.obtainEvent(
+                                                                    NewVisitEvent.ItemCheckClicked(
+                                                                        dayInt = page,
+                                                                        key = mapScheduler.key,
+                                                                        indexItem = itemIndex,
+                                                                        isCheck = !scheduler.check
+                                                                    )
+                                                                )
+                                                            }),
+                                                        contentDescription = "",
+                                                        tint = ClassJournalTheme.colors.primaryText
+                                                    )
+                                                }
+                                                TextField(
+                                                    modifier = Modifier.Companion,
+                                                    value = scheduler.priceScreen?:"0",
+                                                    label = stringResource(R.string.visit_price),
+                                                    supportingText = "",//if (isPriceError) errorPriceMessage else "",
+                                                    onValueChange = {
+                                                        viewModel.obtainEvent(
+                                                            NewVisitEvent.ChangePriceOnScheduler(
+                                                                key = mapScheduler.key,
+                                                                dayInt = page,
+                                                                index = itemIndex,
+                                                                text = it,
+                                                            )
+                                                        )
+                                                    },
+                                                    trailingIcon = null,
+                                                    minLines = 1,
+                                                    singleLine = true,
+                                                    keyboardOptions = KeyboardOptions.Default.merge(
+                                                        KeyboardOptions(keyboardType = KeyboardType.Number)
+                                                    ),
+                                                    errorState = false,// isPriceError,
+                                                    readOnly = false
+                                                )
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

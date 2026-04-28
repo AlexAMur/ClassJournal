@@ -25,6 +25,10 @@ const val DATETIME_FORMAT_RU = "dd.MM.yyyy HH:mm"
 const val TIME_FORMAT = "HH:mm"
 
 enum class FormatDate { DateTime, Date, Time }
+@RequiresApi(Build.VERSION_CODES.O)
+fun getNow(): LocalDateTime{
+    return Clock.System.now().toEpochMilliseconds().toLocalDateTimeRu()!!
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun String.toLocalDateTimeRu(timeZone: TimeZone): Date? {

@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @OptIn(ExperimentalWearMaterialApi::class)
 @HiltViewModel
 class ChildListViewModel @Inject constructor(
@@ -121,7 +120,6 @@ class ChildListViewModel @Inject constructor(
             }
         }
     }
-
 
     private fun ChangeOptionsRevealed(
         childItem: ChildItem, isOptionsRevealed: Boolean,

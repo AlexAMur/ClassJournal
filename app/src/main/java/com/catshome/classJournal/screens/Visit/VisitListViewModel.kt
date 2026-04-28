@@ -2,6 +2,7 @@ package com.catshome.classJournal.screens.Visit
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitInteract
@@ -9,11 +10,20 @@ import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.Collections.emptyList
 import javax.inject.Inject
 import kotlin.collections.minus
 import kotlin.collections.plus
+
+/*
+ *Удаление записи VisitEvent VisitDelete сначала уделяем из списка viewState.itemList
+ * функция deleteItemFromList
+ */
+
 
 @HiltViewModel
 class VisitListViewModel @Inject constructor(private val visitInteractor: VisitInteract) :
@@ -21,23 +31,33 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
 
     override fun obtainEvent(viewEvent: VisitListEvent) {
         when (viewEvent) {
-            is VisitListEvent.isDelete -> {
-                viewState.listVisit[viewEvent.key]?.let { list ->
-                    viewState = viewState.copy(
-                        listVisit = viewState.listVisit.plus(
-                            mapOf(
-                                Pair(
-                                    viewEvent.key, viewState.listVisit[viewEvent.key]?.plus(
-                                        list?.get(viewEvent.index)?.copy(isDelete = true)
-
-                                    )
-                                )
-                            )
-                        )
-                    )
+            is VisitListEvent.EditVisit -> {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val job = CoroutineScope(Dispatchers.IO).async {
+                        visitInteractor.getVisitByUid(viewEvent.uidVisit)
+                    }
+                    job.await()?.let { visit ->
+                        viewAction = VisitListAction.EditVisit(visit)
+                    }
                 }
-                Log.e("CLJR", "isDelete ${viewState.listVisit}")
             }
+//            is VisitListEvent.isDelete -> {
+//                viewState.listVisit[viewEvent.key]?.let { list ->
+//                    viewState = viewState.copy(
+//                        listVisit = viewState.listVisit.plus(
+//                            mapOf(
+//                                Pair(
+//                                    viewEvent.key, viewState.listVisit[viewEvent.key]?.plus(
+//                                        list.get(viewEvent.index)?.copy(isDelete = true)
+//
+//                                    )
+//                                )
+//                            )
+//                        )
+//                    )
+//                }
+//                Log.e("CLJR", "isDelete ${viewState.listVisit}")
+//            }
 
             VisitListEvent.NewVisit -> {
                 viewAction = VisitListAction.NewVisit
@@ -54,7 +74,6 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                     snackBarLabel = context.getString(R.string.bottom_yes),
                     deleteKey = viewEvent.key,
                     onDismissed = {
-                        Log.e("CLJR", "Delete!!!!")
                         viewState = viewState.copy(messageSnackBar = null)
                         viewEvent.uidVisit?.let { uidVisit ->
                             viewModelScope.launch {
@@ -63,21 +82,13 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                                 }
                             }
                         }
-
                     },
                     onAction = {
-//                        Log.e("CLJR", "Un Delete!!!!")
                         viewState = viewState.copy(
                             messageSnackBar = null,
                             onDismissed = null,
-                            )
+                        )
                         unDeleteItem()
-//                        viewState.deleteVisit?.let { deleteVisit ->
-//                            viewState = viewState.copy(
-//                                listVisit = viewState.listVisit.plus(deleteVisit)
-//                            )
-//                        }
-
                     }
                 )
             }

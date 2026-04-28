@@ -42,6 +42,9 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.catshome.classJournal.domain.communs.DayOfWeek
+import com.catshome.classJournal.domain.communs.getNow
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.ItemScreen
@@ -60,15 +63,16 @@ fun NewVisitScreen(
 ) {
     val outerNavigation = localNavHost.current
     val viewAction by viewModel.viewActions().collectAsState(null)
-    var cardEnabled by remember { mutableStateOf(false) }
+    val viewState by viewModel.viewState().collectAsState()
+   // var cardEnabled by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val bottomPadding =
         LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding.calculateBottomPadding()
     val pageName = listOf("По расписанию", "Свободное")
 
     val pagerState = rememberPagerState(
-        initialPage =  Int.MAX_VALUE / 1024 -1,
-        pageCount = { Int.MAX_VALUE / 512 }
+        initialPage =  Int.MAX_VALUE / 2 - 1,
+        pageCount = { Int.MAX_VALUE  }
     )
     HorizontalPager(
         state = pagerState,
@@ -78,7 +82,8 @@ fun NewVisitScreen(
         verticalAlignment = Alignment.Top,
 
         ) { index ->
-        val pageIndex = index % pageName.size
+            var pageIndex = index % pageName.size
+
         val pageOffset by remember {
             derivedStateOf {
                 (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
@@ -102,7 +107,15 @@ fun NewVisitScreen(
             targetValue = if (pageOffset != 0.0f) 0.8f else 1f,
             animationSpec = tween(delayMillis = 300)
         )
-        LaunchedEffect(pageIndex == 0) {
+//        LaunchedEffect(Unit){
+//            if (details != null){// грузим visit
+//                pagerState.scrollToPage( if(Int.MAX_VALUE / 1024 > 0) Int.MAX_VALUE / 1024 else  Int.MAX_VALUE / 1024 -1)
+//                viewModel.obtainEvent(NewVisitEvent.EditVisit(details = details))
+//            }
+//            else
+//                pagerState.scrollToPage(Int.MAX_VALUE / 1024 -1)
+//        }
+        LaunchedEffect(Unit) {
             Log.e("CLJR", "Launcher!!!!!!!!!!!!!")
             if (pageOffset == 0.0f)
              viewModel.obtainEvent(NewVisitEvent.getScheduler)
@@ -123,7 +136,7 @@ fun NewVisitScreen(
                     .graphicsLayer {
                         scaleX = pageSize
                         scaleY = pageSize
-                        cardEnabled = pageOffset == 0.0f
+//                        cardEnabled = pageOffset == 0.0f
                     },
                 shape = RoundedCornerShape(size = shapeAnime),
                 colors = CardDefaults.cardColors(
@@ -138,7 +151,7 @@ fun NewVisitScreen(
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 16.dp),
-                        text = pageName[pageIndex],
+                        text = pageName[pagerState.currentPage % pageName.size],
                         style = ClassJournalTheme.typography.caption,
                         color = ClassJournalTheme.colors.primaryText
                     )
@@ -177,7 +190,12 @@ fun NewVisitScreen(
                         style = ClassJournalTheme.typography.caption
                     )
                     TextButton(onClick = {
-                        viewModel.obtainEvent(NewVisitEvent.SaveClicked(pageIndex))
+                        viewModel.obtainEvent(
+                            viewEvent = NewVisitEvent.SaveClicked(
+                                openPage = pagerState.currentPage % pageName.size,
+
+                                dayOfWeek = DayOfWeek.FRIDAY
+                            ))
                     }
                     ) {
                         Text(
@@ -186,8 +204,7 @@ fun NewVisitScreen(
                         )
                     }
                 }
-
-                if (pageIndex == 1)
+                if (pageIndex % pageName.size == 1)
                     NewVisitContent(viewModel)
                 else
                     NewVisitByScheduler(viewModel)
@@ -215,8 +232,6 @@ fun NewVisitScreen(
                 }
             }
         }
-
         null -> {}
-
     }
 }
