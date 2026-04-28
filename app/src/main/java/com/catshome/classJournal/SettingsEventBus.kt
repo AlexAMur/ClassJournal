@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class SettingsEventBus {
-
     private val _currentSettings: MutableStateFlow<SettingsBundle> = MutableStateFlow(
         SettingsBundle(
             isDarkMode = true,

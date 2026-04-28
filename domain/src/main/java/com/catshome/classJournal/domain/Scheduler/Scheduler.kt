@@ -9,5 +9,6 @@ data class Scheduler(
     val name: String?  = null,
     val startLesson: Long?  = null,
     val duration: Int?  = null,
+    val price:Int = 0,
     val isUnCollapse: Boolean = true
 )

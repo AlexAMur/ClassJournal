@@ -22,7 +22,7 @@ import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.Visit.NewVisitEvent
 
 @Composable
-fun ItemListScheduler(image: Painter, text: String, onClick: () -> Unit = {}) {
+fun ItemListScheduler(image: Painter, text: String, price: String, onClick: () -> Unit = {}) {
     Row(
         modifier = Modifier.background(ClassJournalTheme.colors.primaryBackground),
         verticalAlignment = Alignment.CenterVertically
@@ -41,10 +41,20 @@ fun ItemListScheduler(image: Painter, text: String, onClick: () -> Unit = {}) {
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                //.weight(0.8f, )
+                .weight(1f)
                 .background(ClassJournalTheme.colors.primaryBackground)
                 .padding(16.dp),
             text = text,
+            style = ClassJournalTheme.typography.body,
+
+            )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.5f)
+                .background(ClassJournalTheme.colors.primaryBackground)
+                .padding(16.dp),
+            text = price,
             style = ClassJournalTheme.typography.body,
 
             )

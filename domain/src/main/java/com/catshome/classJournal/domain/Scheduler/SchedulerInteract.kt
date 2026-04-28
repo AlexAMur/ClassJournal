@@ -16,7 +16,8 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
                 it.mapToScheduler(
                     dayOfWeek = dayOfWeek,
                     startLesson = time,
-                    duration = duration)
+                    duration = duration,
+                    )
             })
     }
     suspend fun checkTimeLesson(dayOfWeek: DayOfWeek,oldTime: Int?,  startTime: Int, duration: Int): Boolean {

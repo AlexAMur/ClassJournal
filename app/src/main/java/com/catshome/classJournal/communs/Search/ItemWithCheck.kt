@@ -1,4 +1,4 @@
-package com.catshome.classJournal
+package com.catshome.classJournal.communs.Search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +10,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.communs.TextField
 import com.catshome.classJournal.resource.R
 
@@ -28,6 +28,8 @@ fun ItemWithCheck(
     startImage: Painter?,
     onClick:(String)->Unit,
     item: String,
+    price: String,
+    onChangePrice:(String)->Unit,
     isChecked: Boolean,
     texStyle: TextStyle? =  null
     ){
@@ -44,7 +46,7 @@ fun ItemWithCheck(
                 .clickable {
                     //выбор элемента
                     onClick(item)
-                    //viewModel.obtainEvent(NewChildEvent.SelectGroup(item.group?.uid.toString()))
+
                 },
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
@@ -75,10 +77,11 @@ fun ItemWithCheck(
                     .padding(top = 16.dp)
                     .weight(0.8f)
                     ,
-                value = "0",
+                value = price,
                 label = "Стоймость", //stringResource(com.catshome.classJournal.resource.R.string.visit_price),
                 supportingText = "",//if (isPriceError) errorPriceMessage else "",
                 onValueChange = {
+                    onChangePrice(it)
 //                viewModel.obtainEvent(
 //                    NewVisitEvent.ChangePriceOnScheduler(
 //                        key = mapScheduler.key,
@@ -96,23 +99,21 @@ fun ItemWithCheck(
                 ),
                 errorState = false,// isPriceError,
                 readOnly = false,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = ClassJournalTheme.colors.primaryText,
-                    unfocusedTextColor = ClassJournalTheme.colors.primaryText,
-                    focusedBorderColor = ClassJournalTheme.colors.tintColor,
-                    focusedSupportingTextColor = ClassJournalTheme.colors.tintColor,
-                    unfocusedSupportingTextColor = ClassJournalTheme.colors.primaryText,
-                    focusedLabelColor = ClassJournalTheme.colors.tintColor,
-                    unfocusedLabelColor = ClassJournalTheme.colors.primaryText,
-                    errorLabelColor = ClassJournalTheme.colors.errorColor,
-                    errorBorderColor = ClassJournalTheme.colors.errorColor,
-                    errorSupportingTextColor = ClassJournalTheme.colors.errorColor,
-                    errorTextColor = ClassJournalTheme.colors.errorColor,
-                    cursorColor = ClassJournalTheme.colors.tintColor,
-                    errorCursorColor = ClassJournalTheme.colors.errorColor,
-                )
-
-
+//                colors = OutlinedTextFieldDefaults.colors(
+//                    focusedTextColor = ClassJournalTheme.colors.primaryText,
+//                    unfocusedTextColor = ClassJournalTheme.colors.primaryText,
+//                    focusedBorderColor = ClassJournalTheme.colors.tintColor,
+//                    focusedSupportingTextColor = ClassJournalTheme.colors.tintColor,
+//                    unfocusedSupportingTextColor = ClassJournalTheme.colors.primaryText,
+//                    focusedLabelColor = ClassJournalTheme.colors.tintColor,
+//                    unfocusedLabelColor = ClassJournalTheme.colors.primaryText,
+//                    errorLabelColor = ClassJournalTheme.colors.errorColor,
+//                    errorBorderColor = ClassJournalTheme.colors.errorColor,
+//                    errorSupportingTextColor = ClassJournalTheme.colors.errorColor,
+//                    errorTextColor = ClassJournalTheme.colors.errorColor,
+//                    cursorColor = ClassJournalTheme.colors.tintColor,
+//                    errorCursorColor = ClassJournalTheme.colors.errorColor,
+//                )
             )
 
 

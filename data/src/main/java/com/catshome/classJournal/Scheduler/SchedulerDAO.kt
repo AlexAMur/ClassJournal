@@ -60,16 +60,16 @@ interface SchedulerDAO{
     fun setNewTimeLesson(dayOfWeek: Int, oldTime: Int,  newTime: Int, duration: Int):Int
     @Query(
         "Select s.uid , s.uidChild,s.uidGroup, dayOfWeek,startLesson, duration ," +
-                " c.child_name as name, c.child_surname as Surname ,group_name as groupName" +
-                " from scheduler s left join child c on uidChild =c.uid left join 'groups' g" +
+                " c.child_name as name, c.child_surname as Surname ,group_name as groupName," +
+                "s.price  from scheduler s left join child c on uidChild =c.uid left join 'groups' g" +
                 " on  uidGroup = g.uid group by s.uid ORDER BY dayOfWeek ASC, 'Surname', 'Name' ASC"
     )
     fun getFull(): Flow<List<SchedulerScreenEntity>>?
     //не работает вроде
     @Query(
         "Select s.uid , s.uidChild,s.uidGroup, dayOfWeek,startLesson, duration ," +
-                " c.child_name as name, c.child_surname as Surname ,group_name as groupName " +
-                "from scheduler s join child c , 'groups' g where uidChild =c.uid and " +
+                " c.child_name as name, c.child_surname as Surname ,group_name as groupName, s.price" +
+                " from scheduler s join child c , 'groups' g where uidChild =c.uid and " +
                 "uidGroup = g.uid and dayOfWeek = :dayOfWeek " +
                 " ORDER BY dayOfWeek ASC, 'Surname', 'Name' ASC"
     )
@@ -77,8 +77,8 @@ interface SchedulerDAO{
 
     @Query(
         "Select s.uid , s.uidChild,s.uidGroup, dayOfWeek,startLesson, duration ," +
-                " c.child_name as name, c.child_surname as Surname ,group_name as groupName " +
-                "from scheduler s join child c , 'groups' g where uidChild =c.uid and " +
+                " c.child_name as name, c.child_surname as Surname ,group_name as groupName, " +
+                "s.price from scheduler s join child c , 'groups' g where uidChild =c.uid and " +
                 "uidGroup = g.uid and dayOfWeek = :dayOfWeek  and startLesson = :startTime " +
                 "ORDER BY dayOfWeek ASC, 'Surname', 'Name' ASC"
     )

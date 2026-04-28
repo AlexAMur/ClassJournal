@@ -25,7 +25,7 @@ import com.catshome.classJournal.child.ChildGroupEntity
     PayEntity::class,
     VisitEntity::class,
     SchedulerEntity::class],
-    version = 7)
+    version = 8)
 abstract class AppDataBase : RoomDatabase() {
     abstract fun groupsDAO(): GroupsDAO
     abstract fun childDAO(): ChildDAO

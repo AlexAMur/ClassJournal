@@ -10,6 +10,7 @@ import com.catshome.classJournal.child.ChildEntity
 import com.catshome.classJournal.domain.Scheduler.Scheduler
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import java.util.UUID
+import kotlin.Int
 import kotlin.uuid.Uuid
 
 
@@ -42,7 +43,8 @@ data class SchedulerEntity(
     val dayOfWeek: Int,
     val uidGroup: String?,
     val startLesson: Long,
-    val duration: Int
+    val duration: Int,
+    val price:Int =0
 )
 
 data class SchedulerScreenEntity(
@@ -53,7 +55,8 @@ data class SchedulerScreenEntity(
     val name: String?,
     val groupName: String?,
     val startLesson: Long,
-    val duration: Int
+    val duration: Int,
+    val price:Int
 )
 fun SchedulerScreenEntity.mapToScheduler(): Scheduler{
  return Scheduler(
@@ -64,7 +67,8 @@ fun SchedulerScreenEntity.mapToScheduler(): Scheduler{
      uidGroup = this.uidGroup,
      name = this.name?:this.groupName?:"",
      startLesson = this.startLesson,
-     duration = this.duration
+     duration = this.duration,
+     price = this.price
  )
 }
 fun Scheduler.mapToSchedulerEntity(): SchedulerEntity{
@@ -74,6 +78,7 @@ fun Scheduler.mapToSchedulerEntity(): SchedulerEntity{
         dayOfWeek = this.dayOfWeekInt,
         uidGroup = this.uidGroup,
         startLesson = this.startLesson?:0,
-        duration = this.duration?:0
+        duration = this.duration?:0,
+        price = this.price
     )
 }

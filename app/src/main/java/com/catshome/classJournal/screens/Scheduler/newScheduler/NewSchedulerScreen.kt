@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.ClassJournalTheme
+import com.catshome.classJournal.communs.DialogScreen
 import com.catshome.classJournal.communs.Search.ItemWithCheck
 import com.catshome.classJournal.communs.SearchField
 import com.catshome.classJournal.navigate.NewLesson
@@ -64,6 +65,16 @@ fun NewSchedulerScreen(
             }
         }
     }
+    //LaunchedEffect(viewState.isShowDialog) {
+        if(viewState.isShowDialog && viewState.onDisimiss!= null)
+        DialogScreen(
+            title = "Ошибка  сохранения. ",
+            text = viewState.dialogMessage.toString(),
+            onDismiss = viewState.onDisimiss!!,
+            dissmissText = "ОК",
+            textContentColor = ClassJournalTheme.colors.errorColor,
+        )
+    //}
 
     Surface(
         modifier = Modifier
@@ -162,11 +173,19 @@ fun NewSchedulerScreen(
 //                            )
                             },
                             isChecked = child.isChecked,
+                            price = child.price,
+                            onChangePrice = {value->
+                                viewModel.obtainEvent(
+                                    NewSchedulerEvent.ChangePrice(index, value)
+                                )
+                            },
                             startImage = if (child.uidChild.isNullOrEmpty())
                                 painterResource(R.drawable.outline_group_24)
                             else
                                 painterResource(R.drawable.outline_account_circle_48),
+
                         )
+
                     }
                 }
             }

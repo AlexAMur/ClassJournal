@@ -21,7 +21,8 @@ fun ItemLesson(value: Scheduler,isCollapse: Boolean, onDelete:(String)->Unit){
                         painterResource(R.drawable.fil_group_24)
                     else
                         painterResource(R.drawable.account_box_24),
-                    text = name
+                    text = name,
+                    price = "${value.price.toString()} р."
                 ) //можно добввить onClick
             }
         }

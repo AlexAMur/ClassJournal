@@ -10,7 +10,7 @@ data class ClientScheduler(
     val uidGroup: String? = null,
     val name: String,
     val isChecked: Boolean = false,
-    val price: String = ""
+    var price: String = ""
 )
 
 fun ClientScheduler.mapToScheduler(
@@ -26,6 +26,7 @@ fun ClientScheduler.mapToScheduler(
         uidGroup = this.uidGroup,
         name = this.name,
         startLesson = startLesson,
-        duration = duration
+        duration = duration,
+        price = this.price.toInt()
     )
 }

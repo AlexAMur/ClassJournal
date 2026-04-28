@@ -9,5 +9,6 @@ sealed class NewSchedulerEvent {
     data object CloseEvent: NewSchedulerEvent()
 
     data class Search(val search: String): NewSchedulerEvent()
+    data class ChangePrice(val index: Int,val price: String): NewSchedulerEvent()
     data class Checked(val index: Int): NewSchedulerEvent()
 }

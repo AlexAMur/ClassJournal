@@ -1,8 +1,12 @@
 package com.catshome.classJournal.screens.Scheduler.newScheduler
 
 import android.util.Log
+import androidx.compose.material.AlertDialog
 import androidx.compose.ui.text.input.TextFieldValue
+import com.catshome.classJournal.resource.R
 import androidx.lifecycle.viewModelScope
+import com.catshome.classJournal.context
+import com.catshome.classJournal.domain.Scheduler.ClientScheduler
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
 import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerEvent.*
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
@@ -34,14 +38,38 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
 
     override fun obtainEvent(viewEvent: NewSchedulerEvent) {
         when (viewEvent) {
+            is ChangePrice -> {
+                viewState.itemsList?.let { listScheduler ->
+                    viewState = viewState.copy(
+                        itemsList = listScheduler.mapIndexed { index, scheduler ->
+                            if (index == viewEvent.index)
+                                scheduler.copy(price = viewEvent.price)
+                            else
+                                scheduler
+                        }
+                    )
+                }
+            }
+
             ReloadClient -> {
-                obtainEvent(NewSchedulerEvent.Search(viewState.searchText.text))
+                obtainEvent(Search(viewState.searchText.text))
             }
 
             CloseEvent -> viewAction = NewSchedulerAction.CloseScreen
 
             SaveEvent -> {
                 val list = viewState.itemsList?.filter { it.isChecked }
+                list?.map{clientScheduler ->
+                    try {
+                        clientScheduler.price.toInt()
+                    }catch (e: NumberFormatException){
+                        viewState = viewState.copy(isShowDialog= true, dialogMessage = context.getString(R.string.error_invalid_valuePrice))
+                        viewState.onDisimiss = {
+                            viewState = viewState.copy(isShowDialog= false)
+                        }
+                        return
+                    }
+                }
                 list?.let {
                     viewModelScope.launch {
                         viewState.dayOfWeek?.let { dayOfWeek ->

@@ -10,5 +10,8 @@ data class NewSchedulerState(
     var startTime: Int = 0,
     var duration: Int = 0,
     var searchText: TextFieldValue = TextFieldValue(),
-    val itemsList: List<ClientScheduler>? = null
+    val isShowDialog: Boolean = false,
+    val dialogMessage: String? = null,
+    val itemsList: List<ClientScheduler>? = null,
+    var onDisimiss:(()->Unit)?= null
 )
