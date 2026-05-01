@@ -17,6 +17,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
 class VisitInteract @Inject constructor(
@@ -39,7 +41,7 @@ class VisitInteract @Inject constructor(
             if (visit.uidChild.isNullOrEmpty())
                 throw kotlin.IllegalArgumentException("Не указан UID ребенка")
             if (visit.data.isNullOrEmpty() || visit.data.toLocalDateTimeRu()?.toLong() == null)
-                throw kotlin.IllegalArgumentException("Нет или не корректная дата.")
+                throw kotlin.IllegalArgumentException("${visit.data} Нет или не корректная дата.")
             if (visit.price == null || visit.price <= 0)
                 throw IllegalArgumentException("Платеж не может быть нулевым или отрицательным.")
         }

@@ -1,4 +1,4 @@
-package com.catshome.classJournal.screens.Visit
+package com.catshome.classJournal.screens.Visit.singleVisit
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

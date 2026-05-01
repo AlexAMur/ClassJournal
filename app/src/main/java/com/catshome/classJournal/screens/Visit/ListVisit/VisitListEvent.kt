@@ -1,4 +1,4 @@
-package com.catshome.classJournal.screens.Visit
+package com.catshome.classJournal.screens.Visit.ListVisit
 
 sealed class VisitListEvent {
     data object NewVisit: VisitListEvent()

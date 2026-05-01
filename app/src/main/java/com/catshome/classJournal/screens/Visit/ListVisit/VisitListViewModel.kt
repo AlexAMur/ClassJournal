@@ -1,10 +1,8 @@
-package com.catshome.classJournal.screens.Visit
+package com.catshome.classJournal.screens.Visit.ListVisit
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.catshome.classJournal.context
-import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitInteract
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.resource.R
@@ -14,8 +12,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.util.Collections.emptyList
 import javax.inject.Inject
+import kotlin.collections.get
 import kotlin.collections.minus
 import kotlin.collections.plus
 

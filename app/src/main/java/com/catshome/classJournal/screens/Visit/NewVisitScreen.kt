@@ -32,9 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -43,14 +41,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.catshome.classJournal.domain.communs.DayOfWeek
-import com.catshome.classJournal.domain.communs.getNow
-import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.Visit.NewVisitAction
-import com.catshome.classJournal.screens.Visit.NewVisitByScheduler
-import com.catshome.classJournal.screens.Visit.NewVisitContent
+import com.catshome.classJournal.screens.Visit.byScheduler.NewVisitByScheduler
+import com.catshome.classJournal.screens.Visit.singleVisit.NewVisitContent
 import com.catshome.classJournal.screens.Visit.NewVisitEvent
 import com.catshome.classJournal.screens.Visit.NewVisitViewModel
 

@@ -1,4 +1,4 @@
-package com.catshome.classJournal.screens.Visit
+package com.catshome.classJournal.screens.Visit.byScheduler
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

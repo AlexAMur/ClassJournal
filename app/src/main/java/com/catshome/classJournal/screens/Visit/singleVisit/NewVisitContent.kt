@@ -1,6 +1,5 @@
-package com.catshome.classJournal.screens.Visit
+package com.catshome.classJournal.screens.Visit.singleVisit
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -13,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
+import com.catshome.classJournal.screens.Visit.NewVisitEvent
+import com.catshome.classJournal.screens.Visit.NewVisitViewModel
 import java.util.Date
 import kotlin.time.Clock
 
@@ -36,11 +37,11 @@ fun NewVisitContent(
             onValueChange = { inputText ->
 //                Log.e("CLJR", "OnValueChange!! $inputText  ${viewState.searchText.text}")
                 viewState.searchText = inputText
-                    viewModel.obtainEvent(NewVisitEvent.Search(inputText))
+                viewModel.obtainEvent(NewVisitEvent.Search(inputText))
             },
             isSearchError = viewState.isSearchError,
             isPriceError = viewState.isPriceError,
-            date = Date(viewState.selectDate?:Clock.System.now().toEpochMilliseconds()),
+            date = Date(viewState.selectDate ?: Clock.System.now().toEpochMilliseconds()),
             isShowDateDialog = viewState.isShowDateDialog,
             showDateDialog = {
                 viewModel.obtainEvent(NewVisitEvent.ShowDateDialog(it))

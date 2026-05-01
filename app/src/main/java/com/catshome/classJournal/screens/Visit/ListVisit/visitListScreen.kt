@@ -1,4 +1,4 @@
-package com.catshome.classJournal.screens.Visit
+package com.catshome.classJournal.screens.Visit.ListVisit
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold

@@ -23,6 +23,7 @@ fun VisitDetails.mapToVisit(): Visit {
         groupName = null,
         data = this.date,
         price = this.price,
+        priceScreen = this.price.toString(),
         check = false,
         isDelete = false
     )

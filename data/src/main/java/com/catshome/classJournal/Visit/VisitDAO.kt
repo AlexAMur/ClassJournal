@@ -88,10 +88,10 @@ interface VisitDAO {
 
 //получаем список детей на определенный день в расписании
     @Query("select c.uid as uidChild, s.startlesson, null as groupName, " +
-            "(c.child_name||' '||c.child_surname) as fio, 0 as 'check'  from child c Join scheduler s where " +
+            "(c.child_name||' '||c.child_surname) as fio, 0 as 'check', s.price  from child c Join scheduler s where " +
             "c.uid = s.uidChild and dayOfWeek = :dayOfWeek and uidChild !='null' union " +
             "select c.uid as uidChild, s.startlesson, g.group_name as groupName," +
-            "(c.child_name||' '||c.child_surname) as fio, 0 as 'check' " +
+            "(c.child_name||' '||c.child_surname) as fio, 0 as 'check', s.price " +
             "from child c Join child_group cg Join `groups` g join scheduler s where " +
             "c.uid = cg.childId and g.uid = cg.groupId  and cg.groupId in (select uidGroup from " +
             "scheduler where dayOfWeek = :dayOfWeek and uidGroup !='null') and s.uidGroup = g.uid " +
@@ -101,12 +101,12 @@ fun getListClientScheduler(dayOfWeek: Int): Flow<List<Visit>>?
 
     //получаем список детей расписании
     @Query("select c.uid as uidChild,s.dayOfWeek, s.startlesson, null as groupName, " +
-            "(c.child_name||' '||c.child_surname) as fio, 0 as 'check'  from child c Join scheduler s where " +
-            "c.uid = s.uidChild and uidChild !='null' union " +
+            "(c.child_name||' '||c.child_surname) as fio, 0 as 'check', s.price  from child c " +
+            "Join scheduler s where c.uid = s.uidChild and uidChild !='null' union " +
             "select c.uid as uidChild, s.dayOfWeek, " +
             "s.startlesson, g.group_name as groupName,(c.child_name||' '||c.child_surname) as fio, " +
-            "0 as 'check' from child c Join child_group cg Join `groups` g join scheduler s where " +
-            "c.uid = cg.childId and g.uid = cg.groupId  and cg.groupId in (select uidGroup from " +
+            "0 as 'check', s.price from child c Join child_group cg Join `groups` g join scheduler s " +
+            "where c.uid = cg.childId and g.uid = cg.groupId  and cg.groupId in (select uidGroup from " +
             "scheduler where uidGroup !='null') and s.uidGroup = g.uid " +
             "order by dayOfWeek,startLesson")
     fun getListClientScheduler(): Flow<List<Visit>>?

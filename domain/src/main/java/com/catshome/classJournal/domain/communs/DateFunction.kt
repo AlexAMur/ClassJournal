@@ -77,10 +77,10 @@ fun LocalDateTime.toDateTimeRuString(formatDate: FormatDate = FormatDate.DateTim
             minute(padding = Padding.ZERO)
         }
         val date = this.format(formatter)
-        when (formatDate) {
-            FormatDate.DateTime -> return date
-            FormatDate.Date -> return date.substring(0, DATE_FORMAT_RU.length)
-            FormatDate.Time -> return date.substring(DATE_FORMAT_RU.length, date.length)
+        return when (formatDate) {
+            FormatDate.DateTime -> date
+            FormatDate.Date -> date.substring(0, DATE_FORMAT_RU.length)
+            FormatDate.Time -> date.substring(DATE_FORMAT_RU.length, date.length)
         }
     } catch (e: IllegalArgumentException) {
         Log.e("CLJR", "From toDateTimeRuString ${e.message}")

@@ -64,18 +64,20 @@ fun VisitScreenEntity.mapToVisit(): Visit {
         uidChild = this.uidChild,
         fio = "${this.Surname} ${this.Name}",
         price = this.priceVisit,
+        priceScreen = this.priceVisit.toString(),
         startLesson = 0,
         data = this.dateVisit.toLocalDateTimeRuString().toString(),
         check = false
     )
 }
 
-fun VisitEntity.mapToVisit(): Visit {
-    return Visit(
-        uid = this.uid,
-        uidChild = this.uidChild,
-        data = this.dateVisit.toLocalDateTimeRuString(),
-        price = this.priceVisit,
-    )
-}
+//fun VisitEntity.mapToVisit(): Visit {
+//    return Visit(
+//        uid = this.uid,
+//        uidChild = this.uidChild,
+//        data = this.dateVisit.toLocalDateTimeRuString(),
+//        price = this.priceVisit,
+//        priceS = this.priceVisit,
+//    )
+//}
 

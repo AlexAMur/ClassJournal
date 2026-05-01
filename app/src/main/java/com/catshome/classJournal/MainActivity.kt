@@ -3,7 +3,6 @@ package com.catshome.classJournal
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -36,26 +35,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.catshome.classJournal.domain.communs.toDateTimeRuString
-import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
-import com.catshome.classJournal.domain.communs.toLong
 import com.catshome.classJournal.screens.ItemBottomBar
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.PayListScreen
-import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.theme.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.catshome.classJournal.resource.R
-import com.catshome.classJournal.screens.Visit.visitListScreen
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.number
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toLocalDateTime
-import java.util.Date
-import kotlin.time.Clock.System.now
-import kotlin.time.toJavaInstant
+import com.catshome.classJournal.screens.Visit.ListVisit.visitListScreen
 
 lateinit var context: Context
 

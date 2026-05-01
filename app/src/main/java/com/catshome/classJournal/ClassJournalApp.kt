@@ -7,7 +7,6 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,6 +14,9 @@ import androidx.navigation.toRoute
 import com.catshome.classJournal.communs.FilterScreen.FilterScreen
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
 import com.catshome.classJournal.domain.Pay.Pay
+import com.catshome.classJournal.domain.communs.FormatDate
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.navigate.DetailsPayResult
@@ -32,8 +34,8 @@ import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerView
 import com.catshome.classJournal.screens.Scheduler.SchedulerListScreen
 import com.catshome.classJournal.screens.Scheduler.SchedulerListViewModel
 import com.catshome.classJournal.screens.Visit.NewVisitViewModel
-import com.catshome.classJournal.screens.Visit.VisitListViewModel
-import com.catshome.classJournal.screens.Visit.visitListScreen
+import com.catshome.classJournal.screens.Visit.ListVisit.VisitListViewModel
+import com.catshome.classJournal.screens.Visit.ListVisit.visitListScreen
 import com.catshome.classJournal.screens.child.ChildListViewModel
 import com.catshome.classJournal.screens.child.NewChildScreen
 import com.catshome.classJournal.screens.child.NewChildViewModel
@@ -41,6 +43,7 @@ import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.screens.group.NewGroupScreen
 import com.catshome.classJournal.screens.viewModels.GroupViewModel
 import com.catshome.classJournal.screens.viewModels.NewGroupViewModel
+import kotlinx.datetime.toLocalDateTime
 import kotlin.getValue
 
 internal val localNavHost =
@@ -54,7 +57,6 @@ fun classJournalApp(
     navController: NavHostController,
     currentSettings: SettingsBundle
 ) {
-
     NavHost(navController, startDestination = ItemScreen.PayListScreen.name) {
         composable<Pay> { backStackEntry ->
             val editPay = backStackEntry.toRoute<Pay>()
@@ -65,8 +67,6 @@ fun classJournalApp(
                 editPay = editPay
             )
         }
-
-
         composable(route = ItemScreen.NewPayScreen.name) {
             //val viewModel =hiltViewModel<NewPayViewModel>()
             Log.e("CLJR", "NavHost new pay")

@@ -1,8 +1,5 @@
-package com.catshome.classJournal.screens.Visit
+package com.catshome.classJournal.screens.Visit.byScheduler
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,16 +31,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
+import com.catshome.classJournal.communs.DialogScreen
 import com.catshome.classJournal.communs.TextField
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.getNow
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.resource.R
+import com.catshome.classJournal.screens.Visit.NewVisitEvent
+import com.catshome.classJournal.screens.Visit.NewVisitViewModel
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
-import kotlin.concurrent.timer
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 
 
@@ -62,6 +62,17 @@ fun NewVisitByScheduler(
         initialPage = initialPage + getNow().dayOfWeek.ordinal,
         pageCount = { Int.MAX_VALUE } // "Бесконечное" количество страниц
     )
+    if (viewState.isShowDialog) {
+        viewState.onDismissDialog?.let {onDismissed->
+            DialogScreen(
+                title = viewState.errorMessage,
+                text = viewState.errorMessage,
+                onDismiss = onDismissed,
+                dissmissText = "ОК",
+                textContentColor = ClassJournalTheme.colors.errorColor,
+            )
+        }
+    }
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -85,7 +96,7 @@ fun NewVisitByScheduler(
                 value = viewState.pageDayOfWeekOffset - index + getNow().dayOfWeek.ordinal,
                 unit = DateTimeUnit.DAY,
                 timeZone = TimeZone.currentSystemDefault()
-            ).toDateTimeRuString(formatDate = FormatDate.Date)
+            ).toLocalDateTime(timeZone = TimeZone.currentSystemDefault())
             //if (pagerState.currentPage- index!=0)
             //  viewModel.obtainEvent(NewVisitEvent.ChangePageIndex())
 
@@ -117,7 +128,12 @@ fun NewVisitByScheduler(
 
                 ) {
                     Text(
-                        text = "${DayOfWeek.entries[page].nameRu} ${viewState.dateOnPage} ",
+                        modifier = Modifier.padding(top = 16.dp),
+                        text = "${DayOfWeek.entries[page].nameRu} ${
+                            viewState.dateOnPage?.toDateTimeRuString(
+                                formatDate = FormatDate.Date
+                            )
+                        } ",
                         color = ClassJournalTheme.colors.primaryText,
                         fontSize = ClassJournalTheme.typography.toolbar.fontSize,
                     )
@@ -144,7 +160,7 @@ fun NewVisitByScheduler(
                                             viewEvent = NewVisitEvent.LessonClicked(
                                                 dayInt = page,
                                                 key = mapScheduler.key,
-                                                isCheck = ! viewState.lessonChecked[page][indexKey]
+                                                isCheck = !viewState.lessonChecked[page][indexKey]
                                             )
                                         )
                                     }
@@ -202,7 +218,7 @@ fun NewVisitByScheduler(
                                                 }
                                                 TextField(
                                                     modifier = Modifier.Companion,
-                                                    value = scheduler.priceScreen?:"0",
+                                                    value = scheduler.priceScreen ?: "0",
                                                     label = stringResource(R.string.visit_price),
                                                     supportingText = "",//if (isPriceError) errorPriceMessage else "",
                                                     onValueChange = {

@@ -1,4 +1,4 @@
-package com.catshome.classJournal.screens.Visit
+package com.catshome.classJournal.screens.Visit.ListVisit
 
 import com.catshome.classJournal.domain.Visit.Visit
 

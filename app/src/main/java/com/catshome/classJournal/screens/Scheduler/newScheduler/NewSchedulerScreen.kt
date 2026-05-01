@@ -66,7 +66,7 @@ fun NewSchedulerScreen(
         }
     }
     //LaunchedEffect(viewState.isShowDialog) {
-        if(viewState.isShowDialog && viewState.onDisimiss!= null)
+        if(viewState.isShowDialog && viewState.onDisimiss!= null){
         DialogScreen(
             title = "Ошибка  сохранения. ",
             text = viewState.dialogMessage.toString(),
@@ -74,7 +74,7 @@ fun NewSchedulerScreen(
             dissmissText = "ОК",
             textContentColor = ClassJournalTheme.colors.errorColor,
         )
-    //}
+    }
 
     Surface(
         modifier = Modifier
