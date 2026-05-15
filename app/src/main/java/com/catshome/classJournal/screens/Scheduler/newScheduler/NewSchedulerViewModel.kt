@@ -29,7 +29,7 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
                     itemsList = interact.getListClient(
                         name = "%",
                         dayOfWeek = day,
-                        startTimeLesson = viewState.startTime
+                        startTimeLesson = viewState.startTime.toString()
                     )
                 )
             }
@@ -52,20 +52,23 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
             }
 
             ReloadClient -> {
-                obtainEvent(Search(viewState.searchText.text))
+                obtainEvent(Search(viewState.searchText))
             }
 
             CloseEvent -> viewAction = NewSchedulerAction.CloseScreen
 
             SaveEvent -> {
                 val list = viewState.itemsList?.filter { it.isChecked }
-                list?.map{clientScheduler ->
+                list?.map { clientScheduler ->
                     try {
                         clientScheduler.price.toInt()
-                    }catch (e: NumberFormatException){
-                        viewState = viewState.copy(isShowDialog= true, dialogMessage = context.getString(R.string.error_invalid_valuePrice))
+                    } catch (e: NumberFormatException) {
+                        viewState = viewState.copy(
+                            isShowDialog = true,
+                            dialogMessage = context.getString(R.string.error_invalid_valuePrice)
+                        )
                         viewState.onDisimiss = {
-                            viewState = viewState.copy(isShowDialog= false)
+                            viewState = viewState.copy(isShowDialog = false)
                         }
                         return
                     }
@@ -92,14 +95,14 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
             }
 
             is Search -> {
-                viewState = viewState.copy(searchText = TextFieldValue(viewEvent.search))
+                viewState = viewState.copy(searchText = viewEvent.search)
                 CoroutineScope(Dispatchers.IO).launch {
                     viewState.dayOfWeek?.let { day ->
                         viewState = viewState.copy(
                             itemsList = interact.getListClient(
-                                name = "%${viewEvent.search}%",
+                                name = "%${viewEvent.search.text}%",
                                 dayOfWeek = day,
-                                startTimeLesson = viewState.startTime
+                                startTimeLesson = viewState.startTime.toString()
                             )
                         )
                     }
@@ -107,7 +110,7 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
             }
 
             ClearSearch -> {
-                obtainEvent(Search(""))
+                obtainEvent(Search(viewState.searchText.copy("")))
             }
 
             is Checked -> {

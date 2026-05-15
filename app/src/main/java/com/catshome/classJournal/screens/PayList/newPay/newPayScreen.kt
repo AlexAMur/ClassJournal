@@ -1,4 +1,4 @@
-package com.catshome.classJournal.screens.PayList
+package com.catshome.classJournal.screens.PayList.newPay
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.padding
@@ -48,12 +48,12 @@ fun newPayScreen(
                 modifier = Modifier.padding(bottom = bottomPadding),
                 hostState = sbHostState
             )
-            LaunchedEffect(viewState.isSnackbarShow) {
-                if (viewState.isSnackbarShow) {
+            LaunchedEffect(viewState.isSnackBarShow) {
+                if (viewState.isSnackBarShow) {
                     keyboardController?.hide()
                     SnackBarAction(
                         message = viewState.errorMessage,
-                        actionLabel = viewState.snackbarAction
+                        actionLabel = viewState.snackBarAction
                             ?: context.getString(R.string.bottom_yes),
                         sbHostState,
                         onDismissed = viewState.onDismissed ?: {},
@@ -76,7 +76,6 @@ fun newPayScreen(
                 viewModel.obtainEvent(NewPayEvent.CancelClicked)
             },
             onSaveClick = {
-
                 keyboardController?.hide()
                 viewModel.obtainEvent(NewPayEvent.SaveClicked)
             }

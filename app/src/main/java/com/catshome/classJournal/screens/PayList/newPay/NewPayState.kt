@@ -1,4 +1,4 @@
-package com.catshome.classJournal.screens.PayList
+package com.catshome.classJournal.screens.PayList.newPay
 
 import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.domain.Child.MiniChild
@@ -9,14 +9,14 @@ data class NewPayState(
     val listChild: List<MiniChild>? =null,
     val selectChild: MiniChild? = null,
     val isChildError: Boolean =false,
-    val ChildErrorMessage: String? = null,
+    val childErrorMessage: String? = null,
     var indexFocus:Int = -1,
     var isResetState: Boolean = false,
     var isSurnameError: Boolean= false,
-    var isSnackbarShow: Boolean= false,
-    var snackbarAction: String = "",
+    var isSnackBarShow: Boolean= false,
+    var snackBarAction: String = "",
     var isPayError: Boolean= false,
-    var PayError: String = "",
+    var payError: String = "",
     var errorMessage: String = "",
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,

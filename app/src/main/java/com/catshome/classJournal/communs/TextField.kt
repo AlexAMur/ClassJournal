@@ -12,53 +12,6 @@ import com.catshome.classJournal.ClassJournalTheme
 
 @Composable
 fun TextField(
-    value: TextFieldValue,
-    label: String,
-    supportingText: String? = null,
-    modifier: Modifier,
-    onValueChange: (TextFieldValue) -> Unit,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    minLines: Int = 1,
-    singleLine: Boolean = true,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    errorState: Boolean = false,
-    readOnly: Boolean = false,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
-        focusedTextColor = ClassJournalTheme.colors.primaryText,
-        unfocusedTextColor = ClassJournalTheme.colors.primaryText,
-        focusedBorderColor = ClassJournalTheme.colors.tintColor,
-        focusedSupportingTextColor = ClassJournalTheme.colors.tintColor,
-        unfocusedSupportingTextColor = ClassJournalTheme.colors.primaryText,
-        focusedLabelColor = ClassJournalTheme.colors.tintColor,
-        unfocusedLabelColor = ClassJournalTheme.colors.primaryText,
-        errorLabelColor = ClassJournalTheme.colors.errorColor,
-        errorBorderColor = ClassJournalTheme.colors.errorColor,
-        errorSupportingTextColor = ClassJournalTheme.colors.errorColor,
-        errorTextColor = ClassJournalTheme.colors.errorColor,
-        cursorColor = ClassJournalTheme.colors.tintColor,
-    errorCursorColor = ClassJournalTheme.colors.errorColor,
-    )
-
-) {
-    OutlinedTextField(
-        modifier = modifier,
-        value = value,
-        isError = errorState,
-        readOnly = readOnly,
-        colors = colors,
-        label = { Text(text = label) },
-        supportingText = { supportingText?.let{Text(text = supportingText)} },
-        keyboardOptions = keyboardOptions,
-        onValueChange = onValueChange,
-        singleLine = singleLine,
-        minLines = minLines,
-        trailingIcon = trailingIcon,
-
-    )
-
-}
-@Composable
-fun TextField(
     value: String,
     label: String,
     supportingText: String? = null,
@@ -85,7 +38,6 @@ fun TextField(
         cursorColor = ClassJournalTheme.colors.tintColor,
         errorCursorColor = ClassJournalTheme.colors.errorColor,
     )
-
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -94,13 +46,57 @@ fun TextField(
         readOnly = readOnly,
         colors = colors,
         label = { Text(text = label) },
-        supportingText = { supportingText?.let{Text(text = supportingText)} },
+        supportingText = { supportingText?.let { Text(text = supportingText) } },
         keyboardOptions = keyboardOptions,
         onValueChange = onValueChange,
         singleLine = singleLine,
         minLines = minLines,
         trailingIcon = trailingIcon,
+    )
+}
 
-        )
 
+@Composable
+fun TextField(
+    value: TextFieldValue,
+    label: String,
+    supportingText: String? = null,
+    modifier: Modifier,
+    onValueChange: (TextFieldValue) -> Unit,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    minLines: Int = 1,
+    singleLine: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    errorState: Boolean = false,
+    readOnly: Boolean = false,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
+        focusedTextColor = ClassJournalTheme.colors.primaryText,
+        unfocusedTextColor = ClassJournalTheme.colors.primaryText,
+        focusedBorderColor = ClassJournalTheme.colors.tintColor,
+        focusedSupportingTextColor = ClassJournalTheme.colors.tintColor,
+        unfocusedSupportingTextColor = ClassJournalTheme.colors.primaryText,
+        focusedLabelColor = ClassJournalTheme.colors.tintColor,
+        unfocusedLabelColor = ClassJournalTheme.colors.primaryText,
+        errorLabelColor = ClassJournalTheme.colors.errorColor,
+        errorBorderColor = ClassJournalTheme.colors.errorColor,
+        errorSupportingTextColor = ClassJournalTheme.colors.errorColor,
+        errorTextColor = ClassJournalTheme.colors.errorColor,
+        cursorColor = ClassJournalTheme.colors.tintColor,
+        errorCursorColor = ClassJournalTheme.colors.errorColor,
+    )
+) {
+    OutlinedTextField(
+        modifier = modifier,
+        value = value,
+        isError = errorState,
+        readOnly = readOnly,
+        colors = colors,
+        label = { Text(text = label) },
+        supportingText = { supportingText?.let { Text(text = supportingText) } },
+        keyboardOptions = keyboardOptions,
+        onValueChange = onValueChange,
+        singleLine = singleLine,
+        minLines = minLines,
+        trailingIcon = trailingIcon,
+    )
 }

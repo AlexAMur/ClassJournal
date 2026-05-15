@@ -35,6 +35,9 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             endDate = "${now().toDateTimeRuString()?.substring(0, DATE_FORMAT_RU.length)} 23:59"
         )
     ) {
+        init {
+            getStatisticPay()
+        }
 
     override fun obtainEvent(viewEvent: PayListEvent) {
         when (viewEvent) {
@@ -236,5 +239,11 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
         viewState.isCanShowSnackBar = false
         //viewState.withDismissAction = true
         viewState.messageShackBar = null
+    }
+    private fun getStatisticPay(){
+
+        CoroutineScope(Dispatchers.IO).launch {
+           viewState = viewState.copy(incomePerMonth=  payListInteractor.getStatisticPay(viewState.beginDate, viewState.endDate))
+        }
     }
 }

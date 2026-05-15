@@ -94,4 +94,6 @@ interface ChildDAO {
 
     @Query("SELECT * FROM 'child' where isDelete = :isDelete")
     fun getChilds(isDelete: Boolean): Flow<List<ChildEntity>>
+
+
 }

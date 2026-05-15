@@ -68,4 +68,11 @@ class PayRepositoryImpl @Inject constructor(val storage: RoomPayStorage) : PayRe
     override suspend fun updatePay(pay: Pay):Boolean {
         return storage.updatePay(pay.mapToPayEntity())
     }
+
+    override suspend fun getStatisticPay(
+        beginDate: Long?,
+        endDate: Long?
+    ): Int {
+      return  storage.getStatisticPay(beginDate, endDate)
+    }
 }

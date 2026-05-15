@@ -1,10 +1,13 @@
 package com.catshome.classJournal.communs.FilterScreen
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.communs.SortEnum
+import kotlinx.coroutines.sync.Mutex
 
 data class FilterState(
     val optionList: List<String> = listOf(
@@ -25,7 +28,7 @@ data class FilterState(
     val isShowPeriod: Boolean = false,
     val isFilterChild : Boolean =false,
     val isFilterData : Boolean =false,
-    val searchText: TextFieldValue = TextFieldValue(""),
+    var searchText: TextFieldValue = TextFieldValue(""),
     val statusText: String = "",
     val beginDate: String = "",
     val endDate: String = "",

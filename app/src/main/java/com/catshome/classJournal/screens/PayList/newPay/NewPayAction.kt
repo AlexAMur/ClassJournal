@@ -1,4 +1,4 @@
-package com.catshome.classJournal.screens.PayList
+package com.catshome.classJournal.screens.PayList.newPay
 
 sealed class NewPayAction {
     data object CloseScreen: NewPayAction()

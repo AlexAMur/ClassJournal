@@ -1,4 +1,4 @@
-package com.catshome.classJournal.screens.PayList
+package com.catshome.classJournal.screens.PayList.newPay
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -45,16 +45,12 @@ import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.DatePickerFieldToModal
 import com.catshome.classJournal.communs.SearchField
 import com.catshome.classJournal.communs.TextField
-import com.catshome.classJournal.domain.communs.DATETIME_FORMAT_RU
-import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.FormatDate
-import com.catshome.classJournal.domain.communs.TIME_FORMAT
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
+import com.catshome.classJournal.screens.PayList.ItemChildInSearch
+
 //import com.catshome.classJournal.domain.communs.toDateStringRU
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -123,10 +119,13 @@ fun PayScreenContent(
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                 SearchField(
-                    text = viewState.searchText,
+                    text = viewState.searchText.text,
                     label = stringResource(R.string.search_label),
                     isError = viewState.isChildError,
-                    errorMessage = viewState.ChildErrorMessage,
+                    errorMessage = viewState.childErrorMessage,
+                    onClickCancel = {
+                        viewModel.obtainEvent(NewPayEvent.CancelClicked)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp, bottom = 0.dp)
@@ -134,8 +133,9 @@ fun PayScreenContent(
                         .onFocusChanged {
                             if (it.isFocused)
                                 viewState.indexFocus = 0
-                        },
-                ) { searchText ->
+                        })
+
+                { searchText ->
                     viewModel.obtainEvent(NewPayEvent.Search(searchText = searchText.text))
                 }
                 viewState.listChild?.let { listChild ->
@@ -161,8 +161,8 @@ fun PayScreenContent(
                             ) {
                                 itemsIndexed(listChild) { index, child ->
                                     ItemChildInSearch(
-                                        name = child.name,
-                                        surname = child.surname,
+                                        fio = child.fio,
+                                        //surname = child.surname,
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(
@@ -197,14 +197,17 @@ fun PayScreenContent(
                     stringResource(R.string.birthday_child)
                 ) {
                     it?.let {
-                        Log.e("CLJR", "OnDatePickerSelect ${it.toLocalDateTimeRuString(formatDate = FormatDate.Date)}A")
+                        Log.e(
+                            "CLJR",
+                            "OnDatePickerSelect ${it.toLocalDateTimeRuString(formatDate = FormatDate.Date)}A"
+                        )
                         viewModel.datePayChange(it.toLocalDateTimeRuString(formatDate = FormatDate.Date))
                     }
                 }
                 TextField(
                     value = viewState.payment,
                     label = stringResource(R.string.paymant),
-                    supportingText = if (viewState.isPayError) viewState.PayError else stringResource(
+                    supportingText = if (viewState.isPayError) viewState.payError else stringResource(
                         R.string.paymant
                     ),
                     modifier = modifier

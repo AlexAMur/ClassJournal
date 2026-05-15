@@ -14,9 +14,6 @@ import androidx.navigation.toRoute
 import com.catshome.classJournal.communs.FilterScreen.FilterScreen
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
 import com.catshome.classJournal.domain.Pay.Pay
-import com.catshome.classJournal.domain.communs.FormatDate
-import com.catshome.classJournal.domain.communs.toDateTimeRuString
-import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.navigate.DetailsPayResult
@@ -25,10 +22,10 @@ import com.catshome.classJournal.navigate.OptionFilterPaysList
 import com.catshome.classJournal.navigate.SaveLesson
 import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.screens.ItemScreen
-import com.catshome.classJournal.screens.PayList.NewPayViewModel
+import com.catshome.classJournal.screens.PayList.newPay.NewPayViewModel
 import com.catshome.classJournal.screens.PayList.PayListScreen
 import com.catshome.classJournal.screens.PayList.PayListViewModel
-import com.catshome.classJournal.screens.PayList.newPayScreen
+import com.catshome.classJournal.screens.PayList.newPay.newPayScreen
 import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerScreen
 import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerViewModel
 import com.catshome.classJournal.screens.Scheduler.SchedulerListScreen
@@ -43,7 +40,6 @@ import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.screens.group.NewGroupScreen
 import com.catshome.classJournal.screens.viewModels.GroupViewModel
 import com.catshome.classJournal.screens.viewModels.NewGroupViewModel
-import kotlinx.datetime.toLocalDateTime
 import kotlin.getValue
 
 internal val localNavHost =

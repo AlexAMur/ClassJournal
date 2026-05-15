@@ -131,6 +131,7 @@ fun PayListContent(
                 Modifier
                     .background(ClassJournalTheme.colors.primaryBackground)
             ) {
+
                 Card(
                     Modifier
                         .background(ClassJournalTheme.colors.primaryBackground)
@@ -195,6 +196,11 @@ fun PayListContent(
                         }
                     }
                 }
+                StatisticPayCard(
+                    incomePerMonth = viewState.incomePerMonth,
+                    lastMonth = viewState.incomePerLastMonth,
+                    totalYear = viewState.incomePerYear,
+                )
                 if (viewState.items.isEmpty())
                     payScreenNoItems(
                         bottomPadding = padValues.calculateBottomPadding()

@@ -86,6 +86,7 @@ fun SingleVisitContent(
                     shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
                 )
                 {
+
                     LazyColumn(
                         modifier = Modifier.Companion
                             .fillMaxWidth()
@@ -94,9 +95,8 @@ fun SingleVisitContent(
                     ) {
                         itemsIndexed(listChild) { index, child ->
                             ItemChildInSearch(
-                                name = child.name,
-                                surname = child.surname,
-                                modifier = Modifier.Companion
+                                fio = child.fio,
+                                 modifier = Modifier.Companion
                                     .fillMaxWidth()
                                     .padding(
                                         start = 16.dp, top = 4.dp, end = 16.dp, bottom = 8.dp
@@ -173,5 +173,4 @@ fun SingleVisitContent(
             }
         )
     }
-
 }

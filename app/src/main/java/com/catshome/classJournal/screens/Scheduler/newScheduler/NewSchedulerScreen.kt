@@ -126,7 +126,7 @@ fun NewSchedulerScreen(
 //            )
 //--------------Окно поиска---------------------------------
                 SearchField(
-                    text = viewState.searchText,
+                    text = viewState.searchText.text,
                     label = stringResource(R.string.search_label),
                     isError = false,
                     errorMessage = "",
@@ -142,7 +142,7 @@ fun NewSchedulerScreen(
                         viewModel.obtainEvent(NewSchedulerEvent.ClearSearch)
                     }
                 ) { searchText ->
-                    viewModel.obtainEvent(NewSchedulerEvent.Search(search = searchText.text))
+                    viewModel.obtainEvent(NewSchedulerEvent.Search(search = searchText))
                 }
 //----------------------------------------------
             }

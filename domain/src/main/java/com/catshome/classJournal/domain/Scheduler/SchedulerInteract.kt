@@ -55,7 +55,7 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
     suspend fun getClientsSchedulerLesson (dayOfWeek: DayOfWeek, startTime: Int): Flow<List<Scheduler>>? {
         return repository.getClientsByLesson(dayOfWeek, startTime)
     }
-    suspend fun getListClient(name: String, dayOfWeek: DayOfWeek, startTimeLesson: Int):List<ClientScheduler>{
+    suspend fun getListClient(name: String, dayOfWeek: DayOfWeek, startTimeLesson: String):List<ClientScheduler>{
         return repository.getClientList(name, dayOfWeek,startTimeLesson)
     }
     suspend fun deleteClient(scheduler: Scheduler): Boolean{

@@ -16,8 +16,8 @@ import com.catshome.classJournal.ClassJournalTheme
 
 @Composable
 fun ItemChildInSearch(
-    name: String,
-    surname: String,
+    fio: String,
+    //surname: String,
     modifier: Modifier,
     style: TextStyle,
     onClicked: ()->Unit,
@@ -25,9 +25,9 @@ fun ItemChildInSearch(
 ){
     Row(modifier = modifier.
                     clickable(onClick =  onClicked)) {
-        Text(text = name, color= contentColor, style = style)
-        Text(text = surname,modifier= Modifier.padding(start = 16.dp),
-            style = style , color= contentColor)
+        Text(text = fio, color= contentColor, style = style)
+//        Text(text = surname,modifier= Modifier.padding(start = 16.dp),
+//            style = style , color= contentColor)
     }
 
 }

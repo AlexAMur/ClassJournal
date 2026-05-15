@@ -21,8 +21,6 @@ fun SearchField(
     onClickCancel: ()->Unit = {},
     onSearch: (TextFieldValue) -> Unit
 ) {
-
-
     TextField(
         value = text,
         label = label,
@@ -51,6 +49,45 @@ fun SearchField(
 
         },
         supportingText = errorMessage,
-
         )
+}
+@Composable
+fun SearchField(
+    label: String = "",
+    text: String,
+    isError: Boolean = false,
+    errorMessage: String? = null,
+    modifier: Modifier = Modifier,
+    onClickCancel: ()->Unit = {},
+    onSearch: (TextFieldValue) -> Unit
+) {
+    TextField(
+        value = text,
+        label = label,
+        modifier = modifier,
+        errorState = isError,
+        onValueChange = {
+            onSearch(TextFieldValue(it))
+        },
+        trailingIcon = {
+            if (text.isEmpty()) {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = null,
+                    modifier = Modifier,
+                    tint = ClassJournalTheme.colors.controlColor
+                )
+            } else {
+                Icon(
+                    Icons.Default.Clear,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clickable{onClickCancel()},
+                    tint = ClassJournalTheme.colors.controlColor
+                )
+            }
+
+        },
+        supportingText = errorMessage,
+    )
 }

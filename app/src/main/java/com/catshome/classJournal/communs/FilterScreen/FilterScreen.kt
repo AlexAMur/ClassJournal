@@ -33,10 +33,15 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -45,39 +50,42 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.room.util.TableInfo
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
-import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.DatePickerFieldToModal
 import com.catshome.classJournal.communs.GroupButton
 import com.catshome.classJournal.communs.SearchField
+import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.navigate.OptionFilterPaysList
+import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.ItemScreen
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toLocalDateTime
-import java.time.OffsetDateTime
 import java.time.format.DateTimeParseException
-import java.util.Date
-import kotlin.time.Instant
+import kotlinx.datetime.TimeZone
+
+
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun FilterScreen(navController: NavController, setting: FilterSetting) {
     val viewModel by (LocalActivity.current as ComponentActivity).viewModels<FilterViewModel>()
-   LaunchedEffect(Unit) {
-       viewModel.obtainEvent(FilterEvent.Init(setting))
-   }
+    LaunchedEffect(Unit) {
+        viewModel.obtainEvent(FilterEvent.Init(setting))
+    }
+
     val viewState by viewModel.viewState().collectAsState()
+
     val viewAction by viewModel.viewActions().collectAsState(null)
     val columnVerticalScrollSate = rememberScrollState()
     val listState = rememberLazyListState()
     val localDensity = LocalDensity.current
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState().value
-            .innerPadding.calculateBottomPadding()
+        .innerPadding.calculateBottomPadding()
     var screenHigh = LocalConfiguration.current.screenHeightDp
     var sizeList = 200f
     var bottomGroup = 0
@@ -85,8 +93,10 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
     Surface(color = ClassJournalTheme.colors.secondaryBackground) {
         Column(
             Modifier
-                .padding(bottom = LocalSettingsEventBus.current.currentSettings.collectAsState()
-                                .value.innerPadding.calculateBottomPadding().value.dp)
+                .padding(
+                    bottom = LocalSettingsEventBus.current.currentSettings.collectAsState()
+                        .value.innerPadding.calculateBottomPadding().value.dp
+                )
                 .fillMaxSize()
                 .statusBarsPadding()
                 .verticalScroll(columnVerticalScrollSate)
@@ -94,24 +104,22 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Button(
-                    onClick = {
-                        viewModel.obtainEvent(FilterEvent.BackClick)
-                    },
-                    shape = ClassJournalTheme.shapes.cornersStyle,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = ClassJournalTheme.colors.tintColor,
-                        contentColor = ClassJournalTheme.colors.primaryText
-                    )
-                ) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "")
-                }
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "",
+                    modifier = Modifier.clickable(onClick = { viewModel.obtainEvent(FilterEvent.BackClick) }),
+                    tint = ClassJournalTheme.colors.tintColor
+                )
+
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
                     text = viewState.statusText,
                     color = ClassJournalTheme.colors.primaryText
                 )
             }
+
+
+
             SearchField(
                 text = viewState.searchText,
                 label = stringResource(R.string.search_label),
@@ -127,62 +135,66 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                     viewModel.obtainEvent(FilterEvent.ClearSearch)
                 }
             ) { searchText ->
-                viewModel.obtainEvent(FilterEvent.Search(value = searchText.text))
+                Log.e("CLJR", "on Search $searchText")
+              //  textFieldValueState.value = searchText
+                viewModel.obtainEvent(FilterEvent.Search(value = searchText))
             }
-            AnimatedVisibility(viewState.isShowList) {
-                viewState.searchList?.let { listChild ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp)
-                            .offset(y = (-18).dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = ClassJournalTheme.colors.secondaryBackground,
-                            contentColor = ClassJournalTheme.colors.secondaryText
-                        ),
-                        shape = RoundedCornerShape(
-                            bottomStart = ClassJournalTheme.shapes.padding,
-                            bottomEnd = ClassJournalTheme.shapes.padding
-                        ),
-                        border = BorderStroke(
-                            width = 2.dp,
-                            color = ClassJournalTheme.colors.tintColor
-                        )
-                    ) {
-                        LazyColumn(
+            if (viewState.isShowList) {
+                AnimatedVisibility(viewState.isShowList) {
+                    viewState.searchList?.let { listChild ->
+                        Card(
                             modifier = Modifier
-                                .heightIn(
-                                    min = 56.dp,
-                                    max = sizeList.dp - 16.dp
-                                ),
-                            state = listState
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, end = 16.dp)
+                                .offset(y = (-18).dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = ClassJournalTheme.colors.secondaryBackground,
+                                contentColor = ClassJournalTheme.colors.secondaryText
+                            ),
+                            shape = RoundedCornerShape(
+                                bottomStart = ClassJournalTheme.shapes.padding,
+                                bottomEnd = ClassJournalTheme.shapes.padding
+                            ),
+                            border = BorderStroke(
+                                width = 2.dp,
+                                color = ClassJournalTheme.colors.tintColor
+                            )
                         ) {
-                            items(listChild.size) { index ->
-                                Row(
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 4.dp)
-                                        .height(40.dp)
-                                        .background(ClassJournalTheme.colors.controlColor)
-                                        .clickable {
-                                            if (listChild[index].uid.isNotEmpty()) {
-                                                viewModel.obtainEvent(
-                                                    FilterEvent.ChildSelected(
-                                                        listChild[index]
+                            LazyColumn(
+                                modifier = Modifier
+                                    .heightIn(
+                                        min = 56.dp,
+                                        max = sizeList.dp - 16.dp
+                                    ),
+                                state = listState
+                            ) {
+                                items(listChild.size) { index ->
+                                    Row(
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 4.dp)
+                                            .height(40.dp)
+                                            .background(ClassJournalTheme.colors.controlColor)
+                                            .clickable {
+                                                if (listChild[index].uid.isNotEmpty()) {
+                                                    viewModel.obtainEvent(
+                                                        FilterEvent.ChildSelected(
+                                                            listChild[index]
+                                                        )
                                                     )
-                                                )
-                                                keyboardController?.hide()
-                                            }
-                                        },
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        modifier = Modifier
-                                            .padding(start = 16.dp),
-                                        color = ClassJournalTheme.colors.primaryText,
-                                        text = listChild[index].fio,
-                                        style = ClassJournalTheme.typography.caption,
-                                    )
+                                                    keyboardController?.hide()
+                                                }
+                                            },
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            modifier = Modifier
+                                                .padding(start = 16.dp),
+                                            color = ClassJournalTheme.colors.primaryText,
+                                            text = listChild[index].fio,
+                                            style = ClassJournalTheme.typography.caption,
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -213,22 +225,35 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                                 .fillMaxWidth(0.5f),
                             inicialDate = viewState.beginDate.toLocalDateTimeRu(),
                             label = stringResource(R.string.begin_date)
-                        ) {
-                            viewModel.beginDateChange("${it?.toLocalDateTimeRu()?.toDateTimeRuString().toString()} 00:00")
+                        ) { date ->
+
+                            viewModel.beginDateChange(
+                                "${
+                                    date?.toLocalDateTimeRu(
+                                        timeZone = TimeZone.currentSystemDefault()
+                                    )?.toDateTimeRuString(formatDate = FormatDate.Date)
+                                } 00:00"
+                            )
                         }
                         DatePickerFieldToModal(
                             modifier = Modifier
                                 .padding(start = 8.dp, end = 8.dp, top = 16.dp),
-                             inicialDate = viewState.endDate.toLocalDateTimeRu(),
+                            inicialDate = viewState.endDate.toLocalDateTimeRu(),
                             label = stringResource(R.string.end_date)
                         ) {
-                            viewModel.endDateChange("${it?.toLocalDateTimeRu()?.toDateTimeRuString().toString()} 23:59")
+                            viewModel.endDateChange(
+                                "${
+                                    it?.toLocalDateTimeRu(
+                                        timeZone = TimeZone.currentSystemDefault()
+                                    )?.toDateTimeRuString(formatDate = FormatDate.Date)
+                                } 23:59"
+                            )
                         }
                     }
                 }
 
                 radioOptionSorting(viewState.textSorting, viewState.sortList)
-                {text->
+                { text ->
                     viewModel.obtainEvent(FilterEvent.SelectSort(text))
                 }
                 Button(
@@ -249,9 +274,9 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
     when (viewAction) {
         FilterAction.CloseScreen -> {
             keyboardController?.hide()
-            navController.navigate(ItemScreen.PayListScreen.name){
-                popUpTo(ItemScreen.PayListScreen.name){
-                    inclusive =true
+            navController.navigate(ItemScreen.PayListScreen.name) {
+                popUpTo(ItemScreen.PayListScreen.name) {
+                    inclusive = true
                 }
             }
             viewModel.clearAction()

@@ -44,7 +44,7 @@ data class SchedulerEntity(
     val uidGroup: String?,
     val startLesson: Long,
     val duration: Int,
-    val price:Int =0
+    val price: Int = 0
 )
 
 data class SchedulerScreenEntity(
@@ -53,32 +53,38 @@ data class SchedulerScreenEntity(
     val dayOfWeek: Int,
     val uidGroup: String?,
     val name: String?,
+    val Surname: String?,
     val groupName: String?,
     val startLesson: Long,
     val duration: Int,
-    val price:Int
+    val price: Int
 )
-fun SchedulerScreenEntity.mapToScheduler(): Scheduler{
- return Scheduler(
-     uid = this.uid,
-     dayOfWeek = DayOfWeek.entries[this.dayOfWeek].shortName,
-     dayOfWeekInt = this.dayOfWeek,
-     uidChild = this.uidChild,
-     uidGroup = this.uidGroup,
-     name = this.name?:this.groupName?:"",
-     startLesson = this.startLesson,
-     duration = this.duration,
-     price = this.price
- )
+
+fun SchedulerScreenEntity.mapToScheduler(): Scheduler {
+    return Scheduler(
+        uid = this.uid,
+        dayOfWeek = DayOfWeek.entries[this.dayOfWeek].shortName,
+        dayOfWeekInt = this.dayOfWeek,
+        uidChild = this.uidChild,
+        uidGroup = this.uidGroup,
+        name = if (this.uidChild != null)
+            "${this.name} ${this.Surname}"
+        else
+            this.groupName ?: "",
+        startLesson = this.startLesson,
+        duration = this.duration,
+        price = this.price
+    )
 }
-fun Scheduler.mapToSchedulerEntity(): SchedulerEntity{
+
+fun Scheduler.mapToSchedulerEntity(): SchedulerEntity {
     return SchedulerEntity(
-        uid = this.uid?: UUID.randomUUID().toString(),
+        uid = this.uid ?: UUID.randomUUID().toString(),
         uidChild = this.uidChild,
         dayOfWeek = this.dayOfWeekInt,
         uidGroup = this.uidGroup,
-        startLesson = this.startLesson?:0,
-        duration = this.duration?:0,
+        startLesson = this.startLesson ?: 0,
+        duration = this.duration ?: 0,
         price = this.price
     )
 }

@@ -33,7 +33,7 @@ class SchedulerRepositoryImpl(val storage: SchedulerRoomStorage): SchedulerRepos
     ): Flow<List<Scheduler>>? {
       return storage.getClientByLesson(dayOfWeek.ordinal, startTime.toLong())
     }
-    override suspend fun getClientList(name:String, dayOfWeek: DayOfWeek, startTimeLesson: Int): List<ClientScheduler>{
+    override suspend fun getClientList(name:String, dayOfWeek: DayOfWeek, startTimeLesson: String): List<ClientScheduler>{
       return  storage.getClients(name, dayOfWeek, startLesson = startTimeLesson)
     }
 

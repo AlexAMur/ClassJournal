@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.key
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
@@ -144,7 +145,16 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                     ),
                     selectDate = viewEvent.details.date?.toLocalDateTimeRu()?.toLong(),
                     isSelectChild = true,
-                    searchText = viewState.searchText.copy(viewEvent.details.fio.toString()),
+                    searchText = viewState.searchText.copy(
+                        text = viewEvent.details?.fio.toString(),
+                        selection = TextRange(
+                            if (viewEvent.details?.fio?.length == 0)
+                                viewState.searchText.text.length
+                            else
+                                0,
+                            viewEvent.details?.fio?.length ?: viewState.searchText.text.length
+                        )
+                    ),
                     priceScreen = viewEvent.details.price.toString()
                 )
             }
@@ -166,13 +176,12 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                     selectDate = viewEvent.date
                 )
             }
-
             is NewVisitEvent.SelectChild -> {
                 viewState = viewState.copy(
                     selectChild = viewEvent.selectChild,
-                    searchText = viewState.searchText.copy(
+                    searchText = TextFieldValue(
                         text = viewEvent.selectChild.fio,
-                        selection = TextRange(viewEvent.selectChild.fio.length)
+                        selection = TextRange(0, viewEvent.selectChild.fio.length)
                     ),
                     isSelectChild = true,
                     listChild = null
@@ -183,9 +192,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                 viewAction = NewVisitAction.CloseScreen
             }
 
-            is NewVisitEvent.SaveClicked -> {
-//                Log.e("CLJR", "Save visit = ${viewState.visit}")
-                //тут будет функция сохранения
+            is NewVisitEvent.SaveClicked -> {//
                 if (viewEvent.openPage == 0) {
                     var listToSave = mutableListOf<Visit>()
                     if (viewState.scheduler.isNotEmpty()) {
@@ -217,8 +224,16 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                                 }
                                 //listToSave[index] = visit.copy(data = "${viewState.dateOnPage?.toDateTimeRuString(formatDate = FormatDate.Date)}")
 
-                                Log.e("CLJR", "Дата в dateOn page ${viewState.dateOnPage.toString()}")
-                                Log.e("CLJR", "Даta после  ${viewState.dateOnPage?.toDateTimeRuString(formatDate = FormatDate.Date)}")
+                                Log.e(
+                                    "CLJR",
+                                    "Дата в dateOn page ${viewState.dateOnPage.toString()}"
+                                )
+                                Log.e(
+                                    "CLJR",
+                                    "Даta после  ${
+                                        viewState.dateOnPage?.toDateTimeRuString(formatDate = FormatDate.Date)
+                                    }"
+                                )
 
                             } catch (_: NumberFormatException) {
                                 viewState.onDismissDialog = {
@@ -232,10 +247,11 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                                 return
                             }
 
-                                 listToSave[index] = visit.copy(
-                                     uid= visit.uid?: UUID.randomUUID().toString(),
+                            listToSave[index] = visit.copy(
+                                uid = visit.uid ?: UUID.randomUUID().toString(),
 //                                     uid = if (visit.uid.isNullOrEmpty())  UUID.randomUUID().toString() else visit.uid,
-                            data = "${viewState.dateOnPage?.toDateTimeRuString()}")
+                                data = "${viewState.dateOnPage?.toDateTimeRuString()}"
+                            )
                             Log.e("CLJR", "data on list ${listToSave}")
                         }
                         Log.e("CLJR", "Даta ${viewState.dateOnPage}")
@@ -301,6 +317,9 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
             }
 
             is NewVisitEvent.Search -> {
+                viewState = viewState.copy(
+                    searchText = viewEvent.searchText
+                )
                 if (viewState.searchText.text.isEmpty()) {
                     viewState = viewState.copy(listChild = null, isSearchError = false)
                     return
@@ -315,7 +334,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                         visitInteract.searchChild(viewState.searchText.text).collect {
                             val j = CoroutineScope(Dispatchers.IO).async {
                                 if (it.isNullOrEmpty()) {
-                                    listOf(
+                                  return@async  listOf(
                                         MiniChild(
                                             uid = "",
                                             fio = "пусто"

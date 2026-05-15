@@ -55,7 +55,7 @@ class SchedulerRoomStorage @Inject constructor(
     suspend fun getClients(
         name: String,
         dayOfWeek: DayOfWeek,
-        startLesson: Int
+        startLesson: String
     ): List<ClientScheduler> {
         val clients = daoScheduler.getGroupsByNameToScheduler(name, dayOfWeek.ordinal).map {
             ClientScheduler(
@@ -69,12 +69,12 @@ class SchedulerRoomStorage @Inject constructor(
             daoScheduler.getChildByNameToScheduler(
                 name,
                 dayOfWeek.ordinal,
-                lesson = startLesson.toLong()
+                lesson = startLesson
             ).map { miniChild ->
                 ClientScheduler(
                     uidChild = miniChild.uid,
                     uidGroup = null,
-                    name = miniChild.name,
+                    name = miniChild.fio,
                     isChecked = false
                 )
             }.sortedBy { name })

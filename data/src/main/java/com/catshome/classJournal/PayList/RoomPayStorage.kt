@@ -5,6 +5,9 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RoomPayStorage @Inject constructor(private val payDAO: PayDAO) {
+    suspend fun getStatisticPay(beginDate: Long?, endDate:Long?):Int{
+      return  payDAO.getStatisticPay(beginDate, endDate)
+    }
     suspend fun insertPay(payEntity: PayEntity): Boolean {
         return payDAO.insert(payEntity) > 0
     }

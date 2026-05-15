@@ -1,10 +1,12 @@
-package com.catshome.classJournal.screens.PayList
+package com.catshome.classJournal.screens.PayList.newPay
 
+import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.Pay
 
 sealed class NewPayEvent {
     data object SaveClicked : NewPayEvent()
+    data object ClearClicked : NewPayEvent()
     data object CancelClicked : NewPayEvent()
     data class Search(val  searchText: String): NewPayEvent()
     data class SelectedChild(val  child: MiniChild): NewPayEvent()

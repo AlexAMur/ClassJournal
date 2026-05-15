@@ -1,10 +1,8 @@
 package com.catshome.classJournal.screens.PayList
 
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.remember
-import com.catshome.classJournal.domain.communs.SortEnum
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.Pay
+import com.catshome.classJournal.domain.communs.SortEnum
 
 data class PayListState(
     val showFAB: Boolean = false,
@@ -20,6 +18,9 @@ data class PayListState(
     val endDate: String = "",
     val allRange: Boolean= true,
     var indexDelete: Int =-1,
+    val incomePerMonth: Int =35,
+    val incomePerLastMonth: Int =72,
+    val incomePerYear: Int =0,
     val items: List<PayScreen> = emptyList(),
     var deletePayUid: String? = null,
     var isCanShowSnackBar: Boolean = false,

@@ -10,6 +10,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PayDAO {
+    @Query("select  sum(pay) from pays where date_pay between :startDate and :endDate")
+    fun getStatisticPay(startDate: Long? = Long.MAX_VALUE ,endDate: Long? = Long.MAX_VALUE):Int
+
+//    @Query("select c.uid as uidChild, sum(t.pay) as pay, sum(t.price) as price from child  c join (select p.uid_child as uidChild , p.pay, 0 as price  from pays p union all select v.uidChild, 0 as pay, v.priceVisit*-1 as price from visits v) t on t.uidChild = c.uid group by c.uid")
+//    fun getBalance()
+
     @Insert(onConflict = ABORT)
     suspend fun insert(payEntity: PayEntity): Long
     @Delete

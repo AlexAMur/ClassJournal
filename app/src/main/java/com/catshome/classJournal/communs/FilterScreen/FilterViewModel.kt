@@ -1,16 +1,25 @@
 package com.catshome.classJournal.communs.FilterScreen
 
+import android.util.Log
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.PayListInteractor
+import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.SortEnum
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
+import kotlin.time.Clock
 
 @HiltViewModel
 class FilterViewModel @Inject constructor(
@@ -32,14 +41,13 @@ class FilterViewModel @Inject constructor(
             FilterEvent.NewStatus -> {
                 var status = viewState.selectChild?.fio ?: ""
                 if (status.isNotEmpty())
-                    status = status + ", "
+                    status = "$status , "
                 if (viewState.beginDate.isNotEmpty() && viewState.endDate.isNotEmpty()) {
                     status =
-                        status + "${viewState.optionList[viewState.selectedOption]} c ${viewState.beginDate} по ${viewState.endDate}"
+                        "$status ${viewState.optionList[viewState.selectedOption]} c ${viewState.beginDate} по ${viewState.endDate}"
                 } else {
-                    status = status + " ${viewState.optionList[viewState.selectedOption]}"
+                    status ="$status ${viewState.optionList[viewState.selectedOption]}"
                 }
-
                 viewState = viewState.copy(
                     statusText = status
                 )
@@ -49,7 +57,9 @@ class FilterViewModel @Inject constructor(
                 viewState = viewState.copy(
                     selectChild = viewEvent.child,
                     searchList = null,
-                    searchText = TextFieldValue(viewEvent.child.fio),
+                    searchText = TextFieldValue(text =viewEvent.child.fio,
+                        selection = TextRange(0, viewEvent.child.fio.length)
+                    ),
                     isShowList = false
                 )
                 obtainEvent(FilterEvent.NewStatus)
@@ -69,13 +79,17 @@ class FilterViewModel @Inject constructor(
             }
 
             is FilterEvent.Search -> {
-                if (viewEvent.value.isNotEmpty()) {
+                viewState = viewState.copy(
+                    searchText =  viewEvent.value,
+                       // TextRange(viewEvent.value.text.length,viewEvent.value.text.length)
+                )
+                if (viewEvent.value.text.isNotEmpty()) {
                     viewModelScope.launch {
-                        payListInteractor.searchChild(viewEvent.value).collect {
+                        payListInteractor.searchChild(viewEvent.value.text).collect {
+                            Log.e("CLJR", "List $it")
                             if (it.isNullOrEmpty()) {
                                 viewState =
                                     viewState.copy(
-                                        searchText = TextFieldValue(viewEvent.value),
                                         searchList = listOf(
                                             MiniChild(
                                                 uid = "",
@@ -86,32 +100,34 @@ class FilterViewModel @Inject constructor(
                                     )
                                 return@collect
                             }
-                            it.let {
-                                viewState = viewState.copy(
-                                    searchText = TextFieldValue(viewEvent.value),
-                                    searchList = it,
-                                    isShowList = true
-                                )
+                            else {
+                                Log.e("CLJR", "Select child ${viewState.selectChild}")
+                                    viewState = viewState.copy(
+                                        searchList = it,
+                                        isShowList = viewState.selectChild == null
+                                    )
+
                             }
                         }
                     }
                 } else {
                     viewState = viewState.copy(
-                        searchText = TextFieldValue(viewEvent.value),
                         searchList = null,
+                        selectChild = null,
                         isShowList = false
                     )
                 }
             }
 
             FilterEvent.ClearSearch -> {
+                Log.e("CLJR", "Clear!!!")
+               viewState.searchText = TextFieldValue("")
                 viewState = viewState.copy(
-                    searchText = TextFieldValue(""),
                     searchList = null,
                     isShowList = false,
                     selectChild = null
                 )
-                obtainEvent(FilterEvent.NewStatus)
+                //obtainEvent(FilterEvent.NewStatus)
             }
 
             FilterEvent.BackClick -> {
@@ -121,11 +137,9 @@ class FilterViewModel @Inject constructor(
             is FilterEvent.Init -> {
                 with(viewEvent.init) {
                     viewState = viewState.copy(
-                        selectChild = MiniChild(
-                            uid = childId ?: "",
-                            fio = childFIO ?: ""
-                        ),
+                        selectChild = null,
                         selectedOption = optionsIndex,
+                        isShowList = false,
                         sortValue = sortEnum,
                         textSorting = viewState.sortList[sortEnum?.ordinal?:0],
                         beginDate = beginDate.toString(),
@@ -151,55 +165,51 @@ class FilterViewModel @Inject constructor(
     }
 
     private fun setDateFilter() {
-//        when (viewState.selectedOption) {
-//            0 -> {
-//
-//                viewState = viewState.copy(
-//                    beginDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).toDateTimeRuString().toString(),
-//                    endDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-//                        //.plusDays(1).atStartOfDay().minusSeconds(1)
-//                        .toDateTimeRuString().toString()
-//                )
-//            }
-//
-//            1 -> {
-//                viewState = viewState.copy(
-//                    beginDate = "01.${if(LocalDateTime.now().month.value.toString().length==1)
-//                        "0${LocalDateTime.now().month.value}"
-//                    else
-//                        "${LocalDateTime.now().month.value}"
-//                    }.${LocalDateTime.now().year} 00:00",
-//                    endDate = "${LocalDateTime.now().toDateRuString()} 23:59"
-//                )
-//            }
-//
-//            2 -> {
-//                viewState = viewState.copy(
-//                    beginDate = "01.01.${LocalDate.now().year} 00:00",
-//                    endDate = LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1)
-//                        .toDateTimeRuString()
-//                )
-//            }
-//
-//            3 -> {//тут выбор переода стоит
-//
-//                if(viewState.beginDate.isEmpty() || viewState.endDate.isEmpty())
-//                viewState = viewState.copy(
-//                    beginDate = "01.${if(LocalDateTime.now().month.value.toString().length==1)
-//                        "0${LocalDateTime.now().month.value}"
-//                    else
-//                        "${LocalDateTime.now().month.value}"
-//                    }.${LocalDateTime.now().year} 00:00",
-//                    endDate = "${LocalDateTime.now().toDateRuString()} 23:59"
-//                )
-//
-//                 }
-//
-//            4 -> {
-//                viewState = viewState.copy(beginDate = "", endDate = "")
-//            }
-//
-//            else -> {}
-//        }
+        when (viewState.selectedOption) {
+            0 -> {
+                viewState = viewState.copy(
+                    beginDate = "${Clock.System.now().toLocalDateTime(
+                        timeZone = TimeZone.currentSystemDefault())
+                        .toDateTimeRuString(formatDate = FormatDate.Date).toString()} 00:00",
+                    endDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                        .toDateTimeRuString().toString()
+                )
+            }
+
+            1 -> {
+                viewState = viewState.copy(
+                    beginDate = "01.${if(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).month.ordinal.toString().length==1)
+                        "0${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).month.ordinal}"
+                    else
+                        "${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).month.ordinal}"
+                    }.${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year} 00:00",
+                    endDate = "${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                                .toDateTimeRuString(formatDate = FormatDate.Date)} 23:59"
+                )
+            }
+
+            2 -> {
+                viewState = viewState.copy(
+                    beginDate = "01.01.${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year} 00:00",
+                    endDate = "${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).
+                        date.atStartOfDayIn(TimeZone.currentSystemDefault()).toDateTimeRuString(formatDate = FormatDate.Date)} 23:59"
+                )
+            }
+
+            3 -> {//тут выбор периода стоит
+                if(viewState.beginDate.isEmpty() || viewState.endDate.isEmpty())
+                    viewState = viewState.copy(
+                        beginDate = "01.${if(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).month.ordinal.toString().length==1)
+                            "0${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).month.ordinal}"
+                        else
+                            "${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).month.ordinal}"
+                        }.${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year} 23:59",
+                        endDate ="${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).toDateTimeRuString(formatDate = FormatDate.Date)} 23:59")
+                 }
+            4 -> {
+                viewState = viewState.copy(beginDate = "", endDate = "")
+            }
+            else -> {}
+        }
     }
 }

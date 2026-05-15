@@ -60,6 +60,8 @@
     <string name="search_label">Искать </string>
     <string name="paymant">Укажите сумму платежа.</string>
     <string name="paymant_error">Cуммa платежа не может быть меньше или равна 0</string>
+    <string name="pay_year">Всего за год:</string>
+    <string name="pay_month">В этом месяце:</string>
     <string name="search_child_error">Выберите ученика для внесения отплаты.</string>
 
     <string name="saldo_child">Введите начальные остатки.</string>

@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.Visit.singleVisit
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
@@ -35,8 +37,7 @@ fun NewVisitContent(
             fio = viewState.searchText,
             price = viewState.priceScreen,
             onValueChange = { inputText ->
-//                Log.e("CLJR", "OnValueChange!! $inputText  ${viewState.searchText.text}")
-                viewState.searchText = inputText
+                Log.e("CLJR", "OnValueChange!! $inputText  ${viewState.searchText.text}")
                 viewModel.obtainEvent(NewVisitEvent.Search(inputText))
             },
             isSearchError = viewState.isSearchError,

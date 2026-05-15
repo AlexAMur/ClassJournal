@@ -1,4 +1,4 @@
-package com.catshome.classJournal.screens.PayList
+package com.catshome.classJournal.screens.PayList.newPay
 
 import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
@@ -8,17 +8,13 @@ import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.Pay
 import com.catshome.classJournal.domain.Pay.PayInteract
-import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
-import kotlin.time.Clock
 import kotlin.time.Clock.System.now
 
 @HiltViewModel
@@ -40,48 +36,48 @@ class NewPayViewModel @Inject constructor(
         if (throwable.message?.contains("UID ребенка") == true) {
             viewState = viewState.copy(
                 isChildError = true,
-                isSnackbarShow = true,
+                isSnackBarShow = true,
                 errorMessage = throwable.message.toString(),
-                snackbarAction = context.getString(R.string.ok),
-                onDismissed = { viewState = viewState.copy(isSnackbarShow = false) },
-                onAction = { viewState = viewState.copy(isSnackbarShow = false) }
+                snackBarAction = context.getString(R.string.ok),
+                onDismissed = { viewState = viewState.copy(isSnackBarShow = false) },
+                onAction = { viewState = viewState.copy(isSnackBarShow = false) }
             )
             return@CoroutineExceptionHandler
         }
         if (throwable.message?.contains("нулевым или отрицательным.") == true) {
             viewState = viewState.copy(
                 isPayError = true,
-                PayError = throwable.message ?: "Error!!!"
+                payError = throwable.message ?: "Error!!!"
             )
             return@CoroutineExceptionHandler
         }
 
         if (throwable.message?.contains("SQLITE_CONSTRAINT_UNIQUE") == true) {
             viewState = viewState.copy(
-                isSnackbarShow = true,
+                isSnackBarShow = true,
                 errorMessage = context?.getString(R.string.error_unique_child) ?: "Ошибка!!!",
-                snackbarAction = context.getString(R.string.ok),
-                onDismissed = { viewState = viewState.copy(isSnackbarShow = false) },
-                onAction = { viewState = viewState.copy(isSnackbarShow = false) }
+                snackBarAction = context.getString(R.string.ok),
+                onDismissed = { viewState = viewState.copy(isSnackBarShow = false) },
+                onAction = { viewState = viewState.copy(isSnackBarShow = false) }
             )
             return@CoroutineExceptionHandler
         }
         if (throwable.message?.contains("SQLITE_CONSTRAINT_PRIMARYKEY") == true) {
             viewState = viewState.copy(
-                isSnackbarShow = true,
+                isSnackBarShow = true,
                 errorMessage = " ${context?.getString(R.string.error_primarykey_group)}",
-                snackbarAction = context.getString(R.string.ok),
-                onDismissed = { viewState.isSnackbarShow = false },
-                onAction = { viewState.isSnackbarShow = false }
+                snackBarAction = context.getString(R.string.ok),
+                onDismissed = { viewState.isSnackBarShow = false },
+                onAction = { viewState.isSnackBarShow = false }
             )
             return@CoroutineExceptionHandler
         } else {
             viewState = viewState.copy(
-                isSnackbarShow = true,
+                isSnackBarShow = true,
                 errorMessage = "${context?.getString(R.string.error_save)} ${throwable.message} ",
-                snackbarAction = context.getString(R.string.ok),
-                onDismissed = { viewState.isSnackbarShow = false },
-                onAction = { viewState.isSnackbarShow = false }
+                snackBarAction = context.getString(R.string.ok),
+                onDismissed = { viewState.isSnackBarShow = false },
+                onAction = { viewState.isSnackBarShow = false }
             )
             return@CoroutineExceptionHandler
         }
@@ -89,6 +85,9 @@ class NewPayViewModel @Inject constructor(
 
     override fun obtainEvent(viewEvent: NewPayEvent) {
         when (viewEvent) {
+            NewPayEvent.ClearClicked->{
+                viewState = viewState.copy(searchText = TextFieldValue(""),listChild = null)
+            }
             is NewPayEvent.SetState -> {
                 viewState = viewState.copy(
                     selectChild = MiniChild(
@@ -101,16 +100,15 @@ class NewPayViewModel @Inject constructor(
                     pay = viewEvent.pay,
                     payment = viewEvent.pay.payment.toString(),
                     isChildError = false,
-                    ChildErrorMessage = null,
+                    childErrorMessage = null,
                     indexFocus = -1,
                     isSurnameError = false,
-                    isSnackbarShow = false,
-                    snackbarAction = "",
+                    isSnackBarShow = false,
+                    snackBarAction = "",
                     isPayError = false,
-                    PayError = "",
+                    payError = "",
                     errorMessage = ""
                 )
-                Log.e("CLJR", "Datepay After set ${viewState.pay.datePay}")
             }
 
             NewPayEvent.ResetState -> {
@@ -127,7 +125,7 @@ class NewPayViewModel @Inject constructor(
                     if (viewState.selectChild == null) {
                         viewState = viewState.copy(
                             isChildError = true,
-                            ChildErrorMessage = context.getString(R.string.search_child_error)
+                            childErrorMessage = context.getString(R.string.search_child_error)
                         )
                     }
                     try {
@@ -137,13 +135,13 @@ class NewPayViewModel @Inject constructor(
                         //viewState = viewState.copy(pay = viewState.pay.copy(payment = 0))
                         viewState = viewState.copy(
                             isPayError = true,
-                            PayError = context.getString(R.string.error_invalid_value) )
+                            payError = context.getString(R.string.error_invalid_value) )
                         return
                     }
                     if (viewState.pay.payment <= 0) {
                         viewState = viewState.copy(
                             isPayError = true,
-                            PayError = context.getString(R.string.paymant_error)
+                            payError = context.getString(R.string.paymant_error)
                         )
                     }
                     if (viewState.isChildError || viewState.isPayError)
@@ -151,7 +149,7 @@ class NewPayViewModel @Inject constructor(
                 } catch (e: NumberFormatException) {
                     viewState = viewState.copy(
                         isPayError = true,
-                        PayError = context.getString(R.string.error_invalid_value)
+                        payError = context.getString(R.string.error_invalid_value)
                     )
                     return
                 }
@@ -167,13 +165,13 @@ class NewPayViewModel @Inject constructor(
             }
 
             is NewPayEvent.Search -> {
-                viewState = viewState.copy(searchText = TextFieldValue( viewEvent.searchText))
+                viewState = viewState.copy(searchText = TextFieldValue(viewEvent.searchText))
                 if (viewState.searchText.text.isEmpty()) {
                     viewState = viewState.copy(listChild = null)
                     return
                 } else {
                     if (viewState.isChildError) {
-                        viewState = viewState.copy(isChildError = false, ChildErrorMessage = null)
+                        viewState = viewState.copy(isChildError = false, childErrorMessage = null)
                     }
                 }
                 viewModelScope.launch {
@@ -217,17 +215,17 @@ class NewPayViewModel @Inject constructor(
                 payment = 0,
             ),//.toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toDateTimeRuString()),
             isChildError = false,
-            ChildErrorMessage = null,
+            childErrorMessage = null,
             indexFocus = -1,
             isSurnameError = false,
-            isSnackbarShow = false,
-            snackbarAction = "",
+            isSnackBarShow = false,
+            snackBarAction = "",
             isPayError = false,
-            PayError = "",
+            payError = "",
             payment = "0",
             errorMessage = ""
         )
-        Log.e("CLJR", "Reset after ${viewState.pay.datePay}")
+
     }
 
     fun datePayChange(newDate: String?) {
@@ -235,9 +233,8 @@ class NewPayViewModel @Inject constructor(
             viewState = viewState.copy(pay = viewState.pay.copy(datePay = newDate))
         }
     }
-
     fun paymentChange(newValue: String) {
-        viewState = viewState.copy(payment = newValue)
-        viewState = viewState.copy(isPayError = false)
+        viewState = viewState.copy(payment = newValue,isPayError = false)
+        //viewState = viewState.copy(isPayError = false)
     }
 }
