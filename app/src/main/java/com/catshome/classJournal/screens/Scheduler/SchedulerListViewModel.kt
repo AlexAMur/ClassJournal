@@ -62,9 +62,6 @@ class SchedulerListViewModel @Inject constructor(
             }
 
             is ShowTimePiker -> {
-                Log.e(
-                    "CLJR", "Show timePiker"
-                )
                 viewState = viewState.copy(
                     // oldTimeLesson = viewEvent.time,
                     showTimePicker = viewEvent.show,

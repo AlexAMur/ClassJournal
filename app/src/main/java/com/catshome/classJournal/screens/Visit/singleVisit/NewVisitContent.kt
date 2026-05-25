@@ -37,7 +37,6 @@ fun NewVisitContent(
             fio = viewState.searchText,
             price = viewState.priceScreen,
             onValueChange = { inputText ->
-                Log.e("CLJR", "OnValueChange!! $inputText  ${viewState.searchText.text}")
                 viewModel.obtainEvent(NewVisitEvent.Search(inputText))
             },
             isSearchError = viewState.isSearchError,

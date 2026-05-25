@@ -7,6 +7,7 @@ import com.catshome.classJournal.domain.Visit.Visit
 
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.SortEnum
+import com.catshome.classJournal.domain.communs.VisitSortEnum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -16,17 +17,14 @@ class VisitRoomStorage @Inject constructor(val visitDAO: VisitDAO, val scheduler
         return visitDAO.getVisitByUid(uid)?.mapToVisit()
     }
     suspend fun save(visit: List<VisitEntity>): Boolean {
-        visitDAO.insert(visit).forEach {
-            if (it <= 0) return false
-        }
-        return true
+        return visitDAO.addVisit(visit)
     }
 
     suspend fun delete(visitEntity: VisitEntity): Boolean {
         return visitDAO.delete(visitEntity) > 0
     }
 
-    fun getVisitAll(sortEnum: SortEnum): Flow<List<Visit>>? {
+    fun getVisitAll(sortEnum: VisitSortEnum): Flow<List<Visit>>? {
         return visitDAO.getFullVisit(
             isDelete = false,
             sortDate = if (getSortString(sortEnum) == VisitScreenEntity::dateVisit.name)

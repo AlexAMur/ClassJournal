@@ -18,11 +18,10 @@ class PayListInteractor @Inject constructor (val payListRepository: PayRepositor
                                     val childRepository: ChildRepository) {
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getStatisticPay(beginDate: String?, endDate: String): Int{
-        Log.e("CLJR", "ds- ${beginDate?.toLocalDateTimeRu()?.toLong()} ed-${endDate?.toLocalDateTimeRu()?.toLong()}")
         return payListRepository.getStatisticPay(beginDate?.toLocalDateTimeRu()?.toLong(), endDate?.toLocalDateTimeRu()?.toLong())
     }
 
-    suspend fun getPays(uid: String?, beginDate: Long?, endDate: Long?, sort: SortEnum?): Flow<List<Pay>>?{
+    suspend fun getPays(uid: String?, beginDate: Long?, endDate: Long?, sort: SortEnum?= SortEnum.date_pay): Flow<List<Pay>>?{
             if (uid?.isNullOrEmpty() == false ) {
                 if (beginDate != null && endDate != null) {
                     return payListRepository.getPayByChildWithPeriod(

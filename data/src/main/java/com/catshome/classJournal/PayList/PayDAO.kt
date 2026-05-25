@@ -1,15 +1,59 @@
 package com.catshome.classJournal.PayList
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.ABORT
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
+import com.catshome.classJournal.resource.R
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PayDAO {
+    @Transaction
+    suspend fun deletePay(payEntity: PayEntity): Boolean{
+        Log.e("CLJR","payEntity = ${payEntity}")
+        if (getPayByID(payEntity.uid)!= null ) {
+            if (editSaldoBeforePay(
+                    uidChild = payEntity.uid_child,
+                    pay = payEntity.pay.unaryMinus()
+                ) != 1
+            )
+                throw Exception("ErrorDelete")
+            return delete(payEntity) != 0
+        }
+        return true
+    }
+    @Transaction
+    suspend fun updatePay(payEntity: PayEntity): Boolean{
+        if (getPayByID(payEntity.uid)!= null ) {
+        val oldPay  = getPayByID(payEntity.uid)?.pay?:0
+        if (oldPay!= payEntity.pay) {
+            if (editSaldoBeforePay(
+                    uidChild = payEntity.uid_child,
+                    pay = payEntity.pay - oldPay
+
+                ) != 1
+            ) {
+                throw Exception("ErrorSave")
+            }
+        }
+            return update(payEntity) != 0
+        }
+        return false
+    }
+    @Transaction
+    suspend fun insertPay(payEntity: PayEntity): Boolean{
+        if(editSaldoBeforePay(uidChild = payEntity.uid_child, pay = payEntity.pay) != 1)
+                throw Exception("ErrorSave")
+        return insert(payEntity) == 1L
+    }
+    @Query("update child SET saldo = (select saldo+ :pay from child where uid = :uidChild)where uid = :uidChild ")
+    fun editSaldoBeforePay(uidChild: String, pay :Int):Int
+
     @Query("select  sum(pay) from pays where date_pay between :startDate and :endDate")
     fun getStatisticPay(startDate: Long? = Long.MAX_VALUE ,endDate: Long? = Long.MAX_VALUE):Int
 
@@ -82,4 +126,14 @@ interface PayDAO {
         sortName: String,
         sortSurname: String
     ): Flow<List<PayScreenEntity>>?
+
+    @Query(
+        "select p.uid , p.uid_child , p.date_pay, p.pay from pays p " +
+                "where p.uid = :idPay "
+
+    )
+    fun getPayByID(
+        idPay: String
+    ):PayEntity?
+
 }

@@ -64,7 +64,6 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
             .fillMaxWidth(),
     ) {
         LaunchedEffect(Unit) {
-            Log.e("CLJR", "Launched Effect!")
             viewModel.obtainEvent(VisitListEvent.Reload)
         }
         Scaffold(
@@ -125,7 +124,6 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                     state = rememberLazyListState()
                 ) {
                     viewState.listVisit?.forEach { key, visits ->
-//                        Log.e("CLJR", "List visits ${visits.hashCode()}")
                         stickyHeader {
                             Card(
                                 Modifier
@@ -197,8 +195,7 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
 
         is VisitListAction.EditVisit -> {
             (viewAction as VisitListAction.EditVisit).visit.let { visit ->
-                Log.e("CLJR", "Visit to navigate ${visit}")
-                navController.navigate(
+               navController.navigate(
                     VisitDetails(
                         uid = visit.uid!!,
                         uidChild = visit.uidChild,

@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.PayList
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,10 +21,11 @@ import com.catshome.classJournal.resource.R
 
 @Composable
 fun StatisticPayCard(incomePerMonth: Int, lastMonth: Int, totalYear: Int) {
+    val stoProcentov: Float =lastMonth.toFloat()
     Card(
         Modifier
             .padding(24.dp)
-            .fillMaxWidth(0.8f),
+            .fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = ClassJournalTheme.colors.secondaryBackground,
             contentColor = ClassJournalTheme.colors.primaryText
@@ -33,7 +35,7 @@ fun StatisticPayCard(incomePerMonth: Int, lastMonth: Int, totalYear: Int) {
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
+                .padding(16.dp)
         ) {
             Row() {
                 Text(
@@ -60,8 +62,8 @@ fun StatisticPayCard(incomePerMonth: Int, lastMonth: Int, totalYear: Int) {
                 )
             }
             DualCanvasProgressBar(
-                value1 = incomePerMonth.toFloat() / 100,
-                value2 = lastMonth.toFloat() / 100,
+                value1 = incomePerMonth.toFloat() /stoProcentov,
+                value2 = lastMonth.toFloat()  /stoProcentov,
                 colorMain = ClassJournalTheme.colors.tintColor,
                 colorSecondary = ClassJournalTheme.colors.controlColor,
                 colorBackground = ClassJournalTheme.colors.disableContentColor,

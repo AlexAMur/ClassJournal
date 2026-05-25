@@ -101,11 +101,10 @@ fun NewVisitByScheduler(
             //  viewModel.obtainEvent(NewVisitEvent.ChangePageIndex())
 
 //            if((pagerState.currentPage- index)+pagerState.currentPageOffsetFraction ==0.0f) {
-//                Log.e("CLJR", "Page Launched ${viewState.pageIndex}")
 //                viewModel.obtainEvent(NewVisitEvent.getScheduler(DayOfWeek.entries[index % DayOfWeek.entries.size]))
 //            }
 //            LaunchedEffect(viewState.pageIndex) {
-//                Log.e("CLJR", "page index ${viewState.pageIndex}")
+
 //                viewModel.obtainEvent(
 //                    NewVisitEvent.getScheduler(dayOfWeek = DayOfWeek.entries[viewState.pageIndex])
 //                )

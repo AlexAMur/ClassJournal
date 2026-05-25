@@ -65,7 +65,6 @@ fun classJournalApp(
         }
         composable(route = ItemScreen.NewPayScreen.name) {
             //val viewModel =hiltViewModel<NewPayViewModel>()
-            Log.e("CLJR", "NavHost new pay")
             val viewModel: NewPayViewModel by activity.viewModels()
             newPayScreen(navController, viewModel)
         }
@@ -78,7 +77,6 @@ fun classJournalApp(
                 viewModel = viewModel,
                 optionFilter = optionFilterPaysList
             )
-
         }
 
         composable<DetailsPayResult> { backStackEntry ->

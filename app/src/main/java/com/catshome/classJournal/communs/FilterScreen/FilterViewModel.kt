@@ -86,7 +86,6 @@ class FilterViewModel @Inject constructor(
                 if (viewEvent.value.text.isNotEmpty()) {
                     viewModelScope.launch {
                         payListInteractor.searchChild(viewEvent.value.text).collect {
-                            Log.e("CLJR", "List $it")
                             if (it.isNullOrEmpty()) {
                                 viewState =
                                     viewState.copy(
@@ -101,8 +100,7 @@ class FilterViewModel @Inject constructor(
                                 return@collect
                             }
                             else {
-                                Log.e("CLJR", "Select child ${viewState.selectChild}")
-                                    viewState = viewState.copy(
+                                viewState = viewState.copy(
                                         searchList = it,
                                         isShowList = viewState.selectChild == null
                                     )
@@ -120,8 +118,7 @@ class FilterViewModel @Inject constructor(
             }
 
             FilterEvent.ClearSearch -> {
-                Log.e("CLJR", "Clear!!!")
-               viewState.searchText = TextFieldValue("")
+                viewState.searchText = TextFieldValue("")
                 viewState = viewState.copy(
                     searchList = null,
                     isShowList = false,

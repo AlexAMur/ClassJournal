@@ -49,7 +49,6 @@ class RoomGroupStorage @Inject constructor(val groupsDAO: GroupsDAO, val group: 
     }
 
     override fun getGroupById(uid: String): Group {
-        Log.e("CLJR", "getGroupByID uid = $uid")
         val cs = CoroutineScope(Dispatchers.IO)
         var group = Group()
         val data = cs.async {

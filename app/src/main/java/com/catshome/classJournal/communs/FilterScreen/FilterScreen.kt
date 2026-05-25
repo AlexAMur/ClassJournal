@@ -135,8 +135,6 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                     viewModel.obtainEvent(FilterEvent.ClearSearch)
                 }
             ) { searchText ->
-                Log.e("CLJR", "on Search $searchText")
-              //  textFieldValueState.value = searchText
                 viewModel.obtainEvent(FilterEvent.Search(value = searchText))
             }
             if (viewState.isShowList) {

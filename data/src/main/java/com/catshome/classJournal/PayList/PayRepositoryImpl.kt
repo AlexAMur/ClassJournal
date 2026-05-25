@@ -35,7 +35,7 @@ class PayRepositoryImpl @Inject constructor(val storage: RoomPayStorage) : PayRe
            uid = uidChild,
            begin = begin,
            end = end,
-           sortEnum
+           sortEnum = sortEnum
        )?.map {list->
            list.map {
                it.mapToPay()

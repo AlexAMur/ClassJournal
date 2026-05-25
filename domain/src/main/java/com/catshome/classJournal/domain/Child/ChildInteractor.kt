@@ -41,10 +41,10 @@ class ChildInteractor @Inject constructor(
         {
             childtmp?.let {
                 childRepository.updateChild(
-                    it.copy(name = "${childtmp.name}_"))
+                    it.copy(name = "${childtmp.name}_")
+                )
             }
             childRepository.saveChild(child, childGroup)
-            Log.e("CLJR", "Child is exists")
         }
         return true
     }
@@ -52,10 +52,12 @@ class ChildInteractor @Inject constructor(
     fun getGroupByChildID(uid: String): Flow<List<ChildGroup>>? {
         return childGroupRepository.getChildGroups(uid)
     }
+
     //Пометить на удаление
     suspend fun deleteChildUseCase(child: Child) {
         childRepository.deleteSet(child.copy(isDelete = true))
     }
+
     //Вызывается для возврата списка групп
     fun getGroup(): Flow<List<Group>> {
         return groupRepository.getGroups()

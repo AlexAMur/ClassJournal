@@ -9,15 +9,16 @@ class RoomPayStorage @Inject constructor(private val payDAO: PayDAO) {
       return  payDAO.getStatisticPay(beginDate, endDate)
     }
     suspend fun insertPay(payEntity: PayEntity): Boolean {
-        return payDAO.insert(payEntity) > 0
+            return payDAO.insertPay(payEntity)
+
     }
 
     suspend fun updatePay(payEntity: PayEntity): Boolean {
-        return payDAO.update(payEntity) > 0
+        return payDAO.updatePay(payEntity)
     }
 
     suspend fun deletePay(payEntity: PayEntity): Boolean {
-        return payDAO.delete(payEntity) > 0
+        return payDAO.deletePay(payEntity)
     }
 
     suspend fun getAllPay(isDelete: Boolean, sortEnum: SortEnum): Flow<List<PayScreenEntity>>? {

@@ -52,17 +52,6 @@ class MainActivity : ComponentActivity() {
         //LocalActivity.provides(this)
         context = application.applicationContext
 
-//        Log.e("CLJR", "toDateTime - ${Date(now().toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toLong())}")
-//        Log.e("CLJR", "toDateTime - ${now().toLocalDateTime(TimeZone.UTC).toDateTimeRuString()}")
-//        Log.e("CLJR", "TimeZone - ${java.util.TimeZone.getDefault().getOffset(Date().time)}")
-//
-//        Log.e("CLJR", "toDateTime - ${now().toDateTimeRuString(TimeZone.currentSystemDefault())}")
-//        Log.e("CLJR", "toDateTime - ${now().toDateTimeRuString()}")
-//////        Log.e("CLJR", "toDateTimeRuString - ${now().toDateTimeRuString(TimeZone.currentSystemDefault())}")
-//        Log.e("CLJR", "String to date - ${"01.03.2026 10:11".toLocalDateTimeRu()}")
-//        Log.e("CLJR", "String to date - ${"01.03.2026 10:30".toLocalDateTimeRu()?.toLong()}")
-//        Log.e("CLJR", "String to date1 - ${"01.03.2026".toLocalDateTimeRu()}")
-
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()

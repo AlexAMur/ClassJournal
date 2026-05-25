@@ -41,6 +41,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
         )
     ) {
     private val exceptionHandlerVisit = CoroutineExceptionHandler { coroutineContext, throwable ->
+        Log.e("CLJR", "throwable Visit $throwable")
         if (throwable.message?.contains("UID ребенка") == true) {
             viewState = viewState.copy(
                 isPriceError = true,
@@ -200,7 +201,6 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                             viewState.scheduler[index]?.map { map ->
                                 map.value?.let { listVisit ->
                                     listToSave.addAll(listVisit.filter { it.check }.toMutableList())
-
                                 }
                             }
                         }
@@ -224,16 +224,6 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                                 }
                                 //listToSave[index] = visit.copy(data = "${viewState.dateOnPage?.toDateTimeRuString(formatDate = FormatDate.Date)}")
 
-                                Log.e(
-                                    "CLJR",
-                                    "Дата в dateOn page ${viewState.dateOnPage.toString()}"
-                                )
-                                Log.e(
-                                    "CLJR",
-                                    "Даta после  ${
-                                        viewState.dateOnPage?.toDateTimeRuString(formatDate = FormatDate.Date)
-                                    }"
-                                )
 
                             } catch (_: NumberFormatException) {
                                 viewState.onDismissDialog = {
@@ -252,11 +242,11 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
 //                                     uid = if (visit.uid.isNullOrEmpty())  UUID.randomUUID().toString() else visit.uid,
                                 data = "${viewState.dateOnPage?.toDateTimeRuString()}"
                             )
-                            Log.e("CLJR", "data on list ${listToSave}")
+//                            Log.e("CLJR", "data on list ${listToSave}")
                         }
-                        Log.e("CLJR", "Даta ${viewState.dateOnPage}")
-                        Log.e("CLJR", "Данные для сохранения ${listToSave}")
-                        viewModelScope.launch() {
+//                        Log.e("CLJR", "Даta ${viewState.dateOnPage}")
+//                        Log.e("CLJR", "Данные для сохранения ${listToSave}")
+                        viewModelScope.launch(exceptionHandlerVisit) {
                             listToSave.let { scheduler ->
                                 visitInteract.saveVisit(scheduler)
                             }
@@ -283,7 +273,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                         return
                     }
 
-                    viewModelScope.launch() {
+                    viewModelScope.launch(exceptionHandlerVisit) {
                         visitInteract.saveVisit(
                             listOf(
                                 Visit(
@@ -306,7 +296,6 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
             is NewVisitEvent.ChangePrice -> {
                 try {
                     viewState = viewState.copy(priceScreen = viewEvent.price)
-                    //iewState.copy(priceScreen = viewEvent.price)
                 } catch (e: NumberFormatException) {
                     viewState.copy(
                         isPriceError = true,

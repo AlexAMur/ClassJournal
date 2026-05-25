@@ -9,6 +9,7 @@ import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.SortEnum
+import com.catshome.classJournal.domain.communs.VisitSortEnum
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
 import kotlinx.coroutines.CoroutineScope
@@ -35,8 +36,7 @@ class VisitInteract @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveVisit(listVisit: List<Visit>) {
         listVisit.forEach { visit ->
-            Log.e("CLJR", "Data from List ${visit.data}")
-            if (visit.uid.isNullOrEmpty())
+           if (visit.uid.isNullOrEmpty())
                 throw kotlin.IllegalArgumentException("Не указан UID")
             if (visit.uidChild.isNullOrEmpty())
                 throw kotlin.IllegalArgumentException("Не указан UID ребенка")
@@ -49,7 +49,7 @@ class VisitInteract @Inject constructor(
     }
 
     suspend fun getVisitAll(): Flow<List<Visit>>? {
-        return visitRepository.getAllVisit(isDelete = false, SortEnum.Surname)
+        return visitRepository.getAllVisit(isDelete = false, VisitSortEnum.dateVisit)
     }
 
     fun getSchedulerByDay(dayOfWeek: DayOfWeek): Flow<List<Visit>>? {

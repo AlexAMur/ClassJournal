@@ -68,23 +68,23 @@ fun PayListContent(
                     hostState = sbHostState,
                     modifier = Modifier.padding(bottom = paddingValues)
                 )
-                LaunchedEffect(viewState.messageShackBar) {
-                    if (!viewState.messageShackBar.isNullOrEmpty() && viewState.isCanShowSnackBar) {
+                LaunchedEffect(viewState.messageSnackBar) {
+                    if (!viewState.messageSnackBar.isNullOrEmpty() && viewState.isCanShowSnackBar) {
                         CoroutineScope(Dispatchers.IO).launch {
                             SnackBarAction(
-                                message = viewState.messageShackBar.toString(),
+                                message = viewState.messageSnackBar.toString(),
                                 actionLabel = viewState.snackBarAction,
                                 snackBarState = sbHostState,
                                 withDismissAction = viewState.withDismissAction,
                                 onDismissed = {
                                     viewState.onDismissed?.let { it() }
                                     viewState.isCanShowSnackBar = false
-                                    viewState.messageShackBar = null
+                                    viewState.messageSnackBar = null
                                 },
                                 onActionPerformed = {
                                     viewState.onAction?.let { it() }
                                     viewState.isCanShowSnackBar = false
-                                    viewState.messageShackBar = null
+                                    viewState.messageSnackBar = null
 
                                 }
                             )

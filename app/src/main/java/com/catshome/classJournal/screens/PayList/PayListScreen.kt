@@ -29,7 +29,6 @@ fun PayListScreen(
     LaunchedEffect(Unit) {
         optionFilter?.let {
             viewModel.obtainEvent(PayListEvent.SetOption(optionFilter))
-
         }
         if (viewState.isCanShowSnackBar) {
             detailsPayResult?.let {
@@ -37,7 +36,6 @@ fun PayListScreen(
                     isCanShowSnackBar = null,
                     withDismissAction = false,
                     messageSnackBar = it.message,
-
                     onAction = {
                         viewState.isCanShowSnackBar =false
                     },

@@ -1,12 +1,13 @@
 package com.catshome.classJournal.screens.PayList
 
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.PayListInteractor
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
+import com.catshome.classJournal.domain.communs.FormatDate
+import com.catshome.classJournal.domain.communs.formatRu
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
@@ -14,13 +15,18 @@ import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.PayList.PayListAction.EditPay
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DateTimePeriod
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.toLocalDateTime
 import java.time.LocalDateTime
 import javax.inject.Inject
-import kotlin.time.Clock.System.now
+import kotlin.time.Clock
 
 @HiltViewModel
 class PayListViewModel @Inject constructor(private val payListInteractor: PayListInteractor) :
@@ -32,11 +38,35 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 else
                     "${LocalDateTime.now().month.value}"
             }.${LocalDateTime.now().year} 00:00",
-            endDate = "${now().toDateTimeRuString()?.substring(0, DATE_FORMAT_RU.length)} 23:59"
+            endDate = "${
+                Clock.System.now().toDateTimeRuString()?.substring(0, DATE_FORMAT_RU.length)
+            } 23:59"
         )
     ) {
-        init {
-            getStatisticPay()
+    init {
+        getStatisticPay()
+    }
+
+    private val exceptionHandlerPaysList =
+        CoroutineExceptionHandler { coroutineContext, throwable ->
+            if (throwable.message?.contains("ErrorDelete") == true)
+                obtainEvent(
+                    PayListEvent.UndoDeleteClicked(
+                        viewState.deletePayUid
+                    )
+                )
+            viewState = viewState.copy(
+                isCanShowSnackBar = true,
+                messageSnackBar = if (throwable.message?.contains("ErrorDelete") == true)
+                    "Не удалось удалить запись!"
+                else
+                    throwable.message.toString(),
+                snackBarAction = context.getString(R.string.ok),
+                onDismissed = { viewState = viewState.copy(isCanShowSnackBar = false) },
+                onAction = { viewState = viewState.copy(isCanShowSnackBar = false) }
+            )
+            return@CoroutineExceptionHandler
+
         }
 
     override fun obtainEvent(viewEvent: PayListEvent) {
@@ -56,13 +86,12 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
 
             is PayListEvent.DeleteClicked -> {
                 viewState.deletePayUid = viewEvent.pay.uidPay
-                var indexDelete =-1
+                var indexDelete = -1
                 viewState = viewState.copy(items = viewState.items.mapIndexed { index, pay ->
-                    if (viewEvent.pay.uidPay ==  pay.uidPay) {
+                    if (viewEvent.pay.uidPay == pay.uidPay) {
                         indexDelete = index
                         pay.copy(isDelete = true)
-                    }
-                    else
+                    } else
                         pay
                 })
                 viewState.indexDelete = indexDelete
@@ -75,36 +104,35 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                     viewState.onDismissed = null
                     viewState.onAction = null
                     viewState.isCanShowSnackBar = false
-                    viewState.messageShackBar = null
+                    viewState.messageSnackBar = null
                 }
                 viewState.onDismissed = {
                     var result = false
-                    Log.e("CLJR", "Before corutine")
                     if (viewState.items[viewState.indexDelete].isDelete) {
-                        val jobDef = CoroutineScope(Dispatchers.Default).launch {
-                            val job = CoroutineScope(Dispatchers.IO).async {
-                                result = payListInteractor.deletePay(pay = viewEvent.pay.toPay())
-                                Log.e("CLJR", "Async!!!! $result")
-                                Log.e("CLJR", "Async viewEvent ${viewEvent.pay}")
-                                return@async result
+                        val jobDef =
+                            CoroutineScope(Dispatchers.Default).launch(exceptionHandlerPaysList) {
+                                val job = CoroutineScope(Dispatchers.IO).async {
+                                    result =
+                                        payListInteractor.deletePay(pay = viewEvent.pay.toPay())
+                                    return@async result
+                                }
+                                if (!job.await()) {
+                                    viewState.isCanShowSnackBar = true
+                                    viewState.messageSnackBar =
+                                        context.getString(R.string.error_save)
+                                    viewState.isCanShowSnackBar = false
+                                    viewState.withDismissAction = false
+                                    viewState.messageSnackBar = null
+                                    viewState.onDismissed = null
+                                    viewState.onAction = null
+                                    //resetStatusSnackBar()
+                                }
                             }
-                            if (!job.await()) {
-                                viewState.isCanShowSnackBar = true
-                                viewState.messageShackBar = context.getString(R.string.error_save)
-                                viewState.isCanShowSnackBar = false
-                                viewState.withDismissAction =false
-
-                                viewState.messageShackBar = null
-                                viewState.onDismissed = null
-                                viewState.onAction = null
-                                //resetStatusSnackBar()
-                            }
-                        }
                     }
                 }
                 viewState.isCanShowSnackBar = true
-                viewState = viewState.copy(messageShackBar = "Отменить удаление ${viewEvent.pay.fio}?")
-                Log.e("CLJR", "ViewModel DeleteClicked ${viewState.messageShackBar}")
+                viewState =
+                    viewState.copy(messageSnackBar = "Отменить удаление ${viewEvent.pay.fio}?")
             }
 
             PayListEvent.resetSnackBar -> {
@@ -113,7 +141,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
 
             is PayListEvent.NewClicked -> {
                 viewState.isCanShowSnackBar = true
-                viewState.messageShackBar = null
+                viewState.messageSnackBar = null
                 viewAction = PayListAction.NewPay
             }
 
@@ -133,13 +161,11 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                         } else
                             it
                     })
-                Log.e("CLJR", "UnDelete")
             }
 
             is PayListEvent.ShowSnackBar -> {
-                Log.e("CLJR", "ShowSnackBar in viewModel ${viewEvent.detailsPayResult} ")
                 viewState = viewState.copy(
-                    messageShackBar = viewEvent.detailsPayResult.message
+                    messageSnackBar = viewEvent.detailsPayResult.message
                 )
             }
 
@@ -183,7 +209,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             }
 
             is PayListEvent.UpdateClicked -> {
-                viewState.messageShackBar = null
+                viewState.messageSnackBar = null
                 viewState.isCanShowSnackBar = true
 
                 viewAction = EditPay(viewEvent.pay.toPay())
@@ -217,7 +243,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
     fun setStatusSnackBar(
         isCanShowSnackBar: Boolean?,
         withDismissAction: Boolean = true,
-        actionLabel:String? = null,
+        actionLabel: String? = null,
         messageSnackBar: String?,
         onAction: (() -> Unit)?,
         onDismissed: (() -> Unit)?,
@@ -225,7 +251,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
         isCanShowSnackBar?.let { isCan -> viewState = viewState.copy(isCanShowSnackBar = isCan) }
         viewState = viewState.copy(
             withDismissAction = withDismissAction,
-            messageShackBar = messageSnackBar,
+            messageSnackBar = messageSnackBar,
             snackBarAction = actionLabel
         )
         onAction?.let { viewState.onAction = it }
@@ -235,15 +261,33 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
     private fun resetStatusSnackBar() {
         viewState.onAction = null
         viewState.onDismissed = null
-     //   viewState = viewState.copy(isCanShowSnackBar = false, messageShackBar = null)
+        //   viewState = viewState.copy(isCanShowSnackBar = false, messageShackBar = null)
         viewState.isCanShowSnackBar = false
         //viewState.withDismissAction = true
-        viewState.messageShackBar = null
+        viewState.messageSnackBar = null
     }
-    private fun getStatisticPay(){
 
+    private fun getStatisticPay() {
+        val date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val lastMonth =
+            Clock.System.now().minus(DateTimePeriod(months = 1), TimeZone.currentSystemDefault())
+                .toLocalDateTime(TimeZone.currentSystemDefault())
         CoroutineScope(Dispatchers.IO).launch {
-           viewState = viewState.copy(incomePerMonth=  payListInteractor.getStatisticPay(viewState.beginDate, viewState.endDate))
+            viewState = viewState.copy(
+                incomePerMonth = payListInteractor.getStatisticPay(
+                    viewState.beginDate,
+                    viewState.endDate
+                ),
+                incomePerLastMonth = payListInteractor.getStatisticPay(
+                    beginDate = "01.${lastMonth.formatRu(FormatDate.Month)}.${lastMonth.year}",
+                    endDate = date.toDateTimeRuString().toString()
+                ),
+                incomePerYear = payListInteractor.getStatisticPay(
+                    "01.01.${date.year}",
+                    endDate = date.toDateTimeRuString(FormatDate.DateTime).toString()
+                )
+            )
         }
     }
+
 }

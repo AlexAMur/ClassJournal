@@ -13,7 +13,11 @@ import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import kotlin.time.Clock.System.now
 
@@ -33,6 +37,17 @@ class NewPayViewModel @Inject constructor(
     val TEXT_FILD_COUNT = 3
     val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
     private val exceptionHandlerPays = CoroutineExceptionHandler { coroutineContext, throwable ->
+        viewState = viewState.copy(
+            isChildError = true,
+            isSnackBarShow = true,
+            errorMessage = throwable.message.toString(),
+            snackBarAction = context.getString(R.string.ok),
+            onDismissed = { viewState = viewState.copy(isSnackBarShow = false) },
+            onAction = { viewState = viewState.copy(isSnackBarShow = false) }
+        )
+        return@CoroutineExceptionHandler
+
+
         if (throwable.message?.contains("UID ребенка") == true) {
             viewState = viewState.copy(
                 isChildError = true,
@@ -71,7 +86,7 @@ class NewPayViewModel @Inject constructor(
                 onAction = { viewState.isSnackBarShow = false }
             )
             return@CoroutineExceptionHandler
-        } else {
+        }
             viewState = viewState.copy(
                 isSnackBarShow = true,
                 errorMessage = "${context?.getString(R.string.error_save)} ${throwable.message} ",
@@ -80,7 +95,7 @@ class NewPayViewModel @Inject constructor(
                 onAction = { viewState.isSnackBarShow = false }
             )
             return@CoroutineExceptionHandler
-        }
+
     }
 
     override fun obtainEvent(viewEvent: NewPayEvent) {
@@ -153,15 +168,27 @@ class NewPayViewModel @Inject constructor(
                     )
                     return
                 }
-                viewState.selectChild?.let { child ->
-                    viewModelScope.launch(exceptionHandlerPays) {
-                        payInteract.savePay(
-                            uid = child.uid,
-                            payment = viewState.pay
-                        )
-                    }
+                CoroutineScope(Dispatchers.IO).launch(exceptionHandlerPays) {
+                     viewState.selectChild?.let { child ->
+                         val job = CoroutineScope(Dispatchers.IO).async(exceptionHandlerPays) {
+                             return@async payInteract.savePay(
+                                 uid = child.uid,
+                                 payment = viewState.pay
+                             )
+                         }
+                         if (job.await())
+                             viewAction = NewPayAction.Successful
+                         else {
+                             viewState = viewState.copy(
+                                 isSnackBarShow = true,
+                                 errorMessage = context.getString(R.string.error_save),
+                                 snackBarAction = context.getString(R.string.ok),
+                                 onDismissed = { viewState = viewState.copy(isSnackBarShow = false) },
+                                 onAction = { viewState = viewState.copy(isSnackBarShow = false) }
+                             )
+                         }
+                     }
                 }
-                viewAction = NewPayAction.Successful
             }
 
             is NewPayEvent.Search -> {
@@ -206,7 +233,6 @@ class NewPayViewModel @Inject constructor(
     }
 
     private fun resetState() {
-        Log.e("CLJR", "Reset before ${viewState.pay.datePay}")
         viewState = viewState.copy(
             selectChild = null,
             searchText = TextFieldValue(),

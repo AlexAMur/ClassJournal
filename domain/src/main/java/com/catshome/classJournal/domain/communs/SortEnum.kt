@@ -5,6 +5,6 @@ enum class SortEnum {
     Surname
 }
 enum class VisitSortEnum {
-    date,
+    dateVisit,
     Surname
 }

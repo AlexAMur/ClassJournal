@@ -112,7 +112,6 @@ fun NewVisitScreen(
 //                pagerState.scrollToPage(Int.MAX_VALUE / 1024 -1)
 //        }
         LaunchedEffect(Unit) {
-            Log.e("CLJR", "Launcher!!!!!!!!!!!!!")
             if (pageOffset == 0.0f)
              viewModel.obtainEvent(NewVisitEvent.getScheduler)
         }

@@ -54,7 +54,6 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
 //                        )
 //                    )
 //                }
-//                Log.e("CLJR", "isDelete ${viewState.listVisit}")
 //            }
 
             VisitListEvent.NewVisit -> {
@@ -123,7 +122,6 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
             )
         }
         viewState = viewState.copy(deleteKey = key)
-        Log.e("CLJR", "List after delete: ${viewState.listVisit}")
     }
 
     fun unDeleteItem() {
@@ -138,7 +136,6 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                 )
             )
         }
-        Log.e("CLJR", "List after Undelete: ${viewState.listVisit}")
     }
 }
 

@@ -67,7 +67,6 @@ class ChildListViewModel @Inject constructor(
 
             is ChildListEvent.undoDelete -> {
                 //отмена удаления
-                Log.e("CLJR", "Undo delete")
                 viewState.uidDelete = ""
                 viewState.snackBarShow = false
                 viewState.reloadScreen = true

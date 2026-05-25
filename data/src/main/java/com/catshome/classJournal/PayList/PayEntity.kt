@@ -64,7 +64,6 @@ fun PayScreenEntity.mapToPay(): Pay {
         payment = pay
     )
 }
-
 fun Pay.mapToPayEntity(): PayEntity {
     return PayEntity(
         uid = this.uidPay,

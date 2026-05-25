@@ -60,9 +60,7 @@ class NewChildViewModel @Inject constructor(
                 onDismissed = { viewState.isSnackbarShow = false },
                 onAction = { viewState.isSnackbarShow = false }
             )
-            Log.e("CLJR", "Save Error - ${throwable.message}")
-
-        }
+}
     }
 
     fun nameChange(newValue: String) {

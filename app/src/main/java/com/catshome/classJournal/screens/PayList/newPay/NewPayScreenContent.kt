@@ -197,10 +197,6 @@ fun PayScreenContent(
                     stringResource(R.string.birthday_child)
                 ) {
                     it?.let {
-                        Log.e(
-                            "CLJR",
-                            "OnDatePickerSelect ${it.toLocalDateTimeRuString(formatDate = FormatDate.Date)}A"
-                        )
                         viewModel.datePayChange(it.toLocalDateTimeRuString(formatDate = FormatDate.Date))
                     }
                 }

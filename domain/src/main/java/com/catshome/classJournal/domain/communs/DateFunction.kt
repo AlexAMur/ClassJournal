@@ -24,16 +24,17 @@ const val DATE_FORMAT_RU = "dd.MM.yyyy"
 const val DATETIME_FORMAT_RU = "dd.MM.yyyy HH:mm"
 const val TIME_FORMAT = "HH:mm"
 
-enum class FormatDate { DateTime, Date, Time }
+enum class FormatDate { DateTime, Date, Time,Month,Day }
+
 @RequiresApi(Build.VERSION_CODES.O)
-fun getNow(): LocalDateTime{
+fun getNow(): LocalDateTime {
     return Clock.System.now().toEpochMilliseconds().toLocalDateTimeRu()!!
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun String.toLocalDateTimeRu(timeZone: TimeZone): Date? {
     this.toLocalDateTimeRu()?.toLong()?.let {
-        return Date(it+timeZone.offsetAt(Clock.System.now()).totalSeconds*1000)
+        return Date(it + timeZone.offsetAt(Clock.System.now()).totalSeconds * 1000)
     }
     return null
 }
@@ -65,7 +66,7 @@ fun String.toLocalDateTimeRu(): LocalDateTime? {
 @RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime.toDateTimeRuString(formatDate: FormatDate = FormatDate.DateTime): String? {
     try {
-        val formatter = LocalDateTime.Format {
+        LocalDateTime.Format {
             this@Format.day(padding = Padding.ZERO)
             char('.')
             monthNumber(padding = Padding.ZERO)
@@ -76,12 +77,48 @@ fun LocalDateTime.toDateTimeRuString(formatDate: FormatDate = FormatDate.DateTim
             char(':')
             minute(padding = Padding.ZERO)
         }
-        val date = this.format(formatter)
-        return when (formatDate) {
-            FormatDate.DateTime -> date
-            FormatDate.Date -> date.substring(0, DATE_FORMAT_RU.length)
-            FormatDate.Time -> date.substring(DATE_FORMAT_RU.length, date.length)
-        }
+        return this.format(
+         when (formatDate) {
+            FormatDate.DateTime -> {
+                LocalDateTime.Format {
+                    this@Format.day(padding = Padding.ZERO)
+                    char('.')
+                    monthNumber(padding = Padding.ZERO)
+                    char('.')
+                    year()
+                    char(' ')
+                    hour(padding = Padding.ZERO)
+                    char(':')
+                    minute(padding = Padding.ZERO)
+                }
+            }
+            FormatDate.Date -> {
+                LocalDateTime.Format {
+                    this@Format.day(padding = Padding.ZERO)
+                    char('.')
+                    monthNumber(padding = Padding.ZERO)
+                    char('.')
+                    year()
+                }
+            }
+            FormatDate.Time ->{
+                LocalDateTime.Format {
+                    hour(padding = Padding.ZERO)
+                    char(':')
+                    minute(padding = Padding.ZERO)
+                }
+            }
+            FormatDate.Month -> {
+                LocalDateTime.Format {
+                    monthNumber(padding = Padding.ZERO)
+                }
+            }
+            FormatDate.Day -> {
+                LocalDateTime.Format {
+                    this@Format.day(padding = Padding.ZERO)
+                }
+            }
+        })
     } catch (e: IllegalArgumentException) {
         Log.e("CLJR", "From toDateTimeRuString ${e.message}")
         return null
@@ -89,6 +126,56 @@ fun LocalDateTime.toDateTimeRuString(formatDate: FormatDate = FormatDate.DateTim
         Log.e("CLJR", "From toDateTimeRuString ${e.message}")
         return null
     }
+}
+
+fun LocalDateTime.formatRu(format: FormatDate = FormatDate.DateTime): String {
+   return this.format(when (format) {
+        FormatDate.DateTime -> {
+            LocalDateTime.Format {
+                this@Format.day(padding = Padding.ZERO)
+                char('.')
+                monthNumber(padding = Padding.ZERO)
+                char('.')
+                year()
+                char(' ')
+                hour(padding = Padding.ZERO)
+                char(':')
+                minute(padding = Padding.ZERO)
+            }
+        }
+
+        FormatDate.Date -> LocalDateTime.Format {
+            this@Format.day(padding = Padding.ZERO)
+            char('.')
+            monthNumber(padding = Padding.ZERO)
+            char('.')
+            year()
+        }
+
+        FormatDate.Time -> {
+            LocalDateTime.Format {
+                this@Format.day(padding = Padding.ZERO)
+                char('.')
+                monthNumber(padding = Padding.ZERO)
+                char('.')
+                year()
+                char(' ')
+                hour(padding = Padding.ZERO)
+                char(':')
+                minute(padding = Padding.ZERO)
+            }
+    }
+
+       FormatDate.Month -> {
+           LocalDateTime.Format {
+               monthNumber(padding = Padding.ZERO)
+           }
+       }
+       FormatDate.Day -> LocalDateTime.Format {
+           this@Format.day(padding = Padding.ZERO)
+       }
+   })
+
 }
 
 //

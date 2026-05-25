@@ -122,7 +122,6 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
                                 )
                             },
                             onEditTime = { timeLesson, duration ->
-                                Log.e("CLJR", "timeLesson ${timeLesson}")
                                 //запускаем диалог выбора времени для изменения времени существующего занятия
                                 viewState.selectDay = day
                                 viewState.oldTimeLesson = timeLesson

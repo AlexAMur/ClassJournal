@@ -22,14 +22,12 @@ class SchedulerInteract @Inject constructor(private val repository: SchedulerRep
     }
     suspend fun checkTimeLesson(dayOfWeek: DayOfWeek,oldTime: Int?,  startTime: Int, duration: Int): Boolean {
         return if (oldTime != null){
-            Log.e ("ClJR", "time before")
             repository.checkTimeLessonBeforeEditTime(dayOfWeek = dayOfWeek,
                 oldTime = oldTime,
                 startTime = startTime,
                 duration = duration
             )
         }else{
-            Log.e ("ClJR", "time check")
             repository.checkTimeLesson(dayOfWeek = dayOfWeek,
                 startTime = startTime,
                 duration = duration

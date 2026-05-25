@@ -23,7 +23,6 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
         (installState = NewSchedulerState()) {
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            Log.e("CLJR", "Start Init Scheduler")
             viewState.dayOfWeek?.let { day ->
                 viewState = viewState.copy(
                     itemsList = interact.getListClient(
