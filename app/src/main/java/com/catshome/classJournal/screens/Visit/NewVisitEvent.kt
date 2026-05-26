@@ -7,7 +7,7 @@ import com.catshome.classJournal.navigate.VisitDetails
 
 sealed class NewVisitEvent {
     data class EditVisit(val details: VisitDetails) : NewVisitEvent()
-    data class SaveClicked(val openPage: Int,val dayOfWeek: DayOfWeek?) : NewVisitEvent()
+    data class SaveClicked(val openPage: Int) : NewVisitEvent()
     data object CancelClicked : NewVisitEvent()
     data class ItemCheckClicked(
         val dayInt: Int,

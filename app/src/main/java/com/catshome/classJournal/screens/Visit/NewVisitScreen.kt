@@ -41,6 +41,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.catshome.classJournal.domain.communs.DayOfWeek
+import com.catshome.classJournal.domain.communs.FormatDate
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.ItemScreen
@@ -186,10 +188,10 @@ fun NewVisitScreen(
                     )
                     TextButton(onClick = {
                         viewModel.obtainEvent(
+
                             viewEvent = NewVisitEvent.SaveClicked(
                                 openPage = pagerState.currentPage % pageName.size,
-
-                                dayOfWeek = DayOfWeek.FRIDAY
+//                                dayOfWeek = DayOfWeek.FRIDAY
                             ))
                     }
                     ) {

@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.Visit.byScheduler
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +22,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -53,9 +55,9 @@ fun NewVisitByScheduler(
     viewModel: NewVisitViewModel
 ) {
     val viewState by viewModel.viewState().collectAsState()
-    val bottomPadding =
-        LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding
-            .calculateBottomPadding()
+//    val bottomPadding =
+//        LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding
+//            .calculateBottomPadding()
     // Для эффекта бесконечности используем очень большое число
     val initialPage = Int.MAX_VALUE / 2
     val pagerState = rememberPagerState(
@@ -92,23 +94,12 @@ fun NewVisitByScheduler(
             pageSpacing = 0.dp
         ) { index ->
             val page = index % DayOfWeek.entries.size
+
             viewState.dateOnPage = Clock.System.now().minus(
-                value = viewState.pageDayOfWeekOffset - index + getNow().dayOfWeek.ordinal,
+                value = viewState.pageDayOfWeekOffset - pagerState.settledPage + getNow().dayOfWeek.ordinal,
                 unit = DateTimeUnit.DAY,
                 timeZone = TimeZone.currentSystemDefault()
             ).toLocalDateTime(timeZone = TimeZone.currentSystemDefault())
-            //if (pagerState.currentPage- index!=0)
-            //  viewModel.obtainEvent(NewVisitEvent.ChangePageIndex())
-
-//            if((pagerState.currentPage- index)+pagerState.currentPageOffsetFraction ==0.0f) {
-//                viewModel.obtainEvent(NewVisitEvent.getScheduler(DayOfWeek.entries[index % DayOfWeek.entries.size]))
-//            }
-//            LaunchedEffect(viewState.pageIndex) {
-
-//                viewModel.obtainEvent(
-//                    NewVisitEvent.getScheduler(dayOfWeek = DayOfWeek.entries[viewState.pageIndex])
-//                )
-//            }
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -129,7 +120,8 @@ fun NewVisitByScheduler(
                     Text(
                         modifier = Modifier.padding(top = 16.dp),
                         text = "${DayOfWeek.entries[page].nameRu} ${
-                            viewState.dateOnPage?.toDateTimeRuString(
+                            viewState.dateOnPage
+                                ?.toDateTimeRuString(
                                 formatDate = FormatDate.Date
                             )
                         } ",
@@ -145,8 +137,7 @@ fun NewVisitByScheduler(
                 ) {
                     if (viewState.scheduler.isNotEmpty()) {
                         viewState.scheduler.let { listScheduler ->
-                            listScheduler[page]?.entries?.forEachIndexed { indexKey, mapScheduler ->
-
+                            listScheduler[page]?.entries?.forEachIndexed {indexKey, mapScheduler ->
                                 stickyHeader {
                                     ItemNewVisitHeader(
                                         header = mapScheduler.key,

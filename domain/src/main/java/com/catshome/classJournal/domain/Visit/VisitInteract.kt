@@ -45,6 +45,7 @@ class VisitInteract @Inject constructor(
             if (visit.price == null || visit.price <= 0)
                 throw IllegalArgumentException("Платеж не может быть нулевым или отрицательным.")
         }
+        Log.e("CLJR", "onSaveVisit ${listVisit}")
         visitRepository.insetVisit(listVisit)
     }
 

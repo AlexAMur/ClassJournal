@@ -177,6 +177,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                     selectDate = viewEvent.date
                 )
             }
+
             is NewVisitEvent.SelectChild -> {
                 viewState = viewState.copy(
                     selectChild = viewEvent.selectChild,
@@ -205,6 +206,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                             }
                         }
                     }
+                    Log.e("CLJR", "ListTo Save $listToSave ")
                     if (listToSave.isNotEmpty()) {
                         listToSave.forEachIndexed { index, visit ->
                             try {
@@ -239,13 +241,11 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
 
                             listToSave[index] = visit.copy(
                                 uid = visit.uid ?: UUID.randomUUID().toString(),
-//                                     uid = if (visit.uid.isNullOrEmpty())  UUID.randomUUID().toString() else visit.uid,
-                                data = "${viewState.dateOnPage?.toDateTimeRuString()}"
+                                data = "${viewState.dateOnPage?.toDateTimeRuString()}",
+                                price = listToSave[index].priceScreen?.toInt()
                             )
-//                            Log.e("CLJR", "data on list ${listToSave}")
+
                         }
-//                        Log.e("CLJR", "Даta ${viewState.dateOnPage}")
-//                        Log.e("CLJR", "Данные для сохранения ${listToSave}")
                         viewModelScope.launch(exceptionHandlerVisit) {
                             listToSave.let { scheduler ->
                                 visitInteract.saveVisit(scheduler)
@@ -323,7 +323,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                         visitInteract.searchChild(viewState.searchText.text).collect {
                             val j = CoroutineScope(Dispatchers.IO).async {
                                 if (it.isNullOrEmpty()) {
-                                  return@async  listOf(
+                                    return@async listOf(
                                         MiniChild(
                                             uid = "",
                                             fio = "пусто"
