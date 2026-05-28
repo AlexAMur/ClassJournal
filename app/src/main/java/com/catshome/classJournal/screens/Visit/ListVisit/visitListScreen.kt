@@ -76,7 +76,7 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                 )
                 LaunchedEffect(viewState.messageSnackBar) {
                     if (!viewState.messageSnackBar.isNullOrEmpty()) {// && viewState.isCanShowSnackBar) {
-                        CoroutineScope(Dispatchers.IO).launch {
+                        //CoroutineScope(Dispatchers.IO).launch {
                             SnackBarAction(
                                 message = viewState.messageSnackBar.toString(),
                                 actionLabel = viewState.snackBarLabel,
@@ -89,7 +89,7 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                                     viewState.onAction?.let { it() }
                                 }
                             )
-                        }
+                        //}
                     }
                 }
             },
@@ -147,9 +147,11 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                             }
                         }
                         visits?.forEachIndexed { index, visit ->
-                            item {
-                                visit?.let { visit ->
-                                    visit.uid?.let { uid ->
+
+                                item(key = visit?.uid) {
+                                    visit?.uid?.let { uid ->
+                                        if (visit.isDelete == false) {
+
                                         ItemListVisits(
                                             visit = visit,
                                             onClick = {
@@ -164,7 +166,7 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                                                     viewEvent = VisitListEvent.DeleteVisit
                                                         (
                                                         key = key,
-                                                        uidVisit = visit.uid?.let { it } ?: ""
+                                                        uidVisit = visit.uid ?: ""
                                                     )
                                                 )
                                             }
@@ -195,7 +197,7 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
 
         is VisitListAction.EditVisit -> {
             (viewAction as VisitListAction.EditVisit).visit.let { visit ->
-               navController.navigate(
+                navController.navigate(
                     VisitDetails(
                         uid = visit.uid!!,
                         uidChild = visit.uidChild,

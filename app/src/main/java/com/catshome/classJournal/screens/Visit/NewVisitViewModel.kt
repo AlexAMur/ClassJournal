@@ -206,7 +206,6 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                             }
                         }
                     }
-                    Log.e("CLJR", "ListTo Save $listToSave ")
                     if (listToSave.isNotEmpty()) {
                         listToSave.forEachIndexed { index, visit ->
                             try {
@@ -293,7 +292,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                 viewAction = NewVisitAction.SaveAndCloseScreen
             }
 
-            is NewVisitEvent.ChangePrice -> {
+            is NewVisitEvent.ChangePrice ->{
                 try {
                     viewState = viewState.copy(priceScreen = viewEvent.price)
                 } catch (e: NumberFormatException) {

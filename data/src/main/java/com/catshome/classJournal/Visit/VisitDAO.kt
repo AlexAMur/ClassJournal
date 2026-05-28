@@ -15,10 +15,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface VisitDAO {
     @Transaction
-    suspend fun addVisit(visitEntity: List<VisitEntity>): Boolean {
-
+    suspend fun deleteVisit(visitEntity: List<VisitEntity>): Boolean
+    {
+        Log.e("CLJR" , "DB visit $visitEntity",)
         visitEntity.map { visit ->
-            insert(visit)
+            delete(visit)
             if (editSaldoAfterVisit(
                     uidChild = visit.uidChild,
                     priceVisit = visit.priceVisit
@@ -28,8 +29,22 @@ interface VisitDAO {
         }
         return true
     }
+    @Transaction
+    suspend fun addVisit(visitEntity: List<VisitEntity>): Boolean {
 
-    @Query("update child SET saldo = (select saldo- :priceVisit from child where uid = :uidChild)where uid = :uidChild ")
+        visitEntity.map { visit ->
+            insert(visit)
+            if (editSaldoAfterVisit(
+                    uidChild = visit.uidChild,
+                    priceVisit = visit.priceVisit.unaryMinus()
+                ) != 1) {
+                throw Exception("ErrorAddVisit $visit")
+            }
+        }
+        return true
+    }
+
+    @Query("update child SET saldo = (select saldo + :priceVisit from child where uid = :uidChild)where uid = :uidChild ")
     fun editSaldoAfterVisit(uidChild: String, priceVisit: Int): Int
 
     @Insert(onConflict = REPLACE)

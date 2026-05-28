@@ -45,7 +45,6 @@ class VisitInteract @Inject constructor(
             if (visit.price == null || visit.price <= 0)
                 throw IllegalArgumentException("Платеж не может быть нулевым или отрицательным.")
         }
-        Log.e("CLJR", "onSaveVisit ${listVisit}")
         visitRepository.insetVisit(listVisit)
     }
 
@@ -62,9 +61,10 @@ class VisitInteract @Inject constructor(
     }
 
     suspend fun deleteVisit(uidVisit: String): Boolean {
+        Log.e("CLJR" , "fun deleteVisit Interact")
         val job = CoroutineScope(Dispatchers.IO).async {
             return@async visitRepository.getVisitByUid(uidVisit)?.let {
-                visitRepository.deleteVisit(it)
+                visitRepository.deleteVisit(listOf(it))
             } == true
         }
         return job.await()

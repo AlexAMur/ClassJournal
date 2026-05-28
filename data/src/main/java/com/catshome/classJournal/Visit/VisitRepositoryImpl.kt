@@ -1,5 +1,6 @@
 package com.catshome.classJournal.Visit
 
+import android.util.Log
 import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitRepository
 import com.catshome.classJournal.domain.communs.DayOfWeek
@@ -53,8 +54,9 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteVisit(visit: Visit): Boolean {
-        return visitStorage.delete(visit.mapToVisitEntity())
+    override suspend fun deleteVisit(visit: List<Visit>): Boolean {
+        Log.e("CLJR" , "fun deleteVisit repository")
+        return visitStorage.delete(visit.map{it.mapToVisitEntity()})
     }
 
     override suspend fun insetVisit(visit: List<Visit>) {

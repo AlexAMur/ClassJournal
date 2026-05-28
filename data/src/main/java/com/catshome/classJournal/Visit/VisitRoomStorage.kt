@@ -20,8 +20,9 @@ class VisitRoomStorage @Inject constructor(val visitDAO: VisitDAO, val scheduler
         return visitDAO.addVisit(visit)
     }
 
-    suspend fun delete(visitEntity: VisitEntity): Boolean {
-        return visitDAO.delete(visitEntity) > 0
+    suspend fun delete(visitEntity: List<VisitEntity>): Boolean {
+        Log.e("CLJR" , "fun delete")
+        return visitDAO.deleteVisit(visitEntity)
     }
 
     fun getVisitAll(sortEnum: VisitSortEnum): Flow<List<Visit>>? {

@@ -3,6 +3,7 @@ package com.catshome.classJournal.screens.Visit.ListVisit
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.context
+import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitInteract
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.resource.R
@@ -12,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.serialization.internal.throwMissingFieldException
 import javax.inject.Inject
 import kotlin.collections.get
 import kotlin.collections.minus
@@ -39,22 +41,6 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                     }
                 }
             }
-//            is VisitListEvent.isDelete -> {
-//                viewState.listVisit[viewEvent.key]?.let { list ->
-//                    viewState = viewState.copy(
-//                        listVisit = viewState.listVisit.plus(
-//                            mapOf(
-//                                Pair(
-//                                    viewEvent.key, viewState.listVisit[viewEvent.key]?.plus(
-//                                        list.get(viewEvent.index)?.copy(isDelete = true)
-//
-//                                    )
-//                                )
-//                            )
-//                        )
-//                    )
-//                }
-//            }
 
             VisitListEvent.NewVisit -> {
                 viewAction = VisitListAction.NewVisit
@@ -65,6 +51,11 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
             }
 
             is VisitListEvent.DeleteVisit -> {
+                viewState.deleteVisit?.let { deleteVisit ->
+                    deleteVisitFromDB(deleteVisit)
+                }
+
+//                if(viewEvent.uidVisit != viewState.deleteVisit?.uid)
                 deleteItemFromList(key = viewEvent.key, uidVisit = viewEvent.uidVisit)
                 viewState = viewState.copy(
                     messageSnackBar = context.getString(R.string.message_cancel),
@@ -72,13 +63,10 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                     deleteKey = viewEvent.key,
                     onDismissed = {
                         viewState = viewState.copy(messageSnackBar = null)
-                        viewEvent.uidVisit?.let { uidVisit ->
-                            viewModelScope.launch {
-                                viewEvent.uidVisit?.let {
-                                    visitInteractor.deleteVisit(uidVisit)
-                                }
-                            }
+                        viewState.deleteVisit?.let { deleteVisit ->
+                            deleteVisitFromDB(deleteVisit)
                         }
+
                     },
                     onAction = {
                         viewState = viewState.copy(
@@ -95,7 +83,13 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                     visitInteractor.getVisitAll()?.collect { listVisit ->
                         viewState = viewState.copy(
                             listVisit =
-                                listVisit.groupBy {
+                                listVisit.map {
+                                    if(viewState.deleteVisit?.uid == it.uid )
+                                        it.copy(isDelete = true)
+                                        else
+                                            it
+
+                                }.groupBy {
                                     it.data?.substring(
                                         0,
                                         DATE_FORMAT_RU.length
@@ -107,34 +101,77 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
         }
     }
 
-    fun deleteItemFromList(key: String, uidVisit: String) {
+    private fun deleteVisitFromDB(visit: Visit) {
+        visit.uid?.let { uidVisit ->
+            viewModelScope.launch {
+                visitInteractor.deleteVisit(uidVisit)
+            }
+        }
+        viewState.deleteVisit = null
+    }
 
-        viewState.listVisit?.let { mapVisit ->
-            viewState.deleteVisit = mapVisit[key]?.find { uidVisit == it?.uid }
+    fun deleteItemFromList(key: String, uidVisit: String) {
+        viewState.listVisit.let { mapVisit ->
+//            if (viewState.deleteVisit?.uid?.isNotEmpty() == true)
+//                viewState.deleteVisit = mapVisit[key]?.find { uidVisit == it?.uid }
 
             viewState = viewState.copy(
                 listVisit = mapVisit.plus(
                     Pair(
                         key,
-                        mapVisit[key]?.minus(viewState.deleteVisit)
+                        mapVisit[key]?.map {
+                            if (it?.uid == uidVisit){
+//                                it.copy(isDelete = true)
+                                viewState.deleteVisit = it.copy(isDelete = true)
+                                return@map viewState.deleteVisit
+                            }
+                            else
+                                it
+                        }
                     )
                 )
             )
         }
-        viewState = viewState.copy(deleteKey = key)
+
+//        viewState = viewState.copy(
+//            deleteKey = key,
+//            messageSnackBar = null,
+//            onDismissed = null
+//        )
     }
 
+
+
+
     fun unDeleteItem() {
+        Log.e("CLJR", "Отмена удаления")
         viewState.listVisit?.let { mapVisit ->
-            viewState.deleteVisit?.isDelete = false
-            viewState = viewState.copy(
-                listVisit = mapVisit.plus(
-                    Pair(
-                        viewState.deleteKey!!,
-                        mapVisit[viewState.deleteKey]?.plus(viewState.deleteVisit)
+            viewState.deleteKey?.let {deleteKey->
+                viewState.deleteVisit?.isDelete = false
+                viewState = viewState.copy(
+                    listVisit = mapVisit.plus(
+                        Pair(
+                            deleteKey,
+                            mapVisit[viewState.deleteKey]?.map {
+                                if (it?.uid == viewState.deleteVisit?.uid)
+                                    it?.copy(isDelete = false)
+                                else
+                                    it
+                            }
+                        )
                     )
                 )
-            )
+            }
+            viewState = viewState.copy(deleteVisit = null, )
+
+//            viewState = viewState.copy(
+//                listVisit = mapVisit.plus(
+//                    Pair(
+//                        viewState.deleteKey!!,
+//                        mapVisit[viewState.deleteKey]?.plus(viewState.deleteVisit)
+//                    )
+//                )
+//            )
         }
     }
 }
