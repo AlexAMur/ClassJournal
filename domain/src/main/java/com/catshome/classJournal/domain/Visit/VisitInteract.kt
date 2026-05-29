@@ -34,7 +34,7 @@ class VisitInteract @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun saveVisit(listVisit: List<Visit>) {
+    suspend fun saveVisit(listVisit: List<Visit>, newVisit: Boolean) {
         listVisit.forEach { visit ->
            if (visit.uid.isNullOrEmpty())
                 throw kotlin.IllegalArgumentException("Не указан UID")
@@ -45,7 +45,12 @@ class VisitInteract @Inject constructor(
             if (visit.price == null || visit.price <= 0)
                 throw IllegalArgumentException("Платеж не может быть нулевым или отрицательным.")
         }
-        visitRepository.insetVisit(listVisit)
+        if(newVisit)
+            visitRepository.insetVisit(listVisit)
+        else
+            visitRepository.updateVisit(visit = listVisit)
+
+
     }
 
     suspend fun getVisitAll(): Flow<List<Visit>>? {

@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -62,16 +63,21 @@ fun NewVisitScreen(
     val outerNavigation = localNavHost.current
     val viewAction by viewModel.viewActions().collectAsState(null)
     val viewState by viewModel.viewState().collectAsState()
-   // var cardEnabled by remember { mutableStateOf(false) }
+
     val keyboardController = LocalSoftwareKeyboardController.current
     val bottomPadding =
         LocalSettingsEventBus.current.currentSettings.collectAsState().value.innerPadding.calculateBottomPadding()
     val pageName = listOf("По расписанию", "Свободное")
 
     val pagerState = rememberPagerState(
-        initialPage =  Int.MAX_VALUE / 2 - 1,
-        pageCount = { Int.MAX_VALUE  }
+        initialPage = Int.MAX_VALUE / 2 - 1 + (details?.pageIndex ?: 0),
+        pageCount = { Int.MAX_VALUE }
     )
+    LaunchedEffect(Unit) {
+        if (!details?.uidChild.isNullOrEmpty()){
+            viewModel.obtainEvent(NewVisitEvent.EditVisit(details))
+        }
+    }
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxWidth(),
@@ -80,7 +86,7 @@ fun NewVisitScreen(
         verticalAlignment = Alignment.Top,
 
         ) { index ->
-            var pageIndex = index % pageName.size
+        var pageIndex = index % pageName.size
 
         val pageOffset by remember {
             derivedStateOf {
@@ -105,18 +111,16 @@ fun NewVisitScreen(
             targetValue = if (pageOffset != 0.0f) 0.8f else 1f,
             animationSpec = tween(delayMillis = 300)
         )
-//        LaunchedEffect(Unit){
-//            if (details != null){// грузим visit
-//                pagerState.scrollToPage( if(Int.MAX_VALUE / 1024 > 0) Int.MAX_VALUE / 1024 else  Int.MAX_VALUE / 1024 -1)
-//                viewModel.obtainEvent(NewVisitEvent.EditVisit(details = details))
-//            }
-//            else
-//                pagerState.scrollToPage(Int.MAX_VALUE / 1024 -1)
-//        }
         LaunchedEffect(Unit) {
             if (pageOffset == 0.0f)
-             viewModel.obtainEvent(NewVisitEvent.getScheduler)
+                viewModel.obtainEvent(NewVisitEvent.getScheduler)
         }
+        DisposableEffect(Unit){
+            onDispose {
+                viewModel.obtainEvent(NewVisitEvent.ResetSingle)
+            }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -190,9 +194,9 @@ fun NewVisitScreen(
                         viewModel.obtainEvent(
 
                             viewEvent = NewVisitEvent.SaveClicked(
-                                openPage = pagerState.currentPage % pageName.size,
-//                                dayOfWeek = DayOfWeek.FRIDAY
-                            ))
+                                openPage = pagerState.currentPage % pageName.size
+                            )
+                        )
                     }
                     ) {
                         Text(
@@ -219,6 +223,7 @@ fun NewVisitScreen(
                 }
             }
         }
+
         NewVisitAction.CloseScreen -> {
             keyboardController?.hide()
             viewModel.clearAction()
@@ -229,6 +234,7 @@ fun NewVisitScreen(
                 }
             }
         }
+
         null -> {}
     }
 }

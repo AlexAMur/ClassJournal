@@ -55,7 +55,7 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
     }
 
     override suspend fun deleteVisit(visit: List<Visit>): Boolean {
-        Log.e("CLJR" , "fun deleteVisit repository")
+
         return visitStorage.delete(visit.map{it.mapToVisitEntity()})
     }
 
@@ -63,8 +63,8 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
             visitStorage.save(visit.map { it.mapToVisitEntity()})
     }
 
-    override suspend fun updateVisit(visit: Visit) {
-        TODO(" Not yet implemented")
+    override suspend fun updateVisit(visit: List<Visit>) {
+        visitStorage.update(visit.map { it.mapToVisitEntity()})
     }
 
 }

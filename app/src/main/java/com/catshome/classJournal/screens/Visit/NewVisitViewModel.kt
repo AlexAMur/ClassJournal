@@ -136,6 +136,17 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                     }
                 )
             }
+            NewVisitEvent.ResetSingle->{
+                viewState = viewState.copy(
+                    visit = null,
+                    selectChild = null ,
+                    selectDate = null,
+                    isSelectChild = false,
+                    listChild = null,
+                    searchText = TextFieldValue("") ,
+                    priceScreen = TextFieldValue("")
+                )
+            }
 
             is NewVisitEvent.EditVisit -> {
                 viewState = viewState.copy(
@@ -156,7 +167,10 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                             viewEvent.details?.fio?.length ?: viewState.searchText.text.length
                         )
                     ),
-                    priceScreen = viewEvent.details.price.toString()
+                    priceScreen = TextFieldValue(
+                        text = viewEvent.details.price.toString(),
+                        selection = TextRange(viewEvent.details.price.toString().length)
+                    )
                 )
             }
 
@@ -247,7 +261,10 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                         }
                         viewModelScope.launch(exceptionHandlerVisit) {
                             listToSave.let { scheduler ->
-                                visitInteract.saveVisit(scheduler)
+                                visitInteract.saveVisit(
+                                    listVisit = scheduler,
+                                    newVisit = true  //из расписания нельзя исправлять посещения
+                                )
                             }
                         }
                     }
@@ -260,8 +277,11 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                         )
                         return
                     }
+                    if (viewState.selectDate== null){
+                       viewState = viewState.copy(selectDate = Clock.System.now().toEpochMilliseconds())
+                    }
                     try {
-                        if (viewState.priceScreen.toInt() <= 0)
+                        if (viewState.priceScreen.text.toInt() <= 0)
                             throw NumberFormatException()
 
                     } catch (e: NumberFormatException) {
@@ -283,9 +303,10 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                                     data = viewState.selectDate?.toLocalDateTimeRuString(
                                         formatDate = FormatDate.Date
                                     ),
-                                    price = viewState.priceScreen.toInt()
+                                    price = viewState.priceScreen.text.toInt()
                                 )
-                            )
+                            ),
+                            newVisit = viewState.visit?.uid.isNullOrEmpty()
                         )
                     }
                 }
@@ -294,7 +315,13 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
 
             is NewVisitEvent.ChangePrice ->{
                 try {
-                    viewState = viewState.copy(priceScreen = viewEvent.price)
+                    viewState = viewState.copy(
+                        priceScreen =viewEvent.price
+
+//                            TextFieldValue(
+//                            text = viewEvent.price,
+//                            selection = TextRange(viewEvent.price.length))
+                    )
                 } catch (e: NumberFormatException) {
                     viewState.copy(
                         isPriceError = true,

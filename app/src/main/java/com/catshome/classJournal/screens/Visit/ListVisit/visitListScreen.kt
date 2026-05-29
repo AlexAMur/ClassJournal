@@ -2,6 +2,7 @@ package com.catshome.classJournal.screens.Visit.ListVisit
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.annotation.Size
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -27,6 +30,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -35,6 +40,7 @@ import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.communs.ItemFAB
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.fabMenu
+import com.catshome.classJournal.context
 import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.resource.R
 import kotlinx.coroutines.CoroutineScope
@@ -126,9 +132,10 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                     viewState.listVisit?.forEach { key, visits ->
                         stickyHeader {
                             Card(
-                                Modifier
+                                modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 8.dp, bottom = 16.dp),
+                                    .padding(start = 8.dp, top = 8.dp, bottom = 16.dp, end = 8.dp),
+                                shape = ShapeDefaults.ExtraSmall,
                                 colors = CardDefaults.cardColors(
                                     containerColor = ClassJournalTheme.colors.disableColor,
                                     contentColor = ClassJournalTheme.colors.primaryText
@@ -203,7 +210,8 @@ fun visitListScreen(navController: NavController, viewModel: VisitListViewModel 
                         uidChild = visit.uidChild,
                         fio = visit.fio,
                         date = visit.data,
-                        price = visit.price
+                        price = visit.price,
+                        pageIndex = 1 // страница редактирования
                     )
                 )
                 viewModel.clearAction()

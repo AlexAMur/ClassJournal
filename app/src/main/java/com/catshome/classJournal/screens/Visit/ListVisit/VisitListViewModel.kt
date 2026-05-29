@@ -84,16 +84,16 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                         viewState = viewState.copy(
                             listVisit =
                                 listVisit.map {
-                                    if(viewState.deleteVisit?.uid == it.uid )
+                                    if (viewState.deleteVisit?.uid == it.uid)
                                         it.copy(isDelete = true)
-                                        else
-                                            it
+                                    else
+                                        it
 
                                 }.groupBy {
                                     it.data?.substring(
                                         0,
                                         DATE_FORMAT_RU.length
-                                    )!!
+                                    )?:""
                                 })
                     }
                 }
@@ -120,12 +120,11 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                     Pair(
                         key,
                         mapVisit[key]?.map {
-                            if (it?.uid == uidVisit){
+                            if (it?.uid == uidVisit) {
 //                                it.copy(isDelete = true)
                                 viewState.deleteVisit = it.copy(isDelete = true)
                                 return@map viewState.deleteVisit
-                            }
-                            else
+                            } else
                                 it
                         }
                     )
@@ -141,12 +140,10 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
     }
 
 
-
-
     fun unDeleteItem() {
         Log.e("CLJR", "Отмена удаления")
         viewState.listVisit?.let { mapVisit ->
-            viewState.deleteKey?.let {deleteKey->
+            viewState.deleteKey?.let { deleteKey ->
                 viewState.deleteVisit?.isDelete = false
                 viewState = viewState.copy(
                     listVisit = mapVisit.plus(
@@ -162,7 +159,7 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                     )
                 )
             }
-            viewState = viewState.copy(deleteVisit = null, )
+            viewState = viewState.copy(deleteVisit = null)
 
 //            viewState = viewState.copy(
 //                listVisit = mapVisit.plus(

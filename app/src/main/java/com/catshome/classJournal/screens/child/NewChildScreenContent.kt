@@ -64,7 +64,7 @@ fun ScreenContent(
 ) {
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
-    //val viewState by viewModel.viewState().collectAsState()
+
     var groups = viewState.listScreenChildGroup
 
 //  Установка фокуса после переворота

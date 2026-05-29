@@ -1,5 +1,7 @@
 package com.catshome.classJournal.screens.Visit
 
+import android.net.TetheringManager
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Visit.Visit
@@ -41,6 +43,10 @@ data class NewVisitState(
     var onDismissDialog: (() -> Unit)? = null,
     var onAction: (() -> Unit)? = null,
     val scheduler: List<Map<String, List<Visit>?>?> = emptyList(),
-    val priceScreen: String = "0",
+    val priceScreen: TextFieldValue = TextFieldValue(
+                                                text = "0",
+                                                selection = TextRange("0".length)
+
+                        ),
     val visit: Visit? = null
 )

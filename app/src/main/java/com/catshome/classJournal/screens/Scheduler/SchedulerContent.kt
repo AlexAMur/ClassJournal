@@ -3,8 +3,12 @@ package com.catshome.classJournal.screens.Scheduler
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,13 +37,15 @@ import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.resource.R
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun schedulerContent(viewModel: SchedulerListViewModel) {
     val viewState by viewModel.viewState().collectAsState()
     val sbHostState = remember { SnackbarHostState() }
     val paddingValues = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
+
+
     Scaffold(
         Modifier
             .fillMaxWidth(),
@@ -76,9 +82,11 @@ fun schedulerContent(viewModel: SchedulerListViewModel) {
         Column(
             Modifier
                 .background(ClassJournalTheme.colors.primaryBackground)
+
         ) {
             Card(
-                Modifier.statusBarsPadding(),
+                Modifier.statusBarsPadding()
+                    ,
                 colors = CardDefaults.cardColors(
                     containerColor = ClassJournalTheme.colors.secondaryBackground,
                     contentColor = ClassJournalTheme.colors.primaryText

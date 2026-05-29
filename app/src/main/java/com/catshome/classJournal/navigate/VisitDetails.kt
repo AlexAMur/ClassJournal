@@ -10,7 +10,8 @@ data class VisitDetails(
     val uidChild: String? = null,
     val fio: String? = null,
     val date: String? = null,
-    val price: Int? = null
+    val price: Int? = null,
+    val pageIndex:Int = 0
 )
 
 fun VisitDetails.mapToVisit(): Visit {

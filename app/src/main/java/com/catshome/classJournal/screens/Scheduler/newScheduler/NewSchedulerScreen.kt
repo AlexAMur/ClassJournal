@@ -3,9 +3,13 @@ package com.catshome.classJournal.screens.Scheduler.newScheduler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -32,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.ClassJournalTheme
+import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.communs.DialogScreen
 import com.catshome.classJournal.communs.Search.ItemWithCheck
 import com.catshome.classJournal.communs.SearchField
@@ -39,12 +44,17 @@ import com.catshome.classJournal.navigate.NewLesson
 import com.catshome.classJournal.navigate.SaveLesson
 import com.catshome.classJournal.resource.R
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NewSchedulerScreen(
     navController: NavController,
     viewModel: NewSchedulerViewModel = viewModel(),
     newLesson: NewLesson? = null
 ) {
+
+    val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
+        .value.innerPadding.calculateBottomPadding()
+
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
     val stateList = rememberLazyListState(0)
@@ -154,7 +164,13 @@ fun NewSchedulerScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(ClassJournalTheme.colors.primaryBackground)
-                    .padding(top = 12.dp, bottom = 8.dp),
+                    .padding(top = 12.dp,// bottom = 8.dp,
+                        bottom = if (WindowInsets.Companion.isImeVisible) 0.dp
+                        else bottomPadding
+                    )
+                    .imePadding()
+
+                ,
                 state = stateList
 
             ) {

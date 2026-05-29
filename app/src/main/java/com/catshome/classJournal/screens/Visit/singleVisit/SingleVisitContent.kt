@@ -43,11 +43,11 @@ import java.util.Date
 fun SingleVisitContent(
     fio: TextFieldValue,
     date: Date,
-    price: String,
+    price: TextFieldValue,
     listChild: List<MiniChild>? = null,
     isShowDateDialog: Boolean,
     onValueChange: (TextFieldValue) -> Unit,
-    onPriceChange: (String) -> Unit,
+    onPriceChange: (TextFieldValue) -> Unit,
     isSearchError: Boolean = false,
     isPriceError: Boolean = false,
     errorSearchMessage: String = "",

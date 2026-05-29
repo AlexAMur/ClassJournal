@@ -17,13 +17,14 @@ sealed class NewVisitEvent {
     ) : NewVisitEvent()
 
     data object ClearSelect : NewVisitEvent()
+    data object ResetSingle : NewVisitEvent()
     data class LessonClicked(
         val dayInt: Int,
         val key: String,
         val isCheck: Boolean
     ) : NewVisitEvent()
     data class Search(val searchText: TextFieldValue) : NewVisitEvent()
-    data class ChangePrice(val price: String) : NewVisitEvent()
+    data class ChangePrice(val price: TextFieldValue) : NewVisitEvent()
     data class ChangePriceOnScheduler(
         val dayInt: Int,
         val key: String,

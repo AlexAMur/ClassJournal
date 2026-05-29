@@ -9,22 +9,46 @@ import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.catshome.classJournal.PayList.PayEntity
 import com.catshome.classJournal.domain.Visit.Visit
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface VisitDAO {
+    @Query(
+        "select v.uid , v.uidChild , v.dateVisit, v.priceVisit from visits v " +
+                "where v.uid = :idVisit"
+    )
+    fun getVisitByID(idVisit: String):VisitEntity?
+
+    @Transaction
+    suspend fun updateVisit(visitEntity: List<VisitEntity>): Boolean
+    {
+        visitEntity.map { visit ->
+            val oldVisitPrice  = getVisitByID(visit.uid)?.priceVisit
+            if( oldVisitPrice != null &&  oldVisitPrice!= visit.priceVisit) {
+            if (editSaldoAfterVisit(
+                    uidChild = visit.uidChild,
+                    priceVisit = oldVisitPrice-visit.priceVisit
+                ) != 1) {
+                throw Exception("ErrorEditVisit $visit")
+            }
+            update(visit)
+            }
+        }
+        return true
+    }
+
     @Transaction
     suspend fun deleteVisit(visitEntity: List<VisitEntity>): Boolean
     {
-        Log.e("CLJR" , "DB visit $visitEntity",)
         visitEntity.map { visit ->
             delete(visit)
             if (editSaldoAfterVisit(
                     uidChild = visit.uidChild,
                     priceVisit = visit.priceVisit
                 ) != 1) {
-                throw Exception("ErrorAddVisit $visit")
+                throw Exception("ErrorDeleteVisit $visit")
             }
         }
         return true

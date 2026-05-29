@@ -25,5 +25,5 @@ interface VisitRepository {
     ): Flow<List<Visit>>?
     suspend fun deleteVisit(visit: List<Visit>): Boolean
     suspend fun insetVisit(visit: List<Visit>)
-    suspend fun updateVisit(visit: Visit)
+    suspend fun updateVisit(visit: List<Visit>)
 }
