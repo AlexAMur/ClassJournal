@@ -1,5 +1,6 @@
 package com.catshome.classJournal.PayList
 
+import android.util.Log
 import com.catshome.classJournal.domain.communs.SortEnum
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -8,17 +9,14 @@ class RoomPayStorage @Inject constructor(private val payDAO: PayDAO) {
     suspend fun getStatisticPay(beginDate: Long?, endDate:Long?):Int{
       return  payDAO.getStatisticPay(beginDate, endDate)
     }
-    suspend fun insertPay(payEntity: PayEntity): Boolean {
-            return payDAO.insertPay(payEntity)
-
-    }
+    suspend fun insertPay(payEntity: PayEntity): Boolean = payDAO.insertPay(payEntity)
 
     suspend fun updatePay(payEntity: PayEntity): Boolean {
         return payDAO.updatePay(payEntity)
     }
 
     suspend fun deletePay(payEntity: PayEntity): Boolean {
-        return payDAO.deletePay(payEntity)
+      return  payDAO.deletePay(payEntity)
     }
 
     suspend fun getAllPay(isDelete: Boolean, sortEnum: SortEnum): Flow<List<PayScreenEntity>>? {

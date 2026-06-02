@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.PayList.newPay
 
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.Pay
@@ -20,6 +21,6 @@ data class NewPayState(
     var errorMessage: String = "",
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
-    val payment: String ="0",
+    val payment: TextFieldValue = TextFieldValue("0", selection = TextRange(0, 1)),
     val pay: Pay = Pay()
 )

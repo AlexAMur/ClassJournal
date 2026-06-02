@@ -6,6 +6,7 @@ import com.catshome.classJournal.domain.Pay.Pay
 
 sealed class NewPayEvent {
     data object SaveClicked : NewPayEvent()
+    data object onFocusePrice : NewPayEvent()
     data object ClearClicked : NewPayEvent()
     data object CancelClicked : NewPayEvent()
     data class Search(val  searchText: String): NewPayEvent()

@@ -6,6 +6,8 @@ import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitInteract
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.domain.communs.toLong
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,11 +15,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.serialization.internal.throwMissingFieldException
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.toLocalDateTime
+import java.time.LocalDateTime
 import javax.inject.Inject
-import kotlin.collections.get
-import kotlin.collections.minus
-import kotlin.collections.plus
+import kotlin.time.Clock
+import kotlin.time.Duration
 
 /*
  *Удаление записи VisitEvent VisitDelete сначала уделяем из списка viewState.itemList
@@ -27,9 +32,24 @@ import kotlin.collections.plus
 
 @HiltViewModel
 class VisitListViewModel @Inject constructor(private val visitInteractor: VisitInteract) :
-    BaseViewModel<VisitListState, VisitListAction, VisitListEvent>(installState = VisitListState()) {
+    BaseViewModel<VisitListState, VisitListAction, VisitListEvent>(
+        installState = VisitListState(
+            beginDate = Clock.System.now().minus(
+                value = 1,
+                unit = DateTimeUnit.MONTH,
+                timeZone = TimeZone.currentSystemDefault()
+            ).toLocalDateTime(
+                timeZone = TimeZone.currentSystemDefault()
+            ),
+            endDate = Clock.System.now().toLocalDateTime(
+                timeZone = TimeZone.currentSystemDefault()
+            )
+        )
+    ) {
+
 
     override fun obtainEvent(viewEvent: VisitListEvent) {
+
         when (viewEvent) {
             is VisitListEvent.EditVisit -> {
                 CoroutineScope(Dispatchers.Main).launch {
@@ -80,7 +100,10 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
 
             VisitListEvent.Reload -> {
                 viewModelScope.launch {
-                    visitInteractor.getVisitAll()?.collect { listVisit ->
+                    visitInteractor.getVisitByPeriod(
+                        begin = viewState.beginDate.toLong(),
+                        end = viewState.endDate.toLong()
+                    )?.collect { listVisit ->
                         viewState = viewState.copy(
                             listVisit =
                                 listVisit.map {
@@ -93,7 +116,7 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                                     it.data?.substring(
                                         0,
                                         DATE_FORMAT_RU.length
-                                    )?:""
+                                    ) ?: ""
                                 })
                     }
                 }
@@ -141,7 +164,6 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
 
 
     fun unDeleteItem() {
-        Log.e("CLJR", "Отмена удаления")
         viewState.listVisit?.let { mapVisit ->
             viewState.deleteKey?.let { deleteKey ->
                 viewState.deleteVisit?.isDelete = false

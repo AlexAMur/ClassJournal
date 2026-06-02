@@ -19,16 +19,24 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -56,6 +64,7 @@ fun PayListContent(
     val sbHostState = remember { SnackbarHostState() }
     val paddingValues = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
+
     Surface(
         Modifier
             .fillMaxWidth(),
@@ -70,7 +79,7 @@ fun PayListContent(
                 )
                 LaunchedEffect(viewState.messageSnackBar) {
                     if (!viewState.messageSnackBar.isNullOrEmpty() && viewState.isCanShowSnackBar) {
-                        CoroutineScope(Dispatchers.IO).launch {
+//                        CoroutineScope(Dispatchers.IO).launch {
                             SnackBarAction(
                                 message = viewState.messageSnackBar.toString(),
                                 actionLabel = viewState.snackBarAction,
@@ -96,7 +105,7 @@ fun PayListContent(
 //                            viewState.isCanShowSnackBar = false
 //                            viewState.messageShackBar = null
 
-                        }
+//                        }
                     }
                 }
             },
@@ -127,11 +136,11 @@ fun PayListContent(
                 }
             }
         ) { padValues ->
+
             Column(
                 Modifier
                     .background(ClassJournalTheme.colors.primaryBackground)
             ) {
-
                 Card(
                     Modifier
                         .background(ClassJournalTheme.colors.primaryBackground)
@@ -196,11 +205,31 @@ fun PayListContent(
                         }
                     }
                 }
-                StatisticPayCard(
-                    incomePerMonth = viewState.incomePerMonth,
-                    lastMonth = viewState.incomePerLastMonth,
-                    totalYear = viewState.incomePerYear,
-                )
+                HorizontalDivider(color = ClassJournalTheme.colors.disableColor)
+                val state = rememberPullToRefreshState()
+                PullToRefreshBox(
+                    isRefreshing = viewModel.isRefreshing,
+                    state = state,
+                    contentAlignment = Alignment.TopCenter,
+                    onRefresh = { viewModel.getStatisticPay() },
+                    indicator = {
+                        Indicator(
+                            containerColor = ClassJournalTheme.colors.primaryBackground,
+                            isRefreshing = viewModel.isRefreshing,
+                            color = ClassJournalTheme.colors.tintColor,
+                            state = state,
+                        )
+                    }
+                ) {
+                    StatisticPayCard(
+                        incomePerMonth = viewState.incomePerMonth,
+                        lastMonth = viewState.incomePerLastMonth,
+                        totalYear = viewState.incomePerYear,
+                    )
+                }
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+                    color = ClassJournalTheme.colors.disableColor)
                 if (viewState.items.isEmpty())
                     payScreenNoItems(
                         bottomPadding = padValues.calculateBottomPadding()
@@ -236,12 +265,27 @@ fun PayListContent(
                                         ),
                                         isRevealed = item.isOptionsRevealed,
                                         onExpanded = {
-                                            viewModel.obtainEvent(
-                                                PayListEvent.ChangeRevealed(
-                                                    index = index,
-                                                    isOptionsRevealed = true
-                                                )
-                                            )
+                                            //действие для удаления
+//                                            ActionIcon(
+//                                                onClick = {
+                                                    viewState.snackBarAction = context.getString(R.string.bottom_yes)
+                                                    viewState.withDismissAction = false
+                                                    viewModel.obtainEvent(
+                                                        viewEvent = PayListEvent.DeleteClicked(item)
+                                                    )
+//                                                },
+//                                                icon = Icons.Default.Delete,
+//                                                modifier = Modifier
+//                                                    .fillMaxHeight()
+//                                                    .width(120.dp)
+//                                            )
+//
+//                                            viewModel.obtainEvent(
+//                                                PayListEvent.ChangeRevealed(
+//                                                    index = index,
+//                                                    isOptionsRevealed = true
+//                                                )
+//                                            )
                                         },
                                         onCollapsed = {
                                             viewModel.obtainEvent(
@@ -258,9 +302,9 @@ fun PayListContent(
                                                 onClick = {
                                                     viewState.snackBarAction = context.getString(R.string.bottom_yes)
                                                     viewState.withDismissAction = false
-                                                    viewModel.obtainEvent(
-                                                        viewEvent = PayListEvent.DeleteClicked(item)
-                                                    )
+//                                                    viewModel.obtainEvent(
+//                                                        viewEvent = PayListEvent.DeleteClicked(item)
+//                                                    )
                                                 },
                                                 icon = Icons.Default.Delete,
                                                 modifier = Modifier

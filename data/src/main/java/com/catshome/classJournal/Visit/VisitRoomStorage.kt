@@ -39,6 +39,19 @@ class VisitRoomStorage @Inject constructor(val visitDAO: VisitDAO, val scheduler
         )?.map { list -> list.map { it.mapToVisit() } }
     }
 
+    fun getVisitByPeriod(begin: Long, end: Long, sortEnum: VisitSortEnum): Flow<List<Visit>>? {
+        return visitDAO.getVisitByPeriod(
+            begin = begin,
+            end = end,
+            sortDate = if (getSortString(sortEnum) == VisitScreenEntity::dateVisit.name)
+                VisitScreenEntity::dateVisit.name else "",
+            sortSurname = if (getSortString(sortEnum) == VisitScreenEntity::Surname.name)
+                VisitScreenEntity::Surname.name else "",
+            sortName = if (getSortString(sortEnum) == VisitScreenEntity::Name.name)
+                VisitScreenEntity::Name.name else ""
+        )?.map { list -> list.map { it.mapToVisit() } }
+    }
+
     //расписание на один день
     fun getScheduler(dayOfWeek: DayOfWeek): Flow<List<Visit>>? {
         return visitDAO.getListClientScheduler(dayOfWeek = dayOfWeek.ordinal)?.map{list->

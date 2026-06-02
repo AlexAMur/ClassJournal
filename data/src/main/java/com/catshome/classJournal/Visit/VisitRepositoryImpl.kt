@@ -41,7 +41,7 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
         uidChild: String,
         begin: Long,
         end: Long,
-        sortEnum: SortEnum
+        sortEnum: VisitSortEnum
     ): Flow<List<Visit>>? {
         TODO("Not yet implemented")
     }
@@ -49,9 +49,9 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
     override suspend fun getVisitByPeriod(
         begin: Long,
         end: Long,
-        sortEnum: SortEnum
+        sortEnum: VisitSortEnum
     ): Flow<List<Visit>>? {
-        TODO("Not yet implemented")
+     return  visitStorage.getVisitByPeriod(begin = begin, end = end, sortEnum = sortEnum)
     }
 
     override suspend fun deleteVisit(visit: List<Visit>): Boolean {

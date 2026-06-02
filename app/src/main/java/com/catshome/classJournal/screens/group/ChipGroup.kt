@@ -54,7 +54,6 @@ fun SwipeToDismissListItems(
 //    index: Int,
 //    content: @Composable (() -> Unit)
 //) {
-//    //TODO Тестирование удаления  и востановления функций
 //    val viewState by viewModel.viewState().collectAsState()
 //    if (viewState.listItems[index].revealState == null) {
 //        viewState.listItems[index].revealState = rememberRevealState()

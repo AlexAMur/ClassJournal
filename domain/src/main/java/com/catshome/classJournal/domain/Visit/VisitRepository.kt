@@ -15,13 +15,13 @@ interface VisitRepository {
         uidChild: String,
         begin: Long,
         end: Long,
-        sortEnum: SortEnum
+        sortEnum: VisitSortEnum
     ): Flow<List<Visit>>?
 
     suspend fun getVisitByPeriod(
         begin: Long,
         end: Long,
-        sortEnum: SortEnum
+        sortEnum: VisitSortEnum
     ): Flow<List<Visit>>?
     suspend fun deleteVisit(visit: List<Visit>): Boolean
     suspend fun insetVisit(visit: List<Visit>)

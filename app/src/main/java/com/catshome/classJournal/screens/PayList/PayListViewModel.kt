@@ -1,7 +1,9 @@
 package com.catshome.classJournal.screens.PayList
 
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.catshome.classJournal.PayList.mapToPayEntity
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.PayListInteractor
@@ -19,6 +21,9 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.TimeZone
@@ -27,6 +32,7 @@ import kotlinx.datetime.toLocalDateTime
 import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.time.Clock
+import androidx.compose.runtime.getValue
 
 @HiltViewModel
 class PayListViewModel @Inject constructor(private val payListInteractor: PayListInteractor) :
@@ -43,16 +49,22 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             } 23:59"
         )
     ) {
+    // Состояние загрузки для индикатора свайпа
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow().value
+
     init {
         getStatisticPay()
     }
 
     private val exceptionHandlerPaysList =
         CoroutineExceptionHandler { coroutineContext, throwable ->
+            Log.e("CLJR","exceptionHandlerPaysList!! " )
             if (throwable.message?.contains("ErrorDelete") == true)
+
                 obtainEvent(
                     PayListEvent.UndoDeleteClicked(
-                        viewState.deletePayUid
+                        viewState.deletePays
                     )
                 )
             viewState = viewState.copy(
@@ -82,23 +94,25 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                     )
                 }
                 loadPayList()
+
             }
 
             is PayListEvent.DeleteClicked -> {
-                viewState.deletePayUid = viewEvent.pay.uidPay
-                var indexDelete = -1
-                viewState = viewState.copy(items = viewState.items.mapIndexed { index, pay ->
+                viewState.deletePays?.let { deletePay ->
+                    deletePayDB(deletePay)
+                }
+                viewState.deletePays = viewEvent.pay
+
+                viewState = viewState.copy(items = viewState.items.map { pay ->
                     if (viewEvent.pay.uidPay == pay.uidPay) {
-                        indexDelete = index
                         pay.copy(isDelete = true)
                     } else
                         pay
                 })
-                viewState.indexDelete = indexDelete
                 viewState.onAction = {
                     obtainEvent(
                         PayListEvent.UndoDeleteClicked(
-                            viewState.deletePayUid
+                            pay = viewState.deletePays
                         )
                     )
                     viewState.onDismissed = null
@@ -108,26 +122,25 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 }
                 viewState.onDismissed = {
                     var result = false
-                    if (viewState.items[viewState.indexDelete].isDelete) {
-                        val jobDef =
-                            CoroutineScope(Dispatchers.Default).launch(exceptionHandlerPaysList) {
-                                val job = CoroutineScope(Dispatchers.IO).async {
-                                    result =
-                                        payListInteractor.deletePay(pay = viewEvent.pay.toPay())
-                                    return@async result
-                                }
-                                if (!job.await()) {
-                                    viewState.isCanShowSnackBar = true
-                                    viewState.messageSnackBar =
-                                        context.getString(R.string.error_save)
-                                    viewState.isCanShowSnackBar = false
-                                    viewState.withDismissAction = false
-                                    viewState.messageSnackBar = null
-                                    viewState.onDismissed = null
-                                    viewState.onAction = null
-                                    //resetStatusSnackBar()
-                                }
+                    viewState.deletePays?.let {deletePays->
+                        CoroutineScope(Dispatchers.Default).launch(exceptionHandlerPaysList) {
+                            val job = CoroutineScope(Dispatchers.IO).async {
+                                result =
+                                    payListInteractor.deletePay(pay = deletePays.toPay())
+                                return@async result
                             }
+                            if (!job.await()) {
+                                viewState.isCanShowSnackBar = true
+                                viewState.messageSnackBar =
+                                    context.getString(R.string.error_save)
+                                viewState.isCanShowSnackBar = false
+                                viewState.withDismissAction = false
+                                viewState.messageSnackBar = null
+                                viewState.onDismissed = null
+                                viewState.onAction = null
+                               viewState.deletePays = null
+                            }
+                        }
                     }
                 }
                 viewState.isCanShowSnackBar = true
@@ -150,17 +163,20 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             }
 
             is PayListEvent.ReloadScreen -> {
+                getStatisticPay()
                 loadPayList()
             }
 
             is PayListEvent.UndoDeleteClicked -> {
                 viewState = viewState.copy(
                     items = viewState.items.map {
-                        if (viewEvent.uidPay == it.uidPay) {
+                        if (viewEvent.pay?.uidPay == it.uidPay) {
                             it.copy(isDelete = false, isOptionsRevealed = false)
                         } else
-                            it
-                    })
+                           it
+                    },
+                    deletePays = null
+                )
             }
 
             is PayListEvent.ShowSnackBar -> {
@@ -227,6 +243,27 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
         }
     }
 
+    private fun deletePayDB(pay: PayScreen) {
+        CoroutineScope(
+            context = Dispatchers.Default
+        ).launch(exceptionHandlerPaysList) {
+            val job = CoroutineScope(Dispatchers.IO).async {
+                return@async payListInteractor.deletePay(pay = pay.toPay())
+            }
+            if (!job.await()) {
+                viewState.isCanShowSnackBar = true
+                viewState.messageSnackBar =
+                    context.getString(R.string.error_save)
+                viewState.isCanShowSnackBar = false
+                viewState.withDismissAction = false
+                viewState.messageSnackBar = null
+                viewState.onDismissed = null
+                viewState.onAction = null
+                //resetStatusSnackBar()
+            }
+        }
+    }
+
     fun loadPayList() {
         viewModelScope.launch {
             payListInteractor.getPays(
@@ -235,7 +272,17 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 viewState.endDate.toLocalDateTimeRu()?.toLong(),
                 viewState.sortValue
             )?.collect { listPay ->
-                viewState = viewState.copy(items = listPay.map { it.toPayScreen() })
+                viewState = viewState.copy(
+                    items = listPay.map {
+                        //при удалении нескольких платежей список обновиться и тогда
+                        // нужно проставть признак удаления иначе он будет затёрт из базы
+                        if (viewState.deletePays?.uidPay == it.uidPay)
+                            it.toPayScreen().copy(isDelete = true)
+                        else
+                            it.toPayScreen()
+                    }
+                )
+
             }
         }
     }
@@ -258,7 +305,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
         onDismissed?.let { viewState.onDismissed = it }
     }
 
-    private fun resetStatusSnackBar() {
+ fun resetStatusSnackBar() {
         viewState.onAction = null
         viewState.onDismissed = null
         //   viewState = viewState.copy(isCanShowSnackBar = false, messageShackBar = null)
@@ -267,18 +314,19 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
         viewState.messageSnackBar = null
     }
 
-    private fun getStatisticPay() {
+     fun getStatisticPay() {
+        Log.e("CLJR", "get Statistic PAY")
         val date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         val lastMonth =
             Clock.System.now().minus(DateTimePeriod(months = 1), TimeZone.currentSystemDefault())
                 .toLocalDateTime(TimeZone.currentSystemDefault())
         CoroutineScope(Dispatchers.IO).launch {
-            viewState = viewState.copy(
-                incomePerMonth = payListInteractor.getStatisticPay(
+            viewState = viewState.copy(incomePerMonth = payListInteractor.getStatisticPay(
                     viewState.beginDate,
                     viewState.endDate
                 ),
-                incomePerLastMonth = payListInteractor.getStatisticPay(
+
+                incomePerLastMonth =payListInteractor.getStatisticPay(
                     beginDate = "01.${lastMonth.formatRu(FormatDate.Month)}.${lastMonth.year}",
                     endDate = date.toDateTimeRuString().toString()
                 ),

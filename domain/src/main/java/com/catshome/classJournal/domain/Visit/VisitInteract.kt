@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
@@ -56,6 +58,16 @@ class VisitInteract @Inject constructor(
     suspend fun getVisitAll(): Flow<List<Visit>>? {
         return visitRepository.getAllVisit(isDelete = false, VisitSortEnum.dateVisit)
     }
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun getVisitByPeriod(
+        begin: Long,
+        end: Long
+    ): Flow<List<Visit>>? {
+        return visitRepository.getVisitByPeriod(
+            begin = begin,
+            end = end,
+            VisitSortEnum.dateVisit)
+    }
 
     fun getSchedulerByDay(dayOfWeek: DayOfWeek): Flow<List<Visit>>? {
         return visitRepository.getSchedulerByDay(dayOfWeek)
@@ -66,7 +78,7 @@ class VisitInteract @Inject constructor(
     }
 
     suspend fun deleteVisit(uidVisit: String): Boolean {
-        Log.e("CLJR" , "fun deleteVisit Interact")
+
         val job = CoroutineScope(Dispatchers.IO).async {
             return@async visitRepository.getVisitByUid(uidVisit)?.let {
                 visitRepository.deleteVisit(listOf(it))

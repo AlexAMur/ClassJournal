@@ -21,5 +21,5 @@ interface PayRepository {
     suspend fun deletePay(pay: Pay): Boolean
     suspend fun insetPay(pay: Pay): Boolean
     suspend fun updatePay(pay: Pay): Boolean
-    suspend fun getStatisticPay(beginDate: Long?, endDate: Long?):Int
+    suspend fun getStatisticPay(beginDate: Long?, endDate: Long?): Int
 }

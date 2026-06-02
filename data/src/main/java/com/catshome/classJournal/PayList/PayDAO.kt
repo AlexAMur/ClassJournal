@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.Flow
 interface PayDAO {
     @Transaction
     suspend fun deletePay(payEntity: PayEntity): Boolean{
-        Log.e("CLJR","payEntity = ${payEntity}")
         if (getPayByID(payEntity.uid)!= null ) {
             if (editSaldoBeforePay(
                     uidChild = payEntity.uid_child,
@@ -49,7 +48,7 @@ interface PayDAO {
     suspend fun insertPay(payEntity: PayEntity): Boolean{
         if(editSaldoBeforePay(uidChild = payEntity.uid_child, pay = payEntity.pay) != 1)
                 throw Exception("ErrorSave")
-        return insert(payEntity) == 1L
+        return insert(payEntity) >0L
     }
     @Query("update child SET saldo = (select saldo+ :pay from child where uid = :uidChild)where uid = :uidChild ")
     fun editSaldoBeforePay(uidChild: String, pay :Int):Int

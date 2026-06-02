@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Shapes
@@ -21,11 +23,12 @@ import com.catshome.classJournal.resource.R
 
 @Composable
 fun StatisticPayCard(incomePerMonth: Int, lastMonth: Int, totalYear: Int) {
-    val stoProcentov: Float =lastMonth.toFloat()
+    val stoProcentov: Float =lastMonth.toFloat()*1.1f
     Card(
         Modifier
-            .padding(24.dp)
-            .fillMaxWidth(),
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
         colors = CardDefaults.cardColors(
             containerColor = ClassJournalTheme.colors.secondaryBackground,
             contentColor = ClassJournalTheme.colors.primaryText

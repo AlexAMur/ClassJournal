@@ -21,6 +21,6 @@ sealed class PayListEvent {
     data class ChangeRevealed(val index: Int, val isOptionsRevealed: Boolean): PayListEvent()
     data class Search(val  searchText: String): PayListEvent()
     data class DeleteClicked(val pay: PayScreen) : PayListEvent()
-    class UndoDeleteClicked(val uidPay: String?) : PayListEvent()
+    class UndoDeleteClicked(val pay: PayScreen?) : PayListEvent()
     class SetOption(val option: OptionFilterPaysList) : PayListEvent()
 }

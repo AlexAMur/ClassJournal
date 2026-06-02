@@ -63,7 +63,7 @@ interface ChildDAO {
 //        note: String,
 //        isDelete: Boolean
 //    )
-//TODO Удаление объектов
+
     //Связанные объекты ChildGroups удаляются автоматически
     @Delete
     suspend fun delete(child: ChildEntity)

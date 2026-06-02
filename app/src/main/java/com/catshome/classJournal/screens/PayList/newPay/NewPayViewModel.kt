@@ -2,6 +2,7 @@ package com.catshome.classJournal.screens.PayList.newPay
 
 import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.context
@@ -31,7 +32,7 @@ class NewPayViewModel @Inject constructor(
             pay = Pay(
                 datePay = now().toDateTimeRuString().toString()
             ),
-            payment = "0"
+            payment = TextFieldValue("0")
         )
     ) {
     val TEXT_FILD_COUNT = 3
@@ -113,7 +114,9 @@ class NewPayViewModel @Inject constructor(
                     ),
                     searchText = TextFieldValue("${viewEvent.pay.name} ${viewEvent.pay.surName}"),
                     pay = viewEvent.pay,
-                    payment = viewEvent.pay.payment.toString(),
+                    payment = TextFieldValue(
+                        text = viewEvent.pay.payment.toString(),
+                        selection = TextRange(viewEvent.pay.payment.toString().length)),
                     isChildError = false,
                     childErrorMessage = null,
                     indexFocus = -1,
@@ -145,7 +148,7 @@ class NewPayViewModel @Inject constructor(
                     }
                     try {
                         viewState =
-                            viewState.copy(pay = viewState.pay.copy(payment = viewState.payment.toInt()))
+                            viewState.copy(pay = viewState.pay.copy(payment = viewState.payment.text.toInt()))
                     } catch (e: NumberFormatException) {
                         //viewState = viewState.copy(pay = viewState.pay.copy(payment = 0))
                         viewState = viewState.copy(
@@ -221,6 +224,15 @@ class NewPayViewModel @Inject constructor(
                     }
                 }
             }
+            NewPayEvent.onFocusePrice->{
+              viewState =viewState.copy(payment =  viewState.payment.copy(
+                        selection = TextRange(
+                            start = 0,
+                            end = viewState.payment.text.length
+                        )
+                )
+              )
+            }
 
             is NewPayEvent.SelectedChild -> {
                 viewState = viewState.copy(
@@ -239,7 +251,7 @@ class NewPayViewModel @Inject constructor(
             pay = Pay(
                 datePay = now().toDateTimeRuString().toString(),
                 payment = 0,
-            ),//.toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toDateTimeRuString()),
+            ),
             isChildError = false,
             childErrorMessage = null,
             indexFocus = -1,
@@ -248,10 +260,9 @@ class NewPayViewModel @Inject constructor(
             snackBarAction = "",
             isPayError = false,
             payError = "",
-            payment = "0",
+            payment = TextFieldValue("0", TextRange(0, 1)),
             errorMessage = ""
         )
-
     }
 
     fun datePayChange(newDate: String?) {
@@ -260,7 +271,15 @@ class NewPayViewModel @Inject constructor(
         }
     }
     fun paymentChange(newValue: String) {
-        viewState = viewState.copy(payment = newValue,isPayError = false)
+        viewState = viewState.copy(
+            payment = viewState.payment.copy(text = newValue,
+                selection = if (newValue==viewState.payment.text)
+                    TextRange(0, newValue.length)
+                            else
+                    TextRange( newValue.length)
+            ),
+
+        isPayError = false)
         //viewState = viewState.copy(isPayError = false)
     }
 }
