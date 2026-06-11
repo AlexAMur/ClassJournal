@@ -33,15 +33,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -50,10 +45,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.room.util.TableInfo
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.communs.DatePickerFieldToModal
@@ -62,12 +55,13 @@ import com.catshome.classJournal.communs.SearchField
 import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
-import com.catshome.classJournal.navigate.OptionFilterPaysList
+import com.catshome.classJournal.navigate.OptionFilterList
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.ItemScreen
 import java.time.format.DateTimeParseException
 import kotlinx.datetime.TimeZone
-
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
 
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -221,7 +215,8 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                             modifier = Modifier
                                 .padding(start = 8.dp, end = 8.dp, top = 16.dp)
                                 .fillMaxWidth(0.5f),
-                            inicialDate = viewState.beginDate.toLocalDateTimeRu(),
+                            inicialDate = viewState.beginDate?.toLocalDateTimeRu()?:Clock.System.now().toLocalDateTime(
+                                TimeZone.currentSystemDefault()),
                             label = stringResource(R.string.begin_date)
                         ) { date ->
 
@@ -236,7 +231,8 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                         DatePickerFieldToModal(
                             modifier = Modifier
                                 .padding(start = 8.dp, end = 8.dp, top = 16.dp),
-                            inicialDate = viewState.endDate.toLocalDateTimeRu(),
+                            inicialDate = viewState.endDate?.toLocalDateTimeRu()?: Clock.System.now().toLocalDateTime(
+                                TimeZone.currentSystemDefault()),
                             label = stringResource(R.string.end_date)
                         ) {
                             viewModel.endDateChange(
@@ -272,9 +268,18 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
     when (viewAction) {
         FilterAction.CloseScreen -> {
             keyboardController?.hide()
-            navController.navigate(ItemScreen.PayListScreen.name) {
-                popUpTo(ItemScreen.PayListScreen.name) {
-                    inclusive = true
+            if(viewState.screen == ScreenEnum.PayListScreen) {
+                navController.navigate(ItemScreen.PayListScreen.name) {
+                    popUpTo(ItemScreen.PayListScreen.name) {
+                        inclusive = true
+                    }
+                }
+            }
+            if(viewState.screen == ScreenEnum.VisitListScreen) {
+                navController.navigate(ItemScreen.VisitListScreen.name) {
+                    popUpTo(ItemScreen.VisitListScreen.name) {
+                        inclusive = true
+                    }
                 }
             }
             viewModel.clearAction()
@@ -283,22 +288,28 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
         FilterAction.Successful -> {
             keyboardController?.hide()
             viewModel.clearAction()
-
             try {
                 navController.navigate(
-                    OptionFilterPaysList(
+                    OptionFilterList(
                         childId = viewState.selectChild?.uid,
                         childFIO = viewState.selectChild?.fio,
                         selectOption = viewState.selectedOption,
                         sort = viewState.sortValue,
                         beginDate = viewState.beginDate,
-                        endDate = viewState.endDate
+                        endDate = viewState.endDate,
+                        screen = viewState.screen
                     )
                 ) {
-                    popUpTo(ItemScreen.PayListScreen.name) {
+                    popUpTo(
+                        if (viewState.screen == ScreenEnum.PayListScreen)
+                            ItemScreen.PayListScreen.name
+                        else
+                            ItemScreen.VisitListScreen.name
+                    ) {
                         inclusive = true
                     }
                 }
+
             } catch (e: DateTimeParseException) {
                 Log.e("CLJR", "SuccessfulAction on filter screen ${e.message}")
             }

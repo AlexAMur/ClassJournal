@@ -9,7 +9,6 @@ import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.SortEnum
-import com.catshome.classJournal.domain.communs.VisitSortEnum
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
 import kotlinx.coroutines.CoroutineScope
@@ -28,9 +27,10 @@ class VisitInteract @Inject constructor(
     private val childRepository: ChildRepository,
     private val visitRepository: VisitRepository,
 ) {
-   suspend fun getVisitByUid(uidVisit: String): Visit?{
-        return  visitRepository.getVisitByUid(uidVisit)
+    suspend fun getVisitByUid(uidVisit: String): Visit? {
+        return visitRepository.getVisitByUid(uidVisit)
     }
+
     fun searchChild(searchText: String): Flow<List<MiniChild>?> {
         return childRepository.getChildByName(searchText)
     }
@@ -38,7 +38,7 @@ class VisitInteract @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveVisit(listVisit: List<Visit>, newVisit: Boolean) {
         listVisit.forEach { visit ->
-           if (visit.uid.isNullOrEmpty())
+            if (visit.uid.isNullOrEmpty())
                 throw kotlin.IllegalArgumentException("Не указан UID")
             if (visit.uidChild.isNullOrEmpty())
                 throw kotlin.IllegalArgumentException("Не указан UID ребенка")
@@ -47,7 +47,7 @@ class VisitInteract @Inject constructor(
             if (visit.price == null || visit.price <= 0)
                 throw IllegalArgumentException("Платеж не может быть нулевым или отрицательным.")
         }
-        if(newVisit)
+        if (newVisit)
             visitRepository.insetVisit(listVisit)
         else
             visitRepository.updateVisit(visit = listVisit)
@@ -56,17 +56,28 @@ class VisitInteract @Inject constructor(
     }
 
     suspend fun getVisitAll(): Flow<List<Visit>>? {
-        return visitRepository.getAllVisit(isDelete = false, VisitSortEnum.dateVisit)
+        return visitRepository.getAllVisit(isDelete = false, SortEnum.Date)
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getVisitByPeriod(
+        uidChild: String?,
         begin: Long,
         end: Long
     ): Flow<List<Visit>>? {
-        return visitRepository.getVisitByPeriod(
-            begin = begin,
-            end = end,
-            VisitSortEnum.dateVisit)
+        if (uidChild != null) {
+            return visitRepository.getVisitByChildWithPeriod(
+                uidChild = uidChild,
+                begin = begin,
+                end = end
+            )
+        }
+        else
+            return visitRepository.getVisitByPeriod(
+                begin = begin,
+                end = end,
+                sortEnum = SortEnum.Date
+            )
     }
 
     fun getSchedulerByDay(dayOfWeek: DayOfWeek): Flow<List<Visit>>? {

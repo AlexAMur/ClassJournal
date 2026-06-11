@@ -33,17 +33,20 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.time.Clock
 import androidx.compose.runtime.getValue
+import kotlinx.datetime.DateTimeUnit
 
 @HiltViewModel
 class PayListViewModel @Inject constructor(private val payListInteractor: PayListInteractor) :
     BaseViewModel<PayListState, PayListAction, PayListEvent>(
         installState = PayListState(
-            beginDate = "01.${
-                if (LocalDateTime.now().month.value.toString().length == 1)
-                    "0${LocalDateTime.now().month.value}"
-                else
-                    "${LocalDateTime.now().month.value}"
-            }.${LocalDateTime.now().year} 00:00",
+            selectedOption = 1,
+            beginDate = Clock.System.now().minus(
+                value = 1,
+                unit = DateTimeUnit.MONTH,
+                timeZone = TimeZone.currentSystemDefault()
+            ).toLocalDateTime(
+                timeZone = TimeZone.currentSystemDefault()
+            ).toDateTimeRuString(formatDate = FormatDate.Date).toString(),
             endDate = "${
                 Clock.System.now().toDateTimeRuString()?.substring(0, DATE_FORMAT_RU.length)
             } 23:59"

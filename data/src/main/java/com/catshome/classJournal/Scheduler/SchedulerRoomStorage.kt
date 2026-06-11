@@ -62,6 +62,7 @@ class SchedulerRoomStorage @Inject constructor(
                 uidChild = null,
                 uidGroup = it.uid,
                 name = it.name,
+
                 isChecked = false
             )
         }.sortedBy { name }.toMutableList()

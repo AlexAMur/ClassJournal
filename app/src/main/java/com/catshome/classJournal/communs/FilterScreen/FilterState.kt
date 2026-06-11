@@ -22,7 +22,7 @@ data class FilterState(
     val searchList: List<MiniChild>? = null,
     val textSorting: String =  "",
     val indexSorting: Int = 0,
-    val selectedOption: Int = 0,
+    val selectedOption: Int = 1,
     val selectChild: MiniChild? = null,
     val isShowList: Boolean = false,
     val isShowPeriod: Boolean = false,
@@ -30,6 +30,7 @@ data class FilterState(
     val isFilterData : Boolean =false,
     var searchText: TextFieldValue = TextFieldValue(""),
     val statusText: String = "",
-    val beginDate: String = "",
-    val endDate: String = "",
-)
+    var beginDate: String? = null,
+    var endDate: String? = null,
+    val screen: ScreenEnum = ScreenEnum.PayListScreen
+ )

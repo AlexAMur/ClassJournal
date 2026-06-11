@@ -61,6 +61,16 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
                 list?.map { clientScheduler ->
                     try {
                         clientScheduler.price.toInt()
+                        if (clientScheduler.price.toInt() < 0) {
+                            viewState = viewState.copy(
+                                isShowDialog = true,
+                                dialogMessage = context.getString(R.string.error_negative_value)
+                            )
+                            viewState.onDisimiss = {
+                                viewState = viewState.copy(isShowDialog = false)
+                            }
+                            return
+                        }
                     } catch (e: NumberFormatException) {
                         viewState = viewState.copy(
                             isShowDialog = true,

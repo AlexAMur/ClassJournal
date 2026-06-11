@@ -1,7 +1,6 @@
 package com.catshome.classJournal
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
@@ -13,12 +12,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.catshome.classJournal.communs.FilterScreen.FilterScreen
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
+import com.catshome.classJournal.communs.FilterScreen.ScreenEnum
 import com.catshome.classJournal.domain.Pay.Pay
 import com.catshome.classJournal.navigate.DetailsChild
 import com.catshome.classJournal.navigate.DetailsGroup
 import com.catshome.classJournal.navigate.DetailsPayResult
 import com.catshome.classJournal.navigate.NewLesson
-import com.catshome.classJournal.navigate.OptionFilterPaysList
+import com.catshome.classJournal.navigate.OptionFilterList
 import com.catshome.classJournal.navigate.SaveLesson
 import com.catshome.classJournal.navigate.VisitDetails
 import com.catshome.classJournal.screens.ItemScreen
@@ -69,14 +69,25 @@ fun classJournalApp(
             newPayScreen(navController, viewModel)
         }
 
-        composable<OptionFilterPaysList> { backStackEntry ->
-            val optionFilterPaysList = backStackEntry.toRoute<OptionFilterPaysList>()
-            val viewModel: PayListViewModel by activity.viewModels()
-            PayListScreen(
-                navController = navController,
-                viewModel = viewModel,
-                optionFilter = optionFilterPaysList
-            )
+        composable<OptionFilterList> { backStackEntry ->
+            val optionFilterList = backStackEntry.toRoute<OptionFilterList>()
+
+            if (optionFilterList.screen == ScreenEnum.PayListScreen) {
+                val viewModel: PayListViewModel by activity.viewModels()
+                PayListScreen(
+                    navController = navController,
+                    viewModel = viewModel,
+                    optionFilter = optionFilterList
+                )
+            }
+            else{
+                val viewModel: VisitListViewModel by activity.viewModels()
+                visitListScreen(
+                    navController = navController,
+                    viewModel = viewModel,
+                    optionFilter = optionFilterList
+                )
+            }
         }
 
         composable<DetailsPayResult> { backStackEntry ->
@@ -137,7 +148,10 @@ fun classJournalApp(
 
         composable(route = ItemScreen.VisitListScreen.name) {
             val viewModel: VisitListViewModel by activity.viewModels()
-            visitListScreen(navController, viewModel)
+            visitListScreen(
+                navController, viewModel,
+                optionFilter = null
+            )
         }
 
         composable(route = ItemScreen.MainScreen.name) {
@@ -173,12 +187,12 @@ fun classJournalApp(
         }
 
         composable<VisitDetails> { backStackEntry ->
-             val viewModel: NewVisitViewModel by activity.viewModels()
+            val viewModel: NewVisitViewModel by activity.viewModels()
             val visit = backStackEntry.toRoute<VisitDetails>()
             NewVisitScreen(
                 viewModel, visit,
 
-            )
+                )
         }
     }
 }

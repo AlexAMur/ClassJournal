@@ -9,6 +9,7 @@ data class ClientScheduler(
     val uidChild: String? = null,
     val uidGroup: String? = null,
     val name: String,
+//    val saldo: Int = 0,
     val isChecked: Boolean = false,
     var price: String = ""
 )

@@ -19,8 +19,8 @@ class PayRepositoryImpl @Inject constructor(val storage: RoomPayStorage) : PayRe
         }
     }
 
-    override suspend fun getPayByChild(uidChild: String, sortEnum: SortEnum): Flow<List<Pay>>? {
-        return storage.getPayByChild(uidChild, sortEnum)?.map {list->
+    override suspend fun getPayByChild(uidChild: String): Flow<List<Pay>>? {
+        return storage.getPayByChild(uidChild)?.map {list->
             list.map {
                 it.mapToPay()
             }
@@ -35,7 +35,6 @@ class PayRepositoryImpl @Inject constructor(val storage: RoomPayStorage) : PayRe
            uid = uidChild,
            begin = begin,
            end = end,
-           sortEnum = sortEnum
        )?.map {list->
            list.map {
                it.mapToPay()

@@ -388,7 +388,7 @@ class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInte
                             return@async schedulerTmp
                         }
                         viewState = viewState.copy(scheduler = jod.await())
-//                        Log.e("CLJR", "listCheck ${viewState.scheduler}")
+
                         //Log.e("CLJR", "Scheduler ${viewState.scheduler}")
                     }
                 }

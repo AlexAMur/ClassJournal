@@ -69,45 +69,37 @@ interface PayDAO {
         "Select p.uid , p.uid_child , c.child_name as Name, c.child_surname as Surname, p.date_pay " +
                 ",p.pay  from pays p join child c where p.uid_child =c.uid and c.isDelete = :isDelete ORDER BY " +
                 " CASE WHEN :sortDate = 'date_pay' THEN date_pay END DESC ," +
+                " CASE WHEN :sortDate = 'date_pay' THEN Surname END ASC ," +
+                " CASE WHEN :sortDate = 'date_pay' THEN Name END DESC ," +
                 " CASE WHEN :sortSurname = 'Surname' THEN surname END ASC, "+
-                " CASE WHEN :sortName = 'Name' THEN name END ASC"
+                " CASE WHEN :sortSurname = 'Surname' THEN Name END ASC, " +
+                " CASE WHEN :sortSurname = 'Surname' THEN date_pay END DESC"
+
     )
     fun getFull(
         isDelete: Boolean,
         sortDate: String,
-        sortName: String,
         sortSurname: String
     ): Flow<List<PayScreenEntity>>?
 
     @Query(
         "Select p.uid , p.uid_child , c.child_name as Name, c.child_surname as Surname, p.date_pay, " +
-                "p.pay  from pays p join child c where p.uid_child =c.uid and p.uid_child= :uid ORDER BY " +
-                " CASE WHEN :sortDate = 'date_pay' THEN date_pay END DESC ," +
-                " CASE WHEN :sortSurname = 'Surname' THEN surname END ASC, "+
-                " CASE WHEN :sortName = 'Name' THEN name END ASC"
+                "p.pay  from pays p join child c where p.uid_child =c.uid and p.uid_child= :uid" +
+                " ORDER BY date_pay DESC"
     )
     fun getPayByChildID(
         uid: String,
-        sortDate: String,
-        sortName: String,
-        sortSurname: String
     ): Flow<List<PayScreenEntity>>?
 
     @Query(
         "Select p.uid  , p.uid_child , c.child_name as Name, c.child_surname as Surname, p.date_pay, " +
                 "p.pay  from pays p join child c where p.uid_child =c.uid and p.uid_child= :uid and " +
-                "date_pay>= :begin and date_pay <= :end ORDER BY " +
-                " CASE WHEN :sortDate = 'date_pay' THEN date_pay END DESC ," +
-                " CASE WHEN :sortSurname = 'Surname' THEN surname END ASC, "+
-                " CASE WHEN :sortName = 'Name' THEN name END ASC"
+                "date_pay>= :begin and date_pay <= :end ORDER BY date_pay DESC"
     )
     fun getPayByChildIDWithPeriod(
         uid: String,
         begin: Long,
         end: Long,
-        sortDate: String,
-        sortName: String,
-        sortSurname: String
     ): Flow<List<PayScreenEntity>>?
 
     @Query(
@@ -115,14 +107,17 @@ interface PayDAO {
                 "p.date_pay, p.pay from pays p join child c where p.uid_child =c.uid " +
                 "and c.isDelete = 0 and p.date_pay >= :begin and date_pay <= :end ORDER BY " +
                 " CASE WHEN :sortDate = 'date_pay' THEN date_pay END DESC ," +
-                " CASE WHEN :sortSurname = 'Surname' THEN surname END ASC ,"+
-                " CASE WHEN :sortName = 'Name' THEN name END ASC"
+                " CASE WHEN :sortDate = 'date_pay' THEN Surname END ASC ," +
+                " CASE WHEN :sortDate = 'date_pay' THEN Name END DESC ," +
+                " CASE WHEN :sortSurname = 'Surname' THEN surname END ASC, "+
+                " CASE WHEN :sortSurname = 'Surname' THEN Name END ASC, " +
+                " CASE WHEN :sortSurname = 'Surname' THEN date_pay END DESC"
+
     )
     fun getPayByPeriod(
         begin: Long,
         end: Long,
         sortDate: String,
-        sortName: String,
         sortSurname: String
     ): Flow<List<PayScreenEntity>>?
 

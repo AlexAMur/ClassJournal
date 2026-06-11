@@ -77,6 +77,7 @@ fun ItemWithCheck(
                     style = texStyle ?: ClassJournalTheme.typography.body,
                     color = ClassJournalTheme.colors.primaryText
                 )
+
                 if (isChecked) {
                     Icon(
                         painter = painterResource(R.drawable.box_ckeck),

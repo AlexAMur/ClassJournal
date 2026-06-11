@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -94,7 +95,6 @@ fun NewVisitByScheduler(
             pageSpacing = 0.dp
         ) { index ->
             val page = index % DayOfWeek.entries.size
-
             viewState.dateOnPage = Clock.System.now().minus(
                 value = viewState.pageDayOfWeekOffset - pagerState.settledPage + getNow().dayOfWeek.ordinal,
                 unit = DateTimeUnit.DAY,
@@ -133,6 +133,7 @@ fun NewVisitByScheduler(
                     Modifier
                         .fillMaxSize()
                         .background(ClassJournalTheme.colors.primaryBackground)
+                        .imePadding()
                     //.padding(8.dp)
                 ) {
                     if (viewState.scheduler.isNotEmpty()) {
@@ -183,6 +184,35 @@ fun NewVisitByScheduler(
                                                         text = scheduler.fio,
                                                         color = ClassJournalTheme.colors.primaryText
                                                     )
+
+                                                    Row {
+
+                                                        Text(
+                                                            text = "${stringResource(R.string.current_saldo)}",
+                                                            modifier = Modifier,
+                                                            style = ClassJournalTheme.typography.body,
+                                                            color = ClassJournalTheme.colors.primaryText
+                                                        )
+                                                        scheduler.saldo?.let { saldo ->
+                                                            Text(
+                                                                text = "${saldo}",
+                                                                modifier = Modifier
+                                                                    .padding(start = 8.dp),
+                                                                style = ClassJournalTheme.typography.body,
+                                                                color = if (saldo >= 0) ClassJournalTheme.colors.primaryText
+                                                                else
+                                                                    ClassJournalTheme.colors.errorColor
+                                                            )
+                                                            Text(
+                                                                text = "р.",
+                                                                modifier = Modifier
+                                                                    .padding(start = 4.dp),
+                                                                style = ClassJournalTheme.typography.body,
+                                                                color = ClassJournalTheme.colors.primaryText
+                                                            )
+                                                        }
+                                                    }
+
                                                     Icon(
                                                         painter =
                                                             painterResource(
@@ -207,7 +237,7 @@ fun NewVisitByScheduler(
                                                     )
                                                 }
                                                 TextField(
-                                                    modifier = Modifier.Companion,
+                                                    modifier = Modifier,
                                                     value = scheduler.priceScreen ?: "0",
                                                     label = stringResource(R.string.visit_price),
                                                     supportingText = "",//if (isPriceError) errorPriceMessage else "",

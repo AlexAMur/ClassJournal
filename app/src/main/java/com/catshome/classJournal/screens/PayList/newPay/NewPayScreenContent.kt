@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -66,7 +67,7 @@ fun PayScreenContent(
 ) {
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
-    val viewState by viewModel.viewState().collectAsState()
+//    val viewState by viewModel.viewState().collectAsState()
 //  Установка фокуса после переворота
     LaunchedEffect(true) {
         if (viewState.indexFocus > -1)
@@ -119,6 +120,11 @@ fun PayScreenContent(
                     .imePadding()
                     .verticalScroll(state = rememberScrollState())
             ) {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    color = ClassJournalTheme.colors.disableContentColor
+                )
                 val modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
@@ -191,6 +197,54 @@ fun PayScreenContent(
                         }
                     }
                 }
+                Column( Modifier
+                    .background(ClassJournalTheme.colors.primaryBackground)
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp)
+                ) {
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = ClassJournalTheme.colors.disableContentColor
+                    )
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
+
+                    ) {
+                        Text(
+                            text = "${stringResource(R.string.current_saldo)}",
+                            modifier = Modifier,
+                            style = ClassJournalTheme.typography.body,
+                            color = ClassJournalTheme.colors.primaryText
+                        )
+                        viewState.selectChild?.saldo?.let { saldo ->
+                            Text(
+                                text = "${saldo}",
+                                modifier = Modifier
+                                    .padding(start = 16.dp),
+                                style = ClassJournalTheme.typography.body,
+                                color = if (saldo >= 0) ClassJournalTheme.colors.primaryText
+                                else
+                                    ClassJournalTheme.colors.errorColor
+                            )
+                            Text(
+                                text = "р.",
+                                modifier = Modifier
+                                    .padding(start = 8.dp),
+                                style = ClassJournalTheme.typography.body,
+                                color = ClassJournalTheme.colors.primaryText
+                            )
+                        }
+                    }
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .weight(0.75f)
+                            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                        color = ClassJournalTheme.colors.disableContentColor
+                    )
+                }
+
                 DatePickerFieldToModal(
                     modifier = if (viewState.isChildError) modifier.padding(top = 16.dp) else modifier,
                     viewState.pay.datePay.toLocalDateTimeRu(),
@@ -198,7 +252,7 @@ fun PayScreenContent(
 //                        LocalDateTime.now()
 //                            .format(DateTimeFormatter.ofPattern(DATETIME_FORMAT_RU))
 //                    },
-                    stringResource(R.string.birthday_child)
+                    stringResource(R.string.date_paymant)
                 ) {
                     it?.let {
                         viewModel.datePayChange(it.toLocalDateTimeRuString(formatDate = FormatDate.Date))

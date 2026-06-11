@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface PayRepository {
     suspend fun getAllPays(isDelete: Boolean, sortEnum: SortEnum): Flow<List<Pay>>?
-    suspend fun getPayByChild(uidChild: String, sortEnum: SortEnum): Flow<List<Pay>>?
+    suspend fun getPayByChild(uidChild: String): Flow<List<Pay>>?
     suspend fun getPayByChildWithPeriod(
         uidChild: String,
         begin: Long,

@@ -21,24 +21,24 @@ class PayListInteractor @Inject constructor (val payListRepository: PayRepositor
         return payListRepository.getStatisticPay(beginDate?.toLocalDateTimeRu()?.toLong(), endDate?.toLocalDateTimeRu()?.toLong())
     }
 
-    suspend fun getPays(uid: String?, beginDate: Long?, endDate: Long?, sort: SortEnum?= SortEnum.date_pay): Flow<List<Pay>>?{
+    suspend fun getPays(uid: String?, beginDate: Long?, endDate: Long?, sort: SortEnum?= SortEnum.Date): Flow<List<Pay>>?{
             if (uid?.isNullOrEmpty() == false ) {
                 if (beginDate != null && endDate != null) {
                     return payListRepository.getPayByChildWithPeriod(
                         uidChild = uid,
                         begin = beginDate,
-                        end = endDate,sort?: SortEnum.date_pay)
+                        end = endDate,sort?: SortEnum.Date)
                 }
-                return payListRepository.getPayByChild(uid,sort?: SortEnum.date_pay)
+                return payListRepository.getPayByChild(uidChild = uid)
             } else{
                 if (beginDate != null && endDate !=null)
                     return  payListRepository.getPayByPeriod(
                         begin = beginDate,
                         end = endDate,
-                        sort?: SortEnum.date_pay
+                        sort?: SortEnum.Date
                     )
                 else
-                    return payListRepository.getAllPays(false, sort?: SortEnum.date_pay)
+                    return payListRepository.getAllPays(false, sort?: SortEnum.Date)
             }
     }
     suspend fun deletePay(pay: Pay): Boolean{

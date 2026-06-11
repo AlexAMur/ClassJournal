@@ -4,7 +4,7 @@ import com.catshome.classJournal.domain.Visit.Visit
 
 
 sealed class VisitListAction {
-        //data object CloseScreen: VisitListAction()
+        data object OpenFilter: VisitListAction()
         data object NewVisit: VisitListAction()
         data class EditVisit(val visit: Visit): VisitListAction()
 }

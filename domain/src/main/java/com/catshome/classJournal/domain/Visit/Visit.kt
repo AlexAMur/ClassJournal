@@ -6,6 +6,7 @@ data class Visit(
     val startLesson:Int = 0,
     val uidChild: String? = "",
     val fio: String = "",
+    val saldo: Int? = null,
     val groupName: String? =null,
     val data: String? = "",
     val price: Int? =0,

@@ -97,15 +97,6 @@ fun PayListContent(
 
                                 }
                             )
-//                            delay(500L)
- //                           viewModel.obtainEvent(PayListEvent.resetSnackBar)
-
-//                            viewState.onAction = null
-//                            viewState.onDismissed = null
-//                            viewState.isCanShowSnackBar = false
-//                            viewState.messageShackBar = null
-
-//                        }
                     }
                 }
             },
@@ -155,6 +146,9 @@ fun PayListContent(
                             .background(ClassJournalTheme.colors.primaryBackground)
                             .fillMaxWidth()
                             .padding(0.dp)
+                            .clickable {
+                                viewModel.obtainEvent(PayListEvent.onCollapse(true))
+                            }
                     )
                     {
                         viewState.selectChild?.let {
@@ -170,9 +164,7 @@ fun PayListContent(
                             Modifier
                                 .background(ClassJournalTheme.colors.primaryBackground)
                                 .fillMaxWidth()
-                                .clickable {
-                                    viewModel.obtainEvent(PayListEvent.onCollapse(true))
-                                },
+                                ,
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {

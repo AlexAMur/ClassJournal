@@ -42,6 +42,7 @@ import java.util.Date
 @Composable
 fun SingleVisitContent(
     fio: TextFieldValue,
+    saldo: Int?,
     date: Date,
     price: TextFieldValue,
     listChild: List<MiniChild>? = null,
@@ -96,7 +97,7 @@ fun SingleVisitContent(
                         itemsIndexed(listChild) { index, child ->
                             ItemChildInSearch(
                                 fio = child.fio,
-                                 modifier = Modifier.Companion
+                                modifier = Modifier.Companion
                                     .fillMaxWidth()
                                     .padding(
                                         start = 16.dp, top = 4.dp, end = 16.dp, bottom = 8.dp
@@ -112,6 +113,38 @@ fun SingleVisitContent(
                         }
                     }
                 }
+            }
+        }
+//        if (saldo != null) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+
+        ) {
+            Text(
+                text = "${stringResource(R.string.current_saldo)}",
+                modifier = Modifier,
+                style = ClassJournalTheme.typography.body,
+                color = ClassJournalTheme.colors.primaryText
+            )
+            saldo?.let { saldo ->
+                Text(
+                    text = "${saldo}",
+                    modifier = Modifier
+                        .padding(start = 16.dp),
+                    style = ClassJournalTheme.typography.body,
+                    color = if (saldo >= 0) ClassJournalTheme.colors.primaryText
+                    else
+                        ClassJournalTheme.colors.errorColor
+                )
+                Text(
+                    text = "р.",
+                    modifier = Modifier
+                        .padding(start = 8.dp),
+                    style = ClassJournalTheme.typography.body,
+                    color = ClassJournalTheme.colors.primaryText
+                )
             }
         }
         Row(

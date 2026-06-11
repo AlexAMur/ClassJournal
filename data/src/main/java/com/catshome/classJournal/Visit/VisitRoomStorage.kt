@@ -1,13 +1,9 @@
 package com.catshome.classJournal.Visit
 
-import android.util.Log
-import com.catshome.classJournal.PayList.getSortString
 import com.catshome.classJournal.Scheduler.SchedulerDAO
 import com.catshome.classJournal.domain.Visit.Visit
-
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.SortEnum
-import com.catshome.classJournal.domain.communs.VisitSortEnum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -15,6 +11,19 @@ import javax.inject.Inject
 class VisitRoomStorage @Inject constructor(val visitDAO: VisitDAO, val schedulerDAO: SchedulerDAO) {
     suspend fun getVisitByUid(uid: String): Visit? {
         return visitDAO.getVisitByUid(uid)?.mapToVisit()
+    }
+
+    suspend fun getVisitByChildPeriod(
+        uidChild: String,
+        begin: Long,
+        end: Long
+    ): Flow<List<Visit>>? {
+        return visitDAO.getVisitByChildIDWithPeriod(
+            uidChild = uidChild,
+            begin = begin,
+            end = end
+
+        )?.map { list -> list.map { it.mapToVisit() } }
     }
     suspend fun save(visit: List<VisitEntity>): Boolean {
         return visitDAO.addVisit(visit)
@@ -27,28 +36,23 @@ class VisitRoomStorage @Inject constructor(val visitDAO: VisitDAO, val scheduler
         return visitDAO.deleteVisit(visitEntity)
     }
 
-    fun getVisitAll(sortEnum: VisitSortEnum): Flow<List<Visit>>? {
+    fun getVisitAll(sortEnum: SortEnum): Flow<List<Visit>>? {
         return visitDAO.getFullVisit(
-            isDelete = false,
-            sortDate = if (getSortString(sortEnum) == VisitScreenEntity::dateVisit.name)
+            sortDate = if (sortEnum.name == SortEnum.Date.name)
                 VisitScreenEntity::dateVisit.name else "",
-            sortSurname = if (getSortString(sortEnum) == VisitScreenEntity::Surname.name)
+            sortSurname = if (sortEnum.name == SortEnum.FIO.name)
                 VisitScreenEntity::Surname.name else "",
-            sortName = if (getSortString(sortEnum) == VisitScreenEntity::Name.name)
-                VisitScreenEntity::Name.name else ""
         )?.map { list -> list.map { it.mapToVisit() } }
     }
 
-    fun getVisitByPeriod(begin: Long, end: Long, sortEnum: VisitSortEnum): Flow<List<Visit>>? {
+    fun getVisitByPeriod(begin: Long, end: Long, sortEnum: SortEnum): Flow<List<Visit>>? {
         return visitDAO.getVisitByPeriod(
             begin = begin,
             end = end,
-            sortDate = if (getSortString(sortEnum) == VisitScreenEntity::dateVisit.name)
+            sortDate = if (sortEnum.name == SortEnum.Date.name)
                 VisitScreenEntity::dateVisit.name else "",
-            sortSurname = if (getSortString(sortEnum) == VisitScreenEntity::Surname.name)
-                VisitScreenEntity::Surname.name else "",
-            sortName = if (getSortString(sortEnum) == VisitScreenEntity::Name.name)
-                VisitScreenEntity::Name.name else ""
+            sortSurname = if (sortEnum.name == SortEnum.FIO.name)
+                VisitScreenEntity::Surname.name else ""
         )?.map { list -> list.map { it.mapToVisit() } }
     }
 

@@ -40,7 +40,7 @@ interface ChildGroupDAO {
     fun getGroupsByName(name: String): List<GroupEntity>
 //Поиск по имени
     @Query("Select uid, (child_name|' '|child_surname) as fio , child_name as name, " +
-            "child_surname as surname  from child where name LIKE :name or surname Like :name" +
+            "child_surname as surname, saldo from child where name LIKE :name or surname Like :name" +
             " and  isDelete = 0")
     fun getChildByName(name: String): List<MiniChild>
 }

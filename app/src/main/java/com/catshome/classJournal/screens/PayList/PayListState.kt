@@ -11,7 +11,7 @@ data class PayListState(
     val isFilterChild: Boolean =false,
     val selectChild: MiniChild? = null,
     val listSearch: List<MiniChild>? = null,
-    val sortValue: SortEnum? = SortEnum.date_pay,
+    val sortValue: SortEnum? = SortEnum.Date,
     val searchText: String = "",
     val selectedOption: Int = 1,
     val beginDate: String = "",

@@ -5,7 +5,7 @@ import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitRepository
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.SortEnum
-import com.catshome.classJournal.domain.communs.VisitSortEnum
+
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -14,25 +14,33 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
     override  fun getSchedulerByDay(dayOfWeek: DayOfWeek): Flow<List<Visit>>? {
         return visitStorage.getScheduler(dayOfWeek = dayOfWeek)
     }
-
+    override suspend fun getVisitByChildPeriod(
+            uid: String,
+            begin: Long,
+            end: Long
+            ): Flow<List<Visit>>? {
+        return visitStorage.getVisitByChildPeriod(
+            uidChild = uid,
+            begin = begin,
+            end = end
+        )
+    }
     override suspend fun getVisitByUid(uid: String): Visit? {
         return visitStorage.getVisitByUid(uid)
     }
-
     override fun getScheduler(): Flow<List<Visit>>? {
         return visitStorage.getScheduler()
     }
 
     override suspend fun getAllVisit(
         isDelete: Boolean,
-        sortEnum: VisitSortEnum
+        sortEnum: SortEnum
     ): Flow<List<Visit>>? {
        return visitStorage.getVisitAll(sortEnum = sortEnum)
     }
 
     override suspend fun getVisitByChild(
-        uidChild: String,
-        sortEnum: SortEnum
+        uidChild: String
     ): Flow<List<Visit>>? {
         TODO("Not yet implemented")
     }
@@ -41,15 +49,19 @@ class VisitRepositoryImpl @Inject constructor(val visitStorage: VisitRoomStorage
         uidChild: String,
         begin: Long,
         end: Long,
-        sortEnum: VisitSortEnum
+
     ): Flow<List<Visit>>? {
-        TODO("Not yet implemented")
+        return visitStorage.getVisitByChildPeriod(
+            uidChild = uidChild,
+            begin = begin,
+            end = end
+        )
     }
 
     override suspend fun getVisitByPeriod(
         begin: Long,
         end: Long,
-        sortEnum: VisitSortEnum
+        sortEnum: SortEnum
     ): Flow<List<Visit>>? {
      return  visitStorage.getVisitByPeriod(begin = begin, end = end, sortEnum = sortEnum)
     }

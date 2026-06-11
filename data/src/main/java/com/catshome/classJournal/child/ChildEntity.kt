@@ -41,7 +41,7 @@ fun ChildEntity.mapTominiChild(): MiniChild{
         fio = "${this.name} ${this.surname}",
         name = this.name,
         surname = this.surname,
-
+        saldo = this.saldo
     )
 }
 

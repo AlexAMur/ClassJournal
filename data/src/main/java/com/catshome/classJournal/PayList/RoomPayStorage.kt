@@ -1,6 +1,5 @@
 package com.catshome.classJournal.PayList
 
-import android.util.Log
 import com.catshome.classJournal.domain.communs.SortEnum
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -21,39 +20,26 @@ class RoomPayStorage @Inject constructor(private val payDAO: PayDAO) {
 
     suspend fun getAllPay(isDelete: Boolean, sortEnum: SortEnum): Flow<List<PayScreenEntity>>? {
         return payDAO.getFull(isDelete = isDelete,
-            sortDate = if(getSortString(sortEnum)== PayScreenEntity::date_pay.name)
-                PayScreenEntity::date_pay.name else "" ,
-            sortName = if(getSortString(sortEnum)== PayScreenEntity::Surname.name)
-                PayScreenEntity::Name.name else "" ,
-            sortSurname = if(getSortString(sortEnum)== PayScreenEntity::Surname.name)
+            sortDate = if(sortEnum.name == SortEnum.Date.name)
+                PayScreenEntity::date_pay.name else "",
+            sortSurname = if(sortEnum.name == SortEnum.FIO.name)
                 PayScreenEntity::Surname.name else ""
         )
     }
 
-    suspend fun getPayByChild(uid: String, sortEnum: SortEnum): Flow<List<PayScreenEntity>>? {
-        return payDAO.getPayByChildID(uid = uid,
-            sortDate = PayScreenEntity::date_pay.name,
-            sortName = "",
-            sortSurname = ""
-        ) //getSortString(sortEnum))
+    suspend fun getPayByChild(uid: String): Flow<List<PayScreenEntity>>? {
+        return payDAO.getPayByChildID(uid = uid)
     }
 
     suspend fun getPayByChildWithPeriod(
         uid: String,
         begin: Long,
-        end: Long,
-        sortEnum: SortEnum
+        end: Long
     ): Flow<List<PayScreenEntity>>? {
         return payDAO.getPayByChildIDWithPeriod(
             uid = uid,
             begin = begin,
-            end = end,
-            sortDate = if(getSortString(sortEnum)== PayScreenEntity::date_pay.name)
-                PayScreenEntity::date_pay.name else "" ,
-            sortName = if(getSortString(sortEnum)== PayScreenEntity::Surname.name)
-                PayScreenEntity::Name.name else "" ,
-            sortSurname = if(getSortString(sortEnum)== PayScreenEntity::Surname.name)
-                PayScreenEntity::Surname.name else ""
+            end = end
         )
     }
 
@@ -61,11 +47,9 @@ class RoomPayStorage @Inject constructor(private val payDAO: PayDAO) {
         return payDAO.getPayByPeriod(
             begin = begin,
             end = end,
-            sortDate = if(getSortString(sortEnum)== PayScreenEntity::date_pay.name)
+            sortDate = if(sortEnum.name == SortEnum.Date.name)
                 PayScreenEntity::date_pay.name else "" ,
-            sortName = if(getSortString(sortEnum)== PayScreenEntity::Surname.name)
-                PayScreenEntity::Name.name else "" ,
-            sortSurname = if(getSortString(sortEnum)== PayScreenEntity::Surname.name)
+            sortSurname = if(sortEnum.name == SortEnum.FIO.name )
                 PayScreenEntity::Surname.name else ""
         )
     }

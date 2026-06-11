@@ -105,7 +105,7 @@ interface SchedulerDAO{
     fun getGroupsByNameToScheduler(name: String, day: Int): List<GroupEntity>
     //Поиск по имени
     @Query("Select uid, (child_name||' '||child_surname) as fio , child_name as name, " +
-            "child_surname as surname  from child where fio LIKE :name and  isDelete = 0 and " +
+            "child_surname as surname, saldo  from child where fio LIKE :name and  isDelete = 0 and " +
             "uid not in (select uidChild from scheduler where dayOfWeek = :day" +
             " and startLesson = :lesson  and  uidChild !='null')")
     fun getChildByNameToScheduler(name: String, day: Int, lesson: String): List<MiniChild>

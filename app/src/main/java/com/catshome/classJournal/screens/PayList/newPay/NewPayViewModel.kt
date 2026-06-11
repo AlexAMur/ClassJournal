@@ -102,7 +102,11 @@ class NewPayViewModel @Inject constructor(
     override fun obtainEvent(viewEvent: NewPayEvent) {
         when (viewEvent) {
             NewPayEvent.ClearClicked->{
-                viewState = viewState.copy(searchText = TextFieldValue(""),listChild = null)
+                viewState = viewState.copy(
+                    searchText = TextFieldValue(""),
+                    listChild = null,
+                    selectChild = null
+                )
             }
             is NewPayEvent.SetState -> {
                 viewState = viewState.copy(

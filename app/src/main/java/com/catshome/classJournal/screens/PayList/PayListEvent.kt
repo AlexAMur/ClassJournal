@@ -1,8 +1,7 @@
 package com.catshome.classJournal.screens.PayList
 
-import com.catshome.classJournal.domain.Pay.Pay
 import com.catshome.classJournal.navigate.DetailsPayResult
-import com.catshome.classJournal.navigate.OptionFilterPaysList
+import com.catshome.classJournal.navigate.OptionFilterList
 
 sealed class PayListEvent {
     data object  resetSnackBar: PayListEvent()
@@ -22,5 +21,5 @@ sealed class PayListEvent {
     data class Search(val  searchText: String): PayListEvent()
     data class DeleteClicked(val pay: PayScreen) : PayListEvent()
     class UndoDeleteClicked(val pay: PayScreen?) : PayListEvent()
-    class SetOption(val option: OptionFilterPaysList) : PayListEvent()
+    class SetOption(val option: OptionFilterList) : PayListEvent()
 }

@@ -8,8 +8,9 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
+import com.catshome.classJournal.communs.FilterScreen.ScreenEnum
 import com.catshome.classJournal.navigate.DetailsPayResult
-import com.catshome.classJournal.navigate.OptionFilterPaysList
+import com.catshome.classJournal.navigate.OptionFilterList
 import com.catshome.classJournal.screens.ItemScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PayListScreen(
-    optionFilter: OptionFilterPaysList? = null,
+    optionFilter: OptionFilterList? = null,
     detailsPayResult: DetailsPayResult? = null,
     navController: NavController,
     viewModel: PayListViewModel = viewModel()
@@ -87,6 +88,7 @@ fun PayListScreen(
                     sortEnum = viewState.sortValue,
                     beginDate = viewState.beginDate,//"01.${LocalDateTime.now().month.value}.${LocalDateTime.now().year}",
                     endDate = viewState.endDate,//LocalDate.now().plusDays(1).atStartOfDay().minusSeconds(1)
+                    screen = ScreenEnum.PayListScreen
                 )
             )
             viewModel.clearAction()

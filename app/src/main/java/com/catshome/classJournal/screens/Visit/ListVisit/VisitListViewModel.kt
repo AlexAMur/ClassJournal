@@ -3,12 +3,16 @@ package com.catshome.classJournal.screens.Visit.ListVisit
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.context
+import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitInteract
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
+import com.catshome.classJournal.domain.communs.SortEnum
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
 import com.catshome.classJournal.resource.R
+import com.catshome.classJournal.screens.PayList.PayListAction
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -34,6 +38,7 @@ import kotlin.time.Duration
 class VisitListViewModel @Inject constructor(private val visitInteractor: VisitInteract) :
     BaseViewModel<VisitListState, VisitListAction, VisitListEvent>(
         installState = VisitListState(
+            selectedOption = 1,
             beginDate = Clock.System.now().minus(
                 value = 1,
                 unit = DateTimeUnit.MONTH,
@@ -49,8 +54,33 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
 
 
     override fun obtainEvent(viewEvent: VisitListEvent) {
-
         when (viewEvent) {
+            is VisitListEvent.SetFilter -> {
+                    viewState.beginDate = viewEvent.filter.beginDate?.toLocalDateTimeRu()
+                    viewState.endDate = viewEvent.filter.endDate?.toLocalDateTimeRu()
+                viewState = viewState.copy(
+                    selectedOption = viewEvent.filter.selectOption,
+                    sortValue = viewEvent.filter.sort ?: SortEnum.Date,
+                    selectChild = if (viewEvent.filter.childId.isNullOrEmpty()){
+                        Log.e("CLJR", "Set filter Child0 ${viewEvent.filter.childFIO}")
+                        null
+                    }
+                    else {
+                        Log.e("CLJR", "Set filter Child ${viewEvent.filter.childFIO}")
+                        MiniChild(
+                            uid = viewEvent.filter.childId,
+                            fio = viewEvent.filter.childFIO.toString()
+                        )
+                    }
+                )
+                obtainEvent(VisitListEvent.Reload)
+                Log.e("CLJR", "Set filter after ${viewState.beginDate}")
+            }
+
+            is VisitListEvent.onCollapse -> {
+                viewAction = VisitListAction.OpenFilter
+            }
+
             is VisitListEvent.EditVisit -> {
                 CoroutineScope(Dispatchers.Main).launch {
                     val job = CoroutineScope(Dispatchers.IO).async {
@@ -86,7 +116,6 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                         viewState.deleteVisit?.let { deleteVisit ->
                             deleteVisitFromDB(deleteVisit)
                         }
-
                     },
                     onAction = {
                         viewState = viewState.copy(
@@ -101,8 +130,9 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
             VisitListEvent.Reload -> {
                 viewModelScope.launch {
                     visitInteractor.getVisitByPeriod(
-                        begin = viewState.beginDate.toLong(),
-                        end = viewState.endDate.toLong()
+                        uidChild = viewState.selectChild?.uid,
+                        begin = viewState.beginDate?.toLong()?:Long.MIN_VALUE,
+                        end = viewState.endDate?.toLong()?: Long.MAX_VALUE,
                     )?.collect { listVisit ->
                         viewState = viewState.copy(
                             listVisit =

@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import kotlinx.datetime.DateTimeArithmeticException
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
@@ -25,7 +26,22 @@ const val DATETIME_FORMAT_RU = "dd.MM.yyyy HH:mm"
 const val TIME_FORMAT = "HH:mm"
 
 enum class FormatDate { DateTime, Date, Time,Month,Day }
-
+fun LocalDate.toStringRu(): String{
+//    try {
+        val formatter = LocalDate.Format {
+            this@Format.day(padding = Padding.ZERO)
+            char('.')
+            monthNumber(padding = Padding.ZERO)
+            char('.')
+            year()
+        }
+        return this.format(formatter)
+    //    return LocalDateTime.parse(stringData, formatter)
+//    } catch (e: RuntimeException) {
+//        Log.e("CLJR", "Ошибка форматирование ${e.message}")
+//       return null
+//    }
+}
 @RequiresApi(Build.VERSION_CODES.O)
 fun getNow(): LocalDateTime {
     return Clock.System.now().toEpochMilliseconds().toLocalDateTimeRu()!!
