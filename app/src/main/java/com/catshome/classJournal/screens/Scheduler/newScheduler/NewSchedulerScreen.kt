@@ -43,13 +43,15 @@ import com.catshome.classJournal.communs.SearchField
 import com.catshome.classJournal.navigate.NewLesson
 import com.catshome.classJournal.navigate.SaveLesson
 import com.catshome.classJournal.resource.R
+import com.catshome.classJournal.screens.Visit.ListVisit.VisitListEvent
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NewSchedulerScreen(
     navController: NavController,
     viewModel: NewSchedulerViewModel = viewModel(),
-    newLesson: NewLesson? = null
+    newLesson: NewLesson? = null,
+
 ) {
 
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
@@ -58,6 +60,8 @@ fun NewSchedulerScreen(
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
     val stateList = rememberLazyListState(0)
+
+
     newLesson?.let {
         LaunchedEffect(
             viewState.dayOfWeek != it.dayOfWeek ||
@@ -71,9 +75,15 @@ fun NewSchedulerScreen(
                 viewState.dayOfWeek = it.dayOfWeek
                 viewState.startTime = it.startTime
                 viewState.duration = it.duration
-                viewModel.obtainEvent(NewSchedulerEvent.ReloadClient)
+
             }
         }
+
+
+    }
+    LaunchedEffect(Unit) {
+        if(viewState.reload)
+        viewModel.obtainEvent(NewSchedulerEvent.ReloadClient)
     }
     //LaunchedEffect(viewState.isShowDialog) {
         if(viewState.isShowDialog && viewState.onDisimiss!= null){

@@ -13,5 +13,6 @@ data class NewSchedulerState(
     val isShowDialog: Boolean = false,
     val dialogMessage: String? = null,
     val itemsList: List<ClientScheduler>? = null,
-    var onDisimiss:(()->Unit)?= null
+    var onDisimiss:(()->Unit)?= null,
+    var reload : Boolean = true
 )
