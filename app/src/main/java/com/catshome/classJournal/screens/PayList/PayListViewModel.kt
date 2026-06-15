@@ -90,8 +90,8 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 with(viewEvent.option) {
                     viewState = viewState.copy(
                         selectedOption = selectOption,
-                        beginDate = beginDate.toString(),
-                        endDate = endDate.toString(),
+                        beginDate = beginDate?:"",
+                        endDate = endDate?:"",
                         sortValue = sort,
                         selectChild = MiniChild(uid = childId ?: "", fio = childFIO ?: "")
                     )
@@ -166,7 +166,8 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             }
 
             is PayListEvent.ReloadScreen -> {
-                getStatisticPay()
+                Log.e("CLJR", "Reload")
+               // getStatisticPay()
                 loadPayList()
             }
 

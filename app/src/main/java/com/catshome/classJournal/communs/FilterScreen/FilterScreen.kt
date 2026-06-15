@@ -123,7 +123,7 @@ fun FilterScreen(navController: NavController, setting: FilterSetting) {
                     .onGloballyPositioned { coordinate ->
                         sizeList =
                             (screenHigh - (bottomPadding.value + coordinate.positionOnScreen().y +
-                                    bottomGroup + coordinate.size.height) / localDensity.density).toFloat()
+                                    bottomGroup + coordinate.size.height) / localDensity.density)
                     },
                 onClickCancel = {
                     viewModel.obtainEvent(FilterEvent.ClearSearch)

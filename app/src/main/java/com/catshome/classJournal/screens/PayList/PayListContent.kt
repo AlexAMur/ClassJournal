@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
@@ -27,16 +28,12 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -52,9 +49,6 @@ import com.catshome.classJournal.communs.SwipeableItemWithActions
 import com.catshome.classJournal.communs.fabMenu
 import com.catshome.classJournal.context
 import com.catshome.classJournal.resource.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
 fun PayListContent(
@@ -64,7 +58,6 @@ fun PayListContent(
     val sbHostState = remember { SnackbarHostState() }
     val paddingValues = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
-
     Surface(
         Modifier
             .fillMaxWidth(),
@@ -80,23 +73,23 @@ fun PayListContent(
                 LaunchedEffect(viewState.messageSnackBar) {
                     if (!viewState.messageSnackBar.isNullOrEmpty() && viewState.isCanShowSnackBar) {
 //                        CoroutineScope(Dispatchers.IO).launch {
-                            SnackBarAction(
-                                message = viewState.messageSnackBar.toString(),
-                                actionLabel = viewState.snackBarAction,
-                                snackBarState = sbHostState,
-                                withDismissAction = viewState.withDismissAction,
-                                onDismissed = {
-                                    viewState.onDismissed?.let { it() }
-                                    viewState.isCanShowSnackBar = false
-                                    viewState.messageSnackBar = null
-                                },
-                                onActionPerformed = {
-                                    viewState.onAction?.let { it() }
-                                    viewState.isCanShowSnackBar = false
-                                    viewState.messageSnackBar = null
+                        SnackBarAction(
+                            message = viewState.messageSnackBar.toString(),
+                            actionLabel = viewState.snackBarAction,
+                            snackBarState = sbHostState,
+                            withDismissAction = viewState.withDismissAction,
+                            onDismissed = {
+                                viewState.onDismissed?.let { it() }
+                                viewState.isCanShowSnackBar = false
+                                viewState.messageSnackBar = null
+                            },
+                            onActionPerformed = {
+                                viewState.onAction?.let { it() }
+                                viewState.isCanShowSnackBar = false
+                                viewState.messageSnackBar = null
 
-                                }
-                            )
+                            }
+                        )
                     }
                 }
             },
@@ -127,11 +120,12 @@ fun PayListContent(
                 }
             }
         ) { padValues ->
-
+            val columVertStateScroll = rememberScrollState()
             Column(
                 Modifier
                     .background(ClassJournalTheme.colors.primaryBackground)
             ) {
+
                 Card(
                     Modifier
                         .background(ClassJournalTheme.colors.primaryBackground)
@@ -163,13 +157,12 @@ fun PayListContent(
                         Row(
                             Modifier
                                 .background(ClassJournalTheme.colors.primaryBackground)
-                                .fillMaxWidth()
-                                ,
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            viewState.beginDate?.let {
-                                if (it.isNotEmpty()) {
+
+                                if (viewState.beginDate.isNotEmpty()) {
                                     Text(
                                         modifier = Modifier
                                             .padding(start = 16.dp),
@@ -177,17 +170,14 @@ fun PayListContent(
                                         text = "c ${viewState.beginDate}"
                                     )
                                 }
-                            }
-                            viewState.endDate.let {
                                 Text(
                                     modifier = Modifier
                                         .padding(start = 8.dp)
                                         .weight(1f),
                                     color = ClassJournalTheme.colors.tintColor,
-                                    text = if (viewState.endDate.isNotEmpty()) " по ${viewState.endDate}" else
+                                    text = if (viewState.selectedOption != 4) " по ${viewState.endDate}" else
                                         "${stringResource(R.string.filter_all)} время"
                                 )
-                            }
                             Icon(
                                 modifier = Modifier,
                                 painter = painterResource(R.drawable.arrow_drop_down_48),
@@ -199,29 +189,40 @@ fun PayListContent(
                 }
                 HorizontalDivider(color = ClassJournalTheme.colors.disableColor)
                 val state = rememberPullToRefreshState()
-                PullToRefreshBox(
-                    isRefreshing = viewModel.isRefreshing,
-                    state = state,
-                    contentAlignment = Alignment.TopCenter,
-                    onRefresh = { viewModel.getStatisticPay() },
-                    indicator = {
-                        Indicator(
-                            containerColor = ClassJournalTheme.colors.primaryBackground,
-                            isRefreshing = viewModel.isRefreshing,
-                            color = ClassJournalTheme.colors.tintColor,
-                            state = state,
+                Column(
+                    Modifier
+                        .background(ClassJournalTheme.colors.primaryBackground)
+//                        .verticalScroll(columVertStateScroll)
+                ) {
+                    PullToRefreshBox(
+                        isRefreshing = viewModel.isRefreshing,
+                        state = state,
+                        contentAlignment = Alignment.TopCenter,
+                        onRefresh = {
+                            if (!viewModel.isRefreshing)
+                                viewModel.getStatisticPay()
+                        },
+                        indicator = {
+                            Indicator(
+                                containerColor = ClassJournalTheme.colors.primaryBackground,
+                                isRefreshing = viewModel.isRefreshing,
+                                color = ClassJournalTheme.colors.tintColor,
+                                state = state,
+                            )
+                        }
+                    ) {
+
+                        StatisticPayCard(
+                            incomePerMonth = viewState.incomePerMonth,
+                            lastMonth = viewState.incomePerLastMonth,
+                            totalYear = viewState.incomePerYear,
                         )
                     }
-                ) {
-                    StatisticPayCard(
-                        incomePerMonth = viewState.incomePerMonth,
-                        lastMonth = viewState.incomePerLastMonth,
-                        totalYear = viewState.incomePerYear,
-                    )
                 }
                 HorizontalDivider(
                     modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-                    color = ClassJournalTheme.colors.disableColor)
+                    color = ClassJournalTheme.colors.disableColor
+                )
                 if (viewState.items.isEmpty())
                     payScreenNoItems(
                         bottomPadding = padValues.calculateBottomPadding()
@@ -260,11 +261,12 @@ fun PayListContent(
                                             //действие для удаления
 //                                            ActionIcon(
 //                                                onClick = {
-                                                    viewState.snackBarAction = context.getString(R.string.bottom_yes)
-                                                    viewState.withDismissAction = false
-                                                    viewModel.obtainEvent(
-                                                        viewEvent = PayListEvent.DeleteClicked(item)
-                                                    )
+                                            viewState.snackBarAction =
+                                                context.getString(R.string.bottom_yes)
+                                            viewState.withDismissAction = false
+                                            viewModel.obtainEvent(
+                                                viewEvent = PayListEvent.DeleteClicked(item)
+                                            )
 //                                                },
 //                                                icon = Icons.Default.Delete,
 //                                                modifier = Modifier
@@ -292,7 +294,8 @@ fun PayListContent(
                                             //действие для удаления
                                             ActionIcon(
                                                 onClick = {
-                                                    viewState.snackBarAction = context.getString(R.string.bottom_yes)
+                                                    viewState.snackBarAction =
+                                                        context.getString(R.string.bottom_yes)
                                                     viewState.withDismissAction = false
 //                                                    viewModel.obtainEvent(
 //                                                        viewEvent = PayListEvent.DeleteClicked(item)

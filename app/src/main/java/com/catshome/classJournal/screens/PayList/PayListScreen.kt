@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.PayList
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -7,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
 import com.catshome.classJournal.communs.FilterScreen.ScreenEnum
 import com.catshome.classJournal.navigate.DetailsPayResult
@@ -26,6 +28,9 @@ fun PayListScreen(
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
+    val currentRoute = navController.currentBackStackEntryAsState()
+
+
 
     LaunchedEffect(Unit) {
         optionFilter?.let {
@@ -38,29 +43,24 @@ fun PayListScreen(
                     withDismissAction = false,
                     messageSnackBar = it.message,
                     onAction = {
-                        viewState.isCanShowSnackBar =false
+                        viewState.isCanShowSnackBar = false
                     },
-                    onDismissed = {viewState.isCanShowSnackBar =false}
+                    onDismissed = { viewState.isCanShowSnackBar = false }
                 )
             }
         }
-        viewModel.obtainEvent(PayListEvent.ReloadScreen)
-
-        CoroutineScope(Dispatchers.Default).launch {
-            viewModel.obtainEvent(PayListEvent.ShowFAB(false))
-            delay(100)
-            viewModel.obtainEvent(PayListEvent.ShowFAB(true))
+        Log.e("CLJR", "route $currentRoute")
+        if (currentRoute.value?.destination?.route == ScreenEnum.PayListScreen.name ||
+            currentRoute.value?.destination?.route?.contains("DetailsPayResult")== true) {
+            viewModel.obtainEvent(PayListEvent.ReloadScreen)
+            CoroutineScope(Dispatchers.Default).launch {
+                viewModel.obtainEvent(PayListEvent.ShowFAB(false))
+                delay(100)
+                viewModel.obtainEvent(PayListEvent.ShowFAB(true))
+            }
         }
     }
-    /*  detailsPayList?.let {
-          // if (detailsPayList.isShowSnackBar) {
-          viewModel.obtainEvent(
-              PayListEvent.ShowSnackBar(
-                  detailsPayList.isShowSnackBar,
-                  detailsPayList.Message
-              )
-          )
-      }*/
+
     DisposableEffect(Unit) {
         onDispose {
             viewModel.obtainEvent(PayListEvent.ShowFAB(false))
@@ -100,4 +100,5 @@ fun PayListScreen(
             viewModel.clearAction()
         }
     }
+
 }

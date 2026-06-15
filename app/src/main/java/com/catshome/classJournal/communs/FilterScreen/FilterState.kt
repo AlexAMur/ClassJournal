@@ -1,22 +1,19 @@
 package com.catshome.classJournal.communs.FilterScreen
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.text.input.TextFieldValue
-import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.communs.SortEnum
-import kotlinx.coroutines.sync.Mutex
+import com.catshome.classJournal.resource.R
 
 data class FilterState(
     val optionList: List<String> = listOf(
         context.getString(R.string.filter_day),
-                        context.getString(R.string.filter_month),
-                        context.getString(R.string.filter_year),
-                        context.getString(R.string.filter_period),
-                        context.getString(R.string.filter_all),
-                        ),
+        context.getString(R.string.filter_month),
+        context.getString(R.string.filter_year),
+        context.getString(R.string.filter_period),
+        context.getString(R.string.filter_all),
+    ),
     val sortList: List<String> = listOf("Дате",  "Фамилии"),
     var sortValue: SortEnum? = null,
     val searchList: List<MiniChild>? = null,

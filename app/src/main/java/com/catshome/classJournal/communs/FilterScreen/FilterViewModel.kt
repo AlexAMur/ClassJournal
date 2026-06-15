@@ -3,6 +3,7 @@ package com.catshome.classJournal.communs.FilterScreen
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
+import androidx.wear.compose.material.TimeText
 import com.catshome.classJournal.communs.TextField
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
@@ -44,13 +45,13 @@ class FilterViewModel @Inject constructor(
                 var status = viewState.selectChild?.fio ?: ""
                 if (status.isNotEmpty())
                     status = "$status , "
-                if (!viewState.beginDate.isNullOrEmpty()){// && !viewState.endDate.isNullOrEmpty()) {
+                if (!viewState.beginDate.isNullOrEmpty()) {// && !viewState.endDate.isNullOrEmpty()) {
 
                     status =
                         "$status ${viewState.optionList[viewState.selectedOption]} c ${viewState.beginDate} по ${viewState.endDate}"
 
                 } else {
-                    status ="$status ${viewState.optionList[viewState.selectedOption]}"
+                    status = "$status ${viewState.optionList[viewState.selectedOption]}"
                 }
                 viewState = viewState.copy(
                     statusText = status
@@ -61,7 +62,8 @@ class FilterViewModel @Inject constructor(
                 viewState = viewState.copy(
                     selectChild = viewEvent.child,
                     searchList = null,
-                    searchText = TextFieldValue(text =viewEvent.child.fio,
+                    searchText = TextFieldValue(
+                        text = viewEvent.child.fio,
                         selection = TextRange(0, viewEvent.child.fio.length)
                     ),
                     isShowList = false
@@ -84,7 +86,7 @@ class FilterViewModel @Inject constructor(
 
             is FilterEvent.Search -> {
                 viewState = viewState.copy(
-                    searchText =  viewEvent.value,
+                    searchText = viewEvent.value,
                 )
                 if (viewEvent.value.text.isNotEmpty()) {
                     viewModelScope.launch {
@@ -101,12 +103,11 @@ class FilterViewModel @Inject constructor(
                                         isShowList = true
                                     )
                                 return@collect
-                            }
-                            else {
+                            } else {
                                 viewState = viewState.copy(
-                                        searchList = it,
-                                        isShowList = viewState.selectChild == null
-                                    )
+                                    searchList = it,
+                                    isShowList = viewState.selectChild == null
+                                )
 
                             }
                         }
@@ -144,18 +145,20 @@ class FilterViewModel @Inject constructor(
 
 
                     viewState = viewState.copy(
-                        selectChild = if (childId!= null){
-                            MiniChild(uid= childId, fio = childFIO?:"")
-                        }
-                            else
-                                null,
-                        searchText = TextFieldValue(childFIO?:"", selection = TextRange(0,childFIO?.length?:0)),
+                        selectChild = if (childId != null) {
+                            MiniChild(uid = childId, fio = childFIO ?: "")
+                        } else
+                            null,
+                        searchText = TextFieldValue(
+                            childFIO ?: "",
+                            selection = TextRange(0, childFIO?.length ?: 0)
+                        ),
                         selectedOption = optionsIndex,
                         isShowList = false,
                         sortValue = sortEnum,
-                        textSorting = viewState.sortList[sortEnum?.ordinal?:0],
-                        beginDate = beginDate?:"",
-                        endDate = endDate?:"",
+                        textSorting = viewState.sortList[sortEnum?.ordinal ?: 0],
+                        beginDate = beginDate ?: "",
+                        endDate = endDate ?: "",
                         screen = screen
                     )
                 }
@@ -164,14 +167,16 @@ class FilterViewModel @Inject constructor(
 
             is FilterEvent.SelectSort -> {
                 viewState = viewState.copy(textSorting = viewEvent.value)
-                when(viewEvent.value){
-                 viewState.sortList[0]->{
-                     viewState.sortValue = SortEnum.Date
-                 }
-                 viewState.sortList[1]->{
-                     viewState.sortValue = SortEnum.FIO
-                 }
-                 else -> {}
+                when (viewEvent.value) {
+                    viewState.sortList[0] -> {
+                        viewState.sortValue = SortEnum.Date
+                    }
+
+                    viewState.sortList[1] -> {
+                        viewState.sortValue = SortEnum.FIO
+                    }
+
+                    else -> {}
                 }
             }
         }
@@ -181,9 +186,12 @@ class FilterViewModel @Inject constructor(
         when (viewState.selectedOption) {
             0 -> { //filter one day
                 viewState = viewState.copy(
-                    beginDate = "${Clock.System.now().toLocalDateTime(
-                        timeZone = TimeZone.currentSystemDefault())
-                        .toDateTimeRuString(formatDate = FormatDate.Date).toString()} 00:00",
+                    beginDate = "${
+                        Clock.System.now().toLocalDateTime(
+                            timeZone = TimeZone.currentSystemDefault()
+                        )
+                            .toDateTimeRuString(formatDate = FormatDate.Date).toString()
+                    } 00:00",
                     endDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
                         .toDateTimeRuString().toString()
                 )
@@ -191,39 +199,67 @@ class FilterViewModel @Inject constructor(
 
             1 -> {  // 30 day
                 viewState = viewState.copy(
-                    beginDate = "${Clock.System.now().toLocalDateTime(
-                            TimeZone.currentSystemDefault()).date.minus(
+                    beginDate = "${
+                        Clock.System.now().toLocalDateTime(
+                            TimeZone.currentSystemDefault()
+                        ).date.minus(
                             value = 1,
-                        DateTimeUnit.MONTH).toStringRu()} 00:00"
-                   ,
-                    endDate = "${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-                                .toDateTimeRuString(formatDate = FormatDate.Date)} 23:59"
+                            DateTimeUnit.MONTH
+                        ).toStringRu()
+                    } 00:00",
+                    endDate = "${
+                        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                            .toDateTimeRuString(formatDate = FormatDate.Date)
+                    } 23:59"
                 )
             }
 
             2 -> { // filter s 01.01 to current day
                 viewState = viewState.copy(
-                    beginDate = "01.01.${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year} 00:00",
-                    endDate = "${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).
-                        date.atStartOfDayIn(TimeZone.currentSystemDefault()).toDateTimeRuString(formatDate = FormatDate.Date)} 23:59"
+                    beginDate = "01.01.${
+                        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year
+                    } 00:00",
+                    endDate = "${
+                        Clock.System.now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date.atStartOfDayIn(
+                            TimeZone.currentSystemDefault()
+                        ).toDateTimeRuString(formatDate = FormatDate.Date)
+                    } 23:59"
                 )
             }
 
             3 -> {//тут выбор периода стоит
-                if(viewState.beginDate.isNullOrEmpty() || viewState.endDate.isNullOrEmpty())
-                    viewState = viewState.copy(
-                        beginDate = "01.${if(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).month.ordinal.toString().length==1)
-                            "0${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).month.ordinal}"
+//                if(viewState.beginDate.isNullOrEmpty() || viewState.endDate.isNullOrEmpty())
+
+                viewState = viewState.copy(
+                    beginDate = "01.${
+                        if (Clock.System.now()
+                                .toLocalDateTime(TimeZone.currentSystemDefault()).month.ordinal < 9
+                        )
+                            "0${
+                                Clock.System.now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()).month.ordinal + 1
+                            }"
                         else
-                            "${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).month.ordinal}"
-                        }.${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year} 23:59",
-                        endDate ="${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).toDateTimeRuString(formatDate = FormatDate.Date)} 23:59")
-                 }
-            4 -> {
-//                viewState = viewState.copy(
-                    viewState.beginDate = null
-                    viewState.endDate = null
+                            "${
+                                Clock.System.now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()).month.ordinal + 1
+                            }"
+                    }.${
+                        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year
+                    } 00:00",
+                    endDate = "${
+                        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                            .toDateTimeRuString(formatDate = FormatDate.Date)
+                    } 23:59"
+                )
             }
+
+            4 -> {
+                viewState.beginDate = null
+                viewState.endDate = null
+            }
+
             else -> {}
         }
     }
