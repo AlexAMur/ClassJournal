@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.catshome.classJournal.communs.mainMenu.MainModalNavDrawer
 import com.catshome.classJournal.screens.ItemBottomBar
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.PayListScreen
@@ -188,9 +189,11 @@ class MainActivity : ComponentActivity() {
                                 }
                             }) { innerPadding ->
                             currentSettings.innerPadding = innerPadding
-                            classJournalApp(
-                                this, navController, currentSettings
-                            )
+                            MainModalNavDrawer(innerPadding) {
+                                classJournalApp(
+                                    this, navController, currentSettings
+                                )
+                            }
                         }
                     }
                 }

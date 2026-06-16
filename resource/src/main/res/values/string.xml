@@ -16,7 +16,12 @@
     <string name="payment_date">Дата платежа:</string>
     <string name="visit_date">Дата посещения:</string>
 
+    <string name="imenu_backup">Выгрузить базу</string>
+    <string name="imenu_restore">Загрузить базу</string>
+
+
     <string name="delete_Title">Внимание</string>
+
     <string name="delete_message">Хотите удалить?</string>
     <string name="bottom_delete">Delete</string>
     <string name="bottom_cancel">Cancel</string>
