@@ -20,7 +20,9 @@ import com.catshome.classJournal.resource.R
 @Composable
 fun drawerContent(paidding: PaddingValues,
                   colorsCard: CardColors,
-                  onClick: () -> Unit) {
+                  onClickBackup: () -> Unit,
+                  onClickRestore: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxSize(0.9f)
             . padding(paidding),
@@ -38,7 +40,7 @@ fun drawerContent(paidding: PaddingValues,
                 tint = ClassJournalTheme.colors.tintColor,
                 ) },
             badge = {  }, // Placeholder
-            onClick = onClick
+            onClick = onClickBackup
         )
 
         NavigationDrawerItem(
@@ -53,7 +55,7 @@ fun drawerContent(paidding: PaddingValues,
                 tint = ClassJournalTheme.colors.errorColor,
             ) },
             badge = {  },
-            onClick = onClick
+            onClick = onClickRestore
         )
     }
 }

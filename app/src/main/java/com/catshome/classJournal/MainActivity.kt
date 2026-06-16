@@ -3,6 +3,7 @@ package com.catshome.classJournal
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,9 +22,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -35,7 +38,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.communs.mainMenu.MainModalNavDrawer
+import com.catshome.classJournal.di.AppModule
+import com.catshome.classJournal.di.AppModule_ProvideAppDataBaseFactory.provideAppDataBase
 import com.catshome.classJournal.screens.ItemBottomBar
 import com.catshome.classJournal.screens.ItemScreen
 import com.catshome.classJournal.screens.PayList.PayListScreen
@@ -43,6 +49,7 @@ import com.catshome.classJournal.theme.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.Visit.ListVisit.visitListScreen
+import com.catshome.classJournal.screens.child.ChildListEvent
 
 lateinit var context: Context
 

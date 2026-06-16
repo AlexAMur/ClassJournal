@@ -16,12 +16,14 @@ fun DialogScreen(
     onDismiss: () -> Unit,
     confimText: String? = null,
     dissmissText: String  = "Отмена",
-    textContentColor: Color = ClassJournalTheme.colors.primaryText
+    textContentColor: Color = ClassJournalTheme.colors.primaryText,
+    containerColor: Color = ClassJournalTheme.colors.primaryBackground
 
 ) {
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = containerColor,
         title = { Text(title) },
         text = { Text(text) },
         textContentColor = textContentColor,
