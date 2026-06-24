@@ -105,9 +105,9 @@ fun NewSchedulerScreen(
         Card(
             modifier = Modifier
                 .fillMaxSize(),
-            //        .background(ClassJournalTheme.colors.tintColor),
-            //      shape = ClassJournalTheme.shapes.cornersStyle,
-            colors = CardDefaults.cardColors(ClassJournalTheme.colors.primaryBackground),
+            colors = CardDefaults.cardColors(
+                containerColor = ClassJournalTheme.colors.primaryBackground
+            ),
         ) {
             Column(
                 Modifier

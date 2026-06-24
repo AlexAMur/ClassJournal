@@ -18,7 +18,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
 import com.catshome.classJournal.ClassJournalTheme
+import com.catshome.classJournal.backup.FilePickerScreen
 import com.catshome.classJournal.backup.backUp
 import com.catshome.classJournal.communs.DialogScreen
 import com.catshome.classJournal.communs.SnackBarAction
@@ -26,50 +28,70 @@ import com.catshome.classJournal.context
 import com.catshome.classJournal.di.AppModule
 import com.catshome.classJournal.di.AppModule_ProvideAppDataBaseFactory.provideAppDataBase
 import com.catshome.classJournal.resource.R
+import com.catshome.classJournal.screens.ItemScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 
 @Composable
 fun MainModalNavDrawer(
     padding: PaddingValues,
+    navController: NavController,
     content: @Composable () -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val sbHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var showSnackBar by remember { mutableStateOf(false) }
-
-
-        if (showSnackBar) {
-            DialogScreen(
-                "Tet    ",
-                text = " Save",
-                onConfirm = {
-                    showSnackBar= false
-                },
-                onDismiss = {},
-                confimText = "Ok",
-                dissmissText = "",
-              //  textContentColor = TODO()
-            )
-        }
-//            drawerState.close()
-//            Log.e("CLJR", "show Snake ${showSnackBar}")
-//            SnackBarAction(
-//                message = context.getString(R.string.save_successful),
-//                actionLabel = context.getString(R.string.ok),
-//                snackBarState = sbHostState,
-//                withDismissAction = false,
-//                onDismissed = {
-//                },
-//                onActionPerformed = {
-//                    Log.e("CLJR", "onAction")
-//                    showSnackBar = false
-//                }
-//            )
-//        }
+    var showDialog by remember { mutableStateOf(false) }
+    val backupDir =
+        File(context.getExternalFilesDir(null), "ClassJournalBackup") // Путь к бэкапу
+    var showPickerFile by remember { mutableStateOf(false) }
+    if (showPickerFile) {
+        navController.navigate(ItemScreen.FilePickScreen.name)
+    }
+//    LaunchedEffect(showSnackBar==true) {
+//        if (showSnackBar)
+//        SnackBarAction(
+//            message = "Sss",
+//            actionLabel = "",
+//            snackBarState = sbHostState,
+//            withDismissAction = false,
+//            onDismissed = {
+//                showSnackBar = false
 //
+//            },
+//            onActionPerformed = {}
+//        )
+//    }
+
+    if (showDialog) {
+
+        DialogScreen(
+            title = context.getString(R.string.backup_db_title),
+            text = "${context.getString(R.string.backup_db_message)} ${backupDir}",
+            onConfirm = {
+                showSnackBar = backUp(
+                    dataBase = provideAppDataBase(AppModule(), context),
+                    context = context,
+                    backupDir = backupDir
+                )
+                CoroutineScope(scope.coroutineContext).launch {
+                    drawerState.close()
+                }
+                showDialog = false
+            },
+            onDismiss = {
+                showDialog = false
+                CoroutineScope(scope.coroutineContext).launch {
+                    drawerState.close()
+                }
+            },
+            confimText = context.getString(R.string.save_button),
+            dissmissText = context.getString(R.string.bottom_cancel),
+           )
+    }
     ModalNavigationDrawer(
         drawerContent = {
             drawerContent(
@@ -81,17 +103,15 @@ fun MainModalNavDrawer(
                     disabledContentColor = ClassJournalTheme.colors.primaryText
                 ),
                 onClickBackup = {
-                     CoroutineScope(scope.coroutineContext).launch {
+
+                    showDialog = true
+                },
+                onClickRestore = {
+                    CoroutineScope(scope.coroutineContext).launch {
                         drawerState.close()
                     }
-
-                    showSnackBar = backUp(
-                            dataBase = provideAppDataBase(AppModule(), context),
-                            context = context
-                        )
-
-                },
-                onClickRestore = {}
+                    showPickerFile = true
+                }
             )
         },
         modifier = Modifier,

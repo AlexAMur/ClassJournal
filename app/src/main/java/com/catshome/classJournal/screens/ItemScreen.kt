@@ -27,5 +27,6 @@ enum class ItemScreen {
     NewGroupScreen,
     FilterScreen,
     SchedulerScreen,
+    FilePickScreen,
     NewSchedulerScreen
 }

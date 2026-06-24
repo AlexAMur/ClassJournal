@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="restore_db_snackbar">Восстановление завершено! Приложение перезагружается!</string>
+
+    <string name="backup_db_title">Создать резервную копию</string>
+    <string name="backup_db_message">Резервная копия будет сохранена в </string>
+
+    <string name="restore_db_titele">Восстановление из резервной копии!</string>
+    <string name="restore_db_message">При восстановление из резервной копии текущие данные будут заменены без возможности восстановления и прграмма будет перезагружена.\r\n Вы уверены что хотите продолжить!</string>
+
     <string name="item_bottom_pay">Оплата</string>
     <string name="item_bottom_visit">Занятие</string>
     <string name="item_bottom_client">Клиенты</string>
@@ -23,8 +32,8 @@
     <string name="delete_Title">Внимание</string>
 
     <string name="delete_message">Хотите удалить?</string>
-    <string name="bottom_delete">Delete</string>
-    <string name="bottom_cancel">Cancel</string>
+    <string name="bottom_delete">Удалить</string>
+    <string name="bottom_cancel">Отмена</string>
     <string name="bottom_yes">Да</string>
     <string name="bottom_no">Нет</string>
 

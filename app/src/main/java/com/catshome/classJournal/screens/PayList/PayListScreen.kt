@@ -1,6 +1,5 @@
 package com.catshome.classJournal.screens.PayList
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -8,7 +7,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
 import com.catshome.classJournal.communs.FilterScreen.ScreenEnum
 import com.catshome.classJournal.navigate.DetailsPayResult
@@ -28,10 +26,6 @@ fun PayListScreen(
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
-    val currentRoute = navController.currentBackStackEntryAsState()
-
-
-
     LaunchedEffect(Unit) {
         optionFilter?.let {
             viewModel.obtainEvent(PayListEvent.SetOption(optionFilter))
@@ -49,18 +43,13 @@ fun PayListScreen(
                 )
             }
         }
-        Log.e("CLJR", "route $currentRoute")
-        if (currentRoute.value?.destination?.route == ScreenEnum.PayListScreen.name ||
-            currentRoute.value?.destination?.route?.contains("DetailsPayResult")== true) {
-            viewModel.obtainEvent(PayListEvent.ReloadScreen)
-            CoroutineScope(Dispatchers.Default).launch {
-                viewModel.obtainEvent(PayListEvent.ShowFAB(false))
-                delay(100)
-                viewModel.obtainEvent(PayListEvent.ShowFAB(true))
-            }
+        viewModel.obtainEvent(PayListEvent.ReloadScreen)
+        CoroutineScope(Dispatchers.Default).launch {
+            viewModel.obtainEvent(PayListEvent.ShowFAB(false))
+            delay(100)
+            viewModel.obtainEvent(PayListEvent.ShowFAB(true))
         }
     }
-
     DisposableEffect(Unit) {
         onDispose {
             viewModel.obtainEvent(PayListEvent.ShowFAB(false))
@@ -71,14 +60,12 @@ fun PayListScreen(
         PayListAction.CloseScreen -> {
             viewModel.clearAction()
         }
-
         PayListAction.NewPay -> {
             if (viewModel.viewActions().replayCache.last().toString() == "NewPay") {
                 navController.navigate(ItemScreen.NewPayScreen.name)
                 viewModel.clearAction()
             }
         }
-
         PayListAction.OpenFilter -> {
             navController.navigate(
                 FilterSetting(
@@ -93,12 +80,10 @@ fun PayListScreen(
             )
             viewModel.clearAction()
         }
-
         null -> {}
         is PayListAction.EditPay -> {
             navController.navigate((viewAction as PayListAction.EditPay).pay)
             viewModel.clearAction()
         }
     }
-
 }

@@ -196,7 +196,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }) { innerPadding ->
                             currentSettings.innerPadding = innerPadding
-                            MainModalNavDrawer(innerPadding) {
+                            MainModalNavDrawer(innerPadding, navController) {
                                 classJournalApp(
                                     this, navController, currentSettings
                                 )

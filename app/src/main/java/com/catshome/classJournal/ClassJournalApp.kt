@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.catshome.classJournal.backup.FilePickerScreen
 import com.catshome.classJournal.communs.FilterScreen.FilterScreen
 import com.catshome.classJournal.communs.FilterScreen.FilterSetting
 import com.catshome.classJournal.communs.FilterScreen.ScreenEnum
@@ -67,6 +68,10 @@ fun classJournalApp(
             //val viewModel =hiltViewModel<NewPayViewModel>()
             val viewModel: NewPayViewModel by activity.viewModels()
             newPayScreen(navController, viewModel)
+        }
+
+        composable(route = ItemScreen.FilePickScreen.name) {
+            FilePickerScreen(context)
         }
 
         composable<OptionFilterList> { backStackEntry ->
