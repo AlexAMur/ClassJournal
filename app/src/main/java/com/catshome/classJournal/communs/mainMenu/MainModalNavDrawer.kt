@@ -23,6 +23,7 @@ import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.backup.FilePickerScreen
 import com.catshome.classJournal.backup.backUp
 import com.catshome.classJournal.communs.DialogScreen
+import com.catshome.classJournal.communs.FilterScreen.ScreenEnum
 import com.catshome.classJournal.communs.SnackBarAction
 import com.catshome.classJournal.context
 import com.catshome.classJournal.di.AppModule
@@ -51,20 +52,6 @@ fun MainModalNavDrawer(
     if (showPickerFile) {
         navController.navigate(ItemScreen.FilePickScreen.name)
     }
-//    LaunchedEffect(showSnackBar==true) {
-//        if (showSnackBar)
-//        SnackBarAction(
-//            message = "Sss",
-//            actionLabel = "",
-//            snackBarState = sbHostState,
-//            withDismissAction = false,
-//            onDismissed = {
-//                showSnackBar = false
-//
-//            },
-//            onActionPerformed = {}
-//        )
-//    }
 
     if (showDialog) {
 
@@ -102,6 +89,12 @@ fun MainModalNavDrawer(
                     disabledContainerColor = ClassJournalTheme.colors.primaryBackground,
                     disabledContentColor = ClassJournalTheme.colors.primaryText
                 ),
+                onClickSettings = {
+                    CoroutineScope(scope.coroutineContext).launch {
+                        drawerState.close()
+                    }
+                    navController.navigate(ItemScreen.SettingScreen.name)
+                },
                 onClickBackup = {
 
                     showDialog = true

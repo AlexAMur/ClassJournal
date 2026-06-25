@@ -8,25 +8,16 @@ import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitInteract
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.SortEnum
-import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
 import com.catshome.classJournal.resource.R
-import com.catshome.classJournal.screens.PayList.PayListAction
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.minus
-import kotlinx.datetime.toLocalDateTime
-import java.time.LocalDateTime
 import javax.inject.Inject
-import kotlin.time.Clock
-import kotlin.time.Duration
 
 /*
  *Удаление записи VisitEvent VisitDelete сначала уделяем из списка viewState.itemList
@@ -36,21 +27,7 @@ import kotlin.time.Duration
 
 @HiltViewModel
 class VisitListViewModel @Inject constructor(private val visitInteractor: VisitInteract) :
-    BaseViewModel<VisitListState, VisitListAction, VisitListEvent>(
-        installState = VisitListState(
-            selectedOption = 1,
-            beginDate = Clock.System.now().minus(
-                value = 1,
-                unit = DateTimeUnit.MONTH,
-                timeZone = TimeZone.currentSystemDefault()
-            ).toLocalDateTime(
-                timeZone = TimeZone.currentSystemDefault()
-            ),
-            endDate = Clock.System.now().toLocalDateTime(
-                timeZone = TimeZone.currentSystemDefault()
-            )
-        )
-    ) {
+    BaseViewModel<VisitListState, VisitListAction, VisitListEvent>(VisitListState()) {
 
 
     override fun obtainEvent(viewEvent: VisitListEvent) {

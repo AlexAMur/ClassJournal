@@ -20,7 +20,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalWearMaterialApi::class)
 @HiltViewModel
 class GroupViewModel @Inject constructor(private val groupInteractor: GroupInteractor) :
-    BaseViewModel<GroupState, GroupAction, GroupEvent>(installState = GroupState()) {
+    BaseViewModel<GroupState, GroupAction, GroupEvent>(GroupState()) {
 
 //    init {
 //        reloadScreen()

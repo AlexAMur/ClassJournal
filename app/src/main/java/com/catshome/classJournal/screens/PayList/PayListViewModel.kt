@@ -3,11 +3,9 @@ package com.catshome.classJournal.screens.PayList
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.catshome.classJournal.PayList.mapToPayEntity
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.PayListInteractor
-import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.formatRu
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
@@ -22,36 +20,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.toLocalDateTime
-import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.time.Clock
-import androidx.compose.runtime.getValue
-import kotlinx.datetime.DateTimeUnit
 
 @HiltViewModel
 class PayListViewModel @Inject constructor(private val payListInteractor: PayListInteractor) :
-    BaseViewModel<PayListState, PayListAction, PayListEvent>(
-        installState = PayListState(
-            selectedOption = 1,
-            beginDate = Clock.System.now().minus(
-                value = 1,
-                unit = DateTimeUnit.MONTH,
-                timeZone = TimeZone.currentSystemDefault()
-            ).toLocalDateTime(
-                timeZone = TimeZone.currentSystemDefault()
-            ).toDateTimeRuString(formatDate = FormatDate.Date).toString(),
-            endDate = "${
-                Clock.System.now().toDateTimeRuString()?.substring(0, DATE_FORMAT_RU.length)
-            } 23:59"
-        )
-    ) {
+    BaseViewModel<PayListState, PayListAction, PayListEvent>(installState= PayListState()) {
     // Состояние загрузки для индикатора свайпа
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow().value

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="dark_mode">Темная тема</string>
+    <string name="card_example">Пример карточки</string>
+
+
     <string name="restore_db_snackbar">Восстановление завершено! Приложение перезагружается!</string>
 
     <string name="backup_db_title">Создать резервную копию</string>
@@ -25,6 +29,7 @@
     <string name="payment_date">Дата платежа:</string>
     <string name="visit_date">Дата посещения:</string>
 
+    <string name="imenu_settings">Настройки</string>
     <string name="imenu_backup">Выгрузить базу</string>
     <string name="imenu_restore">Загрузить базу</string>
 

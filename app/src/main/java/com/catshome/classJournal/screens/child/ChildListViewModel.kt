@@ -1,6 +1,5 @@
 package com.catshome.classJournal.screens.child
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import com.catshome.classJournal.domain.Child.ChildInteractor
@@ -18,7 +17,7 @@ import javax.inject.Inject
 class ChildListViewModel @Inject constructor(
     private val childInteract: ChildInteractor,
     private val groupRepository: GroupRepository
-) : BaseViewModel<ChildListState, ChildListAction, ChildListEvent>(installState = ChildListState()) {
+) : BaseViewModel<ChildListState, ChildListAction, ChildListEvent>(ChildListState()) {
     init {
         obtainEvent(ChildListEvent.ReloadScreen)
     }

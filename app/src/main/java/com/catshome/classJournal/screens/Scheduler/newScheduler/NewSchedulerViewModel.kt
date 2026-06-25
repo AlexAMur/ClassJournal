@@ -1,12 +1,10 @@
 package com.catshome.classJournal.screens.Scheduler.newScheduler
 
 import android.util.Log
-import androidx.compose.material.AlertDialog
 import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.resource.R
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.context
-import com.catshome.classJournal.domain.Scheduler.ClientScheduler
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
 import com.catshome.classJournal.screens.Scheduler.newScheduler.NewSchedulerEvent.*
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
@@ -20,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerInteract) :
     BaseViewModel<NewSchedulerState, NewSchedulerAction, NewSchedulerEvent>
-        (installState = NewSchedulerState()) {
+        (NewSchedulerState()) {
     init {
         CoroutineScope(Dispatchers.IO).launch {
             viewState.dayOfWeek?.let { day ->

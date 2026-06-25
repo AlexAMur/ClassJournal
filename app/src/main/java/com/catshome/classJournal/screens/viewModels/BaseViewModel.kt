@@ -1,6 +1,5 @@
 package com.catshome.classJournal.screens.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +12,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<State: Any, Action, Event> ( installState :State):ViewModel() {
+abstract class BaseViewModel<State: Any, Action, Event>(installState: State) :ViewModel() {
     private val _viewStates = MutableStateFlow(installState)
     private val _viewActions = MutableSharedFlow<Action?>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     fun viewState(): StateFlow <State> =_viewStates.asStateFlow()

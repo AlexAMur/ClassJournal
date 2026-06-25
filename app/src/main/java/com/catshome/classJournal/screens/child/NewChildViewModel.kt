@@ -1,6 +1,5 @@
 package com.catshome.classJournal.screens.child
 
-import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.resource.R
@@ -23,7 +22,7 @@ class NewChildViewModel @Inject constructor(
     private val childGroups: ChildGroupsRepositoryImpl
 ) :
     BaseViewModel<NewChildState, NewChildAction, NewChildEvent>
-        (installState = NewChildState()) {
+        (NewChildState()) {
     val TEXT_FILD_COUNT = 5
     val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
 

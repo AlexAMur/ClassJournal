@@ -3,6 +3,8 @@ package com.catshome.classJournal
 import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,12 +41,15 @@ import com.catshome.classJournal.screens.child.NewChildScreen
 import com.catshome.classJournal.screens.child.NewChildViewModel
 import com.catshome.classJournal.screens.group.GroupScreen
 import com.catshome.classJournal.screens.group.NewGroupScreen
+import com.catshome.classJournal.screens.settings.SettingsScreen
+import com.catshome.classJournal.screens.settings.SettingsViewModel
 import com.catshome.classJournal.screens.viewModels.GroupViewModel
 import com.catshome.classJournal.screens.viewModels.NewGroupViewModel
 import kotlin.getValue
 
 internal val localNavHost =
     staticCompositionLocalOf<NavHostController> { error("No default implementation") }
+
 
 
 @SuppressLint("SuspiciousIndentation")
@@ -68,6 +73,13 @@ fun classJournalApp(
             //val viewModel =hiltViewModel<NewPayViewModel>()
             val viewModel: NewPayViewModel by activity.viewModels()
             newPayScreen(navController, viewModel)
+        }
+
+
+        composable(route = ItemScreen.SettingScreen.name) {
+            //val viewModel =hiltViewModel<NewPayViewModel>()
+            val viewModel: SettingsViewModel by activity.viewModels()
+            SettingsScreen(navController, viewModel)
         }
 
         composable(route = ItemScreen.FilePickScreen.name) {

@@ -3,8 +3,6 @@ package com.catshome.classJournal.communs.FilterScreen
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
-import androidx.wear.compose.material.TimeText
-import com.catshome.classJournal.communs.TextField
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.PayListInteractor
@@ -28,9 +26,7 @@ import kotlin.time.Clock
 class FilterViewModel @Inject constructor(
     private val payListInteractor: PayListInteractor
 ) :
-    BaseViewModel<FilterState, FilterAction, FilterEvent>(
-        installState = FilterState()
-    ) {
+    BaseViewModel<FilterState, FilterAction, FilterEvent>(FilterState()) {
     fun beginDateChange(newValue: String) {
         viewState = viewState.copy(beginDate = newValue)
     }

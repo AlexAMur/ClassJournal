@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewGroupViewModel @Inject constructor(private val groupInteractor: GroupInteractor) :
-    BaseViewModel<NewGroupState, ComposeAction, NewGroupEvent>(installState = NewGroupState()) {
+    BaseViewModel<NewGroupState, ComposeAction, NewGroupEvent>(NewGroupState()) {
     @SuppressLint("SuspiciousIndentation")
 
 

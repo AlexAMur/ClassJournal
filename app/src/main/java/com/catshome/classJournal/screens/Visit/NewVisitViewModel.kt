@@ -1,9 +1,6 @@
 package com.catshome.classJournal.screens.Visit
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.compose.runtime.key
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -35,11 +32,7 @@ import kotlin.time.Clock
 
 @HiltViewModel
 class NewVisitViewModel @Inject constructor(private val visitInteract: VisitInteract) :
-    BaseViewModel<NewVisitState, NewVisitAction, NewVisitEvent>(
-        installState = NewVisitState(
-            selectDate = Clock.System.now().toEpochMilliseconds()
-        )
-    ) {
+    BaseViewModel<NewVisitState, NewVisitAction, NewVisitEvent>(NewVisitState()) {
     private val exceptionHandlerVisit = CoroutineExceptionHandler { coroutineContext, throwable ->
         Log.e("CLJR", "throwable Visit $throwable")
         if (throwable.message?.contains("UID ребенка") == true) {

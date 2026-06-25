@@ -1,11 +1,7 @@
 package com.catshome.classJournal.screens.Scheduler
 
-import android.util.Log
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.catshome.classJournal.resource.R
-import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Scheduler.SchedulerInteract
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.screens.Scheduler.SchedulerListEvent.*
@@ -25,9 +21,7 @@ class SchedulerListViewModel @Inject constructor(
     private val schedulerInteract: SchedulerInteract
 ) :
     BaseViewModel<SchedulerListState, SchedulerListAction, SchedulerListEvent>
-        (
-        installState = SchedulerListState()
-    ) {
+        (SchedulerListState()) {
     private val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         when (throwable) {
             is IllegalArgumentException -> {

@@ -1,6 +1,5 @@
 package com.catshome.classJournal.screens.PayList.newPay
 
-import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -18,7 +17,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import kotlin.time.Clock.System.now
 
@@ -27,14 +25,7 @@ class NewPayViewModel @Inject constructor(
     private val payInteract: PayInteract
 ) :
     BaseViewModel<NewPayState, NewPayAction, NewPayEvent>
-        (
-        installState = NewPayState(
-            pay = Pay(
-                datePay = now().toDateTimeRuString().toString()
-            ),
-            payment = TextFieldValue("0")
-        )
-    ) {
+        (NewPayState()) {
     val TEXT_FILD_COUNT = 3
     val listTextField = List<FocusRequester>(TEXT_FILD_COUNT) { FocusRequester() }
     private val exceptionHandlerPays = CoroutineExceptionHandler { coroutineContext, throwable ->
