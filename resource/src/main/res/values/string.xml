@@ -5,6 +5,7 @@
     <string name="card_example">Пример карточки</string>
 
 
+
     <string name="restore_db_snackbar">Восстановление завершено! Приложение перезагружается!</string>
 
     <string name="backup_db_title">Создать резервную копию</string>

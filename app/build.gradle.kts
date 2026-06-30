@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias (libs.plugins.serialzation)
+    alias (libs.plugins.protobuf)
 
 }
 
@@ -53,7 +54,20 @@ android {
     buildFeatures {
         compose = true
     }
-
+    protobuf {
+        protoc {
+            artifact = "com.google.protobuf:protoc:3.25.1"
+        }
+        generateProtoTasks {
+            all().forEach { task ->
+                task.builtins {
+                    create("java") {
+                        option("lite")
+                    }
+                }
+            }
+        }
+    }
 }
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
@@ -63,16 +77,16 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.kotlinx.datetime)
+    implementation(libs.androidx.datastore)
+
+    // Protobuf (Lite версия оптимизирована для Android)
+    implementation(libs.google.protobuf.javalite)
+
 
     implementation(libs.hilt)
     implementation(libs.room.runtime)
     ksp(libs.hilt.compiler)
     ksp(libs.room)
-
-
-
-
-
 
     implementation(libs.kotlinx.datetime)
     implementation(libs.androidx.core.ktx)
@@ -99,6 +113,8 @@ dependencies {
     implementation(libs.hilt)
     implementation(libs.room.runtime)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.serialisation)
+
 
     ksp(libs.hilt.compiler)
     ksp(libs.room)

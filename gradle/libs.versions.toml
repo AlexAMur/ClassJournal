@@ -1,4 +1,7 @@
 [versions]
+protobuf_ver =  "0.10.0"
+protobufJavaLite_ver = "4.35.1"
+datastore_ver = "1.2.1"
 agp = "9.1.0"
 kotlin = "2.3.10"
 coreKtx = "1.17.0"
@@ -16,8 +19,8 @@ appcompat = "1.7.1"
 material = "1.13.0"
 room_version = "2.8.4"
 ksp_ver= "2.3.2"
-serial_ver = "2.3.10"
-ver_serial_json="1.10.0"
+serial_ver = "2.3.0"
+ver_serial_json="1.11.0"
 compose_material_ver = "1.10.4"
 compose_wear = "1.5.6"
 material3_exp_ver = "1.4.0"
@@ -30,7 +33,12 @@ kotlinx_datetime_ver = "0.7.1"
 identityJvm = "202411.1"
 foundation = "1.10.4"
 media3CommonKtx = "1.9.2"
+
 [libraries]
+androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore_ver" }
+
+
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -65,7 +73,7 @@ identity-jvm = { group = "com.android.identity", name = "identity-jvm", version.
 serialisation = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "ver_serial_json" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3CommonKtx" }
-
+google-protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "protobufJavaLite_ver" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -74,6 +82,7 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt_ver" }
 roomplagin = {id ="androidx.room", version.ref = "roomplagin_version"}
 serialzation = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serial_ver" }
+protobuf = { id = "com.google.protobuf", version.ref = "protobuf_ver"}
 
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp_ver" }

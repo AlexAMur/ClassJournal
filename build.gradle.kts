@@ -9,4 +9,6 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.roomplagin)  apply false
     alias(libs.plugins.serialzation) apply false
+    alias(libs.plugins.protobuf) apply false
+
 }

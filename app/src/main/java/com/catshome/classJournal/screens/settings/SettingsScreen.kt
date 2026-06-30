@@ -24,12 +24,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.datastore.dataStore
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.catshome.classJournal.ClassJournalStyle
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.communs.AppHeader
+import com.catshome.classJournal.context
+import com.catshome.classJournal.dataStore
+import com.catshome.classJournal.proto.AppSettings
+import com.catshome.classJournal.proto.ColorMode
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.theme.blueDarkPalette
 import com.catshome.classJournal.theme.blueLightPalette
@@ -41,11 +46,14 @@ import com.catshome.classJournal.theme.purpleDarkPalette
 import com.catshome.classJournal.theme.purpleLightPalette
 import com.catshome.classJournal.theme.redDarkPalette
 import com.catshome.classJournal.theme.redLightPalette
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
- fun SettingsScreen(
+fun SettingsScreen(
     navController: NavController,
-    viewModel: SettingsViewModel = viewModel ()
+    viewModel: SettingsViewModel = viewModel()
 ) {
     val viewState by viewModel.viewState().collectAsState()
     val viewAction by viewModel.viewActions().collectAsState(null)
@@ -60,7 +68,8 @@ import com.catshome.classJournal.theme.redLightPalette
             navController.popBackStack()
             viewModel.clearAction()
         }
-        null -> { }
+
+        null -> {}
     }
 }
 
@@ -79,7 +88,7 @@ private fun SettingsView(
             Modifier.fillMaxSize()
         ) {
             AppHeader(
-                title = stringResource(com.google.android.material.R.string.hide_bottom_view_on_scroll_behavior),
+                title = stringResource(R.string.imenu_settings),
                 isBackButtonAvailable = true,
                 backClicked = { eventHandler(SettingsEvent.BackClicked) }
             )
@@ -99,6 +108,14 @@ private fun SettingsView(
                     checked = currentSettings.isDarkMode,
                     onCheckedChange = {
                         settingsEventBus.updateDarkMode(!currentSettings.isDarkMode)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            context.dataStore.updateData {
+                                it.copy(colorMode = if (currentSettings.isDarkMode)
+                                    ColorMode.Dark
+                                else
+                                    ColorMode.Light)
+                            }
+                        }
                     },
                     colors = CheckboxDefaults.colors(
                         checkedColor = ClassJournalTheme.colors.tintColor,
@@ -121,17 +138,18 @@ private fun SettingsView(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-               ColorCard(
+                ColorCard(
                     color = if (currentSettings.isDarkMode) purpleDarkPalette.tintColor else purpleLightPalette.tintColor,
                     onClick = {
                         settingsEventBus.updateStyle(ClassJournalStyle.Purple)
+
                     })
-               ColorCard(
+                ColorCard(
                     color = if (currentSettings.isDarkMode) orangeDarkPalette.tintColor else orangeLightPalette.tintColor,
                     onClick = {
                         settingsEventBus.updateStyle(ClassJournalStyle.Orange)
                     })
-               ColorCard(
+                ColorCard(
                     color = if (currentSettings.isDarkMode) blueDarkPalette.tintColor else blueLightPalette.tintColor,
                     onClick = {
                         settingsEventBus.updateStyle(ClassJournalStyle.Blue)
@@ -144,12 +162,12 @@ private fun SettingsView(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-               ColorCard(
+                ColorCard(
                     color = if (currentSettings.isDarkMode) redDarkPalette.tintColor else redLightPalette.tintColor,
                     onClick = {
                         settingsEventBus.updateStyle(ClassJournalStyle.Red)
                     })
-               ColorCard(
+                ColorCard(
                     color = if (currentSettings.isDarkMode) greenDarkPalette.tintColor else greenLightPalette.tintColor,
                     onClick = {
                         settingsEventBus.updateStyle(ClassJournalStyle.Green)
