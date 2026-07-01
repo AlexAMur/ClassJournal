@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Child.MiniChild
+import com.catshome.classJournal.domain.Child.mapToMiniChild
 import com.catshome.classJournal.domain.communs.SortEnum
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
@@ -44,7 +45,10 @@ class PayListInteractor @Inject constructor (val payListRepository: PayRepositor
     suspend fun deletePay(pay: Pay): Boolean{
        return payListRepository.deletePay(pay)
     }
-    suspend fun searchChild(searchText: String):Flow<List<MiniChild>?>{
+    fun searchChild(searchText: String):Flow<List<MiniChild>?>{
         return childRepository.getChildByName(searchText)
+    }
+    fun getChildByID(id: String):MiniChild?{
+        return childRepository.getChildById(id)?.mapToMiniChild()
     }
 }

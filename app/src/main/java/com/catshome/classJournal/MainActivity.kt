@@ -62,7 +62,6 @@ var appSetting: AppSettings? = null
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     private suspend fun setAppSettings(settings: AppSettings) {
         dataStore.updateData {
             it.copy(colorMode = settings.colorMode, style = settings.style)
@@ -99,8 +98,11 @@ class MainActivity : ComponentActivity() {
                 var selectedItem by rememberSaveable { mutableIntStateOf(0) }
                 val settingsEventBus = remember { SettingsEventBus() }
                 val currentSettings by settingsEventBus.currentSettings.collectAsState()
+                LaunchedEffect(Unit) {
+                    if (navBackStackEntry?.destination?.route.isNullOrEmpty())
+                        navBackStackEntry?.destination?.route = ItemScreen.PayListScreen.name
+                }
                 LaunchedEffect(appSetting) {
-
                     getSettings(appSettings, settingsEventBus)
                 }
                 DisposableEffect(Unit) {
@@ -174,7 +176,6 @@ class MainActivity : ComponentActivity() {
                                     NavigationBar(containerColor = ClassJournalTheme.colors.tintColor) {
                                         bottomItems.forEachIndexed { index, screen ->
                                             NavigationBarItem(
-
                                                 label = {
                                                     Text(
                                                         screen.label,

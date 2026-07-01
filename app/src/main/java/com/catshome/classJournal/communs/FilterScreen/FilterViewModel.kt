@@ -10,6 +10,7 @@ import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.SortEnum
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toStringRu
+import com.catshome.classJournal.proto.optionPeriod
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -132,14 +133,6 @@ class FilterViewModel @Inject constructor(
 
             is FilterEvent.Init -> {
                 with(viewEvent.init) {
-//                    childId?.let {id->
-//                        childFIO?.let {fio->
-//                        viewState = viewState.copy(selectChild = MiniChild(uid= id, fio = fio))
-//                        }
-//                    }
-//
-
-
                     viewState = viewState.copy(
                         selectChild = if (childId != null) {
                             MiniChild(uid = childId, fio = childFIO ?: "")
@@ -150,11 +143,18 @@ class FilterViewModel @Inject constructor(
                             selection = TextRange(0, childFIO?.length ?: 0)
                         ),
                         selectedOption = optionsIndex,
+                        isShowPeriod = optionPeriod.PERIOD.ordinal == optionsIndex,
                         isShowList = false,
                         sortValue = sortEnum,
                         textSorting = viewState.sortList[sortEnum?.ordinal ?: 0],
-                        beginDate = beginDate ?: "",
-                        endDate = endDate ?: "",
+                        beginDate = if (optionPeriod.ALL.ordinal != optionsIndex) {
+                            beginDate ?: ""
+                        } else
+                            null,
+                        endDate = if (optionPeriod.ALL.ordinal != optionsIndex) {
+                            endDate ?: ""
+                        } else
+                            null,
                         screen = screen
                     )
                 }
@@ -218,8 +218,8 @@ class FilterViewModel @Inject constructor(
                     endDate = "${
                         Clock.System.now()
                             .toLocalDateTime(TimeZone.currentSystemDefault()).date.atStartOfDayIn(
-                            TimeZone.currentSystemDefault()
-                        ).toDateTimeRuString(formatDate = FormatDate.Date)
+                                TimeZone.currentSystemDefault()
+                            ).toDateTimeRuString(formatDate = FormatDate.Date)
                     } 23:59"
                 )
             }

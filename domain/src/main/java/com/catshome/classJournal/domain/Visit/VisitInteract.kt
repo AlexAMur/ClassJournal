@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.catshome.classJournal.domain.Child.ChildRepository
 import com.catshome.classJournal.domain.Child.MiniChild
+import com.catshome.classJournal.domain.Child.mapToMiniChild
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
 import com.catshome.classJournal.domain.communs.DayOfWeek
 import com.catshome.classJournal.domain.communs.SortEnum
@@ -27,6 +28,9 @@ class VisitInteract @Inject constructor(
     private val childRepository: ChildRepository,
     private val visitRepository: VisitRepository,
 ) {
+    fun getChildByID(id: String):MiniChild?{
+        return childRepository.getChildById(id)?.mapToMiniChild()
+    }
     suspend fun getVisitByUid(uidVisit: String): Visit? {
         return visitRepository.getVisitByUid(uidVisit)
     }

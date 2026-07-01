@@ -3,14 +3,19 @@ package com.catshome.classJournal.screens.PayList
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.catshome.classJournal.appSetting
 import com.catshome.classJournal.context
+import com.catshome.classJournal.dataStore
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.PayListInteractor
 import com.catshome.classJournal.domain.communs.FormatDate
+import com.catshome.classJournal.domain.communs.SortEnum
 import com.catshome.classJournal.domain.communs.formatRu
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLong
+import com.catshome.classJournal.proto.optionPeriod
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.PayList.PayListAction.EditPay
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
@@ -23,15 +28,27 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimePeriod
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.toLocalDateTime
+import okio.Options
 import javax.inject.Inject
 import kotlin.time.Clock
 
 @HiltViewModel
 class PayListViewModel @Inject constructor(private val payListInteractor: PayListInteractor) :
-    BaseViewModel<PayListState, PayListAction, PayListEvent>(installState= PayListState()) {
+    BaseViewModel<PayListState, PayListAction, PayListEvent>(installState= PayListState(
+        selectedOption = appSetting?.periodToPay?.ordinal?:optionPeriod.MONTH.ordinal,
+        selectChild = appSetting?.idSelectChildToPay?.let{payListInteractor.getChildByID(it)},
+        beginDate = appSetting?.beginDateToPay?.let { it }?: Clock.System.now().minus(
+            1, DateTimeUnit.MONTH, TimeZone.currentSystemDefault()).toDateTimeRuString().toString(),
+        endDate = appSetting?.endDateToPay?.let { it }?: Clock.System.now().toDateTimeRuString(
+            timeZone = TimeZone.currentSystemDefault(),
+            formatDate = FormatDate.Date
+        ).toString(),
+        sortValue = appSetting?.sortPay
+    )) {
     // Состояние загрузки для индикатора свайпа
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow().value
@@ -70,11 +87,22 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 with(viewEvent.option) {
                     viewState = viewState.copy(
                         selectedOption = selectOption,
-                        beginDate = beginDate?:"",
-                        endDate = endDate?:"",
+                        beginDate = beginDate ?: "",
+                        endDate = endDate ?: "",
                         sortValue = sort,
                         selectChild = MiniChild(uid = childId ?: "", fio = childFIO ?: "")
                     )
+                    CoroutineScope(Dispatchers.IO).launch {
+                        context.dataStore.updateData {
+                            it.copy(
+                                periodToPay = optionPeriod.entries[selectOption],
+                                idSelectChildToPay = childId,
+                                beginDateToPay = beginDate,
+                                endDateToPay = endDate,
+                                sortPay = sort?: SortEnum.Date
+                            )
+                        }
+                    }
                 }
                 loadPayList()
 
@@ -301,8 +329,8 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
      fun getStatisticPay() {
         Log.e("CLJR", "get Statistic PAY")
         val date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        val lastMonth =
-            Clock.System.now().minus(DateTimePeriod(months = 1), TimeZone.currentSystemDefault())
+        val lastMonth =Clock.System.now().minus(
+            DateTimePeriod(months = 1), TimeZone.currentSystemDefault())
                 .toLocalDateTime(TimeZone.currentSystemDefault())
         CoroutineScope(Dispatchers.IO).launch {
             viewState = viewState.copy(incomePerMonth = payListInteractor.getStatisticPay(

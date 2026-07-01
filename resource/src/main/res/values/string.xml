@@ -4,8 +4,6 @@
     <string name="dark_mode">Темная тема</string>
     <string name="card_example">Пример карточки</string>
 
-
-
     <string name="restore_db_snackbar">Восстановление завершено! Приложение перезагружается!</string>
 
     <string name="backup_db_title">Создать резервную копию</string>
@@ -34,7 +32,6 @@
     <string name="imenu_backup">Выгрузить базу</string>
     <string name="imenu_restore">Загрузить базу</string>
 
-
     <string name="delete_Title">Внимание</string>
 
     <string name="delete_message">Хотите удалить?</string>
@@ -42,7 +39,6 @@
     <string name="bottom_cancel">Отмена</string>
     <string name="bottom_yes">Да</string>
     <string name="bottom_no">Нет</string>
-
 
     <string name="message_cancel">Отменить удаление</string>
     <string name="no_group">Без группы</string>
@@ -105,6 +101,4 @@
     <string name="filter_period">Период</string>
     <string name="filter_all">Все</string>
     <string name="filter_sort">Сортировать по:</string>
-
-
 </resources>

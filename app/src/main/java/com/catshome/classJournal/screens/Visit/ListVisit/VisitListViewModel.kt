@@ -2,14 +2,19 @@ package com.catshome.classJournal.screens.Visit.ListVisit
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.catshome.classJournal.appSetting
 import com.catshome.classJournal.context
+import com.catshome.classJournal.dataStore
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Visit.Visit
 import com.catshome.classJournal.domain.Visit.VisitInteract
 import com.catshome.classJournal.domain.communs.DATE_FORMAT_RU
+import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.SortEnum
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLong
+import com.catshome.classJournal.proto.optionPeriod
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +22,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
+import kotlin.time.Clock
 
 /*
  *Удаление записи VisitEvent VisitDelete сначала уделяем из списка viewState.itemList
@@ -27,22 +37,33 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VisitListViewModel @Inject constructor(private val visitInteractor: VisitInteract) :
-    BaseViewModel<VisitListState, VisitListAction, VisitListEvent>(VisitListState()) {
+    BaseViewModel<VisitListState, VisitListAction, VisitListEvent>(
+        VisitListState(
+            selectedOption = appSetting?.periodToVisit?.ordinal ?: optionPeriod.MONTH.ordinal,
+            selectChild = appSetting?.idSelectChildToVisit?.let { visitInteractor.getChildByID(it) },
+            beginDate = appSetting?.beginDateToVisit?.let { it.toLocalDateTimeRu() }
+                ?: Clock.System.now().minus(
+                    1, DateTimeUnit.MONTH, TimeZone.currentSystemDefault()
+                ).toEpochMilliseconds().toLocalDateTimeRu(),
+            endDate = appSetting?.endDateToVisit?.let { it.toLocalDateTimeRu() }
+                ?: Clock.System.now().toEpochMilliseconds().toLocalDateTimeRu(),
+            sortValue = appSetting?.sortVisit?: SortEnum.Date
+        )
+    ) {
 
 
     override fun obtainEvent(viewEvent: VisitListEvent) {
         when (viewEvent) {
             is VisitListEvent.SetFilter -> {
-                    viewState.beginDate = viewEvent.filter.beginDate?.toLocalDateTimeRu()
-                    viewState.endDate = viewEvent.filter.endDate?.toLocalDateTimeRu()
+                viewState.beginDate = viewEvent.filter.beginDate?.toLocalDateTimeRu()
+                viewState.endDate = viewEvent.filter.endDate?.toLocalDateTimeRu()
                 viewState = viewState.copy(
                     selectedOption = viewEvent.filter.selectOption,
                     sortValue = viewEvent.filter.sort ?: SortEnum.Date,
-                    selectChild = if (viewEvent.filter.childId.isNullOrEmpty()){
+                    selectChild = if (viewEvent.filter.childId.isNullOrEmpty()) {
                         Log.e("CLJR", "Set filter Child0 ${viewEvent.filter.childFIO}")
                         null
-                    }
-                    else {
+                    } else {
                         Log.e("CLJR", "Set filter Child ${viewEvent.filter.childFIO}")
                         MiniChild(
                             uid = viewEvent.filter.childId,
@@ -50,8 +71,20 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                         )
                     }
                 )
+                with(viewEvent.filter) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        context.dataStore.updateData {
+                            it.copy(
+                                periodToVisit = optionPeriod.entries[selectOption],
+                                idSelectChildToVisit = childId,
+                                beginDateToVisit = beginDate,
+                                endDateToVisit = endDate,
+                                sortVisit = sort?: SortEnum.Date
+                            )
+                        }
+                    }
+                }
                 obtainEvent(VisitListEvent.Reload)
-                Log.e("CLJR", "Set filter after ${viewState.beginDate}")
             }
 
             is VisitListEvent.onCollapse -> {
@@ -108,8 +141,8 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                 viewModelScope.launch {
                     visitInteractor.getVisitByPeriod(
                         uidChild = viewState.selectChild?.uid,
-                        begin = viewState.beginDate?.toLong()?:Long.MIN_VALUE,
-                        end = viewState.endDate?.toLong()?: Long.MAX_VALUE,
+                        begin = viewState.beginDate?.toLong() ?: Long.MIN_VALUE,
+                        end = viewState.endDate?.toLong() ?: Long.MAX_VALUE,
                     )?.collect { listVisit ->
                         viewState = viewState.copy(
                             listVisit =
