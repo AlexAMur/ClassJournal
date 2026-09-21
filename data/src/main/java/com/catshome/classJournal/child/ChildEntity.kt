@@ -18,7 +18,7 @@ data class ChildEntity(
     @ColumnInfo(name = "child_surname") var surname: String,
     @ColumnInfo(name = "child_phone") var phone: String,
     @ColumnInfo(name = "child_note") var note: String,
-    @ColumnInfo(name = "child_birthday") var birthday: Long,
+    @ColumnInfo(name = "child_birthday") var birthday: Long? = null,
     var saldo: Int,
     var isDelete: Boolean = false,
 )
@@ -28,7 +28,7 @@ fun ChildEntity.mapToChild(): Child{
        uid = this.uid,
        name = this.name,
        surname = this.surname,
-       birthday = this.birthday.toLocalDateTimeRu()?.toDateTimeRuString().toString(),
+       birthday = this.birthday?.toLocalDateTimeRu()?.toDateTimeRuString().toString(),
        phone = this.phone,
        note = this.note,
        saldo = this.saldo,
@@ -55,7 +55,7 @@ fun Child.mapToChildEntity(): ChildEntity{
         surname = this.surname,
         phone = this.phone,
         note = this.note,
-        birthday = this.birthday.toLocalDateTimeRu()?.toLong()?:0, // formatter.parse(this.birthday).time,
+        birthday = this.birthday.toLocalDateTimeRu()?.toLong(), // formatter.parse(this.birthday).time,
         isDelete = this.isDelete,
         saldo = this.saldo
     )

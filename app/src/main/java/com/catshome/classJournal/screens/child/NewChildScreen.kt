@@ -48,8 +48,9 @@ fun NewChildScreen(
         if (idChild.childID != "")
             viewModel.obtainEvent(NewChildEvent.OpenChild(idChild.childID))
         else {
-            viewState.child.birthday = Clock.System.now().minus(
-                4, DateTimeUnit.YEAR, TimeZone.currentSystemDefault()).toDateTimeRuString().toString()
+//            viewState.child.birthday =
+//                Clock.System.now().minus(
+//                4, DateTimeUnit.YEAR, TimeZone.currentSystemDefault()).toDateTimeRuString().toString()
             viewModel.obtainEvent(NewChildEvent.newChild)
         }
     }

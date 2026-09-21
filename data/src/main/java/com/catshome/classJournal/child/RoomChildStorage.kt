@@ -2,6 +2,7 @@ package com.catshome.classJournal.child
 
 
 import android.content.Context
+import android.util.Log
 
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildGroup
@@ -33,6 +34,7 @@ class RoomChildStorage @Inject constructor(
         child: Child,
         childGroup: List<ChildGroup>
     ) {
+        Log.e("CLJR",child.toString())
         childDAO.insertChild(child.mapToChildEntity(), childGroup.map {
             it.mapToChildGroupEntity()
         })

@@ -28,9 +28,7 @@ class ChildInteractor @Inject constructor(
         if (child.uid.isEmpty())
             child.uid = UUID.randomUUID().toString()
 
-        if (child.name.trim().isEmpty() || child.surname.trim().isEmpty() || child.birthday.trim()
-                .isEmpty()
-        )
+        if (child.name.trim().isEmpty() || child.surname.trim().isEmpty())
             return false
         //Если все проверки пройдены сохраняем данные
 // перед измененим или добавление ребенкка проверить на наличие удаленных записей и затем сохранять

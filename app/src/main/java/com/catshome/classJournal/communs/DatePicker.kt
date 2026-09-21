@@ -59,7 +59,7 @@ fun DatePickerFieldToModal(
     var showModal by rememberSaveable { mutableStateOf(false) }
 
     TextField(
-        value = inicialDate?.toDateTimeRuString(FormatDate.Date).toString(),//dateStr?.substring(0, DATE_FORMAT_RU.length).toString(),
+        value = inicialDate?.toDateTimeRuString(FormatDate.Date)?:"",//dateStr?.substring(0, DATE_FORMAT_RU.length).toString(),
         label = label,
         supportingText = "",
         modifier = modifier,
@@ -83,8 +83,7 @@ fun DatePickerFieldToModal(
     //Log.e("CLJR", "D ${Date.from(value.toLocalDateTimeRu()?.toInstant(TimeZone.currentSystemDefault())?.toJavaInstant())}" )
     if (showModal) {
         DatePickerModal(
-            inicialDate = Date((inicialDate?.toLong()?:0)+ java.util.TimeZone.getDefault().getOffset(Date().time)),
-            onDateSelected = {
+            inicialDate = Date(inicialDate?.toLong()?:now().toLocalDateTime(TimeZone.currentSystemDefault()).toLong() + java.util.TimeZone.getDefault().getOffset(Date().time)),            onDateSelected = {
              //   dateStr = it?.toLocalDateTimeRuString(formatDate = FormatDate.Date).toString()
              //it?.minus(java.util.TimeZone.getDefault().getOffset(Date().time))?.toLocalDateTimeRuString().toString()
                 onDateSelected(it)

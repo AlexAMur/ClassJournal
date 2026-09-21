@@ -29,26 +29,34 @@ internal val MIGRATION_3_4 = object : Migration(3, 4) {
 }
 internal val MIGRATION_6_7 = object : Migration(6, 7) {
     override fun migrate(db: SupportSQLiteDatabase) {
-        db.execSQL("CREATE TABLE VISITS ('uid' TEXT NOT NULL PRIMARY KEY, 'uidChild' TEXT NOT NULL," +
-                " 'dateVisit' INTEGER NOT NULL," +
-                " 'priceVisit' INTEGER NOT NULL,  FOREIGN KEY ('uidChild') REFERENCES 'child'('uid') ON DELETE CASCADE)")
+        db.execSQL(
+            "CREATE TABLE VISITS ('uid' TEXT NOT NULL PRIMARY KEY, 'uidChild' TEXT NOT NULL," +
+                    " 'dateVisit' INTEGER NOT NULL," +
+                    " 'priceVisit' INTEGER NOT NULL,  FOREIGN KEY ('uidChild') REFERENCES 'child'('uid') ON DELETE CASCADE)"
+        )
         db.execSQL("Create Index indexVisit on visits ('dateVisit')")
 
-        db.execSQL("CREATE TABLE SCHEDULER ('uid' TEXT NOT NULL PRIMARY KEY, 'dayOfWeek' INTEGER NOT NULL," +
-                " 'uidGroup' TEXT, 'uidChild' TEXT, 'startLesson' INTEGER NOT NULL, " +
-                "'duration' INTEGER NOT NULL, " +
-                "FOREIGN KEY ('uidChild') REFERENCES 'child'('uid') ON DELETE CASCADE, " +
-                "FOREIGN KEY ('uidGroup') REFERENCES 'groups'('uid') ON DELETE CASCADE)"
-            )
+        db.execSQL(
+            "CREATE TABLE SCHEDULER ('uid' TEXT NOT NULL PRIMARY KEY, 'dayOfWeek' INTEGER NOT NULL," +
+                    " 'uidGroup' TEXT, 'uidChild' TEXT, 'startLesson' INTEGER NOT NULL, " +
+                    "'duration' INTEGER NOT NULL, " +
+                    "FOREIGN KEY ('uidChild') REFERENCES 'child'('uid') ON DELETE CASCADE, " +
+                    "FOREIGN KEY ('uidGroup') REFERENCES 'groups'('uid') ON DELETE CASCADE)"
+        )
         db.execSQL("Create Index indexScheduler on SCHEDULER ('dayOfWeek', 'startLesson')")
     }
 }
-
 internal val MIGRATION_7_8 = object : Migration(7, 8) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("ALTER TABLE SCHEDULER ADD COLUMN price  INTEGER NOT NULL DEFAULT 0")
     }
 }
+
+internal val MIGRATION_8_9 = object : Migration(8, 9) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE CHILD ALTER COLUMN child_birthday DROP NOT NULL")
+        }
+    }
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -61,6 +69,7 @@ class AppModule {
             .addMigrations(MIGRATION_3_4)
             .addMigrations(MIGRATION_6_7)
             .addMigrations(MIGRATION_7_8)
+            .addMigrations(MIGRATION_8_9)
             .build()
     }
 }

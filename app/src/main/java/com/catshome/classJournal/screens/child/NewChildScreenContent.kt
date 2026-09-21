@@ -154,11 +154,13 @@ fun ScreenContent(
 
                 DatePickerFieldToModal(
                     modifier = modifier,
-                    if (viewState.child.birthday.isNullOrEmpty())
-                        now().toLocalDateTime(TimeZone.currentSystemDefault())
-                    else {
-                        viewState.child.birthday.toLocalDateTimeRu()
-                    },
+                    inicialDate =
+//                        if (viewState.child.birthday.isNullOrEmpty())
+//                        now().toLocalDateTime(TimeZone.currentSystemDefault())
+//                    else {
+                            viewState.child.birthday.toLocalDateTimeRu()
+//                    }
+            ,
 
                     stringResource(R.string.birthday_child)
                 ) {
