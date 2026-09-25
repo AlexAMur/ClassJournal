@@ -21,6 +21,8 @@ import androidx.compose.material.icons.sharp.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
+import androidx.compose.material3.NavigationItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -54,6 +56,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
 import kotlin.io.readBytes
 
 lateinit var context: Context
@@ -179,7 +182,8 @@ class MainActivity : ComponentActivity() {
                                                 label = {
                                                     Text(
                                                         screen.label,
-                                                        style = ClassJournalTheme.typography.body
+                                                        style = ClassJournalTheme.typography.body,
+                                                        //color = ClassJournalTheme.colors.primaryText
                                                     )
                                                 },
                                                 selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
@@ -192,10 +196,20 @@ class MainActivity : ComponentActivity() {
                                                 icon = {
                                                     Icon(if (currentDestination?.hierarchy?.any { it.route == screen.route } == true) screen.icon else screen.iconUnselect,
                                                         "",
-                                                        tint = if (currentDestination?.hierarchy?.any { it.route == screen.route } == true) ClassJournalTheme.colors.primaryBackground
-                                                        else ClassJournalTheme.colors.secondaryBackground)
-
-                                                })
+//                                                        tint = if (currentDestination?.hierarchy?.any { it.route == screen.route } == true) ClassJournalTheme.colors.tintColor
+//                                                        else ClassJournalTheme.colors.secondaryBackground)
+                                                    )
+                                                }
+                                            ,
+                                             colors = NavigationBarItemColors(
+                                                 selectedIconColor = ClassJournalTheme.colors.primaryText,
+                                                 selectedTextColor = ClassJournalTheme.colors.primaryText,
+                                                 selectedIndicatorColor = ClassJournalTheme.colors.controlColor,
+                                                 unselectedIconColor = ClassJournalTheme.colors.primaryBackground,
+                                                 unselectedTextColor = ClassJournalTheme.colors.primaryBackground,
+                                                 disabledIconColor = ClassJournalTheme.colors.disableColor,
+                                                 disabledTextColor = ClassJournalTheme.colors.disableContentColor
+                                             ))
                                         }
                                     }
                                 }) { innerPadding ->

@@ -11,7 +11,7 @@ internal val baseLightPalette = ClassJournalColors(
     tintColor = Color.Magenta,
     controlColor = Color(0xFF7A8A99),
     errorColor = Color(0xFFEA1A1A),
-    disableColor = Color.DarkGray,
+    disableColor = Color.Gray,
     disableContentColor = Color.LightGray
 )
 

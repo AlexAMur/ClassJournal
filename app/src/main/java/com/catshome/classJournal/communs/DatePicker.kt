@@ -107,7 +107,7 @@ fun DatePickerModal(
         headlineContentColor = ClassJournalTheme.colors.primaryText,
         weekdayContentColor = ClassJournalTheme.colors.primaryText,
         subheadContentColor = ClassJournalTheme.colors.primaryText,
-        navigationContentColor = ClassJournalTheme.colors.primaryText,
+        navigationContentColor = ClassJournalTheme.colors.tintColor,
         yearContentColor = ClassJournalTheme.colors.primaryText,
         //disabledYearContentColor = ClassJournalTheme.colors.primaryText,
         currentYearContentColor = ClassJournalTheme.colors.primaryText,

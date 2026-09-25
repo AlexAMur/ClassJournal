@@ -173,7 +173,7 @@ fun visitListScreen(
                                         ),
                                     shape = ShapeDefaults.ExtraSmall,
                                     colors = CardDefaults.cardColors(
-                                        containerColor = ClassJournalTheme.colors.disableColor,
+                                        containerColor = ClassJournalTheme.colors.secondaryBackground,
                                         contentColor = ClassJournalTheme.colors.primaryText
                                     )
                                 ) {

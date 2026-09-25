@@ -45,8 +45,11 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
                 ?: Clock.System.now().minus(
                     1, DateTimeUnit.MONTH, TimeZone.currentSystemDefault()
                 ).toEpochMilliseconds().toLocalDateTimeRu(),
-            endDate = appSetting?.endDateToVisit?.let { it.toLocalDateTimeRu() }
-                ?: Clock.System.now().toEpochMilliseconds().toLocalDateTimeRu(),
+            endDate = appSetting?.endDateToVisit?.let {
+                if (it.length <= DATE_FORMAT_RU.length)
+                    "$it+23.59".toLocalDateTimeRu()
+                else it.toLocalDateTimeRu()
+            }                ?: Clock.System.now().toEpochMilliseconds().toLocalDateTimeRu(),
             sortValue = appSetting?.sortVisit?: SortEnum.Date
         )
     ) {
@@ -56,7 +59,7 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
         when (viewEvent) {
             is VisitListEvent.SetFilter -> {
                 viewState.beginDate = viewEvent.filter.beginDate?.toLocalDateTimeRu()
-                viewState.endDate = "${viewEvent.filter.endDate}+23.59".toLocalDateTimeRu()
+                viewState.endDate = viewEvent.filter.endDate?.toLocalDateTimeRu()
                 viewState = viewState.copy(
                     selectedOption = viewEvent.filter.selectOption,
                     sortValue = viewEvent.filter.sort ?: SortEnum.Date,
