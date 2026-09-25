@@ -45,7 +45,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
             1, DateTimeUnit.MONTH, TimeZone.currentSystemDefault()).toDateTimeRuString().toString(),
         endDate = appSetting?.endDateToPay?.let { it }?: Clock.System.now().toDateTimeRuString(
             timeZone = TimeZone.currentSystemDefault(),
-            formatDate = FormatDate.Date
+            formatDate = FormatDate.DateTime
         ).toString(),
         sortValue = appSetting?.sortPay
     )) {

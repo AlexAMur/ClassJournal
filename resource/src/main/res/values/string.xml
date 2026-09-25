@@ -71,7 +71,7 @@
     <string name="save_button">Сохранить</string>
     <string name="save_successful">Данные успешно сохранены!</string>
 
-    <string name="current_saldo">Текущий баланс:</string>
+    <string name="current_saldo">Баланс:</string>
 
     <string name="name_child">Имя ребенка.</string>
     <string name="surname_child">Фамилия ребенка</string>

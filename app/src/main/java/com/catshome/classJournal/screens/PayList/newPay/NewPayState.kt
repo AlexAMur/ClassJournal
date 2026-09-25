@@ -4,6 +4,11 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.Pay.Pay
+import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock.System.now
 
 data class NewPayState(
     val searchText: TextFieldValue = TextFieldValue(""),
@@ -22,5 +27,5 @@ data class NewPayState(
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
     val payment: TextFieldValue = TextFieldValue("0", selection = TextRange(0, 1)),
-    val pay: Pay = Pay()
+    val pay: Pay = Pay(datePay = now().toLocalDateTime(TimeZone.currentSystemDefault()).toDateTimeRuString().toString())
 )

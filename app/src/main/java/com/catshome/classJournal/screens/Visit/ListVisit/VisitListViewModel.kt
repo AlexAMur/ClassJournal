@@ -56,7 +56,7 @@ class VisitListViewModel @Inject constructor(private val visitInteractor: VisitI
         when (viewEvent) {
             is VisitListEvent.SetFilter -> {
                 viewState.beginDate = viewEvent.filter.beginDate?.toLocalDateTimeRu()
-                viewState.endDate = viewEvent.filter.endDate?.toLocalDateTimeRu()
+                viewState.endDate = "${viewEvent.filter.endDate}+23.59".toLocalDateTimeRu()
                 viewState = viewState.copy(
                     selectedOption = viewEvent.filter.selectOption,
                     sortValue = viewEvent.filter.sort ?: SortEnum.Date,
