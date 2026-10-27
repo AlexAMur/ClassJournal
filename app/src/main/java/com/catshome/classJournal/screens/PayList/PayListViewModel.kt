@@ -15,6 +15,7 @@ import com.catshome.classJournal.domain.communs.toDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
 import com.catshome.classJournal.domain.communs.toLong
+import com.catshome.classJournal.proto.DateOfPeriod
 import com.catshome.classJournal.proto.optionPeriod
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.PayList.PayListAction.EditPay
@@ -38,17 +39,36 @@ import kotlin.time.Clock
 
 @HiltViewModel
 class PayListViewModel @Inject constructor(private val payListInteractor: PayListInteractor) :
-    BaseViewModel<PayListState, PayListAction, PayListEvent>(installState= PayListState(
-        selectedOption = appSetting?.periodToPay?.ordinal?:optionPeriod.MONTH.ordinal,
-        selectChild = appSetting?.idSelectChildToPay?.let{payListInteractor.getChildByID(it)},
-        beginDate = appSetting?.beginDateToPay?.let { it }?: Clock.System.now().minus(
-            1, DateTimeUnit.MONTH, TimeZone.currentSystemDefault()).toDateTimeRuString().toString(),
-        endDate = appSetting?.endDateToPay?.let { it }?: Clock.System.now().toDateTimeRuString(
-            timeZone = TimeZone.currentSystemDefault(),
-            formatDate = FormatDate.DateTime
-        ).toString(),
-        sortValue = appSetting?.sortPay
-    )) {
+    BaseViewModel<PayListState, PayListAction, PayListEvent>(
+        installState = PayListState(
+            selectedOption = appSetting?.periodToPay?.ordinal ?: optionPeriod.MONTH.ordinal,
+            selectChild = appSetting?.idSelectChildToPay?.let { payListInteractor.getChildByID(it) },
+
+            beginDate = if (optionPeriod.PERIOD.ordinal == appSetting?.periodToPay?.ordinal) {
+                appSetting?.beginDateToPay?.let { it } ?: Clock.System.now().minus(
+                    1, DateTimeUnit.MONTH, TimeZone.currentSystemDefault()
+                ).toDateTimeRuString().toString()
+            } else {
+                getDatePerioud(appSetting?.periodToPay, DateOfPeriod.Begin)
+//                Clock.System.now().minus(
+//                    1, DateTimeUnit.MONTH, TimeZone.currentSystemDefault()
+//                ).toDateTimeRuString().toString()
+            },
+            endDate = if (optionPeriod.PERIOD.ordinal == appSetting?.periodToPay?.ordinal) {
+                appSetting?.endDateToPay?.let { it } ?: Clock.System.now().toDateTimeRuString(
+                    timeZone = TimeZone.currentSystemDefault(),
+                    formatDate = FormatDate.DateTime
+                ).toString()
+            } else {
+                getDatePerioud(appSetting?.periodToPay, DateOfPeriod.End)
+//                appSetting?.endDateToPay?.let { it } ?: Clock.System.now().toDateTimeRuString(
+//                    timeZone = TimeZone.currentSystemDefault(),
+//                    formatDate = FormatDate.DateTime
+//                ).toString()
+            },
+            sortValue = appSetting?.sortPay
+        )
+    ) {
     // Состояние загрузки для индикатора свайпа
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow().value
@@ -59,7 +79,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
 
     private val exceptionHandlerPaysList =
         CoroutineExceptionHandler { coroutineContext, throwable ->
-            Log.e("CLJR","exceptionHandlerPaysList!! " )
+            Log.e("CLJR", "exceptionHandlerPaysList!! ")
             if (throwable.message?.contains("ErrorDelete") == true)
 
                 obtainEvent(
@@ -99,7 +119,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                                 idSelectChildToPay = childId,
                                 beginDateToPay = beginDate,
                                 endDateToPay = endDate,
-                                sortPay = sort?: SortEnum.Date
+                                sortPay = sort ?: SortEnum.Date
                             )
                         }
                     }
@@ -133,7 +153,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                 }
                 viewState.onDismissed = {
                     var result = false
-                    viewState.deletePays?.let {deletePays->
+                    viewState.deletePays?.let { deletePays ->
                         CoroutineScope(Dispatchers.Default).launch(exceptionHandlerPaysList) {
                             val job = CoroutineScope(Dispatchers.IO).async {
                                 result =
@@ -149,7 +169,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                                 viewState.messageSnackBar = null
                                 viewState.onDismissed = null
                                 viewState.onAction = null
-                               viewState.deletePays = null
+                                viewState.deletePays = null
                             }
                         }
                     }
@@ -175,7 +195,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
 
             is PayListEvent.ReloadScreen -> {
                 Log.e("CLJR", "Reload")
-               // getStatisticPay()
+                // getStatisticPay()
                 loadPayList()
             }
 
@@ -185,7 +205,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
                         if (viewEvent.pay?.uidPay == it.uidPay) {
                             it.copy(isDelete = false, isOptionsRevealed = false)
                         } else
-                           it
+                            it
                     },
                     deletePays = null
                 )
@@ -317,7 +337,7 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
         onDismissed?.let { viewState.onDismissed = it }
     }
 
- fun resetStatusSnackBar() {
+    fun resetStatusSnackBar() {
         viewState.onAction = null
         viewState.onDismissed = null
         //   viewState = viewState.copy(isCanShowSnackBar = false, messageShackBar = null)
@@ -326,19 +346,21 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
         viewState.messageSnackBar = null
     }
 
-     fun getStatisticPay() {
+    fun getStatisticPay() {
         Log.e("CLJR", "get Statistic PAY")
         val date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        val lastMonth =Clock.System.now().minus(
-            DateTimePeriod(months = 1), TimeZone.currentSystemDefault())
-                .toLocalDateTime(TimeZone.currentSystemDefault())
+        val lastMonth = Clock.System.now().minus(
+            DateTimePeriod(months = 1), TimeZone.currentSystemDefault()
+        )
+            .toLocalDateTime(TimeZone.currentSystemDefault())
         CoroutineScope(Dispatchers.IO).launch {
-            viewState = viewState.copy(incomePerMonth = payListInteractor.getStatisticPay(
+            viewState = viewState.copy(
+                incomePerMonth = payListInteractor.getStatisticPay(
                     viewState.beginDate,
                     viewState.endDate
                 ),
 
-                incomePerLastMonth =payListInteractor.getStatisticPay(
+                incomePerLastMonth = payListInteractor.getStatisticPay(
                     beginDate = "01.${lastMonth.formatRu(FormatDate.Month)}.${lastMonth.year}",
                     endDate = date.toDateTimeRuString().toString()
                 ),
@@ -350,4 +372,60 @@ class PayListViewModel @Inject constructor(private val payListInteractor: PayLis
         }
     }
 
+}
+
+fun getDatePerioud(
+    period: optionPeriod?,
+    date: DateOfPeriod
+): String {
+    when (period) {
+        optionPeriod.DAY -> {
+            if (date.ordinal == DateOfPeriod.Begin.ordinal)
+                return "${
+                    Clock.System.now().toDateTimeRuString(
+                        TimeZone.currentSystemDefault(),
+                        formatDate = FormatDate.Date
+                    )
+                } 00:00"
+            else
+                return "${
+                    Clock.System.now().toDateTimeRuString(
+                        TimeZone.currentSystemDefault(),
+                        formatDate = FormatDate.Date
+                    )
+                } 23:59"
+        }
+
+        optionPeriod.MONTH -> {
+            if (date.ordinal == DateOfPeriod.Begin.ordinal)
+                return "01.${
+                    Clock.System.now()
+                        .toDateTimeRuString(TimeZone.currentSystemDefault(), FormatDate.Month)
+                }.${
+                    Clock.System.now()
+                        .toDateTimeRuString(TimeZone.currentSystemDefault(), FormatDate.Year)
+                } 00:00"
+            else {
+                return "${Clock.System.now().toDateTimeRuString(TimeZone.currentSystemDefault(),
+                        formatDate = FormatDate.Date)} 23:59"
+            }
+        }
+        optionPeriod.YEAR -> {
+            if (date.ordinal == DateOfPeriod.Begin.ordinal){
+                return "01.01.${Clock.System.now()
+                    .toDateTimeRuString(TimeZone.currentSystemDefault(), FormatDate.Year)
+                } 00:00"
+            }
+            else
+            {
+                return "31.12.${
+                    Clock.System.now()
+                        .toDateTimeRuString(TimeZone.currentSystemDefault(), FormatDate.Year)
+                } 23:59"
+            }
+
+        }
+        optionPeriod.PERIOD -> {return ""}
+        else -> {return ""}
+    }
 }

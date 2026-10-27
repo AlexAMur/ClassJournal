@@ -63,15 +63,21 @@ fun newPayScreen(
             }
         }
     ) {
-        DisposableEffect(viewState.isResetState) {
-            onDispose {
-                if (viewState.isResetState)
-                    viewModel.obtainEvent(NewPayEvent.ResetState)
-            }
-        }
-        editPay?.let {pay->
+//        DisposableEffect(viewState.isResetState) {
+//            onDispose {
+//                if (viewState.isResetState)
+//                    viewModel.obtainEvent(NewPayEvent.ResetState)
+//            }
+//        }
+        editPay?.let { pay ->
             LaunchedEffect(editPay) {
                 viewModel.obtainEvent(NewPayEvent.SetState(pay))
+            }
+        }
+        LaunchedEffect(viewState.isResetState) {
+        if (editPay == null) {
+
+            viewModel.obtainEvent(NewPayEvent.ResetState)
             }
         }
         PayScreenContent(
@@ -100,7 +106,7 @@ fun newPayScreen(
                         inclusive = true
                     }
                 }
-                viewState.isResetState = true
+               // viewState.isResetState = true
             }
 
             NewPayAction.CloseScreen -> {
@@ -113,7 +119,7 @@ fun newPayScreen(
                         inclusive = true
                     }
                 }
-                viewState.isResetState = true
+             //  viewState.isResetState = true
             }
 
             null -> {}

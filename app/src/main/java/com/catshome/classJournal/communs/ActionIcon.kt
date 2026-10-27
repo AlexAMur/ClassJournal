@@ -8,7 +8,9 @@ import android.graphics.Paint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,16 +31,18 @@ fun ActionIcon(
     contentDescription: String? = null,
     tint: Color = ClassJournalTheme.colors.primaryBackground
 ) {
-    IconButton(
-        onClick = onClick,
-        modifier = modifier
-            .background(backgroundColor)
+  //  Row(Modifier) {
+        IconButton(
+            onClick = onClick,
+            modifier = modifier
+                .background(backgroundColor)
 
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = contentDescription,
-            tint = tint
-        )
-    }
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = tint
+            )
+        }
+    //}
 }

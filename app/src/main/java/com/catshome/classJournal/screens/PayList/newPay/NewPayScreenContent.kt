@@ -43,6 +43,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
@@ -271,12 +272,19 @@ fun PayScreenContent(
                             if (it.isFocused) {
                                 viewState.indexFocus = 2
                                 viewModel.obtainEvent(NewPayEvent.onFocusePrice)
-
+                            }
+                            else{
+                                viewState.indexFocus = -1
+                                viewState.isPaySumFocus=it.isFocused
+                                viewState.payment = TextFieldValue( viewState.payment.text,
+                                    TextRange(0,viewState.payment.text.length),
+                                            TextRange(0, viewState.payment.text.length)
+                                )
                             }
                         },
                     errorState = viewState.isPayError,
                     keyboardOptions = KeyboardOptions.Default.merge(KeyboardOptions(keyboardType = KeyboardType.Number)),
-                    onValueChange = { newPayment -> viewModel.paymentChange(newPayment.text) },
+                    onValueChange = { newPayment -> viewModel.paymentChange(newPayment.text, isFocus = viewState.indexFocus==2) },
                 )
             }
         }

@@ -12,5 +12,5 @@ data class OptionFilterList(
     val selectOption: Int = 1,
     val beginDate: String? = null,
     val endDate: String? = null,
-    val screen: ScreenEnum? = ScreenEnum.VisitListScreen
+    val screen: ScreenEnum? = null // ScreenEnum.VisitListScreen
 )

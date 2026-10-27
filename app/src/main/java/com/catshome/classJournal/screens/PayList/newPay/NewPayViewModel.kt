@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.PayList.newPay
 
+import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -220,13 +221,23 @@ class NewPayViewModel @Inject constructor(
                 }
             }
             NewPayEvent.onFocusePrice->{
+                if (!viewState.isPaySumFocus){
               viewState =viewState.copy(payment =  viewState.payment.copy(
-                        selection = TextRange(
-                            start = 0,
-                            end = viewState.payment.text.length
-                        )
+//                        selection = TextRange(
+//                            start = 0,
+//                            end = viewState.payment.text.length
+//                        )
                 )
               )
+                }else{
+                    viewState =viewState.copy(payment =  viewState.payment.copy(
+//                        selection = TextRange(
+//                            start = viewState.payment.text.length,
+//                            end = viewState.payment.text.length
+//                        )
+                    )   )
+                }
+
             }
 
             is NewPayEvent.SelectedChild -> {
@@ -258,6 +269,7 @@ class NewPayViewModel @Inject constructor(
             payment = TextFieldValue("0", TextRange(0, 1)),
             errorMessage = ""
         )
+        Log.e("CLJR", "Reset State ${viewState.pay.datePay}")
     }
 
     fun datePayChange(newDate: String?) {
@@ -265,15 +277,16 @@ class NewPayViewModel @Inject constructor(
             viewState = viewState.copy(pay = viewState.pay.copy(datePay = newDate))
         }
     }
-    fun paymentChange(newValue: String) {
+    fun paymentChange(newValue: String, isFocus: Boolean) {
         viewState = viewState.copy(
             payment = viewState.payment.copy(text = newValue,
-                selection = if (newValue==viewState.payment.text)
+                selection = if(!viewState.isPaySumFocus && isFocus){
                     TextRange(0, newValue.length)
+                }
                             else
-                    TextRange( newValue.length)
+                    TextRange(newValue.length, newValue.length)
             ),
-
+            isPaySumFocus =isFocus,
         isPayError = false)
         //viewState = viewState.copy(isPayError = false)
     }

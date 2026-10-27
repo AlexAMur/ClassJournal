@@ -25,8 +25,8 @@
     <string name="no_scheduler">Добавь урок</string>
     <string name="add_scheduler_">Добавь ученика или группу</string>
 
-    <string name="payment_date">Дата платежа:</string>
-    <string name="visit_date">Дата посещения:</string>
+    <string name="payment_date">Дата:</string>
+    <string name="visit_date">Дата:</string>
 
     <string name="imenu_settings">Настройки</string>
     <string name="imenu_backup">Выгрузить базу</string>

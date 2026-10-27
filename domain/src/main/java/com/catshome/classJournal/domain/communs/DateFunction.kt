@@ -25,7 +25,7 @@ const val DATE_FORMAT_RU = "dd.MM.yyyy"
 const val DATETIME_FORMAT_RU = "dd.MM.yyyy HH:mm"
 const val TIME_FORMAT = "HH:mm"
 
-enum class FormatDate { DateTime, Date, Time,Month,Day }
+enum class FormatDate { DateTime, Date, Time,Year,Month,Day }
 fun LocalDate.toStringRu(): String{
 //    try {
         val formatter = LocalDate.Format {
@@ -124,6 +124,11 @@ fun LocalDateTime.toDateTimeRuString(formatDate: FormatDate = FormatDate.DateTim
                     minute(padding = Padding.ZERO)
                 }
             }
+             FormatDate.Year->{
+                 LocalDateTime.Format {
+                     year()
+                 }
+             }
             FormatDate.Month -> {
                 LocalDateTime.Format {
                     monthNumber(padding = Padding.ZERO)
@@ -181,7 +186,11 @@ fun LocalDateTime.formatRu(format: FormatDate = FormatDate.DateTime): String {
                 minute(padding = Padding.ZERO)
             }
     }
-
+       FormatDate.Year->{
+           LocalDateTime.Format {
+               year()
+           }
+       }
        FormatDate.Month -> {
            LocalDateTime.Format {
                monthNumber(padding = Padding.ZERO)

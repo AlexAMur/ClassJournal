@@ -30,14 +30,16 @@ fun itemPay(
     Row(
         Modifier
             .background(ClassJournalTheme.colors.secondaryBackground)
+
             .fillMaxSize()
             .clickable(onClick = onClick)
             .offset(offset.x.dp, y = 0.dp),
-        horizontalArrangement = Arrangement.SpaceAround
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
             Modifier
-                .fillMaxWidth(0.75f)
+                .fillMaxWidth(0.80f)
+                .padding(bottom = 16.dp)
                 .offset(x = offset.x.absoluteValue.dp)
         ) {
             Text(
@@ -47,7 +49,7 @@ fun itemPay(
 
                     .fillMaxWidth(),
                 color = ClassJournalTheme.colors.primaryText,
-                style = ClassJournalTheme.typography.body
+                style = ClassJournalTheme.typography.caption
             )
 
             Text(
@@ -57,7 +59,7 @@ fun itemPay(
                     //.offset(x=offset.x.unaryPlus().dp)
                     .fillMaxWidth(),
                 color = ClassJournalTheme.colors.primaryText,
-                style = ClassJournalTheme.typography.caption
+                style = ClassJournalTheme.typography.body
             )
 
         }

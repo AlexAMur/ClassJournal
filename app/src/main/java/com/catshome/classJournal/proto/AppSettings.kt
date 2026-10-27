@@ -29,3 +29,4 @@ enum class optionPeriod(ruName: String){
     PERIOD("Период"),
     ALL("Все")
 }
+enum class DateOfPeriod{Begin , End}

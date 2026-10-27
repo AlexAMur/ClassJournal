@@ -3,11 +3,13 @@ package com.catshome.classJournal.communs
 import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -54,17 +56,17 @@ fun SwipeableItemWithActions(
     var contextMenuWidth by remember {
         mutableFloatStateOf(0f)
     }
-    var positionX by remember {
+    var contextMenuHight by remember {
         mutableFloatStateOf(0f)
     }
-    var boxSizeX by remember {
-        mutableIntStateOf(0)
+
+    var positionX by remember {
+        mutableFloatStateOf(0f)
     }
     val offset = remember {
         Animatable(initialValue = 0f)
     }
     val scope = rememberCoroutineScope()
-
     LaunchedEffect(key1 = isRevealed, contextMenuWidth) {
         if (isRevealed) {
             offset.animateTo(-contextMenuWidth)
@@ -76,29 +78,26 @@ fun SwipeableItemWithActions(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .onGloballyPositioned { coord ->
-                with(density) {
-                    //positionX = coord.positionInParent().x /density
-                    boxSizeX = (coord.size.width / density).toInt()
-                }
-            }
-            .height(IntrinsicSize.Min),
+           ,
         ) {
 
         Row(
             modifier = Modifier
+
                 .onSizeChanged {
-                    contextMenuWidth = it.width.toFloat()
+                    contextMenuWidth = (it.width).toFloat()
+
                 }
-                .align(Alignment.CenterEnd),
+                .align(Alignment.CenterEnd)
+                .fillMaxHeight()
+
+                ,
             verticalAlignment = Alignment.CenterVertically
         ) {
             actions()
         }
         Surface(
             modifier = Modifier
-                //.background(color = Color.Blue)
-                //.fillMaxWidth()
                 .offset { IntOffset(offset.value.roundToInt(), 0) }
                 .pointerInput(contextMenuWidth) {
                     detectHorizontalDragGestures(

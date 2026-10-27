@@ -4,10 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
@@ -33,10 +35,16 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -56,6 +64,7 @@ fun PayListContent(
     viewModel: PayListViewModel,
 ) {
     val sbHostState = remember { SnackbarHostState() }
+
     val paddingValues = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
     Surface(
@@ -244,7 +253,8 @@ fun PayListContent(
                                     Modifier
                                         .background(ClassJournalTheme.colors.primaryBackground)
                                         .fillMaxWidth()
-                                        .padding(start = 16.dp, bottom = 8.dp, end = 16.dp),
+                                        .padding(start = 16.dp, bottom = 8.dp, end = 16.dp)
+                                        ,
                                     colors = CardDefaults.cardColors(
                                         ClassJournalTheme.colors.secondaryBackground
                                     ),
@@ -253,9 +263,12 @@ fun PayListContent(
 
                                 {
                                     SwipeableItemWithActions(
-                                        modifier = Modifier.background(
+                                        modifier = Modifier
+                                           // .padding(bottom = 16.dp)
+                                            .background(
                                             ClassJournalTheme.colors.primaryBackground
-                                        ),
+                                        )
+                                           ,
                                         isRevealed = item.isOptionsRevealed,
                                         onExpanded = {
                                             //действие для удаления
@@ -303,8 +316,9 @@ fun PayListContent(
                                                 },
                                                 icon = Icons.Default.Delete,
                                                 modifier = Modifier
-                                                    .fillMaxHeight()
-                                                    .width(120.dp)
+                                                  // .fillMaxHeight()
+                                                    .width(80.dp)
+//                                                    .height(IntrinsicSize.Min)
                                             )
                                         },
                                     ) { offset ->

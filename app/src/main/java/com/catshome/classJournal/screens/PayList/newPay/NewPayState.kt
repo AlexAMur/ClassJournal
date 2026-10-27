@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.PayList.newPay
 
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import com.catshome.classJournal.domain.Child.MiniChild
@@ -17,6 +18,7 @@ data class NewPayState(
     val isChildError: Boolean =false,
     val childErrorMessage: String? = null,
     var indexFocus:Int = -1,
+    var isPaySumFocus: Boolean= false,
     var isResetState: Boolean = false,
     var isSurnameError: Boolean= false,
     var isSnackBarShow: Boolean= false,
@@ -26,6 +28,6 @@ data class NewPayState(
     var errorMessage: String = "",
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
-    val payment: TextFieldValue = TextFieldValue("0", selection = TextRange(0, 1)),
+    var payment: TextFieldValue = TextFieldValue(""),
     val pay: Pay = Pay(datePay = now().toLocalDateTime(TimeZone.currentSystemDefault()).toDateTimeRuString().toString())
 )
