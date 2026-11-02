@@ -92,7 +92,7 @@ fun NewGroupScreen(
                     Text(
                         stringResource(R.string.new_group_dialog_headline),
                         color = ClassJournalTheme.colors.primaryText,
-                        style = ClassJournalTheme.typography.heading
+                        style = ClassJournalTheme.typography.caption
                     )
                     TextButton(onClick = { viewModel.obtainEvent(NewGroupEvent.SaveClicked) }) {
                         Text(

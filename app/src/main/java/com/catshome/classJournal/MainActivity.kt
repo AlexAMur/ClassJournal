@@ -176,50 +176,52 @@ class MainActivity : ComponentActivity() {
                             Scaffold(
                                 Modifier.background(ClassJournalTheme.colors.primaryBackground),
                                 bottomBar = {
-                                    NavigationBar(containerColor = ClassJournalTheme.colors.tintColor) {
-                                        bottomItems.forEachIndexed { index, screen ->
-                                            NavigationBarItem(
-                                                label = {
-                                                    Text(
-                                                        screen.label,
-                                                        style = ClassJournalTheme.typography.body,
-                                                        //color = ClassJournalTheme.colors.primaryText
-                                                    )
-                                                },
-                                                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                                                onClick = {
-                                                    // selectedItem = index
-                                                    if (currentDestination?.route != screen.route) navController.navigate(
-                                                        screen.route
-                                                    )
-                                                },
-                                                icon = {
-                                                    Icon(if (currentDestination?.hierarchy?.any { it.route == screen.route } == true) screen.icon else screen.iconUnselect,
-                                                        "",
+                                    if (bottomItems.any { it.route == currentDestination?.route }) {
+                                        NavigationBar(containerColor = ClassJournalTheme.colors.tintColor) {
+                                            bottomItems.forEachIndexed { index, screen ->
+                                                NavigationBarItem(
+                                                    label = {
+                                                        Text(
+                                                            screen.label,
+                                                            style = ClassJournalTheme.typography.body,
+                                                            //color = ClassJournalTheme.colors.primaryText
+                                                        )
+                                                    },
+                                                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                                                    onClick = {
+                                                        // selectedItem = index
+                                                        if (currentDestination?.route != screen.route) navController.navigate(
+                                                            screen.route
+                                                        )
+                                                    },
+                                                    icon = {
+                                                        Icon(
+                                                            if (currentDestination?.hierarchy?.any { it.route == screen.route } == true) screen.icon else screen.iconUnselect,
+                                                            "",
 //                                                        tint = if (currentDestination?.hierarchy?.any { it.route == screen.route } == true) ClassJournalTheme.colors.tintColor
 //                                                        else ClassJournalTheme.colors.secondaryBackground)
-                                                    )
-                                                }
-                                            ,
-                                             colors = NavigationBarItemColors(
-                                                 selectedIconColor = ClassJournalTheme.colors.primaryText,
-                                                 selectedTextColor = ClassJournalTheme.colors.primaryText,
-                                                 selectedIndicatorColor = ClassJournalTheme.colors.controlColor,
-                                                 unselectedIconColor = ClassJournalTheme.colors.primaryBackground,
-                                                 unselectedTextColor = ClassJournalTheme.colors.primaryBackground,
-                                                 disabledIconColor = ClassJournalTheme.colors.disableColor,
-                                                 disabledTextColor = ClassJournalTheme.colors.disableContentColor
-                                             ))
-                                        }
+                                                        )
+                                                    },
+                                                    colors = NavigationBarItemColors(
+                                                        selectedIconColor = ClassJournalTheme.colors.primaryText,
+                                                        selectedTextColor = ClassJournalTheme.colors.primaryText,
+                                                        selectedIndicatorColor = ClassJournalTheme.colors.controlColor,
+                                                        unselectedIconColor = ClassJournalTheme.colors.primaryBackground,
+                                                        unselectedTextColor = ClassJournalTheme.colors.primaryBackground,
+                                                        disabledIconColor = ClassJournalTheme.colors.disableColor,
+                                                        disabledTextColor = ClassJournalTheme.colors.disableContentColor
+                                                    ))
+                                            }
+                                        }}
+                                    }) { innerPadding ->
+                                    currentSettings.innerPadding = innerPadding
+                                    MainModalNavDrawer(innerPadding, navController) {
+                                        classJournalApp(
+                                            this, navController, currentSettings
+                                        )
                                     }
-                                }) { innerPadding ->
-                                currentSettings.innerPadding = innerPadding
-                                MainModalNavDrawer(innerPadding, navController) {
-                                    classJournalApp(
-                                        this, navController, currentSettings
-                                    )
+
                                 }
-                            }
                         }
                     }
                 }
