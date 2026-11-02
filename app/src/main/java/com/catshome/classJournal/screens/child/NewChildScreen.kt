@@ -96,17 +96,20 @@ fun NewChildScreen(
 
             ComposeAction.CloseScreen -> {
                 keyboardController?.hide()
-                //viewState.outerNavigation?.popBackStack()
+                viewState.outerNavigation?.popBackStack()
                 viewModel.clearAction()
             }
 
             NewChildAction.CloseClicked -> {
+                keyboardController?.hide()
                 viewState.outerNavigation?.popBackStack()
+                viewModel.clearAction()
             }
 
             is NewChildAction.SaveChild -> {}
             NewChildAction.SaveClicked -> {
                 viewModel.obtainEvent(NewChildEvent.CloseClicked)
+
             }
 
             is NewChildAction.ReloadScreen -> {

@@ -42,6 +42,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.catshome.classJournal.communs.mainMenu.MainModalNavDrawer
+import com.catshome.classJournal.navigate.OptionFilterList
 import com.catshome.classJournal.proto.AppSettings
 import com.catshome.classJournal.proto.AppSettingsSerializer
 import com.catshome.classJournal.proto.ColorMode
@@ -176,7 +177,12 @@ class MainActivity : ComponentActivity() {
                             Scaffold(
                                 Modifier.background(ClassJournalTheme.colors.primaryBackground),
                                 bottomBar = {
-                                    if (bottomItems.any { it.route == currentDestination?.route }) {
+                                    Log.e("CLJR",currentDestination?.route.toString())
+                                    if (bottomItems.any { it.route == currentDestination?.route }
+                                        || currentDestination?.route?.contains("OptionFilterList")==true
+                                        || currentDestination?.route?.contains("DetailsPayResult")==true
+                                        || currentDestination?.route?.contains("SaveLesson")==true
+                                        ) {
                                         NavigationBar(containerColor = ClassJournalTheme.colors.tintColor) {
                                             bottomItems.forEachIndexed { index, screen ->
                                                 NavigationBarItem(
