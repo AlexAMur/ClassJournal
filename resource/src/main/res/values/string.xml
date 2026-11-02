@@ -55,6 +55,7 @@
     <string name="error_invalid_valuePrice">Не допустимое значение цены(стоимости)!</string>
     <string name="error_zero_value">Время не может быть меньше или равно 0!</string>
     <string name="error_negative_value">Стоимость не может быть меньше 0!</string>
+    <string name="error_eptylist">Не выбрана группа или ученик!</string>
     <string name="error_time_lesson_value">Время совпадает с другим занятием!</string>
     <string name="error_lesson_time">В это время уже есть занятие! </string>
     <string name="dialog_handler_time_lesson">Продолжить создание? </string>

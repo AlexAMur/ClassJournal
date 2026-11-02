@@ -60,94 +60,106 @@ class NewSchedulerViewModel @Inject constructor(private val interact: SchedulerI
             }
 
 
-        SaveEvent -> {
-            val list = viewState.itemsList?.filter { it.isChecked }
-            list?.map { clientScheduler ->
-                try {
-                    clientScheduler.price.toInt()
-                    if (clientScheduler.price.toInt() < 0) {
-                        viewState = viewState.copy(
-                            isShowDialog = true,
-                            dialogMessage = context.getString(R.string.error_negative_value)
-                        )
-                        viewState.onDisimiss = {
-                            viewState = viewState.copy(isShowDialog = false)
-                        }
-                        return
-                    }
-                } catch (e: NumberFormatException) {
+            SaveEvent -> {
+                val list = viewState.itemsList?.filter { it.isChecked }
+                if (list.isNullOrEmpty()) {
                     viewState = viewState.copy(
                         isShowDialog = true,
-                        dialogMessage = context.getString(R.string.error_invalid_valuePrice)
+                        dialogMessage = context.getString(R.string.error_eptylist)
                     )
                     viewState.onDisimiss = {
                         viewState = viewState.copy(isShowDialog = false)
                     }
                     return
                 }
-            }
-            list?.let {
-                viewModelScope.launch {
-                    viewState.dayOfWeek?.let { dayOfWeek ->
-                        val deferred = CoroutineScope(Dispatchers.IO).async {
-                            interact.saveScheduler(
-                                dayOfWeek = dayOfWeek,
-                                time = viewState.startTime.toLong(),
-                                duration = viewState.duration,
-                                list = list
+
+                list.map { clientScheduler ->
+                    try {
+                        clientScheduler.price.toInt()
+                        if (clientScheduler.price.toInt() < 0) {
+                            viewState = viewState.copy(
+                                isShowDialog = true,
+                                dialogMessage = context.getString(R.string.error_negative_value)
                             )
-                            return@async true
+                            viewState.onDisimiss = {
+                                viewState = viewState.copy(isShowDialog = false)
+                            }
+                            return
                         }
-                        if (deferred.await()) {
-                            obtainEvent(ClearState)
-                            viewAction = NewSchedulerAction.Save
+                    } catch (e: NumberFormatException) {
+                        viewState.onDisimiss = {
+                            viewState = viewState.copy(isShowDialog = false)
+                        }
+                        viewState = viewState.copy(
+                            isShowDialog = true,
+                            dialogMessage = context.getString(R.string.error_invalid_valuePrice)
+                        )
+
+                        return
+                    }
+                }
+                list.let {
+                    viewModelScope.launch {
+                        viewState.dayOfWeek?.let { dayOfWeek ->
+                            val deferred = CoroutineScope(Dispatchers.IO).async {
+                                interact.saveScheduler(
+                                    dayOfWeek = dayOfWeek,
+                                    time = viewState.startTime.toLong(),
+                                    duration = viewState.duration,
+                                    list = list
+                                )
+                                return@async true
+                            }
+                            if (deferred.await()) {
+                                obtainEvent(ClearState)
+                                viewAction = NewSchedulerAction.Save
+                            }
                         }
                     }
                 }
             }
-        }
 
-        is Search -> {
-            viewState = viewState.copy(searchText = viewEvent.search)
-            CoroutineScope(Dispatchers.IO).launch {
-                viewState.dayOfWeek?.let { day ->
-                    viewState = viewState.copy(
-                        itemsList = interact.getListClient(
-                            name = "%${viewEvent.search.text}%",
-                            dayOfWeek = day,
-                            startTimeLesson = viewState.startTime.toString()
+            is Search -> {
+                viewState = viewState.copy(searchText = viewEvent.search)
+                CoroutineScope(Dispatchers.IO).launch {
+                    viewState.dayOfWeek?.let { day ->
+                        viewState = viewState.copy(
+                            itemsList = interact.getListClient(
+                                name = "%${viewEvent.search.text}%",
+                                dayOfWeek = day,
+                                startTimeLesson = viewState.startTime.toString()
+                            )
                         )
-                    )
+                    }
                 }
+
             }
 
-        }
+            ClearSearch -> {
+                obtainEvent(Search(viewState.searchText.copy("")))
+            }
 
-        ClearSearch -> {
-            obtainEvent(Search(viewState.searchText.copy("")))
-        }
+            is Checked -> {
+                viewState = viewState.copy(
+                    itemsList = viewState.itemsList?.mapIndexed { index, scheduler ->
+                        if (viewEvent.index == index)
+                            scheduler.copy(isChecked = !scheduler.isChecked)
+                        else
+                            scheduler
+                    }
+                )
+            }
 
-        is Checked -> {
-            viewState = viewState.copy(
-                itemsList = viewState.itemsList?.mapIndexed { index, scheduler ->
-                    if (viewEvent.index == index)
-                        scheduler.copy(isChecked = !scheduler.isChecked)
-                    else
-                        scheduler
-                }
-            )
-        }
-
-        ClearState -> {
-            viewState = viewState.copy(
-                itemsList = null,
-                dayOfWeek = null,
-                startTime = 0,
-                duration = 0,
-                searchText = TextFieldValue(),
-                reload = true
-            )
+            ClearState -> {
+                viewState = viewState.copy(
+                    itemsList = null,
+                    dayOfWeek = null,
+                    startTime = 0,
+                    duration = 0,
+                    searchText = TextFieldValue(),
+                    reload = true
+                )
+            }
         }
     }
-}
 }

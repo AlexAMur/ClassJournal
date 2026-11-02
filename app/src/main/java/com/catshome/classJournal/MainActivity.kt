@@ -177,7 +177,7 @@ class MainActivity : ComponentActivity() {
                             Scaffold(
                                 Modifier.background(ClassJournalTheme.colors.primaryBackground),
                                 bottomBar = {
-                                    Log.e("CLJR",currentDestination?.route.toString())
+                                   // Log.e("CLJR",currentDestination?.route.toString())
                                     if (bottomItems.any { it.route == currentDestination?.route }
                                         || currentDestination?.route?.contains("OptionFilterList")==true
                                         || currentDestination?.route?.contains("DetailsPayResult")==true
