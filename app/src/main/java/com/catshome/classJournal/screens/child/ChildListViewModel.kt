@@ -162,7 +162,8 @@ class ChildListViewModel @Inject constructor(
                                     childSurname = "",
                                     groupUid = group.uid,
                                     groupName = group.name,
-                                    childBirthDay = ""
+                                    childBirthDay = "",
+                                    saldo = ""
                                 )
                             )
                         )

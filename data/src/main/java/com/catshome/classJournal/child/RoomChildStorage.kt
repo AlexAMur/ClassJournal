@@ -107,7 +107,8 @@ class RoomChildStorage @Inject constructor(
                     childSurname = it.childSurname,
                     groupUid = it.groupUid ?: "",
                     groupName = it.groupName ?: context.getString(R.string.no_group),
-                    childBirthDay = it.childBirthday.toLocalDateTimeRuString(formatDate = FormatDate.Date).toString()
+                    childBirthDay = it.childBirthday.toLocalDateTimeRuString(formatDate = FormatDate.Date).toString(),
+                    saldo = it.saldo.toString()
                 )
             }
         }

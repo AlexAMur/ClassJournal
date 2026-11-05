@@ -11,6 +11,7 @@ data class ChildWithGroupListEntity(
     val childName: String,
     val childSurname: String,
     val childBirthday: Long,
+    val saldo: Long,
     val groupUid: String?,
     val groupName: String?
 )
@@ -21,6 +22,7 @@ fun ChildWithGroupListEntity.mapToChildWithGroups(): ChildWithGroups{
      childSurname = this.childSurname,
      childBirthDay = this.childBirthday.toLocalDateTimeRu()?.
                         toDateTimeRuString(formatDate = FormatDate.Date).toString(),
+       saldo = this.saldo.toString(),
      groupUid = this.groupUid?:"",
      groupName = this.groupName?:"Без группы"
    )

@@ -277,7 +277,8 @@ fun ChildListScreenContent(
                                             offset = offset,
                                             name = item.child.childName,
                                             surname = item.child.childSurname,
-                                            birthday = item.child.childBirthDay
+                                            birthday = item.child.childBirthDay,
+                                            saldo = item.child.saldo
                                         )
                                         {
                                             viewModel.obtainEvent(ChildListEvent.SelectItem)

@@ -5,6 +5,7 @@ data class ChildWithGroups(
     val childName: String,
     val childSurname: String,
     val childBirthDay: String,
+    val saldo: String,
     val groupUid: String,
     val groupName: String
 
