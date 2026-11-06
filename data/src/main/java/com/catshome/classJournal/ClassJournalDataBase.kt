@@ -14,6 +14,8 @@ import com.catshome.classJournal.Visit.VisitDAO
 import com.catshome.classJournal.Visit.VisitEntity
 
 import com.catshome.classJournal.child.ChildDAO
+import com.catshome.classJournal.child.ChildDocFileDAO
+import com.catshome.classJournal.child.ChildDocFileEntity
 import com.catshome.classJournal.child.ChildEntity
 import com.catshome.classJournal.child.ChildGroupDAO
 import com.catshome.classJournal.child.ChildGroupEntity
@@ -24,13 +26,16 @@ import com.catshome.classJournal.child.ChildGroupEntity
     ChildGroupEntity::class,
     PayEntity::class,
     VisitEntity::class,
-    SchedulerEntity::class],
-    version = 9)
+    SchedulerEntity::class,
+    ChildDocFileEntity::class],
+    version = 10)
 abstract class AppDataBase : RoomDatabase() {
     abstract fun groupsDAO(): GroupsDAO
     abstract fun childDAO(): ChildDAO
     abstract fun childGroupDAO(): ChildGroupDAO
     abstract fun payDAO(): PayDAO
+
+    abstract fun childDocFileDAO(): ChildDocFileDAO
 
     abstract fun visitDAO(): VisitDAO
     abstract fun schedulerDAO(): SchedulerDAO

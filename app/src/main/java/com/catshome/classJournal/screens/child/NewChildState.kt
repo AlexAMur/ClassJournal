@@ -14,6 +14,7 @@ data class NewChildState(
     var outerNavigation: NavHostController? = null,
     var child: Child =Child(),
     var listScreenChildGroup: List<ItemScreenChildGroup>? = emptyList(),
+    var listDoc: List<ItemScreenChildGroup>? = emptyList(),
     var indexGroup: Int = -1,
     var indexFocus:Int = -1,
     var isNameError: Boolean= false,

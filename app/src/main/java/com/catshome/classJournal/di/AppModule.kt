@@ -1,6 +1,8 @@
 package com.catshome.classJournal.di
 
 import android.content.Context
+import androidx.room.ColumnInfo
+import androidx.room.PrimaryKey
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.catshome.classJournal.AppDataBase
@@ -57,6 +59,18 @@ internal val MIGRATION_8_9 = object : Migration(8, 9) {
             db.execSQL("ALTER TABLE CHILD ALTER COLUMN child_birthday DROP NOT NULL")
         }
     }
+internal val MIGRATION_9_10 = object : Migration(9, 10) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE child_doc_files ('id' INTEGER NOT NULL PRIMARY KEY, 'child_id' TEXT NOT NULL, " +
+                    "'file_uri' TEXT NOT NULL,'file_name' TEXT NOT NULL,'mime_type' TEXT," +
+                    "'note_file' TEXT,'added_at' INTEGER NOT NULL," +
+                    " FOREIGN KEY ('child_id') REFERENCES 'child'('uid') ON DELETE CASCADE)"
+        )
+        db.execSQL("Create Index doc_child_index on child_doc_files (child_id, added_at DESC)")
+    }
+}
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -70,6 +84,7 @@ class AppModule {
             .addMigrations(MIGRATION_6_7)
             .addMigrations(MIGRATION_7_8)
             .addMigrations(MIGRATION_8_9)
+            .addMigrations(MIGRATION_9_10)
             .build()
     }
 }

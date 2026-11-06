@@ -1,7 +1,6 @@
 package com.catshome.classJournal.child
 // для  удаления ребенка вызывать функцию deleteChild
-// для  удаления ребенка вызывать функцию deleteChild
-// для  удаления ребенка вызывать функцию deleteChild
+
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert

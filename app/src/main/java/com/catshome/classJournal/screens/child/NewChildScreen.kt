@@ -109,7 +109,6 @@ fun NewChildScreen(
             is NewChildAction.SaveChild -> {}
             NewChildAction.SaveClicked -> {
                 viewModel.obtainEvent(NewChildEvent.CloseClicked)
-
             }
 
             is NewChildAction.ReloadScreen -> {
