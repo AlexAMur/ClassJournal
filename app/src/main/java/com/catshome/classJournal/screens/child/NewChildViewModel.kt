@@ -1,12 +1,18 @@
 package com.catshome.classJournal.screens.child
 
 import androidx.compose.ui.focus.FocusRequester
+import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.child.ChildGroupsRepositoryImpl
+import com.catshome.classJournal.communs.docFiles.DocFileSaver
+import com.catshome.classJournal.communs.docFiles.DocFileSaver.getFileName
+import com.catshome.classJournal.communs.docFiles.deleteFileByUri
+import com.catshome.classJournal.communs.docFiles.getMimeType
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildInteractor
+import com.catshome.classJournal.domain.Child.DocsChild.DocChild
 import com.catshome.classJournal.screens.viewModels.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -59,7 +65,7 @@ class NewChildViewModel @Inject constructor(
                 onDismissed = { viewState.isSnackbarShow = false },
                 onAction = { viewState.isSnackbarShow = false }
             )
-}
+        }
     }
 
     fun nameChange(newValue: String) {
@@ -92,6 +98,52 @@ class NewChildViewModel @Inject constructor(
 
     override fun obtainEvent(viewEvent: NewChildEvent) {
         when (viewEvent) {
+            is NewChildEvent.onChangeDocNoteFile->{
+                viewState = viewState.copy(
+                    listDocs = viewState.listDocs.mapIndexed { index,doc->
+                        if (index == viewEvent.Index)
+                            doc.copy(noteFile = viewEvent.text)
+                        else
+                            doc
+                    }
+                )
+            }
+           is NewChildEvent.noClearNote->{
+                viewState = viewState.copy(
+                    listDocs = viewState.listDocs.mapIndexed { index,doc->
+                        if (index == viewEvent.index)
+                            doc.copy(noteFile = "")
+                        else
+                            doc
+                    }
+                )
+            }
+            is NewChildEvent.SelectDocs -> {
+//                viewModelScope.launch {
+//                    childInteract.getListDocsByChild(viewState.child).collect { list ->
+//                        viewState = viewState.copy(listDocs = list)
+//                    }
+//                }
+                viewState = viewState.copy(
+                    listDocs = viewState.listDocs + (
+                            viewEvent.listUri.mapNotNull {
+                                it?.let { uri ->
+                                    DocChild(
+                                        id = 0,
+                                        childId = viewState.child.uid,
+                                        fileUri = uri.toString(),
+                                        mimeType = uri.getMimeType(context),
+                                        fileName = getFileName(context, uri) ?: "",
+                                        noteFile = "",
+                                        addedAt = System.currentTimeMillis(),
+                                        isDelete = false,
+                                        isNew = true
+                                    )
+                                }
+                            })
+                )
+            }
+
             is NewChildEvent.newChild -> {
                 viewState = viewState.copy(isNewChild = true)
             }
@@ -103,6 +155,12 @@ class NewChildViewModel @Inject constructor(
                         childGroups.getChildGroups(child.uid).collect { getScreenGroups(it) }
                     }
                     viewState = viewState.copy(child = child)
+                    viewModelScope.launch {
+                        childInteract.getListDocsByChild(child).collect {
+                            viewState = viewState.copy(listDocs = it)
+                        }
+                    }
+
                 }
             }
 
@@ -130,18 +188,23 @@ class NewChildViewModel @Inject constructor(
                         )
                     }
                     CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
-                       childInteract.saveChildUseCase(
+                        childInteract.saveChildUseCase(
                             viewState.child,
-                           viewState.listScreenChildGroup?.filter { list ->
-                               list.isChecked == true
-                           }?.map {
-                               ChildGroup(
-                                   uid = UUID.randomUUID().toString(),
-                                   groupId = it.group?.uid.toString(),
-                                   childId = viewState.child.uid
-                               )
-                           }?:emptyList()
+                            viewState.listScreenChildGroup?.filter { list ->
+                                list.isChecked == true
+                            }?.map {
+                                ChildGroup(
+                                    uid = UUID.randomUUID().toString(),
+                                    groupId = it.group?.uid.toString(),
+                                    childId = viewState.child.uid
+                                )
+                            } ?: emptyList(),
+                            childDocs = viewState.listDocs ?: emptyList()
                         )
+                        //удаляем файлы связаные с базой
+                        viewState.listDocs?.forEach {
+                            context.deleteFileByUri(it.fileUri.toUri())
+                        }
                         viewAction = NewChildAction.CloseClicked
                     }
                 }

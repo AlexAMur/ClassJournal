@@ -1,6 +1,9 @@
 package com.catshome.classJournal.screens.child
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -9,7 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -106,25 +111,19 @@ fun NewChildScreen(
                 viewModel.clearAction()
             }
 
-            is NewChildAction.SaveChild -> {}
             NewChildAction.SaveClicked -> {
                 viewModel.obtainEvent(NewChildEvent.CloseClicked)
             }
 
-            is NewChildAction.ReloadScreen -> {
-//            ScreenContent(viewState,viewAction, viewModel,
-//                onCancelClick = {
-//                    viewModel.obtainEvent(NewChildEvent.CloseClicked)
-//                },
-//                onSaveClick = {
-//                    viewModel.obtainEvent(NewChildEvent.SaveClicked)
-//                })
+            is NewChildAction.SelectDocs -> {
+
+
+
+
             }
 
             null -> {}
         }
     }
 }
-
-
 

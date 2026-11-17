@@ -25,6 +25,8 @@ import com.catshome.classJournal.domain.Group.Models.Group
 import com.catshome.classJournal.domain.Pay.PayRepository
 import com.catshome.classJournal.domain.Scheduler.SchedulerRepository
 import com.catshome.classJournal.Scheduler.SchedulerRepositoryImpl
+import com.catshome.classJournal.child.DocChild.ChildDocFileDAO
+import com.catshome.classJournal.child.DocChild.DocChildStorage
 import com.catshome.classJournal.domain.Visit.VisitRepository
 import dagger.Module
 import dagger.Provides
@@ -51,8 +53,8 @@ class DataModule {
         return room.schedulerDAO()
     }
     @Provides
-    fun provideChildRepository(room: RoomChildStorage): ChildRepository {
-        return ChildRepositoryImpl(room)
+    fun provideChildRepository(room: RoomChildStorage, docChildStorage: DocChildStorage): ChildRepository {
+        return ChildRepositoryImpl(room,docChildStorage)
     }
     @Provides
     fun provideGroupRepository(room: RoomGroupStorage): GroupRepository {
@@ -84,6 +86,11 @@ class DataModule {
     @Provides
     fun provideGroupsDAO(room: AppDataBase): GroupsDAO {
         return room.groupsDAO()
+    }
+
+    @Provides
+    fun provideChildDocFileDAO(room: AppDataBase): ChildDocFileDAO {
+        return room.childDocFileDAO()
     }
     @Provides
     fun provideGroup() = Group()

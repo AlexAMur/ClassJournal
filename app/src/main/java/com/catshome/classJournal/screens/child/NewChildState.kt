@@ -1,9 +1,11 @@
 package com.catshome.classJournal.screens.child
 
+import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavHostController
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Group.Models.Group
+import com.catshome.classJournal.domain.Child.DocsChild.DocChild
 import com.google.android.material.snackbar.Snackbar
 
 data class ItemScreenChildGroup(
@@ -11,10 +13,12 @@ data class ItemScreenChildGroup(
     var isChecked: Boolean =false
 )
 data class NewChildState(
+    val mimeType: Array<String> = arrayOf("image/*", "application/pdf"),
     var outerNavigation: NavHostController? = null,
     var child: Child =Child(),
     var listScreenChildGroup: List<ItemScreenChildGroup>? = emptyList(),
-    var listDoc: List<ItemScreenChildGroup>? = emptyList(),
+    var listDocs: List<DocChild> = emptyList(),
+   // val listSelectedFile: List<DocChild> = emptyList(),
     var indexGroup: Int = -1,
     var indexFocus:Int = -1,
     var isNameError: Boolean= false,
@@ -29,40 +33,3 @@ data class NewChildState(
     var onDismissed: (()->Unit)? = null,
     var onAction: (()->Unit)? = null,
 )
-//{
-//    fun copy(child: Child): NewChildState{
-//
-//        return NewChildState(
-//             child =  child,
-//
-//            listScreenChildGroup = this.listScreenChildGroup,
-//            indexGroup = this.indexGroup,
-//            indexFocus = this.indexFocus
-//        )
-
-//    }
-
-
-
-//    fun copy(
-//        child: Child =this.child,
-//        listScreenChildGroup: List<ItemScreenChildGroup>? = this.listScreenChildGroup
-//    ): NewChildState{
-//
-//        return NewChildState(
-//            child =  child,
-//            listScreenChildGroup = listScreenChildGroup,
-//            indexGroup = this.indexGroup,
-//            indexFocus = this.indexFocus
-//        )
-//
-//    }
-//    fun copy(listScreenChildGroup: List<ItemScreenChildGroup>?): NewChildState{
-//        return NewChildState(
-//            child = this.child,
-//            listScreenChildGroup = listScreenChildGroup,
-//            indexGroup = this.indexGroup,
-//            indexFocus = this.indexFocus
-//        )
-//    }
-//}

@@ -77,7 +77,7 @@ fun SwipeableItemWithActions(
     val density = LocalDensity.current.density
     Box(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
            ,
         ) {
 
@@ -86,11 +86,9 @@ fun SwipeableItemWithActions(
 
                 .onSizeChanged {
                     contextMenuWidth = (it.width).toFloat()
-
                 }
                 .align(Alignment.CenterEnd)
                 .fillMaxHeight()
-
                 ,
             verticalAlignment = Alignment.CenterVertically
         ) {

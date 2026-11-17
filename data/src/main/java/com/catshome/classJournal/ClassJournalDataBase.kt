@@ -14,8 +14,8 @@ import com.catshome.classJournal.Visit.VisitDAO
 import com.catshome.classJournal.Visit.VisitEntity
 
 import com.catshome.classJournal.child.ChildDAO
-import com.catshome.classJournal.child.ChildDocFileDAO
-import com.catshome.classJournal.child.ChildDocFileEntity
+import com.catshome.classJournal.child.DocChild.ChildDocFileDAO
+import com.catshome.classJournal.child.DocChild.ChildDocFileEntity
 import com.catshome.classJournal.child.ChildEntity
 import com.catshome.classJournal.child.ChildGroupDAO
 import com.catshome.classJournal.child.ChildGroupEntity

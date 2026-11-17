@@ -2,6 +2,7 @@ package com.catshome.classJournal.domain.Child
 
 
 import android.util.Log
+import com.catshome.classJournal.domain.Child.DocsChild.DocChild
 import com.catshome.classJournal.domain.Group.GroupRepository
 import com.catshome.classJournal.domain.Group.Models.Group
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +15,10 @@ class ChildInteractor @Inject constructor(
     private val childGroupRepository: ChildGroupRepository,
     private val groupRepository: GroupRepository,
 ) {
+   suspend fun getListDocsByChild(child: Child): Flow<List<DocChild>> {
+        return childRepository.getDocsByChild(child)
+    }
+
     fun getListChildsWithGroups(): List<ChildWithGroups> {
         return childRepository.getChildWithGroups()
     }
@@ -24,7 +29,7 @@ class ChildInteractor @Inject constructor(
         return childRepository.getChildById(uid)
     }
 
-    suspend fun saveChildUseCase(child: Child, childGroup: List<ChildGroup>): Boolean {
+    suspend fun saveChildUseCase(child: Child, childGroup: List<ChildGroup>, childDocs: List<DocChild>): Boolean {
         if (child.uid.isEmpty())
             child.uid = UUID.randomUUID().toString()
 
@@ -34,7 +39,7 @@ class ChildInteractor @Inject constructor(
 // перед измененим или добавление ребенкка проверить на наличие удаленных записей и затем сохранять
         val childtmp = childRepository.childDeleteExists(child)
         if (isNull(childtmp)) {
-            childRepository.saveChild(child, childGroup)
+            childRepository.saveChild(child, childGroup,childDocs)
         } else //есть удаленный ребенок с той же фамилией именем и датой рождения
         {
             childtmp?.let {
@@ -42,7 +47,7 @@ class ChildInteractor @Inject constructor(
                     it.copy(name = "${childtmp.name}_")
                 )
             }
-            childRepository.saveChild(child, childGroup)
+            childRepository.saveChild(child, childGroup, childDocs)
         }
         return true
     }

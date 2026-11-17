@@ -3,10 +3,16 @@ package com.catshome.classJournal.child
 
 import android.content.Context
 import android.util.Log
+import androidx.room.Transaction
+import com.catshome.classJournal.child.DocChild.ChildDocFileDAO
+import com.catshome.classJournal.child.DocChild.ChildDocFileEntity
+import com.catshome.classJournal.child.DocChild.mapToChildDocFileEntity
+import com.catshome.classJournal.child.DocChild.mapToDocChild
 
 import com.catshome.classJournal.domain.Child.Child
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildWithGroups
+import com.catshome.classJournal.domain.Child.DocsChild.DocChild
 import com.catshome.classJournal.domain.Child.MiniChild
 import com.catshome.classJournal.domain.communs.FormatDate
 import com.catshome.classJournal.domain.communs.toDateTimeRuString
@@ -26,18 +32,24 @@ import javax.inject.Inject
 class RoomChildStorage @Inject constructor(
     @ApplicationContext val context: Context,
     val childDAO: ChildDAO,
-    val childGroup: ChildGroupDAO
+    val childGroup: ChildGroupDAO,
+    val docsDAO: ChildDocFileDAO
 ) : ChildStorage {
-
-
+    override suspend fun selectDocsChild(child: Child):Flow<List<DocChild>>{
+        return docsDAO.docsByChileID(child.uid).map{list-> list.map { it.mapToDocChild() }}
+    }
+    @Transaction
     override suspend fun insert(
         child: Child,
-        childGroup: List<ChildGroup>
+        childGroup: List<ChildGroup>,
+        childDocs: List<DocChild>
     ) {
         Log.e("CLJR",child.toString())
         childDAO.insertChild(child.mapToChildEntity(), childGroup.map {
             it.mapToChildGroupEntity()
-        })
+        }
+        )
+        docsDAO.insertDos(childDocs.map{it.mapToChildDocFileEntity()})
     }
 
     //пометить на удаление  ребенка
@@ -48,15 +60,17 @@ class RoomChildStorage @Inject constructor(
     override suspend fun delete(child: Child) {
         childDAO.delete(child.mapToChildEntity())
     }
-
+    @Transaction
     override suspend fun updateChildWithGroups(
         child: Child,
-        childGroup: List<ChildGroup>
+        childGroup: List<ChildGroup>,
+        childDocs: List<DocChild>
     ) {
         childDAO.updateChild(
             child.mapToChildEntity(),
             group = childGroup.map { it.mapToChildGroupEntity() }
         )
+        docsDAO.insertDos(childDocs.map{it.mapToChildDocFileEntity()})
     }
 
     override suspend fun update(child: Child) {

@@ -1,9 +1,10 @@
 package com.catshome.classJournal.domain.Child
 
+import com.catshome.classJournal.domain.Child.DocsChild.DocChild
 import kotlinx.coroutines.flow.Flow
 
 interface ChildRepository {
-    suspend fun saveChild(child: Child, childGroup: List<ChildGroup>)
+    suspend fun saveChild(child: Child, childGroup: List<ChildGroup>, childDocs: List<DocChild>)
     suspend fun updateChild(child: Child)
     suspend fun deleteSet(child: Child)
    // fun checkDeleteChild(child: Child , isDelete: Boolean)
@@ -13,4 +14,5 @@ interface ChildRepository {
     fun getChilds(isDelete: Boolean): Flow<List<Child>>
     fun getAllChilds(): Flow<List<Child>>
     fun getChildWithGroups(): List<ChildWithGroups>
+    suspend fun getDocsByChild(child: Child):Flow<List<DocChild>>
 }

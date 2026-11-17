@@ -1,5 +1,8 @@
 package com.catshome.classJournal.screens.child
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,6 +25,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -40,19 +45,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
-import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.communs.DatePickerFieldToModal
 import com.catshome.classJournal.communs.TextField
-import com.catshome.classJournal.domain.communs.DATETIME_FORMAT_RU
-import com.catshome.classJournal.domain.communs.toDateTimeRuString
+import com.catshome.classJournal.communs.docFiles.DocFileSaver
+import com.catshome.classJournal.communs.docFiles.getAvailableSpaceInBytes
+import com.catshome.classJournal.communs.docFiles.getRequiredSpaceFromUri
+import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import kotlin.time.Clock.System.now
+import com.catshome.classJournal.resource.R
+import com.catshome.classJournal.screens.child.DocChild.childDosContent
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -64,9 +66,24 @@ fun ScreenContent(
 ) {
     val bottomPadding = LocalSettingsEventBus.current.currentSettings.collectAsState()
         .value.innerPadding.calculateBottomPadding()
-
+    //var selectedFileUri by remember { mutableStateOf<List<Uri?>>(emptyList()) }
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenMultipleDocuments()
+    ) { listUri: List<Uri?> ->
+        // Этот колбэк вызовется, когда пользователь выберет файл или отменит диалог
+        val spaceFreeDisk = getAvailableSpaceInBytes(context.filesDir)
+        var requiredSpace = 0L
+        listUri.forEach { uri ->
+            uri?.let {
+                getRequiredSpaceFromUri(
+                    context = context,
+                    uri = uri
+                )?.let { size -> requiredSpace += size }
+            }
+        }
+        viewModel.obtainEvent(NewChildEvent.SelectDocs(listUri = listUri))
+    }
     var groups = viewState.listScreenChildGroup
-
 //  Установка фокуса после переворота
     LaunchedEffect(true) {
         if (viewState.indexFocus > -1)
@@ -158,9 +175,9 @@ fun ScreenContent(
 //                        if (viewState.child.birthday.isNullOrEmpty())
 //                        now().toLocalDateTime(TimeZone.currentSystemDefault())
 //                    else {
-                            viewState.child.birthday.toLocalDateTimeRu()
+                        viewState.child.birthday.toLocalDateTimeRu()
 //                    }
-            ,
+                    ,
 
                     stringResource(R.string.birthday_child)
                 ) {
@@ -281,13 +298,50 @@ fun ScreenContent(
                         }
                     }
                 }
-                if(true){
-
+                Button(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                    shape = ClassJournalTheme.shapes.cornersStyle,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = ClassJournalTheme.colors.tintColor,
+                        contentColor = ClassJournalTheme.colors.primaryText
+                    ), onClick = {
+                        filePickerLauncher.launch(viewState.mimeType)
+                    }) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.outline_add_card_24),
+                            modifier = Modifier.padding(end = 16.dp),
+                            contentDescription = "",
+                            tint = ClassJournalTheme.colors.primaryText
+                        )
+                        Text(
+                            text = stringResource(R.string.mime_type),
+                            modifier = Modifier,
+                            color = ClassJournalTheme.colors.primaryText
+                        )
+                    }
                 }
-                else{
-
-                }
-
+                if (viewState.listDocs.isNullOrEmpty() == false)
+                    viewState.listDocs?.let { docs ->
+                        childDosContent(
+                            docs,
+                            onChange ={index, text->
+                                viewModel.obtainEvent(
+                                    NewChildEvent.onChangeDocNoteFile(
+                                        index,
+                                        text
+                                    )
+                                )
+                            },
+                            onClearNote = {
+                                viewModel.obtainEvent(NewChildEvent.noClearNote(it)
+                                )
+                            }
+                        )
+                    }
             }
 
         }
