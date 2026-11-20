@@ -9,6 +9,8 @@ import com.catshome.classJournal.docFiles.DocFileSaver.getFileName
 import com.catshome.classJournal.docFiles.deleteFileByUri
 import com.catshome.classJournal.docFiles.getMimeType
 import com.catshome.classJournal.context
+import com.catshome.classJournal.docFiles.openFileExternally
+import com.catshome.classJournal.docFiles.shareFile
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildInteractor
 import com.catshome.classJournal.domain.Child.DocsChild.DocChild
@@ -116,6 +118,12 @@ class NewChildViewModel @Inject constructor(
                             doc
                     }
                 )
+            }
+            is NewChildEvent.OpenFile->{
+                openFileExternally(context, fileUri = viewEvent.uri.toUri())
+            }
+            is NewChildEvent.ShareFile->{
+                shareFile(context, fileUri = viewEvent.uri.toUri())
             }
             is NewChildEvent.SelectDocs -> {
 //                viewModelScope.launch {

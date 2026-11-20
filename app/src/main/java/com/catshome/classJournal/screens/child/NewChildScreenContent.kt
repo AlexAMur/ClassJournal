@@ -326,7 +326,8 @@ fun ScreenContent(
                 if (viewState.listDocs.isNullOrEmpty() == false)
                     viewState.listDocs?.let { docs ->
                         childDosContent(
-                            docs,
+                            viewModel= viewModel,
+                           listDocs=  docs,
                             onChange ={index, text->
                                 viewModel.obtainEvent(
                                     NewChildEvent.onChangeDocNoteFile(

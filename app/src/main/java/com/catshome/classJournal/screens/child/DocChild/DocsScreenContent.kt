@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.util.TableInfo
 import androidx.savedstate.serialization.encodeToSavedState
 import com.catshome.classJournal.ClassJournalTheme
@@ -45,11 +46,14 @@ import com.catshome.classJournal.domain.Child.DocsChild.DocChild
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.screens.child.ChildListEvent
+import com.catshome.classJournal.screens.child.NewChildEvent
+import com.catshome.classJournal.screens.child.NewChildViewModel
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.datetime.TimeZone
 
 @Composable
 fun childDosContent(
+    viewModel: NewChildViewModel,
     listDocs: List<DocChild>,
     onChange: (Int, String) -> Unit,
     onClearNote: (Int) -> Unit
@@ -85,7 +89,9 @@ fun childDosContent(
                     isRevealed = false,
                     actions = {
                         ActionIcon(
-                            onClick = {},
+                            onClick = {
+                                viewModel.obtainEvent(NewChildEvent.ShareFile(item.fileUri))
+                            },
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .width(80.dp),
@@ -170,7 +176,7 @@ fun childDosContent(
                                         .fillMaxWidth()
                                         .padding(top = 8.dp)
                                         .clickable {
-                                            //viewModel.obtainEvent(NewChildEvent.SelectGroup(item.group?.uid.toString()))
+                                            viewModel.obtainEvent(NewChildEvent.OpenFile(item.fileUri))
                                         },
                                     horizontalArrangement = Arrangement.Start
                                 ) {

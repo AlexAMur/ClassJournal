@@ -10,6 +10,7 @@ fun restartApp(context: Context) {
     val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
       // 2. Флаг NEW_TASK обязателен при запуске из Context
     intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
     // 3. Очищаем весь предыдущий стек экранов
     intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
     // 3. Запускаем приложение заново
