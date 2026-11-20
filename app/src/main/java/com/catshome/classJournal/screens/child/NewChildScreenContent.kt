@@ -47,10 +47,9 @@ import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.LocalSettingsEventBus
 import com.catshome.classJournal.communs.DatePickerFieldToModal
 import com.catshome.classJournal.communs.TextField
-import com.catshome.classJournal.communs.docFiles.DocFileSaver
-import com.catshome.classJournal.communs.docFiles.getAvailableSpaceInBytes
-import com.catshome.classJournal.communs.docFiles.getRequiredSpaceFromUri
+import com.catshome.classJournal.docFiles.getAvailableSpaceInBytes
 import com.catshome.classJournal.context
+import com.catshome.classJournal.docFiles.getRequiredSpaceFromUri
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRu
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
 import com.catshome.classJournal.resource.R

@@ -28,3 +28,4 @@ include(":domain")
 include(":data")
 
 include(":resource")
+include(":commun")

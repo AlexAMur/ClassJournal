@@ -35,6 +35,9 @@ class ChildInteractor @Inject constructor(
 
         if (child.name.trim().isEmpty() || child.surname.trim().isEmpty())
             return false
+
+
+
         //Если все проверки пройдены сохраняем данные
 // перед измененим или добавление ребенкка проверить на наличие удаленных записей и затем сохранять
         val childtmp = childRepository.childDeleteExists(child)
@@ -47,6 +50,7 @@ class ChildInteractor @Inject constructor(
                     it.copy(name = "${childtmp.name}_")
                 )
             }
+
             childRepository.saveChild(child, childGroup, childDocs)
         }
         return true

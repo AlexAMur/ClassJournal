@@ -5,10 +5,9 @@ import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
 import com.catshome.classJournal.resource.R
 import com.catshome.classJournal.child.ChildGroupsRepositoryImpl
-import com.catshome.classJournal.communs.docFiles.DocFileSaver
-import com.catshome.classJournal.communs.docFiles.DocFileSaver.getFileName
-import com.catshome.classJournal.communs.docFiles.deleteFileByUri
-import com.catshome.classJournal.communs.docFiles.getMimeType
+import com.catshome.classJournal.docFiles.DocFileSaver.getFileName
+import com.catshome.classJournal.docFiles.deleteFileByUri
+import com.catshome.classJournal.docFiles.getMimeType
 import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.ChildGroup
 import com.catshome.classJournal.domain.Child.ChildInteractor
@@ -188,6 +187,7 @@ class NewChildViewModel @Inject constructor(
                         )
                     }
                     CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
+
                         childInteract.saveChildUseCase(
                             viewState.child,
                             viewState.listScreenChildGroup?.filter { list ->
@@ -202,9 +202,9 @@ class NewChildViewModel @Inject constructor(
                             childDocs = viewState.listDocs ?: emptyList()
                         )
                         //удаляем файлы связаные с базой
-                        viewState.listDocs?.forEach {
-                            context.deleteFileByUri(it.fileUri.toUri())
-                        }
+//                        viewState.listDocs?.forEach {
+//                            context.deleteFileByUri(it.fileUri.toUri())
+//                        }
                         viewAction = NewChildAction.CloseClicked
                     }
                 }
@@ -230,7 +230,7 @@ class NewChildViewModel @Inject constructor(
         }
     }
 
-    // создает списко групп с отметками по для state Класс ItemScreenGroup
+    // создает список групп с отметками по для state Класс ItemScreenGroup
     private fun getScreenGroups(
         childGroup: List<ChildGroup> = emptyList()
     ) {

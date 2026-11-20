@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.room.Transaction
 import com.catshome.classJournal.child.DocChild.ChildDocFileDAO
 import com.catshome.classJournal.child.DocChild.ChildDocFileEntity
+import com.catshome.classJournal.child.DocChild.DocChildStorage
 import com.catshome.classJournal.child.DocChild.mapToChildDocFileEntity
 import com.catshome.classJournal.child.DocChild.mapToDocChild
 
@@ -33,10 +34,10 @@ class RoomChildStorage @Inject constructor(
     @ApplicationContext val context: Context,
     val childDAO: ChildDAO,
     val childGroup: ChildGroupDAO,
-    val docsDAO: ChildDocFileDAO
+    val docsStorage: DocChildStorage
 ) : ChildStorage {
     override suspend fun selectDocsChild(child: Child):Flow<List<DocChild>>{
-        return docsDAO.docsByChileID(child.uid).map{list-> list.map { it.mapToDocChild() }}
+        return docsStorage.docsByChildID(child.uid)
     }
     @Transaction
     override suspend fun insert(
@@ -49,7 +50,7 @@ class RoomChildStorage @Inject constructor(
             it.mapToChildGroupEntity()
         }
         )
-        docsDAO.insertDos(childDocs.map{it.mapToChildDocFileEntity()})
+        docsStorage.insertDocs(childDocs)
     }
 
     //пометить на удаление  ребенка
@@ -70,7 +71,7 @@ class RoomChildStorage @Inject constructor(
             child.mapToChildEntity(),
             group = childGroup.map { it.mapToChildGroupEntity() }
         )
-        docsDAO.insertDos(childDocs.map{it.mapToChildDocFileEntity()})
+        docsStorage.insertDocs(childDocs)
     }
 
     override suspend fun update(child: Child) {

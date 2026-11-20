@@ -1,4 +1,4 @@
-package com.catshome.classJournal.communs.docFiles
+package com.catshome.classJournal.docFiles
 
 import android.content.Context
 import android.net.Uri

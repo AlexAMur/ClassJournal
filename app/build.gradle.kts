@@ -18,7 +18,7 @@ plugins {
 
 android {
     namespace = "com.catshome.classJournal"
-    compileSdk = 36
+    compileSdk = 37
     defaultConfig {
         applicationId = "com.catshome.classJournal"
         minSdk = 29
@@ -128,6 +128,7 @@ dependencies {
     ksp(libs.room)
 
     implementation(project(":domain"))
+    implementation(project(":commun"))
     implementation(project(":data"))
     implementation(project(":resource"))
     testImplementation(libs.junit)

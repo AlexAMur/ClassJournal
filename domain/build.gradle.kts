@@ -12,7 +12,7 @@ plugins {
 
 android {
     namespace = "com.catshome.classJournal"
-    compileSdk = 36
+    compileSdk = 37
 
     java {
         sourceCompatibility = JavaVersion.VERSION_21
@@ -21,10 +21,6 @@ android {
     kotlin {
         compilerOptions {
             jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
-        }
-        dependencies {
-
-
         }
         ksp {
             @OptIn(KspExperimental::class)

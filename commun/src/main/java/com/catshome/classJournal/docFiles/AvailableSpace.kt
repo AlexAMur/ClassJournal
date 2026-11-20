@@ -1,4 +1,4 @@
-package com.catshome.classJournal.communs.docFiles
+package com.catshome.classJournal.docFiles
 
 import android.os.StatFs
 import java.io.File

@@ -1,15 +1,16 @@
-package com.catshome.classJournal.communs.docFiles
+package com.catshome.classJournal.docFiles
 
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
+import java.io.File
 
 /*** Возвращает размер файла по Uri в байтах или null, если размер неизвестен. */
 fun getRequiredSpaceFromUri(context: Context, uri: Uri): Long? {
     // Если это стандартный файловый Uri (file://), размер можно узнать напрямую
     if (uri.scheme == "file") {
-        return uri.path?.let { java.io.File(it).length() }
+        return uri.path?.let { File(it).length() }
     }
     // Для контентных Uri (content://) делаем запрос к ContentResolver
     return try {

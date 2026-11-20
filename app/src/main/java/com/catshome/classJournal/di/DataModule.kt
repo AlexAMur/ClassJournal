@@ -1,5 +1,6 @@
 package com.catshome.classJournal.di
 
+import android.content.Context
 import com.catshome.classJournal.AppDataBase
 import com.catshome.classJournal.DAO.GroupsDAO
 import com.catshome.classJournal.Group.GroupRepositorys.GroupRepositoryImpl
@@ -31,6 +32,7 @@ import com.catshome.classJournal.domain.Visit.VisitRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
 @Module
@@ -53,8 +55,9 @@ class DataModule {
         return room.schedulerDAO()
     }
     @Provides
-    fun provideChildRepository(room: RoomChildStorage, docChildStorage: DocChildStorage): ChildRepository {
-        return ChildRepositoryImpl(room,docChildStorage)
+    fun provideChildRepository(@ApplicationContext context: Context, room: RoomChildStorage, docChildStorage: DocChildStorage): ChildRepository {
+
+        return ChildRepositoryImpl(context,room,docChildStorage)
     }
     @Provides
     fun provideGroupRepository(room: RoomGroupStorage): GroupRepository {

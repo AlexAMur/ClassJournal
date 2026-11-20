@@ -12,7 +12,7 @@ plugins {
 
 android {
     namespace = "com.catshome.classJournal.domain"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 29
@@ -49,19 +49,17 @@ android {
 }
 
 dependencies {
+    implementation(project(":commun"))
     implementation(project(":domain"))
     implementation(project(":resource"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.kotlinx.datetime)
-
     implementation(libs.hilt)
     implementation(libs.room.runtime)
     ksp(libs.hilt.compiler)
     ksp(libs.room)
-
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

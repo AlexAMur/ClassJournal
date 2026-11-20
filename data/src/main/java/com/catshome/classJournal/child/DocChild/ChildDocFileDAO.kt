@@ -3,6 +3,7 @@ package com.catshome.classJournal.child.DocChild
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -14,7 +15,7 @@ interface ChildDocFileDAO {
    fun insertDos(listDocs: List<ChildDocFileEntity>){
        listDocs.map { insert(it) }
    }
-    @Insert
+    @Insert(onConflict = REPLACE)
     fun insert(childDocFileEntity: ChildDocFileEntity)
     @Delete
     fun delete(childDocFileEntity: ChildDocFileEntity)
