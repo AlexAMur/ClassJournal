@@ -1,5 +1,6 @@
 package com.catshome.classJournal.screens.child
 
+import android.util.Log
 import androidx.compose.ui.focus.FocusRequester
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
@@ -99,6 +100,28 @@ class NewChildViewModel @Inject constructor(
 
     override fun obtainEvent(viewEvent: NewChildEvent) {
         when (viewEvent) {
+            NewChildEvent.resetSnakeBar->{
+                viewState = viewState.copy(isSnackbarShow =false)
+            }
+
+            is NewChildEvent.showSnackBar -> {
+                viewState.errorMessage = viewEvent.message
+                viewState.snackbarAction = viewEvent.actionLabel
+                viewState.onDismissed = viewEvent.onDismissed
+                viewState.onAction = viewEvent.onActionPerformed
+                viewState.isSnackbarShow = true
+            }
+            is NewChildEvent.deleteDoc->{
+                viewState = viewState.copy(
+                    listDocs = viewState.listDocs.mapIndexed { index,doc->
+                        if (index == viewEvent.index)
+                            doc.copy(isDelete = viewEvent.isDelete)
+                        else
+                            doc
+                    }
+                )
+                Log.e("CLJR", "Delete make ${viewState.listDocs}")
+            }
             is NewChildEvent.onChangeDocNoteFile->{
                 viewState = viewState.copy(
                     listDocs = viewState.listDocs.mapIndexed { index,doc->

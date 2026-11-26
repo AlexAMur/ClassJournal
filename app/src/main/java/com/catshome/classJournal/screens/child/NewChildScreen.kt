@@ -116,10 +116,6 @@ fun NewChildScreen(
             }
 
             is NewChildAction.SelectDocs -> {
-
-
-
-
             }
 
             null -> {}

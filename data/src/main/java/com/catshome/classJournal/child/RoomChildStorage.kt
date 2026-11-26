@@ -50,7 +50,7 @@ class RoomChildStorage @Inject constructor(
             it.mapToChildGroupEntity()
         }
         )
-        docsStorage.insertDocs(childDocs)
+        docsStorage.insertDocs(childDocs.map { it.copy(childId = child.uid) })
     }
 
     //пометить на удаление  ребенка

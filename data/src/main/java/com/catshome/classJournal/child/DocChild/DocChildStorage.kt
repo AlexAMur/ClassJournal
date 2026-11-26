@@ -45,8 +45,13 @@ class DocChildStorage @Inject constructor(
     fun deleteDocs(listDocs: List<DocChild>): Boolean {
         try {
             listDocs.forEach {
-                if (it.isDelete) context.deleteFileByUri(it.fileUri.toUri())
-                deleteDocByID(it.id)
+                if (it.isDelete)
+                    if (context.deleteFileByUri(it.fileUri.toUri())){
+                        deleteDocByID(it.id)
+                    }else{
+                        Log.e("CLJR", "Not delete file! ")
+                        return false
+                    }
             }
             return true
         } catch (e: Exception) {

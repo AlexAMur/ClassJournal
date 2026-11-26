@@ -6,13 +6,22 @@ import com.catshome.classJournal.domain.Group.Models.Group
 
 sealed class NewChildEvent {
 
+    class showSnackBar(
+        val message: String,
+        val actionLabel: String,
+        val onDismissed:  ()->Unit,
+        val onActionPerformed: ()->Unit,
+        ): NewChildEvent()
+
     class OpenChild(val uid: String): NewChildEvent()
+    class deleteDoc(val index: Int, val isDelete: Boolean): NewChildEvent()
     class OpenFile(val uri: String): NewChildEvent()
     class ShareFile(val uri: String): NewChildEvent()
     class onChangeDocNoteFile(val Index: Int,val text: String): NewChildEvent()
     class SaveChild(val child: Child): NewChildEvent()
     data object SaveClicked: NewChildEvent()
     data object ReloadScreen: NewChildEvent()
+    data object resetSnakeBar: NewChildEvent()
     data object CloseClicked: NewChildEvent()
     data object newChild: NewChildEvent()
     class noClearNote(val index: Int): NewChildEvent()

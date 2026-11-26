@@ -17,7 +17,7 @@ fun Context.deleteFileByUri(uri: Uri): Boolean {
                     contentResolver.delete(uri, null, null) > 0
                 }
             }
-            "file" -> {
+            "file",null -> {
                 uri.path?.let { path ->
                     File(path).delete()
                 } ?: false

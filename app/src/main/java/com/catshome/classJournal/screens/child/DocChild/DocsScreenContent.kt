@@ -30,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -42,6 +43,7 @@ import com.catshome.classJournal.ClassJournalTheme
 import com.catshome.classJournal.communs.ActionIcon
 import com.catshome.classJournal.communs.SwipeableItemWithActions
 import com.catshome.classJournal.communs.TextField
+import com.catshome.classJournal.context
 import com.catshome.classJournal.domain.Child.DocsChild.DocChild
 import com.catshome.classJournal.domain.communs.toLocalDateTimeRuString
 import com.catshome.classJournal.resource.R
@@ -58,7 +60,6 @@ fun childDosContent(
     onChange: (Int, String) -> Unit,
     onClearNote: (Int) -> Unit
 ) {
-
     LazyColumn(
         Modifier
             .height(500.dp)
@@ -85,6 +86,7 @@ fun childDosContent(
                 color = ClassJournalTheme.colors.primaryBackground,
                 // contentColor = ClassJournalTheme.colors.primaryBackground
             ) {
+                if (!item.isDelete) {
                 SwipeableItemWithActions(
                     isRevealed = false,
                     actions = {
@@ -102,32 +104,28 @@ fun childDosContent(
                         )
                         ActionIcon(
                             onClick = {
-//                            //Удаление ребенка из списка
-//                            viewModel.obtainEvent(
-//                                ChildListEvent.deleteClicked(
-//                                    uidChild = item.child.childUid,
-//                                    uidGroup = "",
-//                                    key = key
-//                                )
-//                            )
-////                                                    scope.launch {
-//                            viewModel.obtainEvent(
-//                                ChildListEvent.showSnackBar(
-//                                    message = "${context.getString(R.string.message_cancel)} ${item.child.childName} ?",
-//                                    actionLabel = context.getString(R.string.bottom_cancel),
-//                                    onDismissed = {
-//                                        viewModel.obtainEvent(
-//                                            ChildListEvent.deleteChild(
-//                                                uid = item.child.childUid,
-//                                                key = key
-//                                            )
-//                                        )
-//                                    },
-//                                    onActionPerformed = {
-//                                        viewModel.obtainEvent(ChildListEvent.undoDelete)
-//                                    }
-//
-//                                ))
+                                viewModel.obtainEvent(
+                                    NewChildEvent.deleteDoc(index = index, isDelete = true)
+                                )
+
+                                viewModel.obtainEvent(
+                                    NewChildEvent.showSnackBar(
+                                        message = "${context.getString(R.string.message_cancel)} ${item.fileName} ?",
+                                        actionLabel = context.getString(R.string.bottom_cancel),
+                                        onDismissed = { viewModel.obtainEvent(NewChildEvent.resetSnakeBar)},
+                                        onActionPerformed = {
+                                            viewModel.obtainEvent(
+                                                NewChildEvent.deleteDoc(
+                                                    index = index,
+                                                    isDelete = false
+                                                )
+                                            )
+                                            viewModel.obtainEvent(NewChildEvent.resetSnakeBar)
+                                        },
+//                                        onActionPerformed = {
+//                                            viewModel.obtainEvent(ChildListEvent.undoDelete)
+//                                        }
+                                    ))
                             },
                             icon = Icons.Default.Delete,
                             modifier = Modifier
@@ -151,87 +149,101 @@ fun childDosContent(
                     onExpanded = {},
                     onCollapsed = {}
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                color = ClassJournalTheme.colors.primaryBackground,
-                            )
-                            .fillMaxWidth()
-                        // .padding(start = 16.dp, end = 16.dp, top = 16.dp),
-                    ) {
-                        Card(
-                            shape = ClassJournalTheme.shapes.cornersStyle,
+
+                        Box(
                             modifier = Modifier
                                 .background(
                                     color = ClassJournalTheme.colors.primaryBackground,
                                 )
-                                .fillMaxSize(),
-                            colors = CardDefaults.cardColors(ClassJournalTheme.colors.controlColor),
+                                .fillMaxWidth()
+                            // .padding(start = 16.dp, end = 16.dp, top = 16.dp),
                         ) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth()
+                            Card(
+                                shape = ClassJournalTheme.shapes.cornersStyle,
+                                modifier = Modifier
+                                    .background(
+                                        color = ClassJournalTheme.colors.primaryBackground,
+                                    )
+                                    .fillMaxSize(),
+                                colors = CardDefaults.cardColors(ClassJournalTheme.colors.controlColor),
                             ) {
-                                Row(
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 8.dp)
-                                        .clickable {
-                                            viewModel.obtainEvent(NewChildEvent.OpenFile(item.fileUri))
-                                        },
-                                    horizontalArrangement = Arrangement.Start
+                                Column(
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
+                                    Row(
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 8.dp)
+                                            .clickable {
+                                                viewModel.obtainEvent(NewChildEvent.OpenFile(item.fileUri))
+                                            },
+                                        horizontalArrangement = Arrangement.Start
+                                    ) {
 
-                                    Icon(
-                                        painter = if (item.mimeType?.contains("pdf") == true)
-                                            painterResource(R.drawable.pdf)
-                                        else
-                                            painterResource(R.drawable.imagefile),
-                                        modifier = Modifier.padding(start = 16.dp, end = 8.dp),
-                                        contentDescription = "",
-                                        tint = ClassJournalTheme.colors.primaryText
-                                    )
-                                    Text(
-                                        item.fileName ?: "null",
-                                        modifier = Modifier.padding(end = 8.dp),
-                                        style = ClassJournalTheme.typography.body,
-                                        color = ClassJournalTheme.colors.primaryText
-                                    )
-                                    Text(
-                                        "Datе: ${item.addedAt.toLocalDateTimeRuString(TimeZone.currentSystemDefault())} ",
-                                        modifier = Modifier.padding(end = 8.dp),
-                                        style = ClassJournalTheme.typography.body,
-                                        color = ClassJournalTheme.colors.primaryText
+                                        Icon(
+                                            painter = if (item.mimeType?.contains("pdf") == true)
+                                                painterResource(R.drawable.pdf)
+                                            else
+                                                painterResource(R.drawable.imagefile),
+                                            modifier = Modifier.padding(start = 16.dp, end = 8.dp),
+                                            contentDescription = "",
+                                            tint = ClassJournalTheme.colors.primaryText
+                                        )
+                                        Column(Modifier.fillMaxWidth()) {
+
+
+                                            Text(
+                                                item.fileName ?: "null",
+                                                modifier = Modifier.padding(end = 8.dp),
+                                                style = ClassJournalTheme.typography.body,
+                                                color = ClassJournalTheme.colors.primaryText
+                                            )
+
+
+                                            Text(
+                                                "Добавлен: ${
+                                                    item.addedAt.toLocalDateTimeRuString(
+                                                        TimeZone.currentSystemDefault()
+                                                    )
+                                                } ",
+                                                modifier = Modifier.padding(
+                                                    end = 8.dp
+                                                ),
+                                                style = ClassJournalTheme.typography.body,
+                                                color = ClassJournalTheme.colors.primaryText
+                                            )
+                                        }
+                                    }
+                                    TextField(
+                                        value = item.noteFile.toString(),
+                                        label = stringResource(R.string.note_file),
+                                        //supportingText = stringResource(R.string.note_file),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(
+                                                start = 16.dp,
+                                                top = 4.dp,
+                                                end = 16.dp
+                                            ),
+                                        onValueChange = { onChange(index, it) },
+                                        trailingIcon = {
+                                            if (!item.noteFile.isNullOrEmpty())
+                                                Icon(
+                                                    Icons.Default.Clear,
+                                                    contentDescription = null,
+                                                    modifier = Modifier
+                                                        .clickable {
+                                                            onClearNote(index)
+                                                        },
+                                                    tint = ClassJournalTheme.colors.primaryText
+                                                )
+                                        },
+                                        minLines = 1,
+                                        singleLine = true,
+                                        keyboardOptions = KeyboardOptions.Default,
+                                        errorState = false,
                                     )
                                 }
-                                TextField(
-                                    value = item.noteFile.toString(),
-                                    label = stringResource(R.string.note_file),
-                                    //supportingText = stringResource(R.string.note_file),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(
-                                            start = 16.dp,
-                                            top = 4.dp,
-                                            end = 16.dp
-                                        ),
-                                    onValueChange = { onChange(index, it) },
-                                    trailingIcon = {
-                                        if (!item.noteFile.isNullOrEmpty())
-                                            Icon(
-                                                Icons.Default.Clear,
-                                                contentDescription = null,
-                                                modifier = Modifier
-                                                    .clickable {
-                                                        onClearNote(index)
-                                                    },
-                                                tint = ClassJournalTheme.colors.primaryText
-                                            )
-                                    },
-                                    minLines = 1,
-                                    singleLine = true,
-                                    keyboardOptions = KeyboardOptions.Default,
-                                    errorState = false,
-                                )
                             }
                         }
                     }

@@ -27,7 +27,7 @@ class ChildRepositoryImpl @Inject constructor(@ApplicationContext val context: C
         val docs = childDocs.filter{ !(it.isNew && it.isDelete)}
         docs.filter { it.isDelete ==true }.let{  deleteDoc->
                 deleteDoc.forEach { Log.e("CLJR", "${it.fileName} ${it.isDelete}") }
-          //docChildStorage.deleteDocs(listDocs = deleteDocs) //удаляем помеченные на удаление
+          docChildStorage.deleteDocs(listDocs = deleteDoc) //удаляем помеченные на удаление
         }
         if (childStorage.getChildById(child.uid) == null)
             childStorage.insert(child, childGroup, docs.filter { it.isDelete == false })

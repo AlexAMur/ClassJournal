@@ -23,8 +23,8 @@ android {
         applicationId = "com.catshome.classJournal"
         minSdk = 29
         targetSdk = 35
-        versionCode = 7
-        versionName = "1.6"
+        versionCode = 9
+        versionName = "1.8"
         applicationVariants.all {
             val variant = this
             outputs.map { it as com.android.build.gradle.internal.api.ApkVariantOutputImpl }
